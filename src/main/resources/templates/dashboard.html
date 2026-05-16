@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- PAGE -->
+<div class="container mt-5">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2 class="mb-0">
+            My Business Profiles
+        </h2>
+
+        <a class="btn btn-success"
+           href="/business/create">
+            + Add New Business
+        </a>
+
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div th:if="${#lists.isEmpty(profiles)}"
+         class="alert alert-info opacity-75">
+        You don't have any business profiles yet.
+    </div>
+
+    <!-- CARDS -->
+    <div class="row">
+
+        <div class="col-md-4 mb-4"
+             th:each="p : ${profiles}">
+
+            <div class="card shadow-sm h-100 opacity-75">
+
+                <div class="card-body">
+
+                    <h5 class="card-title"
+                        th:text="${p.name}">
+                    </h5>
+
+                    <p class="card-text mb-1">
+                        <strong>Category:</strong>
+                        <span th:text="${p.category}"></span>
+                    </p>
+
+                    <p class="card-text mb-1">
+                        <strong>City:</strong>
+                        <span th:text="${p.city}"></span>
+                    </p>
+
+                    <p class="card-text mb-3">
+                        <strong>Phone:</strong>
+                        <span th:text="${p.phone}"></span>
+                    </p>
+
+                    <div class="d-flex gap-2">
+
+                        <a class="btn btn-primary btn-sm"
+                           th:href="@{/business/edit/{id}(id=${p.id})}">
+                            Edit
+                        </a>
+
+                        <form th:action="@{/business/delete/{id}(id=${p.id})}"
+                              method="post">
+
+                            <button class="btn btn-danger btn-sm"
+                                    type="submit">
+                                Delete
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

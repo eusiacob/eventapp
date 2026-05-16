@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<div class="container-fluid">
+    <div class="row min-vh-100">
+
+        <!-- LEFT SIDE (60%) -->
+        <div class="col-lg-7 d-none d-lg-flex align-items-center p-5 text-white"
+             style="background: rgba(0,0,0,0.6);">
+
+            <div>
+                <h1 class="mb-4">EventApp</h1>
+
+                <p class="lead">
+                    Platforma care conectează clienții cu cei mai buni furnizori pentru evenimentele tale.
+                </p>
+
+                <hr class="bg-light">
+
+                <div class="row mt-4">
+
+                    <div class="col-4">
+                        <h3>500+</h3>
+                        <p>Business-uri</p>
+                    </div>
+
+                    <div class="col-4">
+                        <h3>1200+</h3>
+                        <p>Evenimente</p>
+                    </div>
+
+                    <div class="col-4">
+                        <h3>4.8★</h3>
+                        <p>Rating mediu</p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT SIDE (40%) -->
+        <div class="col-lg-5 d-flex align-items-center justify-content-center">
+
+            <div class="card shadow opacity-75 p-4 w-75">
+
+                <h2 class="mb-4 text-center">Login</h2>
+
+                <form method="post" th:action="@{/login}">
+
+                    <div class="mb-3">
+                        <input class="form-control"
+                               name="username"
+                               placeholder="Email"
+                               type="text">
+                    </div>
+
+                    <div class="mb-3">
+                        <input class="form-control"
+                               name="password"
+                               placeholder="Password"
+                               type="password">
+
+                        <div class="alert alert-danger mt-2 py-2" th:if="${param.error}">
+                            Email or password is incorrect
+                        </div>
+
+                        <div th:if="${param.logout}" class="alert alert-success mt-2 py-2">
+                            You have been logged out successfully
+                        </div>
+
+                    </div>
+
+                    <button class="btn btn-dark w-100" type="submit">
+                        Login
+                    </button>
+
+                </form>
+
+                <hr>
+
+                <p class="text-center">
+                    No account?
+                    <a href="/register">Register</a>
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

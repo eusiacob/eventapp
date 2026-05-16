@@ -1,0 +1,39 @@
+body {
+    background-image:
+            linear-gradient(rgba(0,0,0,0.5),
+            rgba(0,0,0,0.5)),
+            url('../images/background.jpg');
+
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+
+    min-height: 100vh;
+
+    color: white;
+
+    overflow: hidden;
+}
+
+.card {
+    background-color: rgba(255,255,255,0.92);
+    color: black;
+    border-radius: 15px;
+    transition: transform 0.2s ease;
+    backdrop-filter: blur(10px);
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+.navbar .btn {
+    border-radius: 10px;
+}
+
+form,
+.container {
+    position: relative;
+    z-index: 2;
+}
