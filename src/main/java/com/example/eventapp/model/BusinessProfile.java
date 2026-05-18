@@ -35,6 +35,8 @@ public class BusinessProfile {
     @Pattern(regexp = "^[0-9+\\- ]{10}$", message = "Invalid phone number! It should be 07X XXX XXX")
     private String phone;
 
+    private String imagePath;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

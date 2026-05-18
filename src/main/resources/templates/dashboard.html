@@ -68,6 +68,15 @@
                         <span th:text="${p.phone}"></span>
                     </p>
 
+                    <img th:if="${p.imagePath != null}"
+                         th:src="@{${p.imagePath}}"
+                         class="img-fluid rounded mb-2"
+                         style="height:200px; object-fit:cover;">
+
+                    <img th:if="${p.imagePath == null}"
+                         src="https://via.placeholder.com/300x200"
+                         class="img-fluid rounded mb-2">
+
                     <div class="d-flex gap-2">
 
                         <a class="btn btn-primary btn-sm"

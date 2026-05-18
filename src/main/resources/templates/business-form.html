@@ -30,7 +30,8 @@
                     Create Business Profile
                 </h2>
 
-                <form method="post"
+                <form enctype="multipart/form-data"
+                      method="post"
                       th:action="@{/business/create}"
                       th:object="${profile}">
 
@@ -84,6 +85,14 @@
                     <div class="text-danger small mb-3"
                          th:errors="*{phone}"
                          th:if="${#fields.hasErrors('phone')}">
+                    </div>
+
+                    <!-- IMAGE-->
+                    <div class="mb-3">
+                        <label class="form-label">Image</label>
+                        <input class="form-control"
+                               name="imageFile"
+                               type="file">
                     </div>
 
                     <!-- DESCRIPTION -->

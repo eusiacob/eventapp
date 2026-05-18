@@ -10,11 +10,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Controller
@@ -23,8 +25,7 @@ public class BusinessController {
     private final BusinessProfileService service;
     private final UserRepository userRepository;
 
-    public BusinessController(BusinessProfileService service,
-                              UserRepository userRepository) {
+    public BusinessController(BusinessProfileService service, UserRepository userRepository) {
 
         this.service = service;
         this.userRepository = userRepository;
@@ -32,9 +33,7 @@ public class BusinessController {
 
     private boolean isOwner(BusinessProfile profile, UserDetails userDetails) {
 
-        return profile.getUser()
-                .getEmail()
-                .equals(userDetails.getUsername());
+        return profile.getUser().getEmail().equals(userDetails.getUsername());
     }
 
     @GetMapping("/business/create")
@@ -44,16 +43,34 @@ public class BusinessController {
     }
 
     @PostMapping("/business/create")
-    public String createProfile(@Valid @ModelAttribute("profile") BusinessProfile profile,
-                                BindingResult result,
-                                @AuthenticationPrincipal UserDetails userDetails) {
+    public String createProfile(@Valid @ModelAttribute("profile") BusinessProfile profile, BindingResult result,
+                                @RequestParam("imageFile") MultipartFile file,
+                                @AuthenticationPrincipal UserDetails userDetails) throws IOException {
 
         if (result.hasErrors()) {
             return "business-form";
         }
 
-        User user = userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow();
+        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
+
+        if (!file.isEmpty()) {
+
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+
+            Path uploadPath = Paths.get("uploads/");
+
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            String uploadDir = "uploads/";
+
+            Path filePath = Paths.get(uploadDir + fileName);
+
+            Files.write(filePath, file.getBytes());
+
+            profile.setImagePath("/images/" + fileName);
+        }
 
         profile.setUser(user);
 
@@ -73,11 +90,9 @@ public class BusinessController {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(@AuthenticationPrincipal UserDetails userDetails,
-                            Model model) {
+    public String dashboard(@AuthenticationPrincipal UserDetails userDetails, Model model) {
 
-        User user = userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow();
+        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
 
         List<BusinessProfile> profiles = user.getBusinessProfiles();
 
@@ -87,9 +102,7 @@ public class BusinessController {
     }
 
     @GetMapping("/business/edit/{id}")
-    public String editForm(@PathVariable Long id,
-                           @AuthenticationPrincipal UserDetails userDetails,
-                           Model model) {
+    public String editForm(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails, Model model) {
 
         BusinessProfile profile = service.findById(id);
 
@@ -103,10 +116,7 @@ public class BusinessController {
     }
 
     @PostMapping("/business/edit/{id}")
-    public String updateProfile(@PathVariable Long id,
-                                @Valid @ModelAttribute("profile") BusinessProfile updatedProfile,
-                                BindingResult result,
-                                @AuthenticationPrincipal UserDetails userDetails) {
+    public String updateProfile(@PathVariable Long id, @Valid @ModelAttribute("profile") BusinessProfile updatedProfile, BindingResult result, @AuthenticationPrincipal UserDetails userDetails) {
 
         if (result.hasErrors()) {
             return "business-edit";
@@ -130,8 +140,7 @@ public class BusinessController {
     }
 
     @PostMapping("/business/delete/{id}")
-    public String deleteProfile(@PathVariable Long id,
-                                @AuthenticationPrincipal UserDetails userDetails) {
+    public String deleteProfile(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
 
         BusinessProfile profile = service.findById(id);
 
