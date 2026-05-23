@@ -12,7 +12,9 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
 
     List<BusinessProfile> findByCityContainingIgnoreCase(String city);
 
-    List<BusinessProfile> findByCategoryContainingIgnoreCaseAndCityContainingIgnoreCase(String category, String city);
+    List<BusinessProfile> findByCategoryContainingIgnoreCaseAndCityContainingIgnoreCaseAndNameContainingIgnoreCase(String category, String city, String keyword);
+
+    List<BusinessProfile> findByNameContainingIgnoreCase(String keyword);
 
     Optional<BusinessProfile> findByUser(User user);
 }

@@ -38,10 +38,14 @@ public class BusinessProfileService {
         return repository.findById(id).orElseThrow();
     }
 
-    public List<BusinessProfile> search(String category, String city) {
+    public List<BusinessProfile> search(String category, String city, String keyword) {
 
-        if (!category.isEmpty() && !city.isEmpty()) {
-            return repository.findByCategoryContainingIgnoreCaseAndCityContainingIgnoreCase(category, city);
+        if (!category.isEmpty() && !city.isEmpty() && !keyword.isEmpty()) {
+            return repository.findByCategoryContainingIgnoreCaseAndCityContainingIgnoreCaseAndNameContainingIgnoreCase(category, city, keyword);
+        }
+
+        if (!keyword.isEmpty()) {
+            return repository.findByNameContainingIgnoreCase(keyword);
         }
 
         if (!category.isEmpty()) {
@@ -53,10 +57,6 @@ public class BusinessProfileService {
         }
 
         return repository.findAll();
-    }
-
-    public BusinessProfile findByUser(User user) {
-        return repository.findByUser(user).orElseThrow();
     }
 
     public void delete(Long id) {
