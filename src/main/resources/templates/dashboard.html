@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <title>Dashboard</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" rel="stylesheet">
 
     <link rel="stylesheet"
           th:href="@{/css/style.css}">
@@ -34,8 +35,8 @@
     </div>
 
     <!-- EMPTY STATE -->
-    <div th:if="${#lists.isEmpty(profiles)}"
-         class="alert alert-info opacity-75">
+    <div class="alert alert-info opacity-75"
+         th:if="${#lists.isEmpty(profiles)}">
         You don't have any business profiles yet.
     </div>
 
@@ -68,14 +69,10 @@
                         <span th:text="${p.phone}"></span>
                     </p>
 
-                    <img th:if="${p.imagePath != null}"
-                         th:src="@{${p.imagePath}}"
-                         class="img-fluid rounded mb-2"
-                         style="height:200px; object-fit:cover;">
-
-                    <img th:if="${p.imagePath == null}"
-                         src="https://via.placeholder.com/300x200"
-                         class="img-fluid rounded mb-2">
+                    <img class="img-fluid rounded mb-2"
+                         style="height:200px; object-fit:cover;"
+                         th:if="${p.imagePath != null}"
+                         th:src="@{${p.imagePath}}">
 
                     <div class="d-flex gap-2">
 
@@ -84,8 +81,8 @@
                             Edit
                         </a>
 
-                        <form th:action="@{/business/delete/{id}(id=${p.id})}"
-                              method="post">
+                        <form method="post"
+                              th:action="@{/business/delete/{id}(id=${p.id})}">
 
                             <button class="btn btn-danger btn-sm"
                                     type="submit">

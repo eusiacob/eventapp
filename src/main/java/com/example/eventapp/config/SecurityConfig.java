@@ -36,7 +36,7 @@ public class SecurityConfig {
     }
 
     @Configuration
-    public class WebConfig implements WebMvcConfigurer {
+    public static class WebConfig implements WebMvcConfigurer {
 
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry registry) {

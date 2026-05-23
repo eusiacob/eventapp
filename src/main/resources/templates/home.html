@@ -95,9 +95,6 @@
                          th:if="${b.imagePath != null}"
                          th:src="@{${b.imagePath}}">
 
-                    <img class="img-fluid rounded mb-2"
-                         src="https://via.placeholder.com/300x200"
-                         th:if="${b.imagePath == null}">
                     <p>
                         <a class="btn btn-primary"
                            th:href="@{/business/{id}(id=${b.id})}">
