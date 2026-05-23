@@ -33,5 +33,5 @@ build/
 .vscode/
 
 
-#event
-#src/main/resources/application.properties
+#eventapp
+src/main/resources/application.properties
