@@ -1,11 +1,10 @@
 package com.example.eventapp.repository;
 
 import com.example.eventapp.model.BusinessProfile;
-import com.example.eventapp.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface BusinessProfileRepository extends JpaRepository<BusinessProfile, Long> {
     List<BusinessProfile> findByCategoryContainingIgnoreCase(String category);
@@ -16,5 +15,10 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
 
     List<BusinessProfile> findByNameContainingIgnoreCase(String keyword);
 
-    Optional<BusinessProfile> findByUser(User user);
+    @Query("SELECT DISTINCT b.category FROM BusinessProfile b")
+    List<String> findDistinctCategories();
+
+    @Query("SELECT DISTINCT b.city FROM BusinessProfile b")
+    List<String> findDistinctCities();
+
 }

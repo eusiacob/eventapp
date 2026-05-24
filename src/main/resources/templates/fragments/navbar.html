@@ -12,14 +12,14 @@
     <div class="ms-auto d-flex gap-2">
 
         <!-- FAVORITES -->
-        <a class="btn btn-outline-light"
+        <a class="btn text-dark"
            href="/favorites"
            sec:authorize="isAuthenticated()">
             Favorites
         </a>
 
         <!-- DASHBOARD (BUSINESS) -->
-        <a class="btn btn-warning"
+        <a class="btn text-dark"
            href="/dashboard"
            sec:authorize="hasRole('BUSINESS')">
             My Business
@@ -29,7 +29,7 @@
         <form method="post" sec:authorize="isAuthenticated()"
               th:action="@{/logout}">
 
-            <button class="btn btn-danger" type="submit">
+            <button class="btn text-dark " type="submit">
                 Logout
             </button>
 

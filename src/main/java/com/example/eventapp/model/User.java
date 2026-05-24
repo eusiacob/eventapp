@@ -51,4 +51,12 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<BusinessProfile> businessProfiles = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "favorite_businesses",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "business_id")
+    )
+    private List<BusinessProfile> favoriteBusinesses = new ArrayList<>();
 }
