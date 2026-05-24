@@ -31,7 +31,6 @@ body {
 .card {
     background-color: rgba(255,255,255,0.92);
     color: black;
-    /*border-radius: 15px;*/
     transition: transform 0.2s ease;
     backdrop-filter: blur(10px);
 }
@@ -118,4 +117,56 @@ form,
     backdrop-filter: blur(10px);
     background: rgba(255,255,255,0.9) !important;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.landing-page {
+    min-height: 100vh;
+    background:
+            linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+            url('/images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.landing-left {
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.landing-right {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+}
+
+.landing-content {
+    max-width: 760px;
+}
+
+.stat-box {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 20px;
+    border-radius: 18px;
+    backdrop-filter: blur(6px);
+}
+
+.stat-box h3 {
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.stat-box p {
+    margin-bottom: 0;
+    opacity: 0.9;
+}
+
+.auth-action-card {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 24px;
+}
+
+.auth-action-card .btn {
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: 600;
 }

@@ -16,6 +16,11 @@ public class HomeController {
     }
 
     @GetMapping("/")
+    public String home() {
+        return "home";
+    }
+
+    @GetMapping("/businesses")
     public String home(@RequestParam(required = false, defaultValue = "") String category, @RequestParam(required = false, defaultValue = "") String city, @RequestParam(required = false, defaultValue = "") String keyword, Model model) {
 
         model.addAttribute("businesses", businessProfileService.search(category, city, keyword));
@@ -26,7 +31,7 @@ public class HomeController {
         model.addAttribute("category", category);
         model.addAttribute("city", city);
         model.addAttribute("keyword", keyword);
-        return "home";
+        return "businesses";
     }
 
 }

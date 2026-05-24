@@ -16,13 +16,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/login", "/css/**", "/images/**").permitAll()
+                        .requestMatchers("/","/register", "/login", "/css/**", "/images/**").permitAll()
                         .requestMatchers("/business/create").hasRole("BUSINESS")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/", true)
+                        .defaultSuccessUrl("/businesses", true)
                         .permitAll()
                 )
                 .logout(LogoutConfigurer::permitAll);
