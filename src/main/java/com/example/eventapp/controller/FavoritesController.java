@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @Controller
 public class FavoritesController {
@@ -34,19 +35,22 @@ public class FavoritesController {
     }
 
     @PostMapping("/favorites/add/{id}")
-    public String addFavorite(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+    public String addFavorite(@PathVariable Long id,
+                              @AuthenticationPrincipal UserDetails userDetails,
+                              @RequestHeader(value = "Referer", required = false) String referer) {
 
         userService.addFavorite(id, userDetails.getUsername());
 
-        return "redirect:/business/" + id;
+        return "redirect:" + (referer != null ? referer : "/businesses");
     }
 
     @PostMapping("/favorites/remove/{id}")
-    public String removeFavorite(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+    public String removeFavorite(@PathVariable Long id,
+                                 @AuthenticationPrincipal UserDetails userDetails,
+                                 @RequestHeader(value = "Referer", required = false) String referer) {
 
         userService.removeFavorite(id, userDetails.getUsername());
 
-        return "redirect:/favorites";
+        return "redirect:" + (referer != null ? referer : "/businesses");
     }
-
 }

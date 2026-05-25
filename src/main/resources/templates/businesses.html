@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
@@ -28,42 +29,42 @@
 
     </div>
 
-    <!--    SEARCH BAR-->
+    <!--SEARCH BAR-->
     <form action="/businesses"
           class="row align-items-end opacity-75"
           method="get">
 
         <div class="col">
-            <input type="text"
+            <input class="form-control"
                    name="keyword"
-                   class="form-control"
                    placeholder="Name of Business"
-                   th:value="${keyword}">
+                   th:value="${keyword}"
+                   type="text">
         </div>
 
         <div class="col">
-            <select name="category" class="form-select">
+            <select class="form-select" name="category">
 
                 <option value="">All Categories</option>
 
                 <option th:each="cat : ${categories}"
-                        th:value="${cat}"
+                        th:selected="${cat == category}"
                         th:text="${cat}"
-                        th:selected="${cat == category}">
+                        th:value="${cat}">
                 </option>
 
             </select>
         </div>
 
         <div class="col">
-            <select name="city" class="form-select">
+            <select class="form-select" name="city">
 
                 <option value="">All Cities</option>
 
                 <option th:each="c : ${cities}"
-                        th:value="${c}"
+                        th:selected="${c == city}"
                         th:text="${c}"
-                        th:selected="${c == city}">
+                        th:value="${c}">
                 </option>
 
             </select>
@@ -84,51 +85,76 @@
 
     <div class="row g-4">
 
-        <div th:if="${#lists.isEmpty(businesses)}"
-             class="alert alert-warning">
+        <div class="alert alert-warning"
+             th:if="${#lists.isEmpty(businesses)}">
             No businesses found.
         </div>
 
         <div class="col-md-6 col-lg-4"
              th:each="b : ${businesses}">
 
-            <div class="card border-0 shadow-lg h-100 business-card">
+            <div class="card border-0 shadow-lg h-100 business-card position-relative">
 
-                <!-- IMAGE -->
-                <div class="position-relative">
+                <!-- Favorite heart -->
+                <div class="favorite-heart-wrapper"
+                     sec:authorize="isAuthenticated()">
 
-                    <img th:if="${b.imagePath != null}"
-                         th:src="@{${b.imagePath}}"
-                         class="card-img-top business-image">
+                    <!-- Dacă NU este favorit -->
+                    <form class="favorite-form"
+                          th:if="${!favoriteIds.contains(b.id)}"
+                          th:action="@{/favorites/add/{id}(id=${b.id})}"
+                          method="post">
 
-                    <img th:if="${b.imagePath == null}"
-                         src="https://via.placeholder.com/500x300"
-                         class="card-img-top business-image">
+                        <button type="submit"
+                                class="favorite-heart empty-heart"
+                                title="Add to favorites">
+                            ♡
+                        </button>
 
-                    <!-- CATEGORY BADGE -->
-                    <span class="badge bg-dark position-absolute top-0 end-0 m-3 px-3 py-2">
-            <span th:text="${b.category}"></span>
-        </span>
+                    </form>
+
+                    <!-- Dacă ESTE favorit -->
+                    <form class="favorite-form"
+                          th:if="${favoriteIds.contains(b.id)}"
+                          th:action="@{/favorites/remove/{id}(id=${b.id})}"
+                          method="post">
+
+                        <button type="submit"
+                                class="favorite-heart filled-heart"
+                                title="Remove from favorites">
+                            ♥
+                        </button>
+
+                    </form>
 
                 </div>
 
-                <!-- BODY -->
+                <!-- IMAGE -->
+                <div class="position-relative">
+                    <img class="card-img-top business-image"
+                         th:if="${b.imagePath != null}"
+                         th:src="@{${b.imagePath}}">
+
+                    <img class="card-img-top business-image"
+                         th:if="${b.imagePath == null}">
+
+                    <span class="badge bg-dark position-absolute top-0 start-0 m-3 px-3 py-2">
+            <span th:text="${b.category}"></span>
+        </span>
+                </div>
+
                 <div class="card-body d-flex flex-column">
 
-                    <h4 class="fw-bold mb-2"
-                        th:text="${b.name}">
-                    </h4>
+                    <h4 class="fw-bold mb-2" th:text="${b.name}"></h4>
 
                     <p class="text-muted mb-2">
                         📍 <span th:text="${b.city}"></span>
                     </p>
 
-                    <p class="text-secondary flex-grow-1"
-                       th:text="${b.description}">
-                    </p>
+                    <p class="text-secondary flex-grow-1" th:text="${b.description}"></p>
 
-                    <a th:href="@{/business/{id}(id=${b.id})}"
-                       class="btn btn-dark mt-3">
+                    <a class="btn btn-dark mt-3"
+                       th:href="@{/business/{id}(id=${b.id})}">
                         View Profile
                     </a>
 
@@ -141,6 +167,23 @@
     </div>
 
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const savedScrollPosition = sessionStorage.getItem("scrollPosition");
+
+        if (savedScrollPosition !== null) {
+            window.scrollTo(0, parseInt(savedScrollPosition));
+            sessionStorage.removeItem("scrollPosition");
+        }
+
+        document.querySelectorAll(".favorite-form").forEach(form => {
+            form.addEventListener("submit", function () {
+                sessionStorage.setItem("scrollPosition", window.scrollY);
+            });
+        });
+    });
+</script>
 
 </body>
 </html>
