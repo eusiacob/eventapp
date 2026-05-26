@@ -211,3 +211,167 @@ form,
 .text-warning {
     letter-spacing: 1px;
 }
+
+/*SMARTPHONE DISPLAY*/
+
+@media (max-width: 768px) {
+
+    body {
+        font-size: 17px;
+    }
+
+    .form-control,
+    .form-select {
+        font-size: 16px;
+        padding: 13px 14px;
+    }
+
+    .business-image {
+        object-fit: cover;
+    }
+
+    .business-card {
+        min-height: auto;
+    }
+    .details-image {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+}
+/*@media (max-width: 768px) {*/
+
+/*    body {*/
+/*        font-size: 17px;*/
+/*    }*/
+
+/*    h1,*/
+/*    .display-4 {*/
+/*        font-size: 2.2rem;*/
+/*        line-height: 1.2;*/
+/*    }*/
+
+/*    h2 {*/
+/*        font-size: 1.8rem;*/
+/*    }*/
+
+/*    h3 {*/
+/*        font-size: 1.5rem;*/
+/*    }*/
+
+/*    p,*/
+/*    .card-text,*/
+/*    .text-muted,*/
+/*    .text-secondary {*/
+/*        font-size: 1rem;*/
+/*    }*/
+
+/*    .container {*/
+/*        padding-left: 18px;*/
+/*        padding-right: 18px;*/
+/*    }*/
+
+/*    .btn {*/
+/*        font-size: 1rem;*/
+/*        padding: 12px 16px;*/
+/*        border-radius: 14px;*/
+/*    }*/
+
+/*    .form-control,*/
+/*    .form-select {*/
+/*        font-size: 16px;*/
+/*        padding: 13px 14px;*/
+/*        border-radius: 14px;*/
+/*    }*/
+
+/*    label {*/
+/*        font-size: 1rem;*/
+/*        font-weight: 600;*/
+/*    }*/
+
+/*    .business-card {*/
+/*        min-height: 70vh;*/
+/*        border-radius: 24px;*/
+/*    }*/
+
+/*    .business-image {*/
+/*        height: 42vh;*/
+/*        object-fit: cover;*/
+/*    }*/
+
+/*    .business-card .card-body {*/
+/*        padding: 1.4rem;*/
+/*    }*/
+
+/*    .business-card h4 {*/
+/*        font-size: 1.45rem;*/
+/*    }*/
+
+/*    .business-card .btn {*/
+/*        width: 100%;*/
+/*        margin-top: 16px;*/
+/*    }*/
+
+/*    .search-card,*/
+/*    form.card {*/
+/*        padding: 1.2rem !important;*/
+/*        border-radius: 22px;*/
+/*    }*/
+
+/*    .input-group {*/
+/*        flex-direction: column;*/
+/*        gap: 12px;*/
+/*    }*/
+
+/*    .input-group .form-control,*/
+/*    .input-group .btn {*/
+/*        width: 100%;*/
+/*        border-radius: 14px !important;*/
+/*    }*/
+
+/*    .favorite-heart-wrapper {*/
+/*        top: 16px;*/
+/*        right: 16px;*/
+/*    }*/
+
+/*    .favorite-heart {*/
+/*        width: 52px;*/
+/*        height: 52px;*/
+/*        font-size: 32px;*/
+/*    }*/
+
+/*    .details-image {*/
+/*        height: 320px;*/
+/*    }*/
+
+/*    .business-details-content,*/
+/*    .details-content {*/
+/*        padding: 1.4rem !important;*/
+/*    }*/
+
+/*    .lead {*/
+/*        font-size: 1.05rem;*/
+/*        line-height: 1.7;*/
+/*    }*/
+
+/*    .card {*/
+/*        border-radius: 22px;*/
+/*    }*/
+
+/*    .card.shadow,*/
+/*    .card.shadow-lg {*/
+/*        padding: 1.3rem !important;*/
+/*    }*/
+
+/*    textarea.form-control {*/
+/*        min-height: 140px;*/
+/*    }*/
+
+/*    .form-control:focus,*/
+/*    .form-select:focus,*/
+/*    textarea:focus {*/
+/*        transform: scale(1.02);*/
+/*        transition: transform 0.15s ease;*/
+/*        box-shadow: 0 0 0 0.25rem rgba(0, 0, 0, 0.12);*/
+/*    }*/
+/*}*/
