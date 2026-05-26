@@ -13,10 +13,9 @@ body {
 }
 
 .bodyLR {
-    background-image:
-            linear-gradient(rgba(0,0,0,0.5),
-            rgba(0,0,0,0.5)),
-            url('https://i.ibb.co/dwhRCbJR/background.avif');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5),
+    rgba(0, 0, 0, 0.5)),
+    url('https://i.ibb.co/dwhRCbJR/background.avif');
 
     background-size: cover;
     background-position: center;
@@ -29,14 +28,10 @@ body {
 }
 
 .card {
-    background-color: rgba(255,255,255,0.92);
+    background-color: rgba(255, 255, 255, 0.92);
     color: black;
     transition: transform 0.2s ease;
     backdrop-filter: blur(10px);
-}
-
-.card:hover {
-    transform: scale(1.02);
 }
 
 .navbar .btn {
@@ -58,7 +53,7 @@ form,
 
 .business-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
 .business-image {
@@ -90,10 +85,9 @@ form,
 }
 
 .hero-section {
-    background:
-            linear-gradient(rgba(0,0,0,0.5),
-            rgba(0,0,0,0.5)),
-            url('https://i.ibb.co/dwhRCbJR/background.avif');
+    background: linear-gradient(rgba(0, 0, 0, 0.5),
+    rgba(0, 0, 0, 0.5)),
+    url('https://i.ibb.co/dwhRCbJR/background.avif');
 
     background-size: cover;
     background-position: center;
@@ -115,15 +109,13 @@ form,
 
 .navbar {
     backdrop-filter: blur(10px);
-    background: rgba(255,255,255,0.9) !important;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .landing-page {
     min-height: 100vh;
-    background:
-            linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
-            url('https://i.ibb.co/dwhRCbJR/background.avif');
+    background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+    url('https://i.ibb.co/dwhRCbJR/background.avif');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -209,4 +201,13 @@ form,
 
 .filled-heart {
     color: #dc3545;
+}
+
+/*REVIEWS*/
+.review-card {
+    border-radius: 16px;
+}
+
+.text-warning {
+    letter-spacing: 1px;
 }

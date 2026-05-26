@@ -1,9 +1,11 @@
 package com.example.eventapp.controller;
 
 import com.example.eventapp.model.BusinessProfile;
+import com.example.eventapp.model.Review;
 import com.example.eventapp.model.User;
 import com.example.eventapp.repository.UserRepository;
 import com.example.eventapp.service.BusinessProfileService;
+import com.example.eventapp.service.ReviewService;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,11 +26,13 @@ public class BusinessController {
 
     private final BusinessProfileService service;
     private final UserRepository userRepository;
+    private final ReviewService reviewService;
 
-    public BusinessController(BusinessProfileService service, UserRepository userRepository) {
+    public BusinessController(BusinessProfileService service, UserRepository userRepository, ReviewService reviewService) {
 
         this.service = service;
         this.userRepository = userRepository;
+        this.reviewService = reviewService;
     }
 
     private boolean isOwner(BusinessProfile profile, UserDetails userDetails) {
@@ -80,11 +84,24 @@ public class BusinessController {
     }
 
     @GetMapping("/business/{id}")
-    public String businessDetails(@PathVariable Long id, Model model) {
+    public String businessDetails(@PathVariable Long id,
+                                  Model model,
+                                  @AuthenticationPrincipal UserDetails userDetails) {
 
         BusinessProfile profile = service.findById(id);
 
         model.addAttribute("profile", profile);
+        model.addAttribute("review", new Review());
+        model.addAttribute("reviews", reviewService.getReviewsForBusiness(profile));
+        model.addAttribute("averageRating", reviewService.getAverageRating(profile));
+        model.addAttribute("reviewCount", reviewService.getReviewCount(profile));
+
+        if (userDetails != null) {
+            model.addAttribute("hasReviewed",
+                    reviewService.hasUserReviewed(id, userDetails.getUsername()));
+        } else {
+            model.addAttribute("hasReviewed", false);
+        }
 
         return "business-details";
     }

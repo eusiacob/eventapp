@@ -101,13 +101,13 @@
 
                     <!-- Dacă NU este favorit -->
                     <form class="favorite-form"
-                          th:if="${!favoriteIds.contains(b.id)}"
+                          method="post"
                           th:action="@{/favorites/add/{id}(id=${b.id})}"
-                          method="post">
+                          th:if="${!favoriteIds.contains(b.id)}">
 
-                        <button type="submit"
-                                class="favorite-heart empty-heart"
-                                title="Add to favorites">
+                        <button class="favorite-heart empty-heart"
+                                title="Add to favorites"
+                                type="submit">
                             ♡
                         </button>
 
@@ -115,13 +115,13 @@
 
                     <!-- Dacă ESTE favorit -->
                     <form class="favorite-form"
-                          th:if="${favoriteIds.contains(b.id)}"
+                          method="post"
                           th:action="@{/favorites/remove/{id}(id=${b.id})}"
-                          method="post">
+                          th:if="${favoriteIds.contains(b.id)}">
 
-                        <button type="submit"
-                                class="favorite-heart filled-heart"
-                                title="Remove from favorites">
+                        <button class="favorite-heart filled-heart"
+                                title="Remove from favorites"
+                                type="submit">
                             ♥
                         </button>
 
@@ -151,7 +151,24 @@
                         📍 <span th:text="${b.city}"></span>
                     </p>
 
-                    <p class="text-secondary flex-grow-1" th:text="${b.description}"></p>
+                    <p class="text-secondary flex-grow-1" th:text="${b.description}">
+
+                    </p>
+
+                    <div class="mb-2">
+                        <span class="text-warning">★</span>
+
+                        <span th:if="${b.averageRating == 0}">
+                            No reviews
+                        </span>
+
+                        <span th:if="${b.averageRating > 0}">
+                            <span th:text="${#numbers.formatDecimal(b.averageRating, 1, 1)}"></span>
+
+                            (<span th:text="${b.reviewCount}"></span>)
+                        </span>
+
+                    </div>
 
                     <a class="btn btn-dark mt-3"
                        th:href="@{/business/{id}(id=${b.id})}">
@@ -184,6 +201,8 @@
         });
     });
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

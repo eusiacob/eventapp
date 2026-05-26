@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
 
 <head>
 
@@ -22,13 +23,13 @@
     <div class="card border-0 shadow-lg overflow-hidden">
 
         <!-- IMAGE -->
-        <img th:if="${profile.imagePath != null}"
-             th:src="@{${profile.imagePath}}"
-             class="details-image">
+        <img class="details-image"
+             th:if="${profile.imagePath != null}"
+             th:src="@{${profile.imagePath}}">
 
-        <img th:if="${profile.imagePath == null}"
+        <img class="details-image"
              src="https://via.placeholder.com/1200x500"
-             class="details-image">
+             th:if="${profile.imagePath == null}">
 
         <!-- CONTENT -->
         <div class="p-5">
@@ -43,29 +44,123 @@
                 th:text="${profile.name}">
             </h1>
 
-            <!-- CITY -->
-            <p class="text-muted fs-5">
-                📍 <span th:text="${profile.city}"></span>
-            </p>
+            <div sec:authorize="isAuthenticated()">
+                <!-- CITY -->
+                <p class="text-muted fs-5">
+                    📍 <span th:text="${profile.city}"></span>
+                </p>
 
-            <!-- PHONE -->
-            <p class="fs-5">
-                📞 <span th:text="${profile.phone}"></span>
-            </p>
+                <!-- PHONE -->
+                <p class="fs-5">
+                    📞 <span th:text="${profile.phone}"></span>
+                </p>
+
+                <hr>
+
+                <!-- DESCRIPTION -->
+                <h4 class="fw-bold mb-3">
+                    About
+                </h4>
+
+                <p class="lead"
+                   th:text="${profile.description}">
+                </p>
+            </div>
+
+            <div class="alert alert-info" sec:authorize="isAnonymous()">
+                <span>You need to login to see more content.</span>
+            </div>
 
             <hr>
 
-            <!-- DESCRIPTION -->
-            <h4 class="fw-bold mb-3">
-                About
-            </h4>
+            <div class="mt-4">
 
-            <p class="lead"
-               th:text="${profile.description}">
-            </p>
+                <h4 class="fw-bold mb-3">
+                    Reviews
+                </h4>
 
-            <form th:action="@{/favorites/add/{id}(id=${profile.id})}"
-                  method="post">
+                <div class="mb-4">
+                    <span class="fs-4 text-warning">★</span>
+                    <strong th:text="${#numbers.formatDecimal(averageRating, 1, 1)}"></strong>
+
+                    (<span th:text="${reviewCount}"></span>
+                    <span th:text="${reviewCount == 1 ? 'review' : 'reviews'}"></span>)
+                </div>
+
+                <div class="alert alert-danger" th:if="${param.reviewError}">
+                    Please add a rating and a comment.
+                </div>
+
+                <div class="alert alert-warning" th:if="${param.alreadyReviewed}">
+                    You already reviewed this business.
+                </div>
+
+                <div sec:authorize="isAuthenticated()" th:if="${!hasReviewed}">
+                    <form class="card p-4 shadow-sm mb-4"
+                          method="post"
+                          th:action="@{/business/{businessId}/reviews(businessId=${profile.id})}"
+                          th:object="${review}">
+
+                        <div class="mb-3">
+                            <label class="form-label">Rating</label>
+                            <select class="form-select" th:field="*{rating}">
+                                <option value="5">★★★★★ - Excellent</option>
+                                <option value="4">★★★★ - Very good</option>
+                                <option value="3">★★★ - Good</option>
+                                <option value="2">★★ - Weak</option>
+                                <option value="1">★ - Poor</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Comment</label>
+                            <textarea class="form-control"
+                                      placeholder="Write your review..."
+                                      rows="3"
+                                      th:field="*{comment}"></textarea>
+                        </div>
+
+                        <button class="btn btn-dark" type="submit">
+                            Submit Review
+                        </button>
+
+                    </form>
+                </div>
+
+                <div class="alert alert-info" sec:authorize="isAnonymous()">
+                    You need to login to leave a review.
+                </div>
+
+                <div class="alert alert-success" th:if="${hasReviewed}">
+                    You already reviewed this business.
+                </div>
+
+                <div class="text-muted" th:if="${#lists.isEmpty(reviews)}">
+                    No reviews yet.
+                </div>
+
+                <div class="card p-3 mb-3 shadow-sm" th:each="r : ${reviews}">
+
+                    <div class="d-flex justify-content-between">
+
+                        <strong th:text="${r.user.firstName + ' ' + r.user.lastName}">
+                            User Name
+                        </strong>
+
+                        <span class="text-warning">
+                            <span th:each="i : ${#numbers.sequence(1, r.rating)}">★</span>
+                        </span>
+
+                    </div>
+
+                    <p class="mb-0 mt-2" th:text="${r.comment}"></p>
+
+                </div>
+
+            </div>
+
+            <form method="post"
+                  th:action="@{/favorites/add/{id}(id=${profile.id})}" sec:authorize="isAuthenticated()">
 
                 <button class="btn btn-danger mt-3">
                     ❤️ Add to Favorites
@@ -78,6 +173,6 @@
     </div>
 
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
