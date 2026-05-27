@@ -31,51 +31,100 @@
     </div>
 
     <!--SEARCH BAR-->
+<!--    <form action="/businesses"-->
+<!--          class="row align-items-end opacity-75"-->
+<!--          method="get">-->
+
+<!--        <div class="col">-->
+<!--            <input class="form-control"-->
+<!--                   name="keyword"-->
+<!--                   placeholder="Name of Business"-->
+<!--                   th:value="${keyword}"-->
+<!--                   type="text">-->
+<!--        </div>-->
+
+<!--        <div class="col">-->
+<!--            <select class="form-select" name="category">-->
+
+<!--                <option value="">All Categories</option>-->
+
+<!--                <option th:each="cat : ${categories}"-->
+<!--                        th:selected="${cat == category}"-->
+<!--                        th:text="${cat}"-->
+<!--                        th:value="${cat}">-->
+<!--                </option>-->
+
+<!--            </select>-->
+<!--        </div>-->
+
+<!--        <div class="col">-->
+<!--            <select class="form-select" name="city">-->
+
+<!--                <option value="">All Cities</option>-->
+
+<!--                <option th:each="c : ${cities}"-->
+<!--                        th:selected="${c == city}"-->
+<!--                        th:text="${c}"-->
+<!--                        th:value="${c}">-->
+<!--                </option>-->
+
+<!--            </select>-->
+<!--        </div>-->
+
+<!--        <div class="col-auto">-->
+<!--            <button class="btn btn-outline-dark w-100"-->
+<!--                    type="submit">-->
+<!--                Search-->
+<!--            </button>-->
+<!--        </div>-->
+
+<!--    </form>-->
+
     <form action="/businesses"
-          class="row align-items-end opacity-75"
+          class="search-card card p-4 shadow-sm border-0"
           method="get">
 
-        <div class="col">
-            <input class="form-control"
-                   name="keyword"
-                   placeholder="Name of Business"
-                   th:value="${keyword}"
-                   type="text">
-        </div>
+        <div class="row g-3 align-items-end">
 
-        <div class="col">
-            <select class="form-select" name="category">
+            <div class="col-12 col-lg-4">
+                <label class="form-label">Search</label>
+                <input class="form-control"
+                       name="keyword"
+                       placeholder="Business name..."
+                       th:value="${keyword}"
+                       type="text">
+            </div>
 
-                <option value="">All Categories</option>
+            <div class="col-12 col-lg-3">
+                <label class="form-label">Category</label>
+                <select class="form-select" name="category">
+                    <option value="">All Categories</option>
+                    <option th:each="cat : ${categories}"
+                            th:selected="${cat == category}"
+                            th:text="${cat}"
+                            th:value="${cat}">
+                    </option>
+                </select>
+            </div>
 
-                <option th:each="cat : ${categories}"
-                        th:selected="${cat == category}"
-                        th:text="${cat}"
-                        th:value="${cat}">
-                </option>
+            <div class="col-12 col-lg-3">
+                <label class="form-label">City</label>
+                <select class="form-select" name="city">
+                    <option value="">All Cities</option>
+                    <option th:each="c : ${cities}"
+                            th:selected="${c == city}"
+                            th:text="${c}"
+                            th:value="${c}">
+                    </option>
+                </select>
+            </div>
 
-            </select>
-        </div>
+            <div class="col-12 col-lg-2 d-grid">
+                <button class="btn btn-dark" type="submit">
+                    Search
+                </button>
+            </div>
 
-        <div class="col">
-            <select class="form-select" name="city">
-
-                <option value="">All Cities</option>
-
-                <option th:each="c : ${cities}"
-                        th:selected="${c == city}"
-                        th:text="${c}"
-                        th:value="${c}">
-                </option>
-
-            </select>
-        </div>
-
-        <div class="col-auto">
-            <button class="btn btn-outline-dark w-100"
-                    type="submit">
-                Search
-            </button>
         </div>
 
     </form>
@@ -204,6 +253,22 @@
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const navLinks = document.querySelectorAll(".navbar-collapse .nav-link");
+        const navbarCollapse = document.querySelector(".navbar-collapse");
+
+        navLinks.forEach(link => {
+            link.addEventListener("click", () => {
+                if (navbarCollapse.classList.contains("show")) {
+                    const bsCollapse = new bootstrap.Collapse(navbarCollapse);
+                    bsCollapse.hide();
+                }
+            });
+        });
+    });
+</script>
 
 </body>
 </html>
