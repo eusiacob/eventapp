@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -46,58 +46,59 @@
 
         <div class="col-md-4 mb-4"
              th:each="p : ${profiles}">
+            <a class="business-card-link" th:href="@{/business/{id}(id=${p.id})}">
+                <div class="card shadow-sm h-100">
 
-            <div class="card shadow-sm h-100 opacity-75">
+                    <div class="card-body">
 
-                <div class="card-body">
+                        <h5 class="card-title"
+                            th:text="${p.name}">
+                        </h5>
 
-                    <h5 class="card-title"
-                        th:text="${p.name}">
-                    </h5>
+                        <p class="card-text mb-1">
+                            <strong>Category:</strong>
+                            <span th:text="${p.category}"></span>
+                        </p>
 
-                    <p class="card-text mb-1">
-                        <strong>Category:</strong>
-                        <span th:text="${p.category}"></span>
-                    </p>
+                        <p class="card-text mb-1">
+                            <strong>City:</strong>
+                            <span th:text="${p.city}"></span>
+                        </p>
 
-                    <p class="card-text mb-1">
-                        <strong>City:</strong>
-                        <span th:text="${p.city}"></span>
-                    </p>
+                        <p class="card-text mb-3">
+                            <strong>Phone:</strong>
+                            <span th:text="${p.phone}"></span>
+                        </p>
 
-                    <p class="card-text mb-3">
-                        <strong>Phone:</strong>
-                        <span th:text="${p.phone}"></span>
-                    </p>
+                        <img alt="business profile picture"
+                             class="img-fluid rounded mb-2"
+                             style="height:200px; object-fit:cover;"
+                             th:if="${p.imagePath != null}"
+                             th:src="@{${p.imagePath}}">
 
-                    <img class="img-fluid rounded mb-2"
-                         style="height:200px; object-fit:cover;"
-                         alt="business profile picture"
-                         th:if="${p.imagePath != null}"
-                         th:src="@{${p.imagePath}}">
+                        <div class="d-flex gap-2">
 
-                    <div class="d-flex gap-2">
+                            <a class="btn btn-primary btn-sm"
+                               th:href="@{/business/edit/{id}(id=${p.id})}">
+                                Edit
+                            </a>
 
-                        <a class="btn btn-primary btn-sm"
-                           th:href="@{/business/edit/{id}(id=${p.id})}">
-                            Edit
-                        </a>
+                            <form method="post"
+                                  th:action="@{/business/delete/{id}(id=${p.id})}">
 
-                        <form method="post"
-                              th:action="@{/business/delete/{id}(id=${p.id})}">
+                                <button class="btn btn-danger btn-sm"
+                                        type="submit">
+                                    Delete
+                                </button>
 
-                            <button class="btn btn-danger btn-sm"
-                                    type="submit">
-                                Delete
-                            </button>
+                            </form>
 
-                        </form>
+                        </div>
 
                     </div>
 
                 </div>
-
-            </div>
+            </a>
 
         </div>
 

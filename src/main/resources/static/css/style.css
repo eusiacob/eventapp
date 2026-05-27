@@ -27,6 +27,16 @@ body {
     overflow: auto;
 }
 
+.business-card-link:link{
+    text-decoration: inherit;
+    color: inherit;
+}
+
+.business-card-link:visited{
+    text-decoration: inherit;
+    color: inherit;
+}
+
 .card {
     background-color: rgba(255, 255, 255, 0.92);
     color: black;
