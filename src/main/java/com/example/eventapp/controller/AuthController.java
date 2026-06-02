@@ -1,5 +1,6 @@
 package com.example.eventapp.controller;
 
+import com.example.eventapp.model.Role;
 import com.example.eventapp.model.User;
 import com.example.eventapp.service.UserService;
 import jakarta.validation.Valid;
@@ -44,8 +45,10 @@ public class AuthController {
             return "register";
         }
 
+        user.setRole(Role.USER);
+
         userService.registerUser(user);
 
-        return "redirect:/login";
+        return "redirect:/login?registered";
     }
 }

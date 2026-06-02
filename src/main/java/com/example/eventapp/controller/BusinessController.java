@@ -6,6 +6,7 @@ import com.example.eventapp.model.User;
 import com.example.eventapp.repository.UserRepository;
 import com.example.eventapp.service.BusinessProfileService;
 import com.example.eventapp.service.ReviewService;
+import com.example.eventapp.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +20,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 public class BusinessController {
@@ -27,12 +31,14 @@ public class BusinessController {
     private final BusinessProfileService service;
     private final UserRepository userRepository;
     private final ReviewService reviewService;
+    private final UserService userService;
 
-    public BusinessController(BusinessProfileService service, UserRepository userRepository, ReviewService reviewService) {
+    public BusinessController(BusinessProfileService service, UserRepository userRepository, ReviewService reviewService, UserService userService) {
 
         this.service = service;
         this.userRepository = userRepository;
         this.reviewService = reviewService;
+        this.userService = userService;
     }
 
     private boolean isOwner(BusinessProfile profile, UserDetails userDetails) {
@@ -91,6 +97,7 @@ public class BusinessController {
         BusinessProfile profile = service.findById(id);
 
         model.addAttribute("profile", profile);
+
         model.addAttribute("review", new Review());
         model.addAttribute("reviews", reviewService.getReviewsForBusiness(profile));
         model.addAttribute("averageRating", reviewService.getAverageRating(profile));
@@ -99,8 +106,17 @@ public class BusinessController {
         if (userDetails != null) {
             model.addAttribute("hasReviewed",
                     reviewService.hasUserReviewed(id, userDetails.getUsername()));
+
+            User user = userService.findByEmail(userDetails.getUsername());
+
+            boolean isFavorite = user.getFavoriteBusinesses()
+                    .stream()
+                    .anyMatch(b -> b.getId().equals(profile.getId()));
+
+            model.addAttribute("isFavorite", isFavorite);
         } else {
             model.addAttribute("hasReviewed", false);
+            model.addAttribute("isFavorite", false);
         }
 
         return "business-details";
@@ -169,4 +185,37 @@ public class BusinessController {
 
         return "redirect:/dashboard";
     }
+
+    @GetMapping("/businesses/category/{category}")
+    public String businessesByCategory(@PathVariable String category,
+                                       @RequestParam(required = false) String keyword,
+                                       @RequestParam(required = false) String city,
+                                       Model model,
+                                       @AuthenticationPrincipal UserDetails userDetails) {
+
+        List<BusinessProfile> profiles =
+                service.searchByCategoryNameAndCity(category, keyword, city);
+
+        model.addAttribute("profiles", profiles);
+        model.addAttribute("selectedCategory", category);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("city", city);
+        model.addAttribute("cities", service.getCitiesByCategory(category));
+
+        if (userDetails != null) {
+            User user = userService.findByEmail(userDetails.getUsername());
+
+            Set<Long> favoriteIds = user.getFavoriteBusinesses()
+                    .stream()
+                    .map(BusinessProfile::getId)
+                    .collect(Collectors.toSet());
+
+            model.addAttribute("favoriteIds", favoriteIds);
+        } else {
+            model.addAttribute("favoriteIds", Collections.emptySet());
+        }
+
+        return "business-category";
+    }
+
 }

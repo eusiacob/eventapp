@@ -1,10 +1,7 @@
 package com.example.eventapp.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +29,7 @@ public class User {
     @Size(min = 3, max = 10)
     private String lastName;
 
-    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags = Pattern.Flag.CASE_INSENSITIVE, message = "Incorrect format! It should be email@me.com")
+    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags = Pattern.Flag.CASE_INSENSITIVE, message = "Incorrect format! It should be like email@me.com")
     @Column(unique = true)
     private String email;
 
@@ -43,7 +40,7 @@ public class User {
     private String confirmPassword;
 
     @NotBlank(message = "Phone is required")
-    @Pattern(regexp = "^[0-9+\\- ]{10}$", message = "Invalid phone number! It should be 07X XXX XXX")
+    @Pattern(regexp = "^[0-9+\\- ]{10}$", message = "Invalid phone number! It should be like 07X XXX XXX")
     private String phone;
 
     @Enumerated(EnumType.STRING)

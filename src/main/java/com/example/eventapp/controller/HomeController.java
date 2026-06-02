@@ -1,18 +1,16 @@
 package com.example.eventapp.controller;
 
 import com.example.eventapp.model.BusinessProfile;
-import com.example.eventapp.model.User;
 import com.example.eventapp.service.BusinessProfileService;
-import com.example.eventapp.service.UserService;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Collections;
-import java.util.Set;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -20,11 +18,8 @@ public class HomeController {
 
     private final BusinessProfileService businessProfileService;
 
-    private final UserService userService;
-
-    public HomeController(BusinessProfileService businessProfileService, UserService userService) {
+    public HomeController(BusinessProfileService businessProfileService) {
         this.businessProfileService = businessProfileService;
-        this.userService = userService;
     }
 
     @GetMapping("/")
@@ -33,34 +28,23 @@ public class HomeController {
     }
 
     @GetMapping("/businesses")
-    public String home(@RequestParam(required = false, defaultValue = "") String category,
-                       @RequestParam(required = false, defaultValue = "") String city,
-                       @RequestParam(required = false, defaultValue = "") String keyword,
-                       Model model,
-                       @AuthenticationPrincipal UserDetails userDetails
-    ) {
+    public String businesses(Model model) {
 
-        model.addAttribute("businesses", businessProfileService.search(category, city, keyword));
+        List<BusinessProfile> profiles =
+                businessProfileService.findAll()
+                        .stream()
+                        .sorted(Comparator.comparing(BusinessProfile::getCategory))
+                        .toList();
 
-        model.addAttribute("categories", businessProfileService.getCategories());
-        model.addAttribute("cities", businessProfileService.getCities());
+        Map<String, List<BusinessProfile>> profilesByCategory =
+                profiles.stream()
+                        .collect(Collectors.groupingBy(
+                                BusinessProfile::getCategory,
+                                LinkedHashMap::new,
+                                Collectors.toList()
+                        ));
 
-        model.addAttribute("category", category);
-        model.addAttribute("city", city);
-        model.addAttribute("keyword", keyword);
-
-        if (userDetails != null) {
-            User user = userService.findByEmail(userDetails.getUsername());
-
-            Set<Long> favoriteIds = user.getFavoriteBusinesses()
-                    .stream()
-                    .map(BusinessProfile::getId)
-                    .collect(Collectors.toSet());
-
-            model.addAttribute("favoriteIds", favoriteIds);
-        } else {
-            model.addAttribute("favoriteIds", Collections.emptySet());
-        }
+        model.addAttribute("profilesByCategory", profilesByCategory);
 
         return "businesses";
     }

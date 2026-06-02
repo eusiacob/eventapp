@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+<html lang="ro" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -13,103 +13,147 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
-<body class="landing-page">
+<body class="home-hero-page">
 
-<div class="container-fluid min-vh-100">
-    <div class="row min-vh-100">
+<section class="home-hero d-flex align-items-center">
 
-        <!-- LEFT SIDE - PRESENTATION -->
-        <div class="col-lg-7 d-flex align-items-center p-5 text-white landing-left">
+    <div class="container">
 
-            <div class="landing-content">
+        <div class="home-hero-content text-white">
 
-                <span class="badge bg-light text-dark px-3 py-2 mb-4">
-                    Marketplace for events
-                </span>
+            <span class="badge bg-light text-dark px-3 py-2 mb-4">
+                Marketplace for events
+            </span>
 
-                <h1 class="display-4 fw-bold mb-4">
-                    Găsește furnizorii potriviți pentru evenimentul tău
-                </h1>
+            <h1 class="display-3 fw-bold mb-4 desktop-hero-title">
+                Găsește furnizorii potriviți pentru evenimentul tău
+            </h1>
 
-                <p class="lead mb-4">
-                    EventApp te ajută să descoperi rapid servicii pentru nunți,
-                    botezuri, aniversări și alte evenimente speciale.
-                </p>
+            <h1 class="fw-bold mb-3 mobile-hero-title">
+                Planifică evenimentul perfect
+            </h1>
 
-                <div class="row mt-5">
+            <p class="lead mb-5 desktop-hero-text">
+                Descoperă fotografi, DJ, restaurante, decoratori, formații live
+                și alți furnizori pentru nunți, botezuri, aniversări și evenimente speciale.
+            </p>
 
-                    <div class="col-md-4 mb-3">
-                        <div class="stat-box text-center">
-                            <h3>500+</h3>
-                            <p>Business-uri</p>
-                        </div>
-                    </div>
+            <p class="mobile-hero-text mb-4">
+                Găsește rapid servicii pentru nunți, botezuri și aniversări.
+            </p>
 
-                    <div class="col-md-4 mb-3">
-                        <div class="stat-box text-center">
-                            <h3>1200+</h3>
-                            <p>Evenimente</p>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <div class=" text-center">
-                            <h3>4.8★</h3>
-                            <p>Rating mediu</p>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- RIGHT SIDE - ACTIONS -->
-        <div class="col-lg-5 d-flex align-items-center justify-content-center p-4 landing-right">
-
-            <div class="card shadow-lg border-0 p-4 auth-action-card">
-
-                <h2 class="text-center mb-3">
-                    Bine ai venit!
-                </h2>
-
-                <p class="text-muted text-center mb-4" sec:authorize="isAnonymous()">
-                    Intră în cont sau creează unul nou pentru a salva favorite,
-                    administra profiluri business și descoperi furnizori.
-                </p>
-
-                <!-- Guest actions -->
-                <div sec:authorize="isAnonymous()">
-
-                    <a class="btn btn-dark w-100 mb-3" href="/login">
-                        Login
-                    </a>
-
-                    <a class="btn btn-outline-dark w-100 mb-3" href="/register">
-                        Register
-                    </a>
-
-                    <a class="btn btn-secondary w-100 mb-3" href="/businesses">
-                        Continue as Guest
-                    </a>
-
-                </div>
-
-                <div sec:authorize="isAuthenticated()">
-
-                    <a class="btn btn-dark w-100 mb-3" href="/businesses">
-                        Explorează business-uri
-                    </a>
-
-                </div>
-
-            </div>
+            <button aria-controls="startOffcanvas"
+                    class="btn btn-light btn-lg hero-main-btn"
+                    data-bs-target="#startOffcanvas"
+                    data-bs-toggle="offcanvas"
+                    type="button">
+                Let’s Go
+            </button>
 
         </div>
 
     </div>
+
+</section>
+
+
+<!-- RIGHT SLIDE PANEL -->
+<div aria-labelledby="startOffcanvasLabel"
+     class="offcanvas offcanvas-end start-panel"
+     id="startOffcanvas"
+     tabindex="-1">
+
+    <div class="offcanvas-header border-0">
+
+        <h5 class="offcanvas-title fw-bold"
+            id="startOffcanvasLabel">
+            Welcome to EventApp
+        </h5>
+
+        <button aria-label="Close"
+                class="btn-close"
+                data-bs-dismiss="offcanvas"
+                type="button">
+        </button>
+
+    </div>
+
+    <div class="offcanvas-body d-flex flex-column justify-content-center">
+
+        <!-- Anonymous user -->
+        <div sec:authorize="isAnonymous()">
+
+            <div class="text-center mb-4">
+                <h3 class="fw-bold mb-2">
+                    Ready to start?
+                </h3>
+
+                <p class="text-muted">
+                    Login, create an account or continue browsing as guest.
+                </p>
+            </div>
+
+            <a class="btn btn-dark w-100 mb-3"
+               href="/login">
+                Login
+            </a>
+
+            <a class="btn btn-outline-dark w-100 mb-3"
+               href="/register">
+                Register
+            </a>
+
+            <a class="btn btn-outline-secondary w-100"
+               href="/businesses">
+                Continue as guest
+            </a>
+
+        </div>
+
+        <!-- Authenticated user -->
+        <div sec:authorize="isAuthenticated()">
+
+            <div class="text-center mb-4">
+                <h3 class="fw-bold mb-2">
+                    Welcome back!
+                </h3>
+
+                <p class="text-muted">
+                    Continue exploring your event marketplace.
+                </p>
+            </div>
+
+            <a class="btn btn-dark w-100 mb-3"
+               href="/businesses">
+                Explore businesses
+            </a>
+
+            <a class="btn btn-outline-danger w-100 mb-3"
+               href="/favorites">
+                My favorites
+            </a>
+
+            <a class="btn btn-warning w-100 mb-3"
+               href="/dashboard"
+               sec:authorize="hasRole('BUSINESS')">
+                Business dashboard
+            </a>
+
+            <form method="post" th:action="@{/logout}">
+                <button class="btn btn-outline-dark w-100"
+                        type="submit">
+                    Logout
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+
 </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

@@ -62,4 +62,34 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
+
+
+    //    Toggle favorite heart
+    public boolean toggleFavorite(Long businessId, String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        BusinessProfile businessProfile = businessProfileRepository.findById(businessId)
+                .orElseThrow(() -> new RuntimeException("Business not found"));
+
+        boolean alreadyFavorite = user.getFavoriteBusinesses()
+                .stream()
+                .anyMatch(b -> b.getId().equals(businessId));
+
+        if (alreadyFavorite) {
+            user.getFavoriteBusinesses()
+                    .removeIf(b -> b.getId().equals(businessId));
+
+            userRepository.save(user);
+
+            return false;
+        }
+
+        user.getFavoriteBusinesses().add(businessProfile);
+
+        userRepository.save(user);
+
+        return true;
+    }
 }
