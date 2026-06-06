@@ -7,10 +7,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class FavoritesController {
@@ -52,5 +52,21 @@ public class FavoritesController {
         userService.removeFavorite(id, userDetails.getUsername());
 
         return "redirect:" + (referer != null ? referer : "/businesses");
+    }
+
+    @PostMapping("/favorites/toggle/{id}")
+    @ResponseBody
+    public Map<String, Object> toggleFavorite(@PathVariable Long id,
+                                              @AuthenticationPrincipal UserDetails userDetails) {
+
+        boolean isFavorite = userService.toggleFavorite(id, userDetails.getUsername());
+
+        User user = userService.findByEmail(userDetails.getUsername());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("favorite", isFavorite);
+        response.put("favoriteCount", user.getFavoriteBusinesses().size());
+
+        return response;
     }
 }

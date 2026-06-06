@@ -1,5 +1,6 @@
 package com.example.eventapp.controller;
 
+import com.example.eventapp.model.BusinessCategory;
 import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.Review;
 import com.example.eventapp.model.User;
@@ -47,8 +48,10 @@ public class BusinessController {
     }
 
     @GetMapping("/business/create")
-    public String showForm(Model model) {
+    public String showCreateForm(Model model) {
         model.addAttribute("profile", new BusinessProfile());
+        model.addAttribute("categories", service.getCategories());
+
         return "business-form";
     }
 
@@ -135,15 +138,17 @@ public class BusinessController {
     }
 
     @GetMapping("/business/edit/{id}")
-    public String editForm(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String editForm(@PathVariable Long id,
+                           Model model,
+                           @AuthenticationPrincipal UserDetails userDetails) {
 
-        BusinessProfile profile = service.findById(id);
+        User user = userService.findByEmail(userDetails.getUsername());
 
-        if (!isOwner(profile, userDetails)) {
-            return "redirect:/";
-        }
+        BusinessProfile profile =
+                service.findByIdAndValidateOwner(id, user);
 
         model.addAttribute("profile", profile);
+        model.addAttribute("categories", service.getCategories());
 
         return "business-edit";
     }
@@ -187,7 +192,7 @@ public class BusinessController {
     }
 
     @GetMapping("/businesses/category/{category}")
-    public String businessesByCategory(@PathVariable String category,
+    public String businessesByCategory(@PathVariable BusinessCategory category,
                                        @RequestParam(required = false) String keyword,
                                        @RequestParam(required = false) String city,
                                        Model model,

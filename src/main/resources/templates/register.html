@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Register</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -68,10 +68,11 @@
                         <div class="row g-3">
 
                             <div class="col-12 col-md-6">
-                                <input th:field="*{firstName}"
-                                       type="text"
+                                <input autofocus
                                        class="form-control"
-                                       placeholder="First name">
+                                       placeholder="First name"
+                                       th:field="*{firstName}"
+                                       type="text">
 
                                 <div class="text-danger small mt-1"
                                      th:errors="*{firstName}"
@@ -80,10 +81,10 @@
                             </div>
 
                             <div class="col-12 col-md-6">
-                                <input th:field="*{lastName}"
-                                       type="text"
-                                       class="form-control"
-                                       placeholder="Last name">
+                                <input class="form-control"
+                                       placeholder="Last name"
+                                       th:field="*{lastName}"
+                                       type="text">
 
                                 <div class="text-danger small mt-1"
                                      th:errors="*{lastName}"
@@ -92,10 +93,10 @@
                             </div>
 
                             <div class="col-12">
-                                <input th:field="*{email}"
-                                       type="email"
-                                       class="form-control"
-                                       placeholder="you@example.com">
+                                <input class="form-control"
+                                       placeholder="you@example.com"
+                                       th:field="*{email}"
+                                       type="email">
 
                                 <div class="text-danger small mt-1"
                                      th:errors="*{email}"
@@ -104,10 +105,10 @@
                             </div>
 
                             <div class="col-12 col-md-6">
-                                <input th:field="*{password}"
-                                       type="password"
-                                       class="form-control"
-                                       placeholder="Password">
+                                <input class="form-control"
+                                       placeholder="Password"
+                                       th:field="*{password}"
+                                       type="password">
 
                                 <div class="text-danger small mt-1"
                                      th:errors="*{password}"
@@ -116,10 +117,10 @@
                             </div>
 
                             <div class="col-12 col-md-6">
-                                <input th:field="*{confirmPassword}"
-                                       type="password"
-                                       class="form-control"
-                                       placeholder="Confirm password">
+                                <input class="form-control"
+                                       placeholder="Confirm password"
+                                       th:field="*{confirmPassword}"
+                                       type="password">
 
                                 <div class="text-danger small mt-1"
                                      th:errors="*{confirmPassword}"
@@ -128,10 +129,10 @@
                             </div>
 
                             <div class="col-12">
-                                <input th:field="*{phone}"
-                                       type="text"
-                                       class="form-control"
-                                       placeholder="07xx xxx xxx">
+                                <input class="form-control"
+                                       placeholder="07xx xxx xxx"
+                                       th:field="*{phone}"
+                                       type="text">
 
                                 <div class="text-danger small mt-1"
                                      th:errors="*{phone}"
@@ -140,8 +141,8 @@
                             </div>
 
                             <div class="col-12">
-                                <button type="submit"
-                                        class="btn btn-dark w-100 mt-2">
+                                <button class="btn btn-dark w-100 mt-2"
+                                        type="submit">
                                     Register
                                 </button>
                             </div>
@@ -156,16 +157,16 @@
                             Already have an account?
                         </p>
 
-                        <a href="/login"
-                           class="auth-link">
+                        <a class="auth-link"
+                           href="/login">
                             Login
                         </a>
 
                     </div>
 
                     <div class="text-center mt-3">
-                        <a href="/businesses"
-                           class="auth-link">
+                        <a class="auth-link"
+                           href="/businesses">
                             Continue as guest
                         </a>
                     </div>

@@ -28,7 +28,7 @@
             <div class="card shadow-lg p-4 opacity-75">
 
                 <h2 class="text-center mb-4">
-                    Create Business Profile
+                    Adaugă serviciu
                 </h2>
 
                 <form enctype="multipart/form-data"
@@ -38,7 +38,7 @@
 
                     <!-- NAME -->
                     <div class="mb-3">
-                        <label class="form-label">Name</label>
+                        <label class="form-label">Nume serviciu</label>
                         <input class="form-control"
                                placeholder="e.g. Dream Events"
                                th:field="*{name}"
@@ -51,20 +51,21 @@
 
                     <!-- CATEGORY -->
                     <div class="mb-3">
-                        <label class="form-label">Category</label>
-                        <input class="form-control"
-                               placeholder="e.g. Photographer, DJ, Venue"
-                               th:field="*{category}"
-                               type="text">
-                    </div>
-                    <div class="text-danger small mb-3"
-                         th:errors="*{category}"
-                         th:if="${#fields.hasErrors('category')}">
+                        <label class="form-label">Categorie</label>
+                        <select class="form-select"
+                                th:field="*{category}">
+
+                            <option th:each="cat : ${categories}"
+                                    th:value="${cat}"
+                                    th:text="${cat.displayName}">
+                            </option>
+
+                        </select>
                     </div>
 
                     <!-- CITY -->
                     <div class="mb-3">
-                        <label class="form-label">City</label>
+                        <label class="form-label">Oraș</label>
                         <input class="form-control"
                                placeholder="e.g. Bucharest"
                                th:field="*{city}"
@@ -77,7 +78,7 @@
 
                     <!-- PHONE -->
                     <div class="mb-3">
-                        <label class="form-label">Phone</label>
+                        <label class="form-label">Telefon</label>
                         <input class="form-control"
                                placeholder="07xx xxx xxx"
                                th:field="*{phone}"
@@ -90,7 +91,7 @@
 
                     <!-- IMAGE-->
                     <div class="mb-3">
-                        <label class="form-label">Image</label>
+                        <label class="form-label">Imagine</label>
                         <input class="form-control"
                                name="imageFile"
                                type="file">
@@ -98,7 +99,7 @@
 
                     <!-- DESCRIPTION -->
                     <div class="mb-3">
-                        <label class="form-label">Description</label>
+                        <label class="form-label">Descriere</label>
                         <textarea class="form-control"
                                   placeholder="Describe your services..."
                                   rows="4"
@@ -114,12 +115,12 @@
 
                         <a class="btn btn-outline-secondary"
                            href="/dashboard">
-                            Cancel
+                            Renunță
                         </a>
 
                         <button class="btn btn-success"
                                 type="submit">
-                            Create
+                            Adăugare
                         </button>
 
                     </div>

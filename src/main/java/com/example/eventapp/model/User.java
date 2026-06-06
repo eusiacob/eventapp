@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -55,5 +56,5 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "business_id")
     )
-    private List<BusinessProfile> favoriteBusinesses = new ArrayList<>();
+    Set<BusinessProfile> favoriteBusinesses;
 }

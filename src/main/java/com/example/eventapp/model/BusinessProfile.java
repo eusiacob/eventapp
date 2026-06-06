@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -24,8 +25,8 @@ public class BusinessProfile {
     @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
     private String name;
 
-    @NotBlank(message = "Category is required")
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private BusinessCategory category;
 
     @NotBlank(message = "Description is required")
     @Size(min = 10, max = 700, message = "Description must be at least 10 characters")
@@ -43,6 +44,9 @@ public class BusinessProfile {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToMany(mappedBy = "favoriteBusinesses")
+    Set<User> favorites;
 
     @OneToMany(mappedBy = "businessProfile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();

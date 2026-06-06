@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title th:text="${selectedCategory}">Category</title>
+    <title th:text="${selectedCategory.displayName}"></title>
 
     <meta name="_csrf" th:content="${_csrf.token}">
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
@@ -22,45 +22,41 @@
 
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<div class="container py-5">
+<div class="container py-3">
 
-    <a class="btn btn-outline-secondary mb-4" href="/businesses">
-        ← Back to categories
-    </a>
-
-    <div class="text-center text-white py-5 hero-section rounded-4">
+    <div class="text-center text-white py-4 hero-section rounded-4">
 
         <h1 class="display-4 fw-bold"
-            th:text="${selectedCategory}">>
-            Category name
+            th:text="${selectedCategory.displayName}">
         </h1>
 
         <p class="lead">
-            Explore all businesses from this category.
+            Vezi toate serviciile din această categorie.
         </p>
 
     </div>
 
-    <!--        SEARCH -->
-    <form class="search-card card p-4 mb-4 mt-4 shadow-sm border-0"
+    <!-- SEARCH -->
+    <form class="search-card card p-4 mb-2 mt-4 shadow-sm border-0"
+          id="searchForm"
           method="get"
           th:action="@{/businesses/category/{category}(category=${selectedCategory})}">
 
         <div class="row g-3 align-items-end">
 
             <div class="col-12 col-lg-5">
-                <label class="form-label">Search by name</label>
+                <label class="form-label">Caută după nume</label>
                 <input class="form-control"
                        name="keyword"
-                       placeholder="Business name..."
+                       placeholder="Nume serviciu..."
                        th:value="${keyword}"
                        type="text">
             </div>
 
             <div class="col-12 col-lg-5">
-                <label class="form-label">City</label>
+                <label class="form-label">Oraș</label>
                 <select class="form-select" name="city">
-                    <option value="">All Cities</option>
+                    <option value="">Toate orașele</option>
 
                     <option th:each="c : ${cities}"
                             th:selected="${c == city}"
@@ -72,14 +68,14 @@
 
             <div class="col-12 col-lg-2 d-grid">
                 <button class="btn btn-dark" type="submit">
-                    Search
+                    Căutare
                 </button>
             </div>
 
             <div class="col-12 d-grid d-lg-none">
                 <a class="btn btn-outline-secondary"
-                   th:href="@{/businesses/category/{category}(category=${selectedCategory})}">
-                    Reset filters
+                   onclick="document.getElementById('searchForm').reset();">
+                    Resetează filtre
                 </a>
             </div>
 
@@ -87,14 +83,14 @@
 
     </form>
 
-    <div class="alert alert-warning text-center"
+    <div class="alert alert-warning text-center mt-4"
          th:if="${#lists.isEmpty(profiles)}">
-        No businesses found in this category.
+        Nici un serviciu găsit la această categorie.
     </div>
 
     <!--    CARDS-->
 
-    <div class="row g-4 mt-4">
+    <div class="row g-4 mt-2">
 
         <div class="col-12 col-md-6 col-lg-4"
              th:each="p : ${profiles}">
@@ -128,7 +124,7 @@
                          th:if="${p.imagePath == null}">
 
                     <span class="badge bg-dark position-absolute top-0 start-0 m-3 px-3 py-2"
-                          th:text="${p.category}">
+                          th:text="${p.category.displayName}">
                     </span>
 
                 </div>
@@ -146,7 +142,7 @@
                     <div class="mb-2">
 
                         <span class="text-muted" th:if="${p.reviewCount == 0}">
-                            No reviews yet
+                            Nici o recenzie.
                         </span>
 
                         <span th:if="${p.reviewCount > 0}">
@@ -156,7 +152,7 @@
 
                             <span class="text-muted">
                                 (<span th:text="${p.reviewCount}"></span>
-                                <span th:text="${p.reviewCount == 1 ? 'review' : 'reviews'}"></span>)
+                                <span th:text="${p.reviewCount == 1 ? 'recenzie' : 'recenzii'}"></span>)
                             </span>
                         </span>
 
@@ -166,7 +162,7 @@
                        th:text="${p.description}">
                     </p>
 
-                    <p class="text-muted d-none more-text">... and more.</p>
+                    <p class="text-muted d-none more-text">... mai mult.</p>
 
                 </div>
 
@@ -182,23 +178,23 @@
 <!--ADD/REMOVE FAVORITES MESSAGE-->
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
 
-    <div id="favoriteToast"
-         class="toast align-items-center bg-success border-0"
-         role="alert"
+    <div aria-atomic="true"
          aria-live="assertive"
-         aria-atomic="true">
+         class="toast align-items-center bg-success border-0"
+         id="favoriteToast"
+         role="alert">
 
         <div class="d-flex">
 
-            <div id="favoriteToastMessage"
-                 class="toast-body">
-                Favorite updated.
+            <div class="toast-body"
+                 id="favoriteToastMessage">
+                Favorite actualizate.
             </div>
 
-            <button type="button"
+            <button aria-label="Close"
                     class="btn-close btn-close-white me-2 m-auto"
                     data-bs-dismiss="toast"
-                    aria-label="Close">
+                    type="button">
             </button>
 
         </div>
@@ -265,6 +261,12 @@
                 })
                     .then(response => {
                         const isFavorite = response.data.favorite;
+
+                        const favoriteCountBadge = document.getElementById("favoriteCountBadge");
+
+                        if (favoriteCountBadge && response.data.favoriteCount !== undefined) {
+                            favoriteCountBadge.textContent = response.data.favoriteCount;
+                        }
                         const heartSpan = this.querySelector("span");
 
                         if (isFavorite) {
@@ -274,7 +276,7 @@
                             heartSpan.textContent = "♥";
                             this.dataset.favorite = "true";
 
-                            showFavoriteToast("Added to favorites");
+                            showFavoriteToast("Adăugat la favorite!");
                         } else {
                             this.classList.remove("filled-heart");
                             this.classList.add("empty-heart");
@@ -282,12 +284,12 @@
                             heartSpan.textContent = "♡";
                             this.dataset.favorite = "false";
 
-                            showFavoriteToast("Removed from favorites");
+                            showFavoriteToast("Șters din favorite!");
                         }
                     })
                     .catch(error => {
                         console.error(error);
-                        showFavoriteToast("Could not update favorites");
+                        showFavoriteToast("Eroare actualizare favorite.");
                     });
             });
         });

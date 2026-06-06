@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Business Details</title>
+    <title th:text="${profile.name}"></title>
 
     <meta name="_csrf" th:content="${_csrf.token}">
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
@@ -41,7 +41,7 @@
 
             <!-- CATEGORY -->
             <span class="badge bg-dark px-3 py-2 mb-3"
-                  th:text="${profile.category}">
+                  th:text="${profile.category.displayName}">
             </span>
 
             <!-- NAME -->
@@ -73,7 +73,7 @@
             </div>
 
             <div class="alert alert-info" sec:authorize="isAnonymous()">
-                <span>You need to login to see more content.</span>
+                <span>Trebuie să fii conectat pentru a vedea conținutul.</span>
             </div>
 
             <hr>
@@ -81,7 +81,7 @@
             <div class="mt-4">
 
                 <h4 class="fw-bold mb-3">
-                    Reviews
+                    Recenzii
                 </h4>
 
                 <div class="mb-4">
@@ -89,15 +89,15 @@
                     <strong th:text="${#numbers.formatDecimal(averageRating, 1, 1)}"></strong>
 
                     (<span th:text="${reviewCount}"></span>
-                    <span th:text="${reviewCount == 1 ? 'review' : 'reviews'}"></span>)
+                    <span th:text="${reviewCount == 1 ? 'recenzie' : 'recenzii'}"></span>)
                 </div>
 
                 <div class="alert alert-danger" th:if="${param.reviewError}">
-                    Please add a rating and a comment.
+                    Adaugă o recenzie
                 </div>
 
                 <div class="alert alert-warning" th:if="${param.alreadyReviewed}">
-                    You already reviewed this business.
+                    Ai adăugat deja o recenzie.
                 </div>
 
                 <div sec:authorize="isAuthenticated()" th:if="${!hasReviewed}">
@@ -109,16 +109,16 @@
                         <div class="mb-3">
                             <label class="form-label">Rating</label>
                             <select class="form-select" th:field="*{rating}">
-                                <option value="5">★★★★★ - Excellent</option>
-                                <option value="4">★★★★ - Very good</option>
-                                <option value="3">★★★ - Good</option>
-                                <option value="2">★★ - Weak</option>
-                                <option value="1">★ - Poor</option>
+                                <option value="5">★★★★★ - Excelent</option>
+                                <option value="4">★★★★ - Foarte bun</option>
+                                <option value="3">★★★ - Bun</option>
+                                <option value="2">★★ - Slab</option>
+                                <option value="1">★ - Foarte slab</option>
                             </select>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Comment</label>
+                            <label class="form-label">Comentariu</label>
                             <textarea class="form-control"
                                       placeholder="Write your review..."
                                       rows="3"
@@ -126,22 +126,22 @@
                         </div>
 
                         <button class="btn btn-dark" type="submit">
-                            Submit Review
+                            Adaugă recenzie
                         </button>
 
                     </form>
                 </div>
 
                 <div class="alert alert-info" sec:authorize="isAnonymous()">
-                    You need to login to leave a review.
+                    Trebuie să fii conectat pentru a adăuga un review.
                 </div>
 
                 <div class="alert alert-success" th:if="${hasReviewed}">
-                    You already reviewed this business.
+                    Ai adăugat deja un review.
                 </div>
 
                 <div class="text-muted" th:if="${#lists.isEmpty(reviews)}">
-                    No reviews yet.
+                    Nici o recenzie.
                 </div>
 
                 <div class="card p-3 mb-3 shadow-sm" th:each="r : ${reviews}">
@@ -149,7 +149,7 @@
                     <div class="d-flex justify-content-between">
 
                         <strong th:text="${r.user.firstName + ' ' + r.user.lastName}">
-                            User Name
+                            Utilizator
                         </strong>
 
                         <span class="text-warning">
@@ -177,7 +177,7 @@
                     </span>
 
                     <span id="detailsFavoriteText"
-                          th:text="${isFavorite} ? 'Remove from Favorites' : 'Add to Favorites'">
+                          th:text="${isFavorite} ? 'Șterge de la favorite' : 'Adaugă la favorite'">
 
                     </span>
                 </button>
@@ -262,6 +262,12 @@
             })
                 .then(response => {
                     const isFavorite = response.data.favorite;
+
+                    const favoriteCountBadge = document.getElementById("favoriteCountBadge");
+
+                    if (favoriteCountBadge && response.data.favoriteCount !== undefined) {
+                        favoriteCountBadge.textContent = response.data.favoriteCount;
+                    }
 
                     const icon = document.getElementById("detailsFavoriteIcon");
                     const text = document.getElementById("detailsFavoriteText");

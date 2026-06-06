@@ -15,17 +15,18 @@
 </head>
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
-<div class="container py-5">
+<div class="container py-3">
 
 
     <div class="text-center text-white py-5 hero-section rounded-4">
 
-        <h1 class="display-4 fw-bold">
-            Find the Perfect Event Services
-        </h1>
+        <h2 class="display-4 fw-bold">
+            Găsește furnizorii potriviți pentru evenimentul tău
+        </h2>
 
         <p class="lead">
-            DJs, photographers, restaurants, venues and more.
+            Descoperă fotografi, DJ, restaurante, decoratori, formații live
+            și alți furnizori pentru nunți, botezuri, aniversări și evenimente speciale.
         </p>
 
     </div>
@@ -37,11 +38,11 @@
 
     <div class="mb-4">
         <h2 class="fw-bold mb-1 text-muted">
-            Browse by category
+            Toate categoriile
         </h2>
 
         <p class="text-muted mb-0">
-            Choose a category and explore available event services.
+            Alege o categorie și explorează serviciile disponibile
         </p>
     </div>
 
@@ -75,18 +76,17 @@
                         <div class="category-card-content">
 
                         <span class="badge bg-light text-dark px-3 py-2 mb-3">
-                            Category
+                            Categorie
                         </span>
 
                             <h3 class="fw-bold text-white mb-2"
-                                th:text="${categoryGroup.key}">
-                                Category name
+                                th:text="${categoryGroup.key.displayName}">
+                                Categorie
                             </h3>
 
                             <p class="text-white-50 mb-0">
                                 <span th:text="${#lists.size(categoryGroup.value)}"></span>
-                                <span th:text="${#lists.size(categoryGroup.value) == 1 ? 'business' : 'businesses'}"></span>
-                                available
+                                <span th:text="${#lists.size(categoryGroup.value) == 1 ? 'serviciu disponibil' : 'servicii disponibile'}"></span>
                             </p>
 
                         </div>

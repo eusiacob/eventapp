@@ -1,10 +1,12 @@
 package com.example.eventapp.service;
 
+import com.example.eventapp.model.BusinessCategory;
 import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.User;
 import com.example.eventapp.repository.BusinessProfileRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -16,39 +18,32 @@ public class BusinessProfileService {
         this.businessProfileRepository = businessProfileRepository;
     }
 
-    // Toate business-urile - folosit pentru /businesses la grupare pe categorii
     public List<BusinessProfile> findAll() {
         return businessProfileRepository.findAll();
     }
 
-    // Caută un business după ID - folosit la details/edit/delete/reviews/contact
     public BusinessProfile findById(Long id) {
         return businessProfileRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Business profile not found"));
     }
 
-    // Business-urile unui user business - folosit la dashboard
     public List<BusinessProfile> findByUser(User user) {
         return businessProfileRepository.findByUser(user);
     }
 
-    // Salvare business profile
     public BusinessProfile save(BusinessProfile businessProfile) {
         return businessProfileRepository.save(businessProfile);
     }
 
-    // Ștergere business profile
     public void deleteById(Long id) {
         businessProfileRepository.deleteById(id);
     }
 
-    // Pentru pagina /businesses/category/{category}
-    public List<BusinessProfile> findByCategory(String category) {
-        return businessProfileRepository.findByCategoryIgnoreCaseOrderByNameAsc(category);
+    public List<BusinessProfile> findByCategory(BusinessCategory category) {
+        return businessProfileRepository.findByCategoryOrderByNameAsc(category);
     }
 
-    // Pentru search în pagina categoriei după nume și oraș
-    public List<BusinessProfile> searchByCategoryNameAndCity(String category,
+    public List<BusinessProfile> searchByCategoryNameAndCity(BusinessCategory category,
                                                              String keyword,
                                                              String city) {
         return businessProfileRepository.searchByCategoryNameAndCity(
@@ -58,28 +53,19 @@ public class BusinessProfileService {
         );
     }
 
-    // Dropdown orașe doar pentru categoria selectată
-    public List<String> getCitiesByCategory(String category) {
+    public List<String> getCitiesByCategory(BusinessCategory category) {
         return businessProfileRepository.findDistinctCitiesByCategory(category);
     }
 
-    // Dropdown global categorii, dacă va mai fi nevoie
-    public List<String> getCategories() {
-        return businessProfileRepository.findDistinctCategories();
+    public List<BusinessCategory> getCategories() {
+        return Arrays.asList(BusinessCategory.values());
     }
 
-    // Dropdown global orașe, dacă va mai fi nevoie
-    public List<String> getCities() {
-        return businessProfileRepository.findDistinctCities();
-    }
-
-    // Ownership validation
     public boolean isOwner(BusinessProfile businessProfile, User user) {
         return businessProfile.getUser() != null
                 && businessProfile.getUser().getId().equals(user.getId());
     }
 
-    // Variantă pentru edit/delete
     public BusinessProfile findByIdAndValidateOwner(Long profileId, User user) {
         BusinessProfile profile = findById(profileId);
 

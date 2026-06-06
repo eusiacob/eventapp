@@ -18,13 +18,13 @@
 <div class="container py-5">
 
     <h1 class="mb-0 text-dark">
-        Favorites
+        Favorite
     </h1>
 
     <!-- EMPTY STATE -->
     <div class="mt-3 alert alert-info opacity-75"
          th:if="${#lists.isEmpty(favorites)}">
-        You don't have any favorite business yet.
+        Nu ai servicii favorite.
     </div>
 
 
@@ -52,7 +52,7 @@
                               th:action="@{/favorites/remove/{id}(id=${p.id})}">
 
                             <button class="btn btn-outline-danger">
-                                Remove
+                                Șterge
                             </button>
 
                         </form>

@@ -1,5 +1,6 @@
 package com.example.eventapp.controller;
 
+import com.example.eventapp.model.BusinessCategory;
 import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.service.BusinessProfileService;
 import org.springframework.stereotype.Controller;
@@ -36,7 +37,7 @@ public class HomeController {
                         .sorted(Comparator.comparing(BusinessProfile::getCategory))
                         .toList();
 
-        Map<String, List<BusinessProfile>> profilesByCategory =
+        Map<BusinessCategory, List<BusinessProfile>> profilesByCategory =
                 profiles.stream()
                         .collect(Collectors.groupingBy(
                                 BusinessProfile::getCategory,
