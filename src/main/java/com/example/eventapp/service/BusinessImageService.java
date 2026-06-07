@@ -29,7 +29,7 @@ public class BusinessImageService {
     public void uploadImages(Long businessId, List<MultipartFile> files) throws IOException {
         BusinessProfile businessProfile = businessProfileService.findById(businessId);
 
-        Path uploadPath = Paths.get("uploads/");
+        Path uploadPath = Paths.get("uploads/images/");
 
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
