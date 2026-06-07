@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @Entity
@@ -16,13 +18,22 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Min(value = 1, message = "Rating must be at least 1")
-    @Max(value = 5, message = "Rating must be at most 5")
+    @Min(value = 1, message = "Evaluarea trebuie să fie cel putin 1")
+    @Max(value = 5, message = "Evaluarea trebuie să fie cel mult 5")
     private int rating;
 
-    @NotBlank(message = "Comment is required")
+    @NotBlank(message = "Recenzia este obligatorie!")
     @Column(length = 1000)
     private String comment;
+
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
 
     @ManyToOne
     @JoinColumn(name = "business_id")
@@ -33,14 +44,6 @@ public class Review {
     private User user;
 
     public Review() {
-    }
-
-    public Review(Long id, int rating, String comment, BusinessProfile businessProfile, User user) {
-        this.id = id;
-        this.rating = rating;
-        this.comment = comment;
-        this.businessProfile = businessProfile;
-        this.user = user;
     }
 
 }

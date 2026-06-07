@@ -51,6 +51,9 @@ public class BusinessProfile {
     @OneToMany(mappedBy = "businessProfile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
+    @OneToMany(mappedBy = "businessProfile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BusinessImage> galleryImages = new ArrayList<>();
+
     public int getReviewCount() {
         if (reviews == null) {
             return 0;

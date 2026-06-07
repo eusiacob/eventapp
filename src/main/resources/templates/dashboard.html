@@ -87,6 +87,7 @@
                                   th:action="@{/business/delete/{id}(id=${p.id})}">
 
                                 <button class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Ești sigur că vrei să ștergi acest serviciu?')"
                                         type="submit">
                                     Șterge
                                 </button>

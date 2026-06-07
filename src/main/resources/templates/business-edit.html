@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Edit Business</title>
 
     <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
@@ -20,46 +20,55 @@
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <!-- PAGE -->
-<div class="container mt-5">
+<div class="container py-5">
 
-    <div class="row justify-content-center">
+    <div class="row g-4 align-items-start">
 
-        <div class="col-lg-6">
+        <!-- LEFT SIDE: EDIT BUSINESS FORM -->
+        <div class="col-12 col-lg-7">
 
-            <div class="card shadow-lg p-4 opacity-75">
+            <div class="card shadow-lg border-0 p-4">
 
                 <h2 class="text-center mb-4" th:text="${profile.name}">
+
                 </h2>
 
-                <form method="post"
+                <form enctype="multipart/form-data"
+                      method="post"
                       th:action="@{/business/edit/{id}(id=${profile.id})}"
                       th:object="${profile}">
 
                     <!-- NAME -->
                     <div class="mb-3">
-                        <label class="form-label">Nume serviciu</label>
+                        <label class="form-label">Nume</label>
                         <input class="form-control"
                                th:field="*{name}"
                                type="text">
-                    </div>
 
-                    <div class="text-danger small mb-3"
-                         th:errors="*{name}"
-                         th:if="${#fields.hasErrors('name')}">
+                        <div class="text-danger small mt-1"
+                             th:errors="*{name}"
+                             th:if="${#fields.hasErrors('name')}">
+                        </div>
                     </div>
 
                     <!-- CATEGORY -->
                     <div class="mb-3">
                         <label class="form-label">Categorie</label>
+
                         <select class="form-select"
                                 th:field="*{category}">
 
                             <option th:each="cat : ${categories}"
-                                    th:value="${cat}"
-                                    th:text="${cat.displayName}">
+                                    th:text="${cat.displayName}"
+                                    th:value="${cat}">
                             </option>
 
                         </select>
+
+                        <div class="text-danger small mt-1"
+                             th:errors="*{category}"
+                             th:if="${#fields.hasErrors('category')}">
+                        </div>
                     </div>
 
                     <!-- CITY -->
@@ -68,10 +77,11 @@
                         <input class="form-control"
                                th:field="*{city}"
                                type="text">
-                    </div>
-                    <div class="text-danger small mb-3"
-                         th:errors="*{city}"
-                         th:if="${#fields.hasErrors('city')}">
+
+                        <div class="text-danger small mt-1"
+                             th:errors="*{city}"
+                             th:if="${#fields.hasErrors('city')}">
+                        </div>
                     </div>
 
                     <!-- PHONE -->
@@ -80,10 +90,11 @@
                         <input class="form-control"
                                th:field="*{phone}"
                                type="text">
-                    </div>
-                    <div class="text-danger small mb-3"
-                         th:errors="*{phone}"
-                         th:if="${#fields.hasErrors('phone')}">
+
+                        <div class="text-danger small mt-1"
+                             th:errors="*{phone}"
+                             th:if="${#fields.hasErrors('phone')}">
+                        </div>
                     </div>
 
                     <!-- DESCRIPTION -->
@@ -92,23 +103,42 @@
                         <textarea class="form-control"
                                   rows="4"
                                   th:field="*{description}"></textarea>
+
+                        <div class="text-danger small mt-1"
+                             th:errors="*{description}"
+                             th:if="${#fields.hasErrors('description')}">
+                        </div>
                     </div>
-                    <div class="text-danger small mb-3"
-                         th:errors="*{description}"
-                         th:if="${#fields.hasErrors('description')}">
+
+                    <!-- MAIN IMAGE -->
+                    <div class="mb-3">
+                        <label class="form-label">Schimbă imaginea de profil</label>
+                        <input accept="image/*"
+                               class="form-control"
+                               name="imageFile"
+                               type="file">
+                    </div>
+
+                    <div class="mb-3"
+                         th:if="${profile.imagePath != null}">
+
+                        <label class="form-label">Imagine de profil curentă</label>
+
+                        <img class="img-fluid rounded edit-main-preview"
+                             th:src="@{${profile.imagePath}}">
                     </div>
 
                     <!-- BUTTONS -->
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex flex-column flex-md-row gap-2 justify-content-between mt-4">
 
                         <a class="btn btn-outline-secondary"
                            href="/dashboard">
                             Anulare
                         </a>
 
-                        <button class="btn btn-primary"
+                        <button class="btn btn-dark"
                                 type="submit">
-                            Modifică
+                            Modificare
                         </button>
 
                     </div>
@@ -119,9 +149,109 @@
 
         </div>
 
+
+        <!-- RIGHT SIDE: GALLERY -->
+        <div class="col-12 col-lg-5">
+
+            <div class="card shadow-lg border-0 p-4 gallery-panel">
+
+                <h3 class="fw-bold mb-2">
+                    Galerie foto
+                </h3>
+
+                <p class="text-muted mb-4">
+                    Adăugare imagini în galerie
+                </p>
+
+                <div class="alert alert-success" th:if="${param.gallerySuccess}">
+                    Imagini adăugate cu succes.
+                </div>
+
+                <div class="alert alert-danger" th:if="${param.galleryError}">
+                    Eroare la încărcarea imaginilor.
+                </div>
+
+                <div class="alert alert-success" th:if="${param.galleryDeleted}">
+                    Imagine ștearsă cu succes.
+                </div>
+
+                <!-- GALLERY UPLOAD FORM - SEPARATE FORM -->
+                <form enctype="multipart/form-data"
+                      method="post"
+                      th:action="@{/business/{id}/gallery/upload(id=${profile.id})}">
+
+                    <div class="mb-3">
+                        <label class="form-label">Încarcă imagini</label>
+
+                        <input accept="image/*"
+                               class="form-control"
+                               multiple
+                               name="images"
+                               required
+                               type="file">
+
+                        <small class="text-muted">
+                            Poți selecta mai multe imagini
+                        </small>
+                    </div>
+
+                    <button class="btn btn-dark w-100"
+                            type="submit">
+                        Încarcă
+                    </button>
+
+                </form>
+
+                <hr class="my-4">
+
+                <!-- CURRENT GALLERY -->
+                <div class="alert alert-info mb-0"
+                     th:if="${profile.galleryImages == null or #lists.isEmpty(profile.galleryImages)}">
+                    Încă nu ai imagini în galerie. Adaugă acum!
+                </div>
+
+                <div class="row g-3"
+                     th:if="${profile.galleryImages != null and !#lists.isEmpty(profile.galleryImages)}">
+
+                    <div class="col-6"
+                         th:each="img : ${profile.galleryImages}">
+
+                        <div class="gallery-manage-item">
+
+                            <img class="img-fluid rounded gallery-manage-image"
+                                 th:src="@{${img.imagePath}}">
+
+                            <!-- DELETE FORM - SEPARATE FORM -->
+                            <form class="mt-2"
+                                  method="post"
+                                  th:action="@{/business/gallery/delete/{id}(id=${img.id})}">
+
+                                <input name="businessId"
+                                       th:value="${profile.id}"
+                                       type="hidden">
+
+                                <button class="btn btn-outline-danger btn-sm w-100"
+                                        onclick="return confirm('Delete this image?');"
+                                        type="submit">
+                                    Șterge
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

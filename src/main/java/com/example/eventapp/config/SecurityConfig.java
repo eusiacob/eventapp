@@ -51,7 +51,7 @@ public class SecurityConfig {
         public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
             registry.addResourceHandler("/images/**")
-                    .addResourceLocations("file:uploads/");
+                    .addResourceLocations("file:uploads/images/");
         }
     }
 }

@@ -15,14 +15,15 @@ public class ReviewService {
     private final BusinessProfileService businessProfileService;
     private final UserService userService;
 
-    public ReviewService(ReviewRepository reviewRepository, BusinessProfileService businessProfileService, UserService userService) {
+    public ReviewService(ReviewRepository reviewRepository,
+                         BusinessProfileService businessProfileService,
+                         UserService userService) {
         this.reviewRepository = reviewRepository;
         this.businessProfileService = businessProfileService;
         this.userService = userService;
     }
 
     public void addReview(Long businessId, String userEmail, Review review) {
-
         BusinessProfile business = businessProfileService.findById(businessId);
         User user = userService.findByEmail(userEmail);
 
@@ -39,6 +40,45 @@ public class ReviewService {
         review.setUser(user);
 
         reviewRepository.save(review);
+    }
+
+    public Review findById(Long reviewId) {
+        return reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+    }
+
+    public boolean isOwner(Review review, String userEmail) {
+        return review.getUser() != null
+                && review.getUser().getEmail().equals(userEmail);
+    }
+
+    public Review findByIdAndValidateOwner(Long reviewId, String userEmail) {
+        Review review = findById(reviewId);
+
+        if (!isOwner(review, userEmail)) {
+            throw new RuntimeException("You are not allowed to modify this review");
+        }
+
+        return review;
+    }
+
+    public void updateReview(Long reviewId, String userEmail, Review updatedReview) {
+        Review existingReview = findByIdAndValidateOwner(reviewId, userEmail);
+
+        existingReview.setRating(updatedReview.getRating());
+        existingReview.setComment(updatedReview.getComment());
+
+        reviewRepository.save(existingReview);
+    }
+
+    public Long deleteReview(Long reviewId, String userEmail) {
+        Review review = findByIdAndValidateOwner(reviewId, userEmail);
+
+        Long businessId = review.getBusinessProfile().getId();
+
+        reviewRepository.delete(review);
+
+        return businessId;
     }
 
     public List<Review> getReviewsForBusiness(BusinessProfile businessProfile) {
@@ -58,14 +98,14 @@ public class ReviewService {
                 .orElse(0.0);
     }
 
+    public long getReviewCount(BusinessProfile businessProfile) {
+        return reviewRepository.findByBusinessProfile(businessProfile).size();
+    }
+
     public boolean hasUserReviewed(Long businessId, String userEmail) {
         BusinessProfile business = businessProfileService.findById(businessId);
         User user = userService.findByEmail(userEmail);
 
         return reviewRepository.findByBusinessProfileAndUser(business, user).isPresent();
-    }
-
-    public long getReviewCount(BusinessProfile businessProfile) {
-        return reviewRepository.countByBusinessProfile(businessProfile);
     }
 }

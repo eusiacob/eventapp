@@ -57,10 +57,11 @@ public class BusinessController {
 
     @PostMapping("/business/create")
     public String createProfile(@Valid @ModelAttribute("profile") BusinessProfile profile, BindingResult result,
-                                @RequestParam("imageFile") MultipartFile file,
+                                @RequestParam("imageFile") MultipartFile file, Model model,
                                 @AuthenticationPrincipal UserDetails userDetails) throws IOException {
 
         if (result.hasErrors()) {
+            model.addAttribute("categories", service.getCategories());
             return "business-form";
         }
 
@@ -70,13 +71,13 @@ public class BusinessController {
 
             String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
 
-            Path uploadPath = Paths.get("uploads/");
+            Path uploadPath = Paths.get("uploads/images/");
 
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-            String uploadDir = "uploads/";
+            String uploadDir = "uploads/images/";
 
             Path filePath = Paths.get(uploadDir + fileName);
 
@@ -154,25 +155,58 @@ public class BusinessController {
     }
 
     @PostMapping("/business/edit/{id}")
-    public String updateProfile(@PathVariable Long id, @Valid @ModelAttribute("profile") BusinessProfile updatedProfile, BindingResult result, @AuthenticationPrincipal UserDetails userDetails) {
+    public String updateBusiness(@PathVariable Long id,
+                                 @Valid @ModelAttribute("profile") BusinessProfile profile,
+                                 BindingResult result,
+                                 @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+                                 @AuthenticationPrincipal UserDetails userDetails,
+                                 Model model) throws IOException {
+
+        User user = userService.findByEmail(userDetails.getUsername());
+
+        BusinessProfile existingProfile =
+                service.findByIdAndValidateOwner(id, user);
 
         if (result.hasErrors()) {
+            profile.setId(existingProfile.getId());
+            profile.setUser(existingProfile.getUser());
+            profile.setImagePath(existingProfile.getImagePath());
+            profile.setGalleryImages(existingProfile.getGalleryImages());
+
+            model.addAttribute("categories", service.getCategories());
+
             return "business-edit";
         }
 
-        BusinessProfile profile = service.findById(id);
+        existingProfile.setName(profile.getName());
+        existingProfile.setCategory(profile.getCategory());
+        existingProfile.setCity(profile.getCity());
+        existingProfile.setPhone(profile.getPhone());
+        existingProfile.setDescription(profile.getDescription());
 
-        if (!isOwner(profile, userDetails)) {
-            return "redirect:/";
+        if (imageFile != null && !imageFile.isEmpty()) {
+
+            Path uploadPath = Paths.get("uploads/images/");
+
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            String originalFileName = imageFile.getOriginalFilename();
+
+            assert originalFileName != null;
+            String fileName = System.currentTimeMillis()
+                    + "_"
+                    + originalFileName.replaceAll("\\s+", "_");
+
+            Path filePath = uploadPath.resolve(fileName);
+
+            Files.write(filePath, imageFile.getBytes());
+
+            existingProfile.setImagePath("/images/" + fileName);
         }
 
-        profile.setName(updatedProfile.getName());
-        profile.setCategory(updatedProfile.getCategory());
-        profile.setCity(updatedProfile.getCity());
-        profile.setPhone(updatedProfile.getPhone());
-        profile.setDescription(updatedProfile.getDescription());
-
-        service.save(profile);
+        service.save(existingProfile);
 
         return "redirect:/dashboard";
     }
