@@ -56,9 +56,31 @@
                 </p>
 
                 <!-- PHONE -->
-                <p class="fs-5">
-                    📞 <span th:text="${profile.phone}"></span>
-                </p>
+                <div class="row g-3">
+
+                    <div class="col-12 col-md-6" th:if="${profile.phone != null and !profile.phone.isBlank()}">
+                        <a th:href="'tel:' + ${profile.phone}"
+                           class="btn btn-dark w-100">
+                            Sună
+                        </a>
+                    </div>
+
+                    <div class="col-12 col-md-6" th:if="${profile.email != null and !profile.email.isBlank()}">
+                        <a th:href="'mailto:' + ${profile.email}"
+                           class="btn btn-outline-dark w-100">
+                            Trimite mail
+                        </a>
+                    </div>
+
+                    <div class="col-12" th:if="${profile.website != null and !profile.website.isBlank()}">
+                        <a th:href="${profile.website}"
+                           target="_blank"
+                           class="btn btn-outline-secondary w-100">
+                            Vizitează site
+                        </a>
+                    </div>
+
+                </div>
 
                 <hr>
 

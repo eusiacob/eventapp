@@ -7,6 +7,8 @@ import com.example.eventapp.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -91,5 +93,18 @@ public class UserService {
         userRepository.save(user);
 
         return true;
+    }
+
+    //Se sterge serviciul din favorite de la toti userii
+    public void removeBusinessFromAllFavorites(Long businessId) {
+        List<User> users = userRepository.findUsersWhoFavoritedBusiness(businessId);
+
+        for (User user : users) {
+            user.getFavoriteBusinesses().removeIf(
+                    business -> business.getId().equals(businessId)
+            );
+        }
+
+        userRepository.saveAll(users);
     }
 }

@@ -56,8 +56,8 @@
                                 th:field="*{category}">
 
                             <option th:each="cat : ${categories}"
-                                    th:value="${cat}"
-                                    th:text="${cat.displayName}">
+                                    th:text="${cat.displayName}"
+                                    th:value="${cat}">
                             </option>
 
                         </select>
@@ -89,6 +89,26 @@
                          th:if="${#fields.hasErrors('phone')}">
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label">Business email</label>
+                        <input type="email"
+                               class="form-control"
+                               th:field="*{email}">
+                    </div>
+
+                    <div class="text-danger small mb-3"
+                         th:errors="*{email}"
+                         th:if="${#fields.hasErrors('email')}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Website</label>
+                        <input type="url"
+                               class="form-control"
+                               th:field="*{website}"
+                               placeholder="www.serviciul-meu.ro">
+                    </div>
+
                     <!-- IMAGE-->
                     <div class="mb-3">
                         <label class="form-label">Imagine</label>
@@ -101,7 +121,7 @@
                     <div class="mb-3">
                         <label class="form-label">Descriere</label>
                         <textarea class="form-control"
-                                  placeholder="Describe your services..."
+                                  placeholder="Descrie serviciul...."
                                   rows="4"
                                   th:field="*{description}"></textarea>
                     </div>

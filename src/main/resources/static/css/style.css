@@ -438,6 +438,79 @@ form,
 }
 
 
+/*CALENDAR*/
+#availabilityCalendar {
+    font-size: 0.95rem;
+}
+
+#availabilityCalendar .fc-daygrid-day {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#availabilityCalendar .fc-daygrid-day:hover {
+    filter: brightness(0.95);
+}
+
+.available-day {
+    background-color: #d1f7dc !important;
+}
+
+.unavailable-day {
+    background-color: #f8d7da !important;
+}
+
+#availabilityCalendar .fc-day-today {
+    outline: 2px solid #212529;
+    outline-offset: -2px;
+}
+
+.availability-legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.legend-color {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.available-color {
+    background-color: #d1f7dc;
+    border: 1px solid #8ed9a4;
+}
+
+.unavailable-color {
+    background-color: #f8d7da;
+    border: 1px solid #dc3545;
+}
+
+@media (max-width: 768px) {
+    #availabilityCalendar {
+        font-size: 0.82rem;
+    }
+
+    #availabilityCalendar .fc-toolbar-title {
+        font-size: 1.1rem;
+    }
+
+    #availabilityCalendar .fc-button {
+        padding: 0.25rem 0.45rem;
+        font-size: 0.8rem;
+    }
+}
 
 /*BUSINESS EDIT STYLE*/
 .edit-main-preview {

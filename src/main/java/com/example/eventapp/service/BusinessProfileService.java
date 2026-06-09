@@ -6,6 +6,7 @@ import com.example.eventapp.model.User;
 import com.example.eventapp.repository.BusinessProfileRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,30 +28,8 @@ public class BusinessProfileService {
                 .orElseThrow(() -> new RuntimeException("Business profile not found"));
     }
 
-    public List<BusinessProfile> findByUser(User user) {
-        return businessProfileRepository.findByUser(user);
-    }
-
-    public BusinessProfile save(BusinessProfile businessProfile) {
-        return businessProfileRepository.save(businessProfile);
-    }
-
-    public void deleteById(Long id) {
-        businessProfileRepository.deleteById(id);
-    }
-
-    public List<BusinessProfile> findByCategory(BusinessCategory category) {
-        return businessProfileRepository.findByCategoryOrderByNameAsc(category);
-    }
-
-    public List<BusinessProfile> searchByCategoryNameAndCity(BusinessCategory category,
-                                                             String keyword,
-                                                             String city) {
-        return businessProfileRepository.searchByCategoryNameAndCity(
-                category,
-                keyword,
-                city
-        );
+    public void save(BusinessProfile businessProfile) {
+        businessProfileRepository.save(businessProfile);
     }
 
     public List<String> getCitiesByCategory(BusinessCategory category) {
@@ -74,6 +53,20 @@ public class BusinessProfileService {
         }
 
         return profile;
+    }
+
+    public List<BusinessProfile> searchAvailableByCategoryNameCityAndDate(
+            BusinessCategory category,
+            String keyword,
+            String city,
+            LocalDate eventDate
+    ) {
+        return businessProfileRepository.searchAvailableByCategoryNameCityAndDate(
+                category,
+                keyword,
+                city,
+                eventDate
+        );
     }
 
     //    Delete business

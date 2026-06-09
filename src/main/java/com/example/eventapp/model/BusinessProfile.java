@@ -1,9 +1,7 @@
 package com.example.eventapp.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -38,6 +36,14 @@ public class BusinessProfile {
     @NotBlank(message = "Phone is required")
     @Pattern(regexp = "^[0-9+\\- ]{10}$", message = "Invalid phone number! It should be 07X XXX XXX")
     private String phone;
+
+    @Email(message = "Introdu un mail valid!")
+    private String email;
+
+    private String website;
+
+    @OneToMany(mappedBy = "businessProfile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BusinessUnavailableDate> unavailableDates = new ArrayList<>();
 
     private String imagePath;
 

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -29,14 +30,14 @@ import java.util.stream.Collectors;
 @Controller
 public class BusinessController {
 
-    private final BusinessProfileService service;
+    private final BusinessProfileService businessProfileService;
     private final UserRepository userRepository;
     private final ReviewService reviewService;
     private final UserService userService;
 
-    public BusinessController(BusinessProfileService service, UserRepository userRepository, ReviewService reviewService, UserService userService) {
+    public BusinessController(BusinessProfileService businessProfileService, UserRepository userRepository, ReviewService reviewService, UserService userService) {
 
-        this.service = service;
+        this.businessProfileService = businessProfileService;
         this.userRepository = userRepository;
         this.reviewService = reviewService;
         this.userService = userService;
@@ -50,7 +51,7 @@ public class BusinessController {
     @GetMapping("/business/create")
     public String showCreateForm(Model model) {
         model.addAttribute("profile", new BusinessProfile());
-        model.addAttribute("categories", service.getCategories());
+        model.addAttribute("categories", businessProfileService.getCategories());
 
         return "business-form";
     }
@@ -61,7 +62,7 @@ public class BusinessController {
                                 @AuthenticationPrincipal UserDetails userDetails) throws IOException {
 
         if (result.hasErrors()) {
-            model.addAttribute("categories", service.getCategories());
+            model.addAttribute("categories", businessProfileService.getCategories());
             return "business-form";
         }
 
@@ -88,7 +89,7 @@ public class BusinessController {
 
         profile.setUser(user);
 
-        service.save(profile);
+        businessProfileService.save(profile);
 
         return "redirect:/dashboard";
     }
@@ -98,7 +99,7 @@ public class BusinessController {
                                   Model model,
                                   @AuthenticationPrincipal UserDetails userDetails) {
 
-        BusinessProfile profile = service.findById(id);
+        BusinessProfile profile = businessProfileService.findById(id);
 
         model.addAttribute("profile", profile);
 
@@ -139,17 +140,23 @@ public class BusinessController {
     }
 
     @GetMapping("/business/edit/{id}")
-    public String editForm(@PathVariable Long id,
-                           Model model,
-                           @AuthenticationPrincipal UserDetails userDetails) {
+    public String editBusinessForm(@PathVariable Long id,
+                                   Model model,
+                                   @AuthenticationPrincipal UserDetails userDetails) {
 
         User user = userService.findByEmail(userDetails.getUsername());
 
         BusinessProfile profile =
-                service.findByIdAndValidateOwner(id, user);
+                businessProfileService.findByIdAndValidateOwner(id, user);
+
+        List<String> unavailableDateStrings = profile.getUnavailableDates()
+                .stream()
+                .map(d -> d.getUnavailableDate().toString())
+                .toList();
 
         model.addAttribute("profile", profile);
-        model.addAttribute("categories", service.getCategories());
+        model.addAttribute("categories", businessProfileService.getCategories());
+        model.addAttribute("unavailableDateStrings", unavailableDateStrings);
 
         return "business-edit";
     }
@@ -165,7 +172,7 @@ public class BusinessController {
         User user = userService.findByEmail(userDetails.getUsername());
 
         BusinessProfile existingProfile =
-                service.findByIdAndValidateOwner(id, user);
+                businessProfileService.findByIdAndValidateOwner(id, user);
 
         if (result.hasErrors()) {
             profile.setId(existingProfile.getId());
@@ -173,7 +180,7 @@ public class BusinessController {
             profile.setImagePath(existingProfile.getImagePath());
             profile.setGalleryImages(existingProfile.getGalleryImages());
 
-            model.addAttribute("categories", service.getCategories());
+            model.addAttribute("categories", businessProfileService.getCategories());
 
             return "business-edit";
         }
@@ -183,6 +190,8 @@ public class BusinessController {
         existingProfile.setCity(profile.getCity());
         existingProfile.setPhone(profile.getPhone());
         existingProfile.setDescription(profile.getDescription());
+        existingProfile.setEmail(profile.getEmail());
+        existingProfile.setWebsite(profile.getWebsite());
 
         if (imageFile != null && !imageFile.isEmpty()) {
 
@@ -206,21 +215,23 @@ public class BusinessController {
             existingProfile.setImagePath("/images/" + fileName);
         }
 
-        service.save(existingProfile);
+        businessProfileService.save(existingProfile);
 
         return "redirect:/dashboard";
     }
 
     @PostMapping("/business/delete/{id}")
-    public String deleteProfile(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+    public String deleteBusiness(@PathVariable Long id,
+                                 @AuthenticationPrincipal UserDetails userDetails) {
 
-        BusinessProfile profile = service.findById(id);
+        User user = userService.findByEmail(userDetails.getUsername());
 
-        if (!isOwner(profile, userDetails)) {
-            return "redirect:/";
-        }
+        BusinessProfile profile =
+                businessProfileService.findByIdAndValidateOwner(id, user);
 
-        service.delete(id);
+        userService.removeBusinessFromAllFavorites(profile.getId());
+
+        businessProfileService.delete(profile.getId());
 
         return "redirect:/dashboard";
     }
@@ -229,17 +240,24 @@ public class BusinessController {
     public String businessesByCategory(@PathVariable BusinessCategory category,
                                        @RequestParam(required = false) String keyword,
                                        @RequestParam(required = false) String city,
+                                       @RequestParam(required = false) LocalDate eventDate,
                                        Model model,
                                        @AuthenticationPrincipal UserDetails userDetails) {
 
         List<BusinessProfile> profiles =
-                service.searchByCategoryNameAndCity(category, keyword, city);
+                businessProfileService.searchAvailableByCategoryNameCityAndDate(
+                        category,
+                        keyword,
+                        city,
+                        eventDate
+                );
 
         model.addAttribute("profiles", profiles);
         model.addAttribute("selectedCategory", category);
         model.addAttribute("keyword", keyword);
         model.addAttribute("city", city);
-        model.addAttribute("cities", service.getCitiesByCategory(category));
+        model.addAttribute("eventDate", eventDate);
+        model.addAttribute("cities", businessProfileService.getCitiesByCategory(category));
 
         if (userDetails != null) {
             User user = userService.findByEmail(userDetails.getUsername());

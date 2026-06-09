@@ -12,7 +12,7 @@ public enum BusinessCategory {
     CANDY_BAR("Candy Bar"),
     MUZICA_LIVE("Muzică live"),
     TRANSPORT("Transport"),
-    ENTERTAINMENT("Entertainment");
+    DIVERTISMENT("Divertisment");
 
     private final String displayName;
 

@@ -21,7 +21,6 @@ public class FavoritesController {
     public FavoritesController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
-
     }
 
     @GetMapping("/favorites")

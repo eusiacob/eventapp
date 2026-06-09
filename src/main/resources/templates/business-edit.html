@@ -4,10 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>Edit Business</title>
 
     <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
           integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js" rel="stylesheet">
+
 
     <link rel="stylesheet"
           th:href="@{/css/style.css}">
@@ -97,6 +102,26 @@
                         </div>
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label">Business email</label>
+                        <input class="form-control"
+                               th:field="*{email}"
+                               type="email">
+                    </div>
+
+                    <div class="text-danger small mb-3"
+                         th:errors="*{email}"
+                         th:if="${#fields.hasErrors('email')}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Website</label>
+                        <input class="form-control"
+                               placeholder="https://exemplu.com"
+                               th:field="*{website}"
+                               type="url">
+                    </div>
+
                     <!-- DESCRIPTION -->
                     <div class="mb-3">
                         <label class="form-label">Descriere</label>
@@ -129,35 +154,23 @@
                     </div>
 
                     <!-- BUTTONS -->
-                    <div class="d-flex flex-column flex-md-row gap-2 justify-content-between mt-4">
+                    <button class="btn btn-dark w-100 mt-4"
+                            type="submit">
+                        Modificare
+                    </button>
 
-                        <a class="btn btn-outline-secondary"
-                           href="/dashboard">
-                            Anulare
-                        </a>
-
-                        <button class="btn btn-dark"
-                                type="submit">
-                            Modificare
-                        </button>
-
-                    </div>
+                    <a class="btn btn-outline-secondary w-100 mt-4"
+                       href="/dashboard">
+                        Anulare
+                    </a>
 
                 </form>
 
-            </div>
+                <hr class="my-4">
 
-        </div>
-
-
-        <!-- RIGHT SIDE: GALLERY -->
-        <div class="col-12 col-lg-5">
-
-            <div class="card shadow-lg border-0 p-4 gallery-panel">
-
-                <h3 class="fw-bold mb-2">
+                <h4 class="fw-bold mb-2">
                     Galerie foto
-                </h3>
+                </h4>
 
                 <p class="text-muted mb-4">
                     Adăugare imagini în galerie
@@ -248,10 +261,165 @@
 
         </div>
 
+
+        <!-- RIGHT SIDE -->
+        <div class="col-12 col-lg-5">
+
+            <div class="card shadow-lg border-0 p-4 gallery-panel">
+                <h4 class="fw-bold mb-3">
+                    Calendar
+                </h4>
+
+                <p class="text-muted mb-3">
+                    Selectează o dată pentru a o marca disponibilă / indisponibilă.
+                </p>
+
+                <div class="availability-legend mb-3">
+        <span class="legend-item">
+            <span class="legend-color available-color"></span>
+            Disponibil
+        </span>
+
+                    <span class="legend-item">
+            <span class="legend-color unavailable-color"></span>
+            Indisponibil
+        </span>
+                </div>
+
+                <div id="availabilityCalendar"></div>
+            </div>
+
+        </div>
+
     </div>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<!--FULL CALENDAR SCRIPT-->
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const calendarEl = document.getElementById("availabilityCalendar");
+
+        if (!calendarEl) {
+            return;
+        }
+
+        const businessId = [[${profile.id}]];
+
+        const unavailableDatesArray = /*[[${unavailableDateStrings}]]*/ [];
+
+        const unavailableSet = new Set(unavailableDatesArray);
+
+        const csrfTokenElement = document.querySelector('meta[name="_csrf"]');
+        const csrfHeaderElement = document.querySelector('meta[name="_csrf_header"]');
+
+        const csrfToken = csrfTokenElement ? csrfTokenElement.getAttribute("content") : null;
+        const csrfHeader = csrfHeaderElement ? csrfHeaderElement.getAttribute("content") : null;
+
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: "dayGridMonth",
+            height: "auto",
+            firstDay: 1,
+
+            headerToolbar: {
+                left: "prev,next today",
+                center: "title",
+                right: "dayGridMonth"
+            },
+
+            dayCellDidMount: function (info) {
+                const dateStr = formatDateLocal(info.date);
+
+                info.el.classList.remove("available-day", "unavailable-day");
+
+                if (unavailableSet.has(dateStr)) {
+                    info.el.classList.add("unavailable-day");
+                } else {
+                    info.el.classList.add("available-day");
+                }
+            },
+
+            dateClick: function (info) {
+                toggleDateAvailability(info);
+            }
+        });
+
+        calendar.render();
+
+        function toggleDateAvailability(info) {
+            const dateStr = info.dateStr;
+
+            const params = new URLSearchParams();
+            params.append("date", dateStr);
+
+            const headers = {
+                "Content-Type": "application/x-www-form-urlencoded"
+            };
+
+            if (csrfToken && csrfHeader) {
+                headers[csrfHeader] = csrfToken;
+            }
+
+            axios.post(
+                "/business/" + businessId + "/availability/toggle",
+                params,
+                {
+                    headers: headers
+                }
+            )
+                .then(function (response) {
+                    const unavailable = response.data.unavailable;
+
+                    if (unavailable) {
+                        unavailableSet.add(dateStr);
+                        info.dayEl.classList.remove("available-day");
+                        info.dayEl.classList.add("unavailable-day");
+                        showAvailabilityMessage("Data este acum indisponibilă", "success");
+                    } else {
+                        unavailableSet.delete(dateStr);
+                        info.dayEl.classList.remove("unavailable-day");
+                        info.dayEl.classList.add("available-day");
+                        showAvailabilityMessage("Data este acum disponibilă", "success");
+                    }
+                })
+                .catch(function () {
+                    showAvailabilityMessage("A apărut o eroare", "danger");
+                });
+        }
+
+        function formatDateLocal(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+
+            return year + "-" + month + "-" + day;
+        }
+
+        function showAvailabilityMessage(message, type) {
+            const existingAlert = document.getElementById("availabilityAlert");
+
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+
+            const alert = document.createElement("div");
+            alert.id = "availabilityAlert";
+            alert.className = "alert alert-" + type + " mt-3 mb-0";
+            alert.textContent = message;
+
+            calendarEl.parentElement.appendChild(alert);
+
+            setTimeout(function () {
+                alert.remove();
+            }, 1800);
+        }
+    });
+</script>
+
 </body>
 </html>

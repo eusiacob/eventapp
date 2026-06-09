@@ -29,31 +29,29 @@
         <h1 class="display-4 fw-bold"
             th:text="${selectedCategory.displayName}">
         </h1>
-        
+
     </div>
 
     <!-- SEARCH -->
-    <form class="search-card card p-4 mb-2 mt-4 shadow-sm border-0"
-          id="searchForm"
+    <form class="search-card card p-4 mt-4 shadow-sm border-0"
           method="get"
           th:action="@{/businesses/category/{category}(category=${selectedCategory})}">
 
         <div class="row g-3 align-items-end">
 
-            <div class="col-12 col-lg-5">
+            <div class="col-12 col-lg-3">
                 <label class="form-label">Caută după nume</label>
                 <input class="form-control"
                        name="keyword"
-                       placeholder="Nume serviciu..."
+                       placeholder="Nume serviciu"
                        th:value="${keyword}"
                        type="text">
             </div>
 
-            <div class="col-12 col-lg-5">
+            <div class="col-12 col-lg-3">
                 <label class="form-label">Oraș</label>
                 <select class="form-select" name="city">
                     <option value="">Toate orașele</option>
-
                     <option th:each="c : ${cities}"
                             th:selected="${c == city}"
                             th:text="${c}"
@@ -62,21 +60,21 @@
                 </select>
             </div>
 
-            <div class="col-12 col-lg-2 d-grid">
+            <div class="col-12 col-lg-3">
+                <label class="form-label">Dată eveniment</label>
+                <input class="form-control"
+                       name="eventDate"
+                       th:value="${eventDate}"
+                       type="date">
+            </div>
+
+            <div class="col-12 col-lg-3 d-grid">
                 <button class="btn btn-dark" type="submit">
-                    Căutare
+                    Caută
                 </button>
             </div>
 
-            <div class="col-12 d-grid d-lg-none">
-                <a class="btn btn-outline-secondary"
-                   onclick="document.getElementById('searchForm').reset();">
-                    Resetează filtre
-                </a>
-            </div>
-
         </div>
-
     </form>
 
     <div class="alert alert-warning text-center mt-4"
