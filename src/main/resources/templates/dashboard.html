@@ -41,6 +41,15 @@
         Încă nu ai nici un serviciu.
     </div>
 
+
+    <div th:if="${param.businessCreated}" class="alert alert-success">
+        Serviciu adăugat!
+    </div>
+
+    <div th:if="${param.businessDeleted}" class="alert alert-success">
+        Serviciu șters!
+    </div>
+
     <!-- CARDS -->
     <div class="row">
 
@@ -78,15 +87,15 @@
 
                         <div class="d-flex gap-2">
 
-                            <a class="btn btn-primary btn-sm"
-                               th:href="@{/business/edit/{id}(id=${p.id})}">
+                            <a class="btn btn-outline-dark w-100"
+                               th:href="@{/business/edit/{id}(id=${p.id})}" onclick="">
                                 Modifică
                             </a>
 
                             <form method="post"
                                   th:action="@{/business/delete/{id}(id=${p.id})}">
 
-                                <button class="btn btn-danger btn-sm"
+                                <button class="btn btn-outline-danger w-100"
                                         onclick="return confirm('Ești sigur că vrei să ștergi acest serviciu?')"
                                         type="submit">
                                     Șterge

@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -59,7 +60,7 @@ public class BusinessController {
     @PostMapping("/business/create")
     public String createProfile(@Valid @ModelAttribute("profile") BusinessProfile profile, BindingResult result,
                                 @RequestParam("imageFile") MultipartFile file, Model model,
-                                @AuthenticationPrincipal UserDetails userDetails) throws IOException {
+                                @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) throws IOException {
 
         if (result.hasErrors()) {
             model.addAttribute("categories", businessProfileService.getCategories());
@@ -91,7 +92,9 @@ public class BusinessController {
 
         businessProfileService.save(profile);
 
-        return "redirect:/dashboard";
+        redirectAttributes.addAttribute("businessCreated", true);
+
+        return "redirect:/business/edit/" + profile.getId();
     }
 
     @GetMapping("/business/{id}")
@@ -136,6 +139,8 @@ public class BusinessController {
 
         model.addAttribute("profiles", profiles);
 
+        model.addAttribute("businessSaved", new Review());
+
         return "dashboard";
     }
 
@@ -167,7 +172,7 @@ public class BusinessController {
                                  BindingResult result,
                                  @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                                  @AuthenticationPrincipal UserDetails userDetails,
-                                 Model model) throws IOException {
+                                 Model model, RedirectAttributes redirectAttributes) throws IOException {
 
         User user = userService.findByEmail(userDetails.getUsername());
 
@@ -217,12 +222,14 @@ public class BusinessController {
 
         businessProfileService.save(existingProfile);
 
+        redirectAttributes.addAttribute("businessCreated", true);
+
         return "redirect:/dashboard";
     }
 
     @PostMapping("/business/delete/{id}")
     public String deleteBusiness(@PathVariable Long id,
-                                 @AuthenticationPrincipal UserDetails userDetails) {
+                                 @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
 
         User user = userService.findByEmail(userDetails.getUsername());
 
@@ -232,6 +239,8 @@ public class BusinessController {
         userService.removeBusinessFromAllFavorites(profile.getId());
 
         businessProfileService.delete(profile.getId());
+
+        redirectAttributes.addAttribute("businessDeleted", true);
 
         return "redirect:/dashboard";
     }
