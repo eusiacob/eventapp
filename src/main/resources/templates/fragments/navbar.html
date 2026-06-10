@@ -1,72 +1,100 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3 sticky-top"
-     th:fragment="navbar"
-     xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-     xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
 
-    <div class="container-fluid">
+<body>
 
-        <a class="navbar-brand fw-bold" href="/businesses">
-            EventApp
-        </a>
+<nav class="app-navbar-wrapper"
+     th:fragment="navbar">
 
-        <button aria-controls="mainNavbar"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-                class="navbar-toggler"
-                data-bs-target="#mainNavbar"
-                data-bs-toggle="collapse"
-                type="button">
+    <!-- DESKTOP NAVBAR -->
+    <div class="desktop-navbar navbar navbar-expand-lg navbar-light bg-white shadow-sm">
 
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="container">
 
-        <div class="collapse navbar-collapse" id="mainNavbar">
+            <a class="navbar-brand fw-bold" href="/businesses">
+                EventApp
+            </a>
 
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-lg-2 text-center">
+            <ul class="navbar-nav ms-auto align-items-center gap-2">
 
-                <li class="nav-item" sec:authorize="hasRole('BUSINESS')">
-                    <a class="nav-link" href="/dashboard">
-                        Serviciile mele
+                <li class="nav-item">
+                    <a class="nav-link" href="/businesses">
+                        Explore
                     </a>
                 </li>
 
                 <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="nav-link favorites-link"
-                       href="/favorites">
+                    <a class="nav-link favorites-link" href="/favorites">
 
                         <span>Favorite</span>
 
                         <span class="favorite-icon-wrapper">
-            <span class="favorite-navbar-heart">♥</span>
+                            <span class="favorite-navbar-heart">♥</span>
 
-            (<span id="favoriteCountBadge"
-                   th:text="${favoriteCount}">
-            </span>)
-        </span>
+                            <span class="favorite-exponent-count"
+                                  id="favoriteCountBadge"
+                                  th:text="${favoriteCount}">
+                                0
+                            </span>
+                        </span>
 
+                    </a>
+                </li>
 
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+
+                    <a aria-expanded="false"
+                       class="nav-link dropdown-toggle account-link"
+                       data-bs-toggle="dropdown"
+                       href="#"
+                       id="accountDropdown"
+                       role="button">
+                        Contul meu
+                    </a>
+
+                    <ul aria-labelledby="accountDropdown"
+                        class="dropdown-menu dropdown-menu-end shadow border-0">
+
+                        <li>
+                            <a class="dropdown-item" href="/profile">
+                                Profil
+                            </a>
+                        </li>
+
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li>
+                            <form method="post" th:action="@{/logout}">
+                                <button class="dropdown-item text-danger"
+                                        type="submit">
+                                    Ieși din cont
+                                </button>
+                            </form>
+                        </li>
+
+                    </ul>
+
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('BUSINESS')">
+                    <a class="nav-link add-service-link" href="/business/create">
+                        Adaugă serviciu
                     </a>
                 </li>
 
                 <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" href="/login">
-                        Conectare
+                        Login
                     </a>
                 </li>
 
                 <li class="nav-item" sec:authorize="isAnonymous()">
-                    <a class="nav-link" href="/register">
-                        Înregistrare
+                    <a class="btn btn-dark navbar-register-btn" href="/register">
+                        Register
                     </a>
-                </li>
-
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <form class="d-inline" method="post" th:action="@{/logout}">
-                        <button class="btn btn-outline-light btn-sm mt-1"
-                                type="submit">
-                            Deconectare
-                        </button>
-                    </form>
                 </li>
 
             </ul>
@@ -75,4 +103,82 @@
 
     </div>
 
+
+    <!-- MOBILE BOTTOM NAVBAR -->
+    <div class="mobile-bottom-nav">
+
+        <a class="mobile-nav-item" href="/businesses">
+            <i class="bi bi-search"></i>
+            <span>Explore</span>
+        </a>
+
+        <a class="mobile-nav-item mobile-favorite-item"
+           href="/favorites"
+           sec:authorize="isAuthenticated()">
+
+            <span class="mobile-icon-badge-wrapper">
+                <i class="bi bi-heart-fill"></i>
+
+                <span class="mobile-favorite-badge"
+                      id="favoriteCountBadgeMobile"
+                      th:text="${favoriteCount}">
+                    0
+                </span>
+            </span>
+
+            <span>Favorite</span>
+        </a>
+
+        <a class="mobile-nav-item mobile-add-item"
+           href="/business/create"
+           sec:authorize="hasRole('BUSINESS')">
+
+            <span class="mobile-add-circle">
+                <i class="bi bi-plus-lg"></i>
+            </span>
+
+            <span>Adaugă serviciu</span>
+        </a>
+
+        <a class="mobile-nav-item"
+           href="/profile"
+           sec:authorize="isAuthenticated()">
+
+            <i class="bi bi-person"></i>
+            <span>Profil</span>
+        </a>
+
+        <form class="mobile-nav-form"
+              method="post"
+              sec:authorize="isAuthenticated()"
+              th:action="@{/logout}">
+
+            <button class="mobile-nav-item mobile-nav-button" type="submit">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Ieși</span>
+            </button>
+
+        </form>
+
+        <a class="mobile-nav-item"
+           href="/login"
+           sec:authorize="isAnonymous()">
+
+            <i class="bi bi-box-arrow-in-right"></i>
+            <span>Login</span>
+        </a>
+
+        <a class="mobile-nav-item"
+           href="/register"
+           sec:authorize="isAnonymous()">
+
+            <i class="bi bi-person-plus"></i>
+            <span>Register</span>
+        </a>
+
+    </div>
+
 </nav>
+
+</body>
+</html>
