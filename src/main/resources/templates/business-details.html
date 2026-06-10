@@ -404,9 +404,16 @@
                     const isFavorite = response.data.favorite;
 
                     const favoriteCountBadge = document.getElementById("favoriteCountBadge");
+                    const favoriteCountBadgeMobile = document.getElementById("favoriteCountBadgeMobile");
 
-                    if (favoriteCountBadge && response.data.favoriteCount !== undefined) {
-                        favoriteCountBadge.textContent = response.data.favoriteCount;
+                    if (response.data.favoriteCount !== undefined) {
+                        if (favoriteCountBadge) {
+                            favoriteCountBadge.textContent = response.data.favoriteCount;
+                        }
+
+                        if (favoriteCountBadgeMobile) {
+                            favoriteCountBadgeMobile.textContent = response.data.favoriteCount;
+                        }
                     }
 
                     const icon = document.getElementById("detailsFavoriteIcon");

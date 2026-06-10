@@ -1054,7 +1054,7 @@ form,
 
     /*    CATEGORY CARDS*/
     .category-card-image-wrapper {
-        height: 160px;
+        height: 140px;
     }
 
     .category-card-content {
@@ -1064,7 +1064,7 @@ form,
     }
 
     .category-card-content h3 {
-        font-size: 1rem;
+        font-size: 0.92rem;
         line-height: 1.15;
     }
 
@@ -1075,7 +1075,7 @@ form,
     }
 
     .category-card-content p {
-        font-size: 0.78rem;
+        font-size: 0.72rem;
         line-height: 1.2;
     }
 
