@@ -22,7 +22,7 @@
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <!-- PAGE -->
-<div class="container mt-5">
+<div class="container mt-2">
 
     <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -30,11 +30,6 @@
         <h2 class="mb-0 text-dark">
             Serviciile mele
         </h2>
-
-        <a class="btn btn-success"
-           href="/business/create">
-            + Adaugă serviciu
-        </a>
 
     </div>
 
@@ -77,21 +72,16 @@
                             <span th:text="${p.city}"></span>
                         </p>
 
-                        <p class="card-text mb-3">
-                            <strong>Telefon:</strong>
-                            <span th:text="${p.phone}"></span>
-                        </p>
-
                         <img alt="business profile picture"
                              class="img-fluid rounded mb-2"
-                             style="height:200px; object-fit:cover;"
+                             style="height:200px; object-fit:cover; width:100%"
                              th:if="${p.imagePath != null}"
                              th:src="@{${p.imagePath}}">
 
-                        <div class="d-flex gap-2">
+                        <div class="d-flex justify-content-between gap-2">
 
                             <a class="btn btn-outline-dark w-100"
-                               th:href="@{/business/edit/{id}(id=${p.id})}" onclick="">
+                               th:href="@{/business/edit/{id}(id=${p.id})}">
                                 Modifică
                             </a>
 
@@ -99,7 +89,7 @@
                                   th:action="@{/business/delete/{id}(id=${p.id})}">
 
                                 <button class="btn btn-outline-danger w-100"
-                                        onclick="return confirm('Ești sigur că vrei să ștergi acest serviciu?')"
+                                        onclick="return confirm('Ești sigur că vrei să ștergi acest serviciu? Operațiunea de recuperare este indisponibilă.')"
                                         type="submit">
                                     Șterge
                                 </button>

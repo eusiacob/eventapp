@@ -51,6 +51,12 @@
                     <ul aria-labelledby="accountDropdown"
                         class="dropdown-menu dropdown-menu-end shadow border-0">
 
+                        <li sec:authorize="hasRole('BUSINESS')">
+                            <a class="dropdown-item" href="/dashboard">
+                                Serviciile mele
+                            </a>
+                        </li>
+
                         <li>
                             <a class="dropdown-item" href="#">
                                 Profil
