@@ -1032,21 +1032,29 @@ form,
     }
 
     .search-card label {
-        font-size: 0.95rem;
-        font-weight: 600;
+        font-size: 14px;
+        font-weight: 500;
         margin-bottom: 0.35rem;
     }
 
-    .search-card .form-control,
-    .search-card .form-select {
-        font-size: 16px;
+    .search-card .form-control {
+        font-size: 14px;
         padding: 13px 14px;
         border-radius: 14px;
+        height: 2.5rem;
+    }
+
+    .search-card .form-select {
+        font-size: 14px;
+        padding: 13px 14px;
+        border-radius: 14px;
+        height: 3rem;
     }
 
     .search-card .btn {
         border-radius: 14px;
         font-weight: 500;
+        margin-top: 0.5rem;
     }
 
     /*    CATEGORY CARDS*/
