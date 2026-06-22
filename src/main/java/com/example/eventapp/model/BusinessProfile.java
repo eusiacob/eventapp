@@ -30,7 +30,7 @@ public class BusinessProfile {
     @Size(min = 10, max = 700, message = "Description must be at least 10 characters")
     private String description;
 
-    @NotBlank(message = "City is required")
+    @NotBlank(message = "Județul este obligatoriu")
     private String city;
 
     @NotBlank(message = "Phone is required")
