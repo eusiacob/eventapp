@@ -44,7 +44,8 @@ public class SecurityConfig {
 
                         .requestMatchers(
                                 "/favorites/**",
-                                "/reviews/**"
+                                "/reviews/**",
+                                "/profile"
                         ).authenticated()
 
                         .requestMatchers(HttpMethod.GET, "/business/{id}").permitAll()

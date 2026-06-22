@@ -69,6 +69,10 @@ public class BusinessProfileService {
         );
     }
 
+    public List<BusinessProfile> findByUser(User user) {
+        return businessProfileRepository.findByUser(user);
+    }
+
     //    Delete business
     public void delete(Long id) {
         businessProfileRepository.deleteById(id);

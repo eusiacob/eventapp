@@ -56,4 +56,5 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
             @Param("city") String city,
             @Param("eventDate") LocalDate eventDate
     );
+
 }
