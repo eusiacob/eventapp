@@ -17,12 +17,12 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
     List<BusinessProfile> findByCategoryOrderByNameAsc(BusinessCategory category);
 
     @Query("""
-        SELECT b FROM BusinessProfile b
-        WHERE b.category = :category
-        AND (:keyword IS NULL OR :keyword = '' OR LOWER(b.name) LIKE LOWER(CONCAT('%', :keyword, '%')))
-        AND (:city IS NULL OR :city = '' OR LOWER(b.city) = LOWER(:city))
-        ORDER BY b.name ASC
-    """)
+                SELECT b FROM BusinessProfile b
+                WHERE b.category = :category
+                AND (:keyword IS NULL OR :keyword = '' OR LOWER(b.name) LIKE LOWER(CONCAT('%', :keyword, '%')))
+                AND (:city IS NULL OR :city = '' OR LOWER(b.city) = LOWER(:city))
+                ORDER BY b.name ASC
+            """)
     List<BusinessProfile> searchByCategoryNameAndCity(
             @Param("category") BusinessCategory category,
             @Param("keyword") String keyword,
@@ -30,31 +30,33 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
     );
 
     @Query("""
-        SELECT DISTINCT b.city FROM BusinessProfile b
-        WHERE b.category = :category
-        ORDER BY b.city ASC
-    """)
+                SELECT DISTINCT b.city FROM BusinessProfile b
+                WHERE b.category = :category
+                ORDER BY b.city ASC
+            """)
     List<String> findDistinctCitiesByCategory(@Param("category") BusinessCategory category);
 
     @Query("""
-    SELECT b FROM BusinessProfile b
-    WHERE b.category = :category
-    AND (:keyword IS NULL OR :keyword = '' OR LOWER(b.name) LIKE LOWER(CONCAT('%', :keyword, '%')))
-    AND (:city IS NULL OR :city = '' OR LOWER(b.city) = LOWER(:city))
-    AND (
-        :eventDate IS NULL OR NOT EXISTS (
-            SELECT d FROM BusinessUnavailableDate d
-            WHERE d.businessProfile = b
-            AND d.unavailableDate = :eventDate
-        )
-    )
-    ORDER BY b.name ASC
-""")
+                SELECT b FROM BusinessProfile b
+                WHERE b.category = :category
+                AND (:keyword IS NULL OR :keyword = '' OR LOWER(b.name) LIKE LOWER(CONCAT('%', :keyword, '%')))
+                AND (:city IS NULL OR :city = '' OR LOWER(b.city) = LOWER(:city))
+                AND (
+                    :eventDate IS NULL OR NOT EXISTS (
+                        SELECT d FROM BusinessUnavailableDate d
+                        WHERE d.businessProfile = b
+                        AND d.unavailableDate = :eventDate
+                    )
+                )
+                ORDER BY b.name ASC
+            """)
     List<BusinessProfile> searchAvailableByCategoryNameCityAndDate(
             @Param("category") BusinessCategory category,
             @Param("keyword") String keyword,
             @Param("city") String city,
             @Param("eventDate") LocalDate eventDate
     );
+
+    List<BusinessProfile> findTop10ByPremiumTrue();
 
 }

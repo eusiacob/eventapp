@@ -73,6 +73,10 @@ public class BusinessProfileService {
         return businessProfileRepository.findByUser(user);
     }
 
+    public List<BusinessProfile> getPremiumBusinesses() {
+        return businessProfileRepository.findTop10ByPremiumTrue();
+    }
+
     //    Delete business
     public void delete(Long id) {
         businessProfileRepository.deleteById(id);

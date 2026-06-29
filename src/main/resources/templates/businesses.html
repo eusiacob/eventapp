@@ -10,8 +10,8 @@
           integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
           rel="stylesheet">
 
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet">
 
     <link rel="stylesheet"
           th:href="@{/css/style.css}">
@@ -21,68 +21,71 @@
 
 
 <!--CATEGORIES-->
-<div class="container pb-2 mt-3">
+<div class="container pb-2 fluid px-3">
 
     <div class="mb-2">
-        <h2 class="fw-bold mb-1 text-muted">
+        <h3 class="fw-bold mb-1 text-muted">
             Categorii
-        </h2>
+        </h3>
 
         <p class="text-muted mb-0">
             Alege o categorie și explorează serviciile disponibile
         </p>
     </div>
 
-    <div class="alert alert-warning text-center"
-         th:if="${#maps.isEmpty(profilesByCategory)}">
-        Nu există categorii.
+    <div class="category-carousel">
+
+        <a class="category-chip"
+           th:each="category : ${categories}"
+           th:href="@{/businesses/category/{category}(category=${category})}">
+
+            <i class="bi"
+               th:classappend="' ' + ${category.icon}"></i>
+
+            <span th:text="${category.displayName}"></span>
+
+        </a>
+
     </div>
 
-    <div class="row g-4">
+    <section class="premium-section mt-4">
 
-        <div class="col-6 col-lg-4"
-             th:each="categoryGroup : ${profilesByCategory}">
+        <h3 class="fw-bold text-muted">
+            Premium Services
+        </h3>
 
-            <a class="category-card-link"
-               th:href="@{/businesses/category/{category}(category=${categoryGroup.key})}">
+        <div class="premium-scroll category-carousel">
 
-                <div class="card border-0 shadow-lg h-100 category-card">
+            <div class="premium-card"
+                 th:each="b : ${premiumBusinesses}"
+                 th:onclick="|window.location='/business/' + ${b.id}|">
 
-                    <div class="category-card-image-wrapper">
+                <!-- badge -->
+                <span class="premium-badge">PREMIUM</span>
 
-                        <img class="category-card-image"
-                             th:if="${categoryGroup.value[0].imagePath != null}"
-                             th:src="@{${categoryGroup.value[0].imagePath}}">
+                <!-- imagine -->
+                <div class="premium-image"
+                     th:style="|background-image: url('${b.imagePath}')|">
+                </div>
 
-                        <img class="category-card-image"
-                             src="https://via.placeholder.com/500x300"
-                             th:if="${categoryGroup.value[0].imagePath == null}">
+                <!-- text -->
+                <div class="premium-info">
 
-                        <div class="category-card-overlay"></div>
+                    <h5 class="premium-title"
+                        th:text="${b.name}">
+                    </h5>
 
-                        <div class="category-card-content">
-
-                            <h3 class="fw-bold text-white mb-2"
-                                th:text="${categoryGroup.key.displayName}">
-                                Categorie
-                            </h3>
-
-                            <p class="text-white-50 mb-0">
-                                <span th:text="${#lists.size(categoryGroup.value)}"></span>
-                                <span th:text="${#lists.size(categoryGroup.value) == 1 ? 'serviciu disponibil' : 'servicii disponibile'}"></span>
-                            </p>
-
-                        </div>
-
-                    </div>
+                    <p class="premium-county"
+                       th:text="${b.city}">
+                    </p>
 
                 </div>
 
-            </a>
+            </div>
 
         </div>
 
-    </div>
+    </section>
 
 </div>
 
@@ -119,6 +122,63 @@
             });
         });
     });
+</script>
+<!--mouse scroll-->
+<script>
+    document.querySelectorAll('.category-carousel, .premium-scroll, .county-scroll')
+        .forEach(carousel => {
+
+            carousel.addEventListener('wheel', function (e) {
+
+                e.preventDefault();
+
+                this.scrollLeft += e.deltaY;
+
+            }, {passive: false});
+
+        });
+</script>
+
+<!--drag scroll-->
+<script>
+    document.querySelectorAll('.category-carousel, .premium-scroll, .county-scroll')
+        .forEach(carousel => {
+
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            carousel.addEventListener('mousedown', (e) => {
+                isDown = true;
+                carousel.classList.add('dragging');
+                startX = e.pageX - carousel.offsetLeft;
+                scrollLeft = carousel.scrollLeft;
+            });
+
+            carousel.addEventListener('mouseleave', () => {
+                isDown = false;
+                carousel.classList.remove('dragging');
+            });
+
+            carousel.addEventListener('mouseup', () => {
+                isDown = false;
+                carousel.classList.remove('dragging');
+            });
+
+            carousel.addEventListener('mousemove', (e) => {
+
+                if (!isDown) return;
+
+                e.preventDefault();
+
+                const x = e.pageX - carousel.offsetLeft;
+                const walk = (x - startX) * 1.5;
+
+                carousel.scrollLeft = scrollLeft - walk;
+
+            });
+
+        });
 </script>
 
 </body>

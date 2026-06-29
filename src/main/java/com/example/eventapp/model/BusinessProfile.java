@@ -1,8 +1,14 @@
 package com.example.eventapp.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +52,8 @@ public class BusinessProfile {
     private List<BusinessUnavailableDate> unavailableDates = new ArrayList<>();
 
     private String imagePath;
+
+    private boolean premium;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

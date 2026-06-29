@@ -880,64 +880,6 @@ form,
 }
 
 
-/*CATEGORY CARDS*/
-.category-card-link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-}
-
-.category-card {
-    border-radius: 22px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.category-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22);
-}
-
-.category-card-image-wrapper {
-    position: relative;
-    height: 280px;
-    overflow: hidden;
-}
-
-.category-card-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s ease;
-}
-
-.category-card:hover .category-card-image {
-    transform: scale(1.07);
-}
-
-.category-card-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-            to top,
-            rgba(0, 0, 0, 0.75),
-            rgba(0, 0, 0, 0.15)
-    );
-}
-
-.category-card-content {
-    position: absolute;
-    left: 24px;
-    right: 24px;
-    bottom: 24px;
-    z-index: 2;
-}
-
-.category-card-content h3 {
-    font-size: 1.7rem;
-}
-
 /*SEARCH*/
 .search-card {
     border-radius: 22px;
@@ -1055,37 +997,6 @@ form,
         border-radius: 14px;
         font-weight: 500;
         margin-top: 0.5rem;
-    }
-
-    /*    CATEGORY CARDS*/
-    .category-card-image-wrapper {
-        height: 140px;
-    }
-
-    .category-card-content {
-        left: 12px;
-        right: 12px;
-        bottom: 12px;
-    }
-
-    .category-card-content h3 {
-        font-size: 0.92rem;
-        line-height: 1.15;
-    }
-
-    .category-card-content .badge {
-        font-size: 0.68rem;
-        padding: 5px 8px !important;
-        margin-bottom: 6px !important;
-    }
-
-    .category-card-content p {
-        font-size: 0.72rem;
-        line-height: 1.2;
-    }
-
-    .category-card {
-        border-radius: 16px;
     }
 }
 
@@ -1294,4 +1205,132 @@ form,
     .profile-info-row strong {
         text-align: left;
     }
+}
+
+/*Category carousel*/
+.category-carousel {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: none;
+}
+
+.category-carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.category-chip {
+    min-width: 110px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #444;
+    padding: 18px;
+    border-radius: 18px;
+    transition: .25s;
+    background: white;
+    flex: 0 0 auto;
+}
+
+.category-chip:hover {
+
+    background: #111;
+
+    color: white;
+
+    transform: translateY(-3px);
+}
+
+.category-chip i {
+
+    font-size: 1.8rem;
+
+    margin-bottom: 10px;
+}
+
+.category-chip span {
+
+    font-size: .92rem;
+
+    font-weight: 600;
+}
+
+/*PREMIUM SERVICES*/
+.premium-card {
+    width: 260px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+
+    cursor: pointer;
+    flex-shrink: 0;
+
+    transition: 0.2s;
+
+    position: relative;
+}
+
+.premium-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    background: gold;
+    color: black;
+
+    font-size: 0.7rem;
+    font-weight: bold;
+
+    padding: 4px 8px;
+    border-radius: 10px;
+
+    z-index: 2;
+}
+
+.premium-card:hover {
+    transform: translateY(-4px);
+}
+
+/* imagine sus */
+.premium-image {
+    width: 100%;
+    height: 160px;
+
+    background-size: cover;
+    background-position: center;
+}
+
+/* zona text jos */
+.premium-info {
+    padding: 12px;
+}
+
+.premium-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+    color: #111;
+}
+
+.premium-county {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.category-carousel,
+.premium-scroll,
+.county-scroll {
+    cursor: grab;
+}
+
+.category-carousel.dragging,
+.premium-scroll.dragging,
+.county-scroll.dragging {
+    cursor: grabbing;
+    user-select: none;
 }

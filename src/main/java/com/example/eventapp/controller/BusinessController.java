@@ -49,6 +49,17 @@ public class BusinessController {
         return profile.getUser().getEmail().equals(userDetails.getUsername());
     }
 
+    @GetMapping("/businesses")
+    public String businesses(Model model) {
+
+        model.addAttribute("categories", BusinessCategory.values());
+
+        model.addAttribute("premiumBusinesses",
+                businessProfileService.getPremiumBusinesses());
+
+        return "businesses";
+    }
+
     @GetMapping("/business/create")
     public String showCreateForm(Model model) {
         model.addAttribute("profile", new BusinessProfile());
