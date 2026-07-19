@@ -15,8 +15,6 @@ public enum BusinessCategory {
     DECOR("Decor", "bi-stars"),
     DIVERTISMENT("Divertisment", "bi-stars"),
     ORGANIZATOR("Organizator", "bi-calendar-heart"),
-    MAKEUP("Make-up Artist", "bi-brush-fill"),
-    HAIRSTYLIST("Hair Stylist", "bi-scissors"),
     TRANSPORT("Transport", "bi-car-front-fill"),
     ARTIFICII("Artificii", "bi-stars"),
     ALTELE("Altele", "bi-grid");
