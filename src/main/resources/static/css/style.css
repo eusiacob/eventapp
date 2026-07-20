@@ -1291,6 +1291,23 @@ form,
     z-index: 2;
 }
 
+.favorite-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    background: #cb3c40;
+    color: #e9ecef;
+
+    font-size: 0.7rem;
+    font-weight: bold;
+
+    padding: 4px 8px;
+    border-radius: 10px;
+
+    z-index: 2;
+}
+
 .premium-card:hover {
     transform: translateY(-4px);
 }

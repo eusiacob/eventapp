@@ -24,9 +24,9 @@
 <div class="container pb-2 fluid px-3 pt-3">
 
     <div class="mb-2">
-        <h3 class="fw-bold mb-1 text-muted">
+        <h4 class="fw-bold mb-1 text-muted">
             Categorii
-        </h3>
+        </h4>
 
         <p class="text-muted mb-0">
             Alege o categorie și explorează serviciile disponibile
@@ -50,9 +50,9 @@
 
     <section class="premium-section mt-4">
 
-        <h3 class="fw-bold text-muted">
-            Premium Services
-        </h3>
+        <h4 class="fw-bold text-muted">
+            Servicii premium
+        </h4>
 
         <div class="premium-scroll category-carousel">
 
@@ -78,6 +78,40 @@
                     <p class="premium-county"
                        th:text="${b.city}">
                     </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="favorite-section mt-3">
+
+        <h4 class="section-title fw-bold text-muted">
+            Top servicii favorite
+        </h4>
+
+        <div class="premium-scroll category-carousel">
+
+            <div class="premium-card"
+                 th:each="b : ${mostFavoriteBusinesses}"
+                 th:onclick="|window.location='/business/' + ${b.id}|">
+
+                <span class="favorite-badge">TOP FAVORITE</span>
+
+                <div class="premium-image"
+                     th:style="|background-image: url('${b.imagePath}')|">
+                </div>
+
+                <div class="premium-info">
+
+                    <h5 class="premium-title"
+                        th:text="${b.name}"></h5>
+
+                    <p class="premium-county"
+                       th:text="${b.city}"></p>
 
                 </div>
 

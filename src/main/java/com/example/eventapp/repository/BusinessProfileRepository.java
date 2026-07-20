@@ -3,6 +3,7 @@ package com.example.eventapp.repository;
 import com.example.eventapp.model.BusinessCategory;
 import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -58,5 +59,14 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
     );
 
     List<BusinessProfile> findTop10ByPremiumTrue();
+
+    @Query("""
+    SELECT b
+    FROM User u
+    JOIN u.favoriteBusinesses b
+    GROUP BY b
+    ORDER BY COUNT(u) DESC
+""")
+    List<BusinessProfile> findMostFavoriteBusinesses(Pageable pageable);
 
 }

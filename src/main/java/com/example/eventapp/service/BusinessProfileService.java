@@ -4,6 +4,8 @@ import com.example.eventapp.model.BusinessCategory;
 import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.User;
 import com.example.eventapp.repository.BusinessProfileRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -75,6 +77,15 @@ public class BusinessProfileService {
 
     public List<BusinessProfile> getPremiumBusinesses() {
         return businessProfileRepository.findTop10ByPremiumTrue();
+    }
+
+    //    Top servicii favorite
+    public List<BusinessProfile> getMostFavoriteBusinesses() {
+
+        Pageable pageable = PageRequest.of(0, 8);
+
+        return businessProfileRepository
+                .findMostFavoriteBusinesses(pageable);
     }
 
     //    Delete business
