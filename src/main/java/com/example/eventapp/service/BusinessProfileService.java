@@ -88,6 +88,15 @@ public class BusinessProfileService {
                 .findMostFavoriteBusinesses(pageable);
     }
 
+    //    Top reviews
+    public List<BusinessProfile> getTopRatedBusinesses() {
+
+        Pageable pageable = PageRequest.of(0, 8);
+
+        return businessProfileRepository
+                .findTopRatedBusinesses(pageable);
+    }
+
     //    Delete business
     public void delete(Long id) {
         businessProfileRepository.deleteById(id);

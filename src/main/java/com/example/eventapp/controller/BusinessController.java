@@ -62,6 +62,11 @@ public class BusinessController {
                 businessProfileService.getMostFavoriteBusinesses()
         );
 
+        model.addAttribute(
+                "topRatedBusinesses",
+                businessProfileService.getTopRatedBusinesses()
+        );
+
         return "businesses";
     }
 

@@ -69,4 +69,14 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
 """)
     List<BusinessProfile> findMostFavoriteBusinesses(Pageable pageable);
 
+    @Query("""
+    SELECT b
+    FROM BusinessProfile b
+    JOIN b.reviews r
+    GROUP BY b
+    HAVING COUNT(r) >= 1
+    ORDER BY AVG(r.rating) DESC, COUNT(r) DESC
+""")
+    List<BusinessProfile> findTopRatedBusinesses(Pageable pageable);
+
 }
