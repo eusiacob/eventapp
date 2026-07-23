@@ -31,22 +31,53 @@ public class BusinessImageController {
     }
 
     @PostMapping("/business/{businessId}/gallery/upload")
-    public String uploadGalleryImages(@PathVariable Long businessId,
-                                      @RequestParam("images") List<MultipartFile> images,
-                                      @AuthenticationPrincipal UserDetails userDetails,
-                                      RedirectAttributes redirectAttributes) {
+    public String uploadGalleryImages(
+            @PathVariable Long businessId,
+            @RequestParam("images") List<MultipartFile> images,
+            @AuthenticationPrincipal UserDetails userDetails,
+            RedirectAttributes redirectAttributes) {
 
         User user = userService.findByEmail(userDetails.getUsername());
 
         BusinessProfile businessProfile =
-                businessProfileService.findByIdAndValidateOwner(businessId, user);
+                businessProfileService.findByIdAndValidateOwner(
+                        businessId,
+                        user
+                );
+
+        long existingImages =
+                businessImageService.countImagesByBusinessId(businessId);
+
+        if (existingImages + images.size() > 20) {
+
+            redirectAttributes.addFlashAttribute(
+                    "galleryError",
+                    "Galeria poate conține maximum 20 de imagini."
+            );
+
+            return "redirect:/business/edit/" + businessId;
+        }
 
         try {
-            businessImageService.uploadImages(businessProfile.getId(), images);
-            redirectAttributes.addAttribute("gallerySuccess", true);
+
+            businessImageService.uploadImages(
+                    businessProfile.getId(),
+                    images
+            );
+
+            redirectAttributes.addFlashAttribute(
+                    "gallerySuccess",
+                    "Imaginile au fost încărcate cu succes."
+            );
+
         } catch (IOException e) {
-            redirectAttributes.addAttribute("galleryError", true);
+
+            redirectAttributes.addFlashAttribute(
+                    "galleryError",
+                    "A apărut o eroare la încărcarea imaginilor."
+            );
         }
+
 
         return "redirect:/business/edit/" + businessId;
     }

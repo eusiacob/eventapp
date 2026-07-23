@@ -19,7 +19,6 @@
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-
 <!--CATEGORIES-->
 <div class="container py-3 fluid px-3">
 
@@ -56,6 +55,7 @@
         </h4>
 
         <div class="premium-scroll category-carousel">
+
 
             <div class="premium-card"
                  th:each="b : ${premiumBusinesses}"
@@ -150,9 +150,6 @@
 
                     <span class="fs-6 text-warning">★</span>
                     <span class="premium-county" th:text="${#numbers.formatDecimal(b.averageRating, 1, 1)}"></span>
-                    <span class="review-count premium-county"
-                          th:text="'(' + ${#lists.size(b.reviews)} + ' recenzii)'">
-                    </span>
 
                 </div>
 
@@ -164,6 +161,8 @@
     </section>
 
 </div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {

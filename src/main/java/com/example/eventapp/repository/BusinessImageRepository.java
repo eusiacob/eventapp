@@ -9,4 +9,6 @@ import java.util.List;
 public interface BusinessImageRepository extends JpaRepository<BusinessImage, Long> {
 
     List<BusinessImage> findByBusinessProfile(BusinessProfile businessProfile);
+
+    long countByBusinessProfileId(Long businessId);
 }

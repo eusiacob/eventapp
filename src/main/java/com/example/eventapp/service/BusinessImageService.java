@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class BusinessImageService {
@@ -26,8 +27,11 @@ public class BusinessImageService {
         return businessImageRepository.findByBusinessProfile(businessProfile);
     }
 
-    public void uploadImages(Long businessId, List<MultipartFile> files) throws IOException {
-        BusinessProfile businessProfile = businessProfileService.findById(businessId);
+    public void uploadImages(Long businessId,
+                             List<MultipartFile> files) throws IOException {
+
+        BusinessProfile businessProfile =
+                businessProfileService.findById(businessId);
 
         Path uploadPath = Paths.get("uploads/images/");
 
@@ -41,26 +45,48 @@ public class BusinessImageService {
                 continue;
             }
 
-            String originalFileName = file.getOriginalFilename();
+            String originalFileName =
+                    file.getOriginalFilename();
 
-            if (originalFileName == null || originalFileName.isBlank()) {
+            if (originalFileName == null ||
+                    originalFileName.isBlank()) {
                 continue;
             }
 
-            String fileName = System.currentTimeMillis()
-                    + "_"
-                    + originalFileName.replaceAll("\\s+", "_");
+            String fileName =
+                    UUID.randomUUID() + "_" +
+                            originalFileName.replaceAll("\\s+", "_");
 
-            Path filePath = uploadPath.resolve(fileName);
+            Path filePath =
+                    uploadPath.resolve(fileName);
 
-            Files.write(filePath, file.getBytes());
+            Files.copy(
+                    file.getInputStream(),
+                    filePath,
+                    StandardCopyOption.REPLACE_EXISTING
+            );
 
-            BusinessImage businessImage = new BusinessImage();
-            businessImage.setImagePath("/images/" + fileName);
-            businessImage.setBusinessProfile(businessProfile);
+            BusinessImage businessImage =
+                    new BusinessImage();
 
-            businessImageRepository.save(businessImage);
+            businessImage.setImagePath(
+                    "/images/" + fileName
+            );
+
+            businessImage.setBusinessProfile(
+                    businessProfile
+            );
+
+            businessImageRepository.save(
+                    businessImage
+            );
         }
+    }
+
+    public long countImagesByBusinessId(Long businessId) {
+
+        return businessImageRepository
+                .countByBusinessProfileId(businessId);
     }
 
     public void deleteImage(Long imageId) {

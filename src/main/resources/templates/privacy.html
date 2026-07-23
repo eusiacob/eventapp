@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<html lang="ro"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>Politica de confidențialitate - EventApp</title>
+
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <link rel="stylesheet"
+        th:href="@{/css/style.css}">
+
+</head>
+
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="legal-page">
+
+  <div class="legal-container">
+
+    <h1>Politica de confidențialitate</h1>
+
+    <p class="text-muted">
+      Ultima actualizare: 2026
+    </p>
+
+    <section>
+      <h2>1. Introducere</h2>
+
+      <p>
+        Respectăm confidențialitatea utilizatorilor și ne angajăm să
+        protejăm datele personale prelucrate prin intermediul platformei
+        EventApp.
+      </p>
+    </section>
+
+    <section>
+      <h2>2. Datele pe care le putem colecta</h2>
+
+      <p>
+        În funcție de funcționalitățile utilizate, putem colecta
+        următoarele categorii de date:
+      </p>
+
+      <ul>
+        <li>nume și prenume;</li>
+        <li>adresă de email;</li>
+        <li>date necesare pentru crearea și gestionarea contului;</li>
+        <li>informații despre serviciile publicate;</li>
+        <li>fotografii și alte informații încărcate de utilizator;</li>
+        <li>recenzii și evaluări publicate pe platformă.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>3. Scopul prelucrării datelor</h2>
+
+      <p>
+        Datele pot fi utilizate pentru:
+      </p>
+
+      <ul>
+        <li>crearea și gestionarea contului;</li>
+        <li>furnizarea funcționalităților platformei;</li>
+        <li>afișarea serviciilor și profilurilor publicate;</li>
+        <li>gestionarea serviciilor favorite;</li>
+        <li>prevenirea utilizării abuzive a platformei;</li>
+        <li>îmbunătățirea funcționalității și securității platformei.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>4. Datele publicate de utilizatori</h2>
+
+      <p>
+        Informațiile publicate într-un profil de business, precum numele
+        serviciului, descrierea, localitatea, fotografiile și datele de
+        contact, pot fi vizibile altor utilizatori ai platformei.
+      </p>
+    </section>
+
+    <section>
+      <h2>5. Păstrarea datelor</h2>
+
+      <p>
+        Datele personale sunt păstrate atât timp cât este necesar pentru
+        furnizarea serviciilor platformei sau pentru îndeplinirea
+        obligațiilor legale aplicabile.
+      </p>
+    </section>
+
+    <section>
+      <h2>6. Securitatea datelor</h2>
+
+      <p>
+        Luăm măsuri tehnice și organizatorice rezonabile pentru protejarea
+        datelor împotriva accesului neautorizat, pierderii sau utilizării
+        necorespunzătoare.
+      </p>
+    </section>
+
+    <section>
+      <h2>7. Drepturile utilizatorilor</h2>
+
+      <p>
+        În condițiile legislației aplicabile, utilizatorii pot avea
+        dreptul de a solicita accesul la datele personale, rectificarea,
+        ștergerea sau limitarea prelucrării acestora.
+      </p>
+    </section>
+
+    <section>
+      <h2>8. Cookie-uri</h2>
+
+      <p>
+        Platforma poate utiliza cookie-uri și tehnologii similare pentru
+        funcționarea corectă a anumitor funcționalități și pentru
+        îmbunătățirea experienței utilizatorului.
+      </p>
+    </section>
+
+    <section>
+      <h2>9. Modificarea politicii</h2>
+
+      <p>
+        Această politică poate fi actualizată atunci când este necesar.
+        Versiunea actualizată va fi publicată pe această pagină.
+      </p>
+    </section>
+
+    <section>
+      <h2>10. Contact</h2>
+
+      <p>
+        Pentru întrebări legate de prelucrarea datelor personale,
+        utilizatorii ne pot contacta prin intermediul datelor de contact
+        disponibile pe platformă.
+      </p>
+    </section>
+
+  </div>
+
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+
+</html>

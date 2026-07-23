@@ -106,10 +106,12 @@
                 <div class="position-relative">
 
                     <img class="card-img-top business-image"
+                         loading="lazy"
                          th:if="${p.imagePath != null}"
                          th:src="@{${p.imagePath}}">
 
                     <img class="card-img-top business-image"
+                         loading="lazy"
                          src="https://i.ibb.co/d4nzt6TB/Image-not-found.png"
                          th:if="${p.imagePath == null}">
 
@@ -147,12 +149,6 @@
                         </span>
 
                     </div>
-
-                    <p class="text-secondary business-description"
-                       th:text="${p.description}">
-                    </p>
-
-                    <p class="text-muted d-none more-text">... mai mult.</p>
 
                 </div>
 
@@ -193,23 +189,7 @@
 
 </div>
 
-<!--Show / hide ... more text in cards-->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll(".business-card").forEach(card => {
-            const description = card.querySelector(".business-description");
-            const moreText = card.querySelector(".more-text");
-
-            if (!description || !moreText) {
-                return;
-            }
-
-            if (description.scrollHeight > description.clientHeight + 2) {
-                moreText.classList.remove("d-none");
-            }
-        });
-    });
-</script>
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 <!--Imports-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

@@ -5,6 +5,7 @@ import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.Review;
 import com.example.eventapp.model.User;
 import com.example.eventapp.repository.UserRepository;
+import com.example.eventapp.service.BusinessImageService;
 import com.example.eventapp.service.BusinessProfileService;
 import com.example.eventapp.service.ReviewService;
 import com.example.eventapp.service.UserService;
@@ -35,10 +36,12 @@ public class BusinessController {
     private final UserRepository userRepository;
     private final ReviewService reviewService;
     private final UserService userService;
+    private final BusinessImageService businessImageService;
 
-    public BusinessController(BusinessProfileService businessProfileService, UserRepository userRepository, ReviewService reviewService, UserService userService) {
+    public BusinessController(BusinessProfileService businessProfileService, UserRepository userRepository, ReviewService reviewService, UserService userService, BusinessImageService businessImageService) {
 
         this.businessProfileService = businessProfileService;
+        this.businessImageService = businessImageService;
         this.userRepository = userRepository;
         this.reviewService = reviewService;
         this.userService = userService;
@@ -179,6 +182,12 @@ public class BusinessController {
                 .stream()
                 .map(d -> d.getUnavailableDate().toString())
                 .toList();
+
+        long currentImageCount =
+                businessImageService.countImagesByBusinessId(profile.getId());
+
+        model.addAttribute("currentImageCount", currentImageCount);
+        model.addAttribute("maxImageCount", 20);
 
         model.addAttribute("profile", profile);
         model.addAttribute("categories", businessProfileService.getCategories());

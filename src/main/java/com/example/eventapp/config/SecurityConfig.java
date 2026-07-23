@@ -28,7 +28,9 @@ public class SecurityConfig {
                                 "/businesses/category/**",
                                 "/css/**",
                                 "/js/**",
-                                "/images/**"
+                                "/images/**",
+                                "/privacy",
+                                "/terms"
                         ).permitAll()
 
                         .requestMatchers(
@@ -36,16 +38,18 @@ public class SecurityConfig {
                                 "/business/edit/**",
                                 "/business/delete/**",
                                 "/dashboard",
-                                "/business/*/availability/block",
-                                "/business/*/gallery/upload",
+                                "/business/{id}/availability/block",
+                                "/business/{id}/gallery/upload",
                                 "/business/gallery/delete/**",
-                                "/business/*/availability/toggle"
+                                "/business/{id}/availability/toggle"
+
                         ).hasRole("BUSINESS")
 
                         .requestMatchers(
                                 "/favorites/**",
                                 "/reviews/**",
-                                "/profile"
+                                "/profile",
+                                "/business/{id}/reviews"
                         ).authenticated()
 
                         .requestMatchers(HttpMethod.GET, "/business/{id}").permitAll()

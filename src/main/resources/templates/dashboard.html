@@ -74,6 +74,7 @@
                         </p>
 
                         <img alt="business profile picture"
+                             loading="lazy"
                              class="img-fluid rounded mb-2"
                              style="height:200px; object-fit:cover; width:100%"
                              th:if="${p.imagePath != null}"
@@ -109,6 +110,9 @@
     </div>
 
 </div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+s
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
