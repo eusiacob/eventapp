@@ -293,6 +293,18 @@ body {
     line-height: 1;
 }
 
+.favorite-heart-badge {
+    color: #dc3545;
+    font-size: 0.8rem;
+    line-height: 1;
+}
+
+.top-star-badge {
+    color: goldenrod;
+    font-size: 0.8rem;
+    line-height: 1;
+}
+
 .favorite-exponent-count {
     position: absolute;
     top: -8px;
@@ -1261,7 +1273,9 @@ form,
 
 /*PREMIUM SERVICES*/
 .premium-card {
-    width: 260px;
+    width: 200px;
+    white-space: normal;
+    text-overflow: unset;
     border-radius: 16px;
     overflow: hidden;
     background: #fff;
@@ -1297,7 +1311,7 @@ form,
     right: 10px;
 
     background: #ffffff;
-    color: darkred;
+    color: black;
 
     font-size: 0.7rem;
     font-weight: bold;
@@ -1305,7 +1319,23 @@ form,
     padding: 4px 8px;
     border-radius: 10px;
 
-    border-style: solid;
+    z-index: 2;
+}
+
+.top-rating-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    background: #ffffff;
+    color: black;
+
+    font-size: 0.7rem;
+    font-weight: bold;
+
+    padding: 4px 8px;
+    border-radius: 10px;
+
 
     z-index: 2;
 }

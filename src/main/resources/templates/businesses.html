@@ -101,7 +101,7 @@
                  th:each="b : ${mostFavoriteBusinesses}"
                  th:onclick="|window.location='/business/' + ${b.id}|">
 
-                <span class="favorite-badge">TOP FAVORITE</span>
+                <span class="favorite-badge">TOP FAVORITE <span class="favorite-heart-badge">♥</span></span>
 
                 <div class="premium-image"
                      th:style="|background-image: url('${b.imagePath}')|">
@@ -135,6 +135,8 @@
             <div class="premium-card"
                  th:each="b : ${topRatedBusinesses}"
                  th:onclick="|window.location='/business/' + ${b.id}|">
+
+                <span class="top-rating-badge">TOP APRECIATE <span class="top-star-badge">★</span></span>
 
                 <div class="premium-image"
                      th:style="|background-image: url('${b.imagePath}')|">
