@@ -59,6 +59,13 @@
 
                     <div class="card-body">
 
+                        <img alt="business profile picture"
+                             loading="lazy"
+                             class="img-fluid rounded mb-2"
+                             style="height:200px; object-fit:cover; width:100%"
+                             th:if="${p.imagePath != null}"
+                             th:src="@{${p.imagePath}}">
+
                         <h5 class="card-title"
                             th:text="${p.name}">
                         </h5>
@@ -73,16 +80,10 @@
                             <span th:text="${p.city}"></span>
                         </p>
 
-                        <img alt="business profile picture"
-                             loading="lazy"
-                             class="img-fluid rounded mb-2"
-                             style="height:200px; object-fit:cover; width:100%"
-                             th:if="${p.imagePath != null}"
-                             th:src="@{${p.imagePath}}">
-
-                        <div class="d-flex justify-content-between gap-2">
+                        <div class="d-flex align-items-stretch">
 
                             <a class="btn btn-outline-dark w-100"
+                               style="margin-right: 10px"
                                th:href="@{/business/edit/{id}(id=${p.id})}">
                                 Modifică
                             </a>

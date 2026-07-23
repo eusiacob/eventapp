@@ -30,7 +30,8 @@ public class SecurityConfig {
                                 "/js/**",
                                 "/images/**",
                                 "/privacy",
-                                "/terms"
+                                "/terms",
+                                "/forgot"
                         ).permitAll()
 
                         .requestMatchers(

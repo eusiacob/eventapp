@@ -20,4 +20,9 @@ public class HomeController {
     public String privacy() {
         return "privacy";
     }
+
+    @GetMapping("/forgot")
+    public String forgot() {
+        return "forgot";
+    }
 }
