@@ -51,7 +51,7 @@
     </div>
 
     <!--    Premium section-->
-    <section class="premium-section mt-4">
+    <section class="premium-section mt-4" th:if="${not #lists.isEmpty(premiumBusinesses)}">
 
         <div th:replace="~{fragments/carousel-header :: header(
         'Servicii premium',
@@ -93,7 +93,7 @@
     </section>
 
     <!--    Top favorite section-->
-    <section class="favorite-section mt-4">
+    <section class="favorite-section mt-4" th:if="${not #lists.isEmpty(mostFavoriteBusinesses)}">
 
         <div th:replace="~{fragments/carousel-header :: header(
         'Top servicii favorite',
@@ -129,7 +129,7 @@
     </section>
 
     <!--    Top-rated section-->
-    <section class="top-rated-section mt-4">
+    <section class="top-rated-section mt-4" th:if="${not #lists.isEmpty(topRatedBusinesses)}">
 
         <div th:replace="~{fragments/carousel-header :: header(
         'Top servicii apreciate',
