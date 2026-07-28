@@ -1237,26 +1237,17 @@ form,
     }
 }
 .carousel-btn.disabled {
-
     opacity: .35;
-
     pointer-events: none;
-
     cursor: default;
-
     box-shadow: none;
-
 }
 
 .carousel-header{
-
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
-
-    margin-bottom:18px;
+    margin-bottom: 5px;
 }
 
 .carousel-btn{
