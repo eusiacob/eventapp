@@ -1222,15 +1222,59 @@ form,
 /*Category carousel*/
 .category-carousel {
     display: flex;
-    gap: 18px;
-    overflow-x: auto;
-    overflow-y: hidden;
+    gap: 10px;
+    overflow-x: hidden;
     white-space: nowrap;
-    scrollbar-width: none;
+    scroll-behavior: smooth;
 }
 
-.category-carousel::-webkit-scrollbar {
-    display: none;
+@media (hover: none) and (pointer: coarse) {
+    .carousel-controls {
+        display: none;
+    }
+    .category-carousel {
+        overflow: auto;
+    }
+}
+.carousel-btn.disabled {
+
+    opacity: .35;
+
+    pointer-events: none;
+
+    cursor: default;
+
+    box-shadow: none;
+
+}
+
+.carousel-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:18px;
+}
+
+.carousel-btn{
+
+    width:42px;
+    height:42px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.9);
+
+    box-shadow:0 4px 15px rgba(0,0,0,.12);
+
+    transition:.2s;
+
+    cursor:pointer;
 }
 
 .category-chip {
@@ -1369,12 +1413,6 @@ form,
     margin: 0;
     font-size: 0.85rem;
     color: #6c757d;
-}
-
-.category-carousel,
-.premium-scroll,
-.county-scroll {
-    cursor: grab;
 }
 
 .category-carousel.dragging,

@@ -1,0 +1,33 @@
+<div th:fragment="header(title, carouselId)">
+
+  <div class="carousel-header">
+
+    <h5 class="fw-bold mb-1 text-dark"
+        th:text="${title}">
+    </h5>
+
+    <div class="carousel-controls">
+
+      <button type="button"
+              class="carousel-btn prev"
+              th:attr="data-carousel=${carouselId}"
+              onclick="carouselPrev(this)">
+
+        <i class="bi bi-chevron-left"></i>
+
+      </button>
+
+      <button type="button"
+              class="carousel-btn next"
+              th:attr="data-carousel=${carouselId}"
+              onclick="carouselNext(this)">
+
+        <i class="bi bi-chevron-right"></i>
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
