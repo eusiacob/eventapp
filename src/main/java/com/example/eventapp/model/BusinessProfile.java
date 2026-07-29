@@ -58,8 +58,7 @@ public class BusinessProfile {
     public enum BusinessStatus {
         PENDING,
         APPROVED,
-        REJECTED,
-        HIDDEN
+        REJECTED
     }
 
     private String rejectionReason;

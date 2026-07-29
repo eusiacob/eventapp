@@ -99,7 +99,7 @@
                 </p>
             </div>
 
-            <div class="alert alert-info" sec:authorize="isAnonymous()">
+            <div class="alert alert-info" sec:authorize="isAnonymous()" style="padding: 0.5em">
                 <span>Trebuie să fii conectat pentru a vedea conținutul.</span>
             </div>
 
@@ -129,7 +129,7 @@
 
                     </div>
 
-                    <div class="alert alert-info" sec:authorize="isAnonymous()">
+                    <div class="alert alert-info" style="padding: 0.5em" sec:authorize="isAnonymous()">
 
                         <span>Trebuie să fii conectat pentru a vedea galeria.</span>
                     </div>
@@ -190,11 +190,11 @@
                     </form>
                 </div>
 
-                <div class="alert alert-info" sec:authorize="isAnonymous()">
+                <div class="alert alert-info" style="padding: 0.5em" sec:authorize="isAnonymous()">
                     Trebuie să fii conectat pentru a adăuga o recenzie.
                 </div>
 
-                <div class="alert alert-success" th:if="${hasReviewed}">
+                <div class="alert alert-success" th:if="${hasReviewed}" style="padding: 0.5em">
                     Ai adăugat deja o recenzie.
                 </div>
 

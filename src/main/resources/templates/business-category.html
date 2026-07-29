@@ -128,7 +128,7 @@
                     </h4>
 
                     <p class="text-muted mb-2">
-                        📍 <span th:text="${p.city}"></span>
+                        <span th:text="${p.city}"></span>
                     </p>
 
                     <div class="mb-2">
@@ -140,7 +140,7 @@
                         <span th:if="${p.reviewCount > 0}">
                             <span class="text-warning">★</span>
 
-                            <strong th:text="${#numbers.formatDecimal(p.averageRating, 1, 1)}"></strong>
+                            <span th:text="${#numbers.formatDecimal(p.averageRating, 1, 1)}"></span>
 
                             <span class="text-muted">
                                 (<span th:text="${p.reviewCount}"></span>

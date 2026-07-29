@@ -55,9 +55,31 @@
         <div class="col-md-4 mb-4"
              th:each="p : ${profiles}">
             <a class="business-card-link" th:href="@{/business/{id}(id=${p.id})}">
+
                 <div class="card shadow-sm h-100">
 
-                    <div class="card-body">
+                    <div class="card-body" style="position: relative; overflow: hidden;">
+
+                        <div th:if="${p.status.name() == 'APPROVED'}"
+                             class="status-ribbon approved">
+
+                            <i class="bi bi-check-circle-fill"></i>
+                            APROBAT
+                        </div>
+
+                        <div th:if="${p.status.name() == 'PENDING'}"
+                             class="status-ribbon pending">
+
+                            <i class="bi bi-hourglass-split"></i>
+                            ÎN AȘTEPTARE
+                        </div>
+
+                        <div th:if="${p.status.name() == 'REJECTED'}"
+                             class="status-ribbon rejected">
+
+                            <i class="bi bi-x-circle-fill"></i>
+                            RESPINS
+                        </div>
 
                         <img alt="business profile picture"
                              loading="lazy"

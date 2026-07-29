@@ -596,6 +596,59 @@ form,
     cursor: pointer;
 }
 
+.status-ribbon{
+
+    position:absolute;
+
+    top:18px;
+
+    right:-42px;
+
+    width:170px;
+
+    text-align:center;
+
+    padding:8px 0;
+
+    font-size:.8rem;
+
+    font-weight:700;
+
+    letter-spacing:.6px;
+
+    color:#fff;
+
+    transform:rotate(45deg);
+
+    z-index:50;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.25);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:6px;
+
+}
+.status-ribbon.approved{
+
+    background:#198754;
+
+}
+.status-ribbon.pending{
+
+    background:#f59e0b;
+
+}
+.status-ribbon.rejected{
+
+    background:#dc3545;
+
+}
+
 
 .favorite-heart,
 .ajax-favorite-btn {
@@ -895,13 +948,6 @@ form,
 /*SEARCH*/
 .search-card {
     border-radius: 22px;
-}
-
-/*DESKTOP SMALL IMPROVE  CARDS*/
-@media (min-width: 992px) {
-    .business-card {
-        min-height: 560px;
-    }
 }
 
 /*SMARTPHONE DISPLAY*/
