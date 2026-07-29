@@ -101,4 +101,5 @@ public class BusinessProfileService {
     public void delete(Long id) {
         businessProfileRepository.deleteById(id);
     }
+
 }

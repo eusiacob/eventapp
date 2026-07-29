@@ -55,6 +55,18 @@ public class BusinessProfile {
 
     private boolean premium;
 
+    public enum BusinessStatus {
+        PENDING,
+        APPROVED,
+        REJECTED,
+        HIDDEN
+    }
+
+    private String rejectionReason;
+
+    @Enumerated(EnumType.STRING)
+    private BusinessStatus status = BusinessStatus.PENDING;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
