@@ -60,17 +60,17 @@
 
                     </div>
 
-                    <div class="alert alert-success text-center"
+                    <div class="alert alert-success text-center p-2"
                          th:if="${param.registered}">
                         Cont creat cu succes! Acum te poti autentifica.
                     </div>
 
-                    <div class="alert alert-success text-center"
+                    <div class="alert alert-success text-center p-2"
                          th:if="${param.logout}">
                         Te-ai deconectat cu succes!
                     </div>
 
-                    <div class="alert alert-danger text-center"
+                    <div class="alert alert-danger text-center p-2"
                          th:if="${param.error}">
                         Email sau parolă incorectă!
                     </div>
@@ -92,7 +92,7 @@
                                    placeholder="Parolă"
                                    type="password">
                         </div>
-                        .
+
                         <a href="/forgot"
                            style="color: black">
                             Am uitat parola
