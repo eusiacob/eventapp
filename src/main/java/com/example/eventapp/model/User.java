@@ -22,26 +22,26 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "First name can not be empty!")
-    @Size(min = 3, max = 10)
+    @NotBlank(message = "Introdu prenumele!")
+    @Size(min = 3, max = 10, message = "Lungimea trebuie să fie între 3 și 10 caractere.")
     private String firstName;
 
-    @NotBlank(message = "Last name can not be empty!")
-    @Size(min = 3, max = 10)
+    @NotBlank(message = "Introdu numele!")
+    @Size(min = 3, max = 10, message = "Lungimea trebuie să fie între 3 și 10 caractere.")
     private String lastName;
 
-    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags = Pattern.Flag.CASE_INSENSITIVE, message = "Incorrect format! It should be like email@me.com")
+    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags = Pattern.Flag.CASE_INSENSITIVE, message = "Format incorect! Trebuie să fie de forma nume@gmail.com")
     @Column(unique = true)
     private String email;
 
-    @NotBlank(message = "Password can not be empty!")
+    @NotBlank(message = "Introdu parola!")
     private String password;
 
     @Transient
     private String confirmPassword;
 
-    @NotBlank(message = "Phone is required")
-    @Pattern(regexp = "^[0-9+\\- ]{10}$", message = "Invalid phone number! It should be like 07X XXX XXX")
+    @NotBlank(message = "Introdu numărul de telefon!")
+    @Pattern(regexp = "^[0-9+\\- ]{10}$", message = "Număr de telefon invalid! Trebuie să fie de forma 07X XXX XXX")
     private String phone;
 
     @Enumerated(EnumType.STRING)

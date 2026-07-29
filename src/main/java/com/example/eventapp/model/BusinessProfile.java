@@ -25,22 +25,22 @@ public class BusinessProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Name is required")
-    @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
+    @NotBlank(message = "Numele este obligatoriu!")
+    @Size(min = 3, max = 50, message = "Lungimea trebuie să fie între 3 și 10 caractere.")
     private String name;
 
     @Enumerated(EnumType.STRING)
     private BusinessCategory category;
 
-    @NotBlank(message = "Description is required")
-    @Size(min = 10, max = 700, message = "Description must be at least 10 characters")
+    @NotBlank(message = "Descrierea este obligatorie!")
+    @Size(min = 10, max = 700, message = "Descrierea trebuie să fie de minim 10 caractere.")
     private String description;
 
     @NotBlank(message = "Județul este obligatoriu")
     private String city;
 
-    @NotBlank(message = "Phone is required")
-    @Pattern(regexp = "^[0-9+\\- ]{10}$", message = "Invalid phone number! It should be 07X XXX XXX")
+    @NotBlank(message = "Introdu numărul de telefon!")
+    @Pattern(regexp = "^[0-9+\\- ]{10}$", message = "Număr de telefon invalid! Trebuie să fie de forma 07X XXX XXX")
     private String phone;
 
     @Email(message = "Introdu un mail valid!")
@@ -56,9 +56,7 @@ public class BusinessProfile {
     private boolean premium;
 
     public enum BusinessStatus {
-        PENDING,
-        APPROVED,
-        REJECTED
+        PENDING, APPROVED, REJECTED
     }
 
     private String rejectionReason;
@@ -92,9 +90,6 @@ public class BusinessProfile {
             return 0.0;
         }
 
-        return reviews.stream()
-                .mapToInt(Review::getRating)
-                .average()
-                .orElse(0.0);
+        return reviews.stream().mapToInt(Review::getRating).average().orElse(0.0);
     }
 }
