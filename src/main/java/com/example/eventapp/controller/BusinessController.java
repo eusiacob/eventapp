@@ -112,7 +112,7 @@ public class BusinessController {
                     "uploads",
                     "businesses",
                     categoryFolder,
-                    profile.getId().toString()
+                    profile.getSlug()
             );
 
 
@@ -152,7 +152,7 @@ public class BusinessController {
                         "/uploads/businesses/"
                                 + categoryFolder
                                 + "/"
-                                + profile.getId()
+                                + profile.getSlug()
                                 + "/"
                                 + fileName
                 );
@@ -293,7 +293,7 @@ public class BusinessController {
                     "uploads",
                     "businesses",
                     category,
-                    profile.getId().toString()
+                    profile.getSlug()
             );
 
 
@@ -327,7 +327,7 @@ public class BusinessController {
                     "/uploads/businesses/"
                             + category
                             + "/"
-                            + profile.getId()
+                            + profile.getSlug()
                             + "/"
                             + fileName
             );
