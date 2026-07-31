@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface BusinessProfileRepository extends JpaRepository<BusinessProfile, Long> {
 
@@ -96,5 +97,8 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
     Page<BusinessProfile> findByStatus(
             BusinessProfile.BusinessStatus status,
             Pageable pageable);
+
+
+    Optional<BusinessProfile> findByUuid(String uuid);
 
 }

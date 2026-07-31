@@ -27,59 +27,107 @@ public class BusinessImageService {
         return businessImageRepository.findByBusinessProfile(businessProfile);
     }
 
-    public void uploadImages(Long businessId,
-                             List<MultipartFile> files) throws IOException {
+    public void uploadImages(
+            Long businessId,
+            List<MultipartFile> files
+    ) throws IOException {
+
 
         BusinessProfile businessProfile =
                 businessProfileService.findById(businessId);
 
-        Path uploadPath = Paths.get("uploads/images/");
+
+        String category = businessProfile.getCategory()
+                .name()
+                .toLowerCase();
+
+
+        Path uploadPath = Paths.get(
+                "uploads",
+                "businesses",
+                category,
+                businessProfile.getId().toString()
+        );
+
 
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
 
+
+        long currentImages =
+                businessImageRepository
+                        .countByBusinessProfile(businessProfile);
+
+
         for (MultipartFile file : files) {
+
 
             if (file.isEmpty()) {
                 continue;
             }
 
+
+            if (currentImages >= 20) {
+                break;
+            }
+
+
             String originalFileName =
                     file.getOriginalFilename();
 
+
             if (originalFileName == null ||
-                    originalFileName.isBlank()) {
+                    !originalFileName.contains(".")) {
                 continue;
             }
 
+
+            String extension =
+                    originalFileName.substring(
+                            originalFileName.lastIndexOf(".")
+                    );
+
+
+            currentImages++;
+
+
             String fileName =
-                    UUID.randomUUID() + "_" +
-                            originalFileName.replaceAll("\\s+", "_");
+                    "gallery_"
+                            + currentImages
+                            + extension;
+
 
             Path filePath =
                     uploadPath.resolve(fileName);
 
-            Files.copy(
-                    file.getInputStream(),
+
+            Files.write(
                     filePath,
-                    StandardCopyOption.REPLACE_EXISTING
+                    file.getBytes()
             );
 
-            BusinessImage businessImage =
+
+            BusinessImage image =
                     new BusinessImage();
 
-            businessImage.setImagePath(
-                    "/images/" + fileName
+
+            image.setImagePath(
+                    "/uploads/businesses/"
+                            + category
+                            + "/"
+                            + businessProfile.getId()
+                            + "/"
+                            + fileName
             );
 
-            businessImage.setBusinessProfile(
+
+            image.setBusinessProfile(
                     businessProfile
             );
 
-            businessImageRepository.save(
-                    businessImage
-            );
+
+            businessImageRepository.save(image);
         }
     }
 

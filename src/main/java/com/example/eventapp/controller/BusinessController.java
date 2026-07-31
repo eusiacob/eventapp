@@ -95,28 +95,72 @@ public class BusinessController {
 
         User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
 
-        if (!file.isEmpty()) {
+        profile.setUser(user);
 
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        profile.setCreatedAt(LocalDate.now());
 
-            Path uploadPath = Paths.get("uploads/images/");
+        businessProfileService.save(profile);
+
+        if (file != null && !file.isEmpty()) {
+
+            String categoryFolder = profile.getCategory()
+                    .name()
+                    .toLowerCase();
+
+
+            Path uploadPath = Paths.get(
+                    "uploads",
+                    "businesses",
+                    categoryFolder,
+                    profile.getId().toString()
+            );
+
 
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-            String uploadDir = "uploads/images/";
 
-            Path filePath = Paths.get(uploadDir + fileName);
+            String originalFileName =
+                    file.getOriginalFilename();
 
-            Files.write(filePath, file.getBytes());
 
-            profile.setImagePath("/images/" + fileName);
+            if (originalFileName != null &&
+                    originalFileName.contains(".")) {
+
+
+                String extension =
+                        originalFileName.substring(
+                                originalFileName.lastIndexOf(".")
+                        );
+
+
+                String fileName = "cover" + extension;
+
+
+                Path filePath =
+                        uploadPath.resolve(fileName);
+
+
+                Files.write(
+                        filePath,
+                        file.getBytes()
+                );
+
+
+                profile.setImagePath(
+                        "/uploads/businesses/"
+                                + categoryFolder
+                                + "/"
+                                + profile.getId()
+                                + "/"
+                                + fileName
+                );
+
+
+                businessProfileService.save(profile);
+            }
         }
-
-        profile.setUser(user);
-
-        businessProfileService.save(profile);
 
         redirectAttributes.addAttribute("businessCreated", true);
 
@@ -240,24 +284,53 @@ public class BusinessController {
 
         if (imageFile != null && !imageFile.isEmpty()) {
 
-            Path uploadPath = Paths.get("uploads/images/");
+            String category = profile.getCategory()
+                    .name()
+                    .toLowerCase();
+
+
+            Path uploadPath = Paths.get(
+                    "uploads",
+                    "businesses",
+                    category,
+                    profile.getId().toString()
+            );
+
 
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-            String originalFileName = imageFile.getOriginalFilename();
 
-            assert originalFileName != null;
-            String fileName = System.currentTimeMillis()
-                    + "_"
-                    + originalFileName.replaceAll("\\s+", "_");
+            String originalFileName =
+                    imageFile.getOriginalFilename();
+
+
+            String extension = originalFileName.substring(
+                    originalFileName.lastIndexOf(".")
+            );
+
+
+            String fileName = "cover" + extension;
+
 
             Path filePath = uploadPath.resolve(fileName);
 
-            Files.write(filePath, imageFile.getBytes());
 
-            existingProfile.setImagePath("/images/" + fileName);
+            Files.write(
+                    filePath,
+                    imageFile.getBytes()
+            );
+
+
+            existingProfile.setImagePath(
+                    "/uploads/businesses/"
+                            + category
+                            + "/"
+                            + profile.getId()
+                            + "/"
+                            + fileName
+            );
         }
 
         businessProfileService.save(existingProfile);

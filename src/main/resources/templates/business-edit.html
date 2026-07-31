@@ -41,14 +41,26 @@
 
                 </h2>
 
+                <div class="alert alert-success" style="padding: 0.5em" th:if="${param.businessCreated}">
+                    Serviciu creat cu succes! Acum poți adăuga detalii, poze și multe altele.
+                </div>
+
+                <div class="alert alert-success" style="padding: 0.5em" th:if="${param.gallerySuccess}">
+                    Imagini adăugate cu succes.
+                </div>
+
+                <div class="alert alert-danger" style="padding: 0.5em" th:if="${param.galleryError}">
+                    Eroare la încărcarea imaginilor. Te rugăm să încerci din nou.
+                </div>
+
+                <div class="alert alert-success" style="padding: 0.5em" th:if="${param.galleryDeleted}">
+                    Imagine ștearsă cu succes.
+                </div>
+
                 <form enctype="multipart/form-data"
                       method="post"
                       th:action="@{/business/edit/{id}(id=${profile.id})}"
                       th:object="${profile}">
-
-                    <div class="alert alert-success" style="padding: 0.5em" th:if="${param.businessCreated}">
-                        Serviciu creat cu succes! Acum poți adăuga detalii, poze și multe altele.
-                    </div>
 
                     <!-- NAME -->
                     <div class="mb-3">
@@ -227,18 +239,6 @@
                 <p class="text-muted">
                     Adăugare imagini în galerie
                 </p>
-
-                <div class="alert alert-success" style="padding: 0.5em" th:if="${param.gallerySuccess}">
-                    Imagini adăugate cu succes.
-                </div>
-
-                <div class="alert alert-danger" style="padding: 0.5em" th:if="${param.galleryError}">
-                    Eroare la încărcarea imaginilor.
-                </div>
-
-                <div class="alert alert-success" style="padding: 0.5em" th:if="${param.galleryDeleted}">
-                    Imagine ștearsă cu succes.
-                </div>
 
                 <!-- GALLERY UPLOAD FORM - SEPARATE FORM -->
                 <form enctype="multipart/form-data"

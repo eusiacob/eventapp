@@ -28,7 +28,7 @@ public class SecurityConfig {
                                 "/businesses/category/**",
                                 "/css/**",
                                 "/js/**",
-                                "/images/**",
+                                "/uploads/businesses/**",
                                 "/privacy",
                                 "/terms",
                                 "/forgot"
@@ -78,8 +78,8 @@ public class SecurityConfig {
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
-            registry.addResourceHandler("/images/**")
-                    .addResourceLocations("file:uploads/images/");
+            registry.addResourceHandler("/uploads/**")
+                    .addResourceLocations("file:uploads/");
         }
     }
 }

@@ -65,14 +65,14 @@ public class BusinessImageController {
                     images
             );
 
-            redirectAttributes.addFlashAttribute(
+            redirectAttributes.addAttribute(
                     "gallerySuccess",
                     "Imaginile au fost încărcate cu succes."
             );
 
         } catch (IOException e) {
 
-            redirectAttributes.addFlashAttribute(
+            redirectAttributes.addAttribute(
                     "galleryError",
                     "A apărut o eroare la încărcarea imaginilor."
             );

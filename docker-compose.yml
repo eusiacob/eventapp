@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: proiect_db
+      MYSQL_DATABASE: eventapp
       MYSQL_USER: springuser
       MYSQL_PASSWORD: springpass
     ports:

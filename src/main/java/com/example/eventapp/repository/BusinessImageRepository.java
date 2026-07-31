@@ -11,4 +11,6 @@ public interface BusinessImageRepository extends JpaRepository<BusinessImage, Lo
     List<BusinessImage> findByBusinessProfile(BusinessProfile businessProfile);
 
     long countByBusinessProfileId(Long businessId);
+
+    long countByBusinessProfile(BusinessProfile businessProfile);
 }

@@ -10,9 +10,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -24,6 +26,12 @@ public class BusinessProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true, nullable = false, updatable = false)
+    private String uuid;
+
+    @Column(unique = true, nullable = false)
+    private String slug;
 
     @NotBlank(message = "Numele este obligatoriu!")
     @Size(min = 3, max = 50, message = "Lungimea trebuie să fie între 3 și 10 caractere.")
@@ -64,6 +72,8 @@ public class BusinessProfile {
     @Enumerated(EnumType.STRING)
     private BusinessStatus status = BusinessStatus.PENDING;
 
+    private LocalDate createdAt;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -91,5 +101,22 @@ public class BusinessProfile {
         }
 
         return reviews.stream().mapToInt(Review::getRating).average().orElse(0.0);
+    }
+
+    @PrePersist
+    public void generateIdentifiers() {
+
+        if (uuid == null) {
+            uuid = UUID.randomUUID()
+                    .toString();
+        }
+
+        if (slug == null && name != null) {
+            slug = name
+                    .toLowerCase()
+                    .trim()
+                    .replaceAll("[^a-z0-9]+", "-")
+                    .replaceAll("^-|-$", "");
+        }
     }
 }
