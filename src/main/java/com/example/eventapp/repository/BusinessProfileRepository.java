@@ -3,7 +3,6 @@ package com.example.eventapp.repository;
 import com.example.eventapp.model.BusinessCategory;
 import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.User;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,27 +10,10 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public interface BusinessProfileRepository extends JpaRepository<BusinessProfile, Long> {
 
     List<BusinessProfile> findByUser(User user);
-
-    List<BusinessProfile> findByCategoryOrderByNameAsc(BusinessCategory category);
-
-    @Query("""
-                SELECT b FROM BusinessProfile b
-                WHERE b.category = :category
-                AND (:keyword IS NULL OR :keyword = '' OR LOWER(b.name) LIKE LOWER(CONCAT('%', :keyword, '%')))
-                AND (:city IS NULL OR :city = '' OR LOWER(b.city) = LOWER(:city))
-                AND b.status = APPROVED
-                ORDER BY b.name ASC
-            """)
-    List<BusinessProfile> searchByCategoryNameAndCity(
-            @Param("category") BusinessCategory category,
-            @Param("keyword") String keyword,
-            @Param("city") String city
-    );
 
     @Query("""
                 SELECT DISTINCT b.city FROM BusinessProfile b
@@ -91,14 +73,5 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
                 ORDER BY AVG(r.rating) DESC, COUNT(r) DESC
             """)
     List<BusinessProfile> findTopRatedBusinesses(Pageable pageable);
-
-    List<BusinessProfile> findByStatus(BusinessProfile.BusinessStatus status);
-
-    Page<BusinessProfile> findByStatus(
-            BusinessProfile.BusinessStatus status,
-            Pageable pageable);
-
-
-    Optional<BusinessProfile> findByUuid(String uuid);
 
 }

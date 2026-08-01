@@ -10,7 +10,6 @@ import com.example.eventapp.service.BusinessProfileService;
 import com.example.eventapp.service.ReviewService;
 import com.example.eventapp.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -18,7 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
@@ -47,11 +45,6 @@ public class BusinessController {
         this.userRepository = userRepository;
         this.reviewService = reviewService;
         this.userService = userService;
-    }
-
-    private boolean isOwner(BusinessProfile profile, UserDetails userDetails) {
-
-        return profile.getUser().getEmail().equals(userDetails.getUsername());
     }
 
     @GetMapping("/businesses")

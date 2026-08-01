@@ -9,9 +9,6 @@ import java.util.Optional;
 
 public interface BusinessUnavailableDateRepository extends JpaRepository<BusinessUnavailableDate, Long> {
 
-    boolean existsByBusinessProfileAndUnavailableDate(BusinessProfile businessProfile,
-                                                      LocalDate unavailableDate);
-
     Optional<BusinessUnavailableDate> findByBusinessProfileAndUnavailableDate(BusinessProfile businessProfile,
                                                                               LocalDate unavailableDate);
 }

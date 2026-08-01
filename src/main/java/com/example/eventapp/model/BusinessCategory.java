@@ -6,7 +6,6 @@ import lombok.Getter;
 public enum BusinessCategory {
 
     FOTOGRAF("Fotograf", "bi-camera-fill"),
-    VIDEOGRAF("Videograf", "bi-camera-reels-fill"),
     DJ("DJ", "bi-music-note-beamed"),
     MUZICA_LIVE("Muzică", "bi-mic-fill"),
     RESTAURANT("Restaurant", "bi-cup-hot-fill"),

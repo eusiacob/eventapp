@@ -21,10 +21,6 @@ public class BusinessProfileService {
         this.businessProfileRepository = businessProfileRepository;
     }
 
-    public List<BusinessProfile> findAll() {
-        return businessProfileRepository.findAll();
-    }
-
     public BusinessProfile findById(Long id) {
         return businessProfileRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Business profile not found"));

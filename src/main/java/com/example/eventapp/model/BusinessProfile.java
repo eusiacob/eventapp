@@ -92,15 +92,22 @@ public class BusinessProfile {
             return 0;
         }
 
-        return reviews.size();
+        return Math.toIntExact(reviews.stream()
+                .filter(r -> r.getReviewStatus() == Review.ReviewStatus.APPROVED)
+                .count());
     }
 
     public double getAverageRating() {
-        if (reviews == null || reviews.isEmpty()) {
-            return 0.0;
+
+        if (reviews == null) {
+            return 0;
         }
 
-        return reviews.stream().mapToInt(Review::getRating).average().orElse(0.0);
+        return reviews.stream()
+                .filter(r -> r.getReviewStatus() == Review.ReviewStatus.APPROVED)
+                .mapToInt(Review::getRating)
+                .average()
+                .orElse(0);
     }
 
     @PrePersist

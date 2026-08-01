@@ -28,6 +28,13 @@ public class Review {
 
     private LocalDateTime createdAt;
 
+    public enum ReviewStatus {
+        PENDING, APPROVED, REJECTED
+    }
+
+    @Enumerated(EnumType.STRING)
+    public ReviewStatus reviewStatus = ReviewStatus.PENDING;
+
     @PrePersist
     public void prePersist() {
         if (createdAt == null) {

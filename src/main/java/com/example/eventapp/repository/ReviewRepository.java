@@ -10,9 +10,9 @@ import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    List<Review> findByBusinessProfile(BusinessProfile businessProfile);
-
     Optional<Review> findByBusinessProfileAndUser(BusinessProfile businessProfile, User user);
 
-    long countByBusinessProfile(BusinessProfile businessProfile);
+    List<Review> findByBusinessProfileAndReviewStatus(
+            BusinessProfile businessProfile,
+            Review.ReviewStatus status);
 }

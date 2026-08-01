@@ -82,11 +82,11 @@ public class ReviewService {
     }
 
     public List<Review> getReviewsForBusiness(BusinessProfile businessProfile) {
-        return reviewRepository.findByBusinessProfile(businessProfile);
+        return reviewRepository.findByBusinessProfileAndReviewStatus(businessProfile, Review.ReviewStatus.APPROVED);
     }
 
     public double getAverageRating(BusinessProfile businessProfile) {
-        List<Review> reviews = reviewRepository.findByBusinessProfile(businessProfile);
+        List<Review> reviews = reviewRepository.findByBusinessProfileAndReviewStatus(businessProfile, Review.ReviewStatus.APPROVED);
 
         if (reviews.isEmpty()) {
             return 0.0;
@@ -99,7 +99,7 @@ public class ReviewService {
     }
 
     public long getReviewCount(BusinessProfile businessProfile) {
-        return reviewRepository.findByBusinessProfile(businessProfile).size();
+        return reviewRepository.findByBusinessProfileAndReviewStatus(businessProfile, Review.ReviewStatus.APPROVED).size();
     }
 
     public boolean hasUserReviewed(Long businessId, String userEmail) {
