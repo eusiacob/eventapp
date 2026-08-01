@@ -10,10 +10,17 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface BusinessProfileRepository extends JpaRepository<BusinessProfile, Long> {
 
     List<BusinessProfile> findByUser(User user);
+
+    Optional<BusinessProfile> findByUuid(String uuid);
+
+    BusinessProfile findBySlug(String slug);
+
+    List<BusinessProfile> findByStatus(BusinessProfile.BusinessStatus status);
 
     @Query("""
                 SELECT DISTINCT b.city FROM BusinessProfile b
@@ -72,6 +79,9 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
                 HAVING COUNT(r) >= 1
                 ORDER BY AVG(r.rating) DESC, COUNT(r) DESC
             """)
+
     List<BusinessProfile> findTopRatedBusinesses(Pageable pageable);
+
+    long countByStatus(BusinessProfile.BusinessStatus status);
 
 }

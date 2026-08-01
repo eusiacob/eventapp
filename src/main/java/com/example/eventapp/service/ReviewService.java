@@ -102,8 +102,8 @@ public class ReviewService {
         return reviewRepository.findByBusinessProfileAndReviewStatus(businessProfile, Review.ReviewStatus.APPROVED).size();
     }
 
-    public boolean hasUserReviewed(Long businessId, String userEmail) {
-        BusinessProfile business = businessProfileService.findById(businessId);
+    public boolean hasUserReviewed(String businessUuid, String userEmail) {
+        BusinessProfile business = businessProfileService.findByUuid(businessUuid);
         User user = userService.findByEmail(userEmail);
 
         return reviewRepository.findByBusinessProfileAndUser(business, user).isPresent();

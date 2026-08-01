@@ -63,7 +63,8 @@
 
             <div class="premium-card carousel-card"
                  th:each="b : ${premiumBusinesses}"
-                 th:onclick="|window.location='/business/' + ${b.id}|">
+                 th:data-url="@{/business/{uuid}(uuid=${b.uuid})}"
+                 onclick="window.location=this.dataset.url">
 
                 <!-- badge -->
                 <span class="premium-badge">PREMIUM</span>
@@ -104,7 +105,8 @@
 
             <div class="premium-card carousel-card"
                  th:each="b : ${mostFavoriteBusinesses}"
-                 th:onclick="|window.location='/business/' + ${b.id}|">
+                 th:data-url="@{/business/{uuid}(uuid=${b.uuid})}"
+                 onclick="window.location=this.dataset.url">
 
                 <span class="favorite-badge">TOP FAVORITE <span class="favorite-heart-badge">♥</span></span>
 
@@ -140,7 +142,8 @@
 
             <div class="premium-card carousel-card"
                  th:each="b : ${topRatedBusinesses}"
-                 th:onclick="|window.location='/business/' + ${b.id}|">
+                 th:data-url="@{/business/{uuid}(uuid=${b.uuid})}"
+                 onclick="window.location=this.dataset.url">
 
                 <span class="top-rating-badge">TOP APRECIATE <span class="top-star-badge">★</span></span>
 

@@ -59,7 +59,7 @@
 
                 <form enctype="multipart/form-data"
                       method="post"
-                      th:action="@{/business/edit/{id}(id=${profile.id})}"
+                      th:action="@{/business/edit/{uuid}(uuid=${profile.uuid})}"
                       th:object="${profile}">
 
                     <!-- NAME -->
@@ -243,7 +243,7 @@
                 <!-- GALLERY UPLOAD FORM - SEPARATE FORM -->
                 <form enctype="multipart/form-data"
                       method="post"
-                      th:action="@{/business/{id}/gallery/upload(id=${profile.id})}">
+                      th:action="@{/business/{uuid}/gallery/upload(uuid=${profile.uuid})}">
 
                     <div class="mb-3">
 
@@ -314,8 +314,8 @@
                                   method="post"
                                   th:action="@{/business/gallery/delete/{id}(id=${img.id})}">
 
-                                <input name="businessId"
-                                       th:value="${profile.id}"
+                                <input name="uuid"
+                                       th:value="${profile.uuid}"
                                        type="hidden">
 
                                 <button class="btn btn-outline-danger btn-sm w-100"

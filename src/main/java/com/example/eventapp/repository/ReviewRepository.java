@@ -15,4 +15,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByBusinessProfileAndReviewStatus(
             BusinessProfile businessProfile,
             Review.ReviewStatus status);
+
+    long countByReviewStatus(Review.ReviewStatus status);
 }

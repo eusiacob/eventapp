@@ -30,23 +30,31 @@ public class BusinessImageController {
         this.userService = userService;
     }
 
-    @PostMapping("/business/{businessId}/gallery/upload")
+    @PostMapping("/business/{uuid}/gallery/upload")
     public String uploadGalleryImages(
-            @PathVariable Long businessId,
+            @PathVariable String uuid,
             @RequestParam("images") List<MultipartFile> images,
             @AuthenticationPrincipal UserDetails userDetails,
             RedirectAttributes redirectAttributes) {
 
-        User user = userService.findByEmail(userDetails.getUsername());
+
+        User user = userService.findByEmail(
+                userDetails.getUsername()
+        );
+
 
         BusinessProfile businessProfile =
-                businessProfileService.findByIdAndValidateOwner(
-                        businessId,
+                businessProfileService.findByUuidAndValidateOwner(
+                        uuid,
                         user
                 );
 
+
         long existingImages =
-                businessImageService.countImagesByBusinessId(businessId);
+                businessImageService.countImagesByBusinessId(
+                        businessProfile.getId()
+                );
+
 
         if (existingImages + images.size() > 20) {
 
@@ -55,8 +63,10 @@ public class BusinessImageController {
                     "Galeria poate conține maximum 20 de imagini."
             );
 
-            return "redirect:/business/edit/" + businessId;
+
+            return "redirect:/business/edit/" + uuid;
         }
+
 
         try {
 
@@ -65,37 +75,55 @@ public class BusinessImageController {
                     images
             );
 
-            redirectAttributes.addAttribute(
+
+            redirectAttributes.addFlashAttribute(
                     "gallerySuccess",
                     "Imaginile au fost încărcate cu succes."
             );
 
+
         } catch (IOException e) {
 
-            redirectAttributes.addAttribute(
+
+            redirectAttributes.addFlashAttribute(
                     "galleryError",
                     "A apărut o eroare la încărcarea imaginilor."
             );
         }
 
 
-        return "redirect:/business/edit/" + businessId;
+        return "redirect:/business/edit/" + uuid;
     }
 
     @PostMapping("/business/gallery/delete/{imageId}")
-    public String deleteGalleryImage(@PathVariable Long imageId,
-                                     @RequestParam("businessId") Long businessId,
-                                     @AuthenticationPrincipal UserDetails userDetails,
-                                     RedirectAttributes redirectAttributes) {
+    public String deleteGalleryImage(
+            @PathVariable Long imageId,
+            @RequestParam("uuid") String uuid,
+            @AuthenticationPrincipal UserDetails userDetails,
+            RedirectAttributes redirectAttributes) {
 
-        User user = userService.findByEmail(userDetails.getUsername());
 
-        businessProfileService.findByIdAndValidateOwner(businessId, user);
+        User user = userService.findByEmail(
+                userDetails.getUsername()
+        );
+
+
+        BusinessProfile profile =
+                businessProfileService.findByUuidAndValidateOwner(
+                        uuid,
+                        user
+                );
+
 
         businessImageService.deleteImage(imageId);
 
-        redirectAttributes.addAttribute("galleryDeleted", true);
 
-        return "redirect:/business/edit/" + businessId;
+        redirectAttributes.addAttribute(
+                "galleryDeleted",
+                true
+        );
+
+
+        return "redirect:/business/edit/" + uuid;
     }
 }

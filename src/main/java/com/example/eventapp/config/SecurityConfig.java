@@ -46,6 +46,9 @@ public class SecurityConfig {
 
                         ).hasRole("BUSINESS")
 
+                        .requestMatchers("/admin/**")
+                        .hasRole("ADMIN")
+
                         .requestMatchers(
                                 "/favorites/**",
                                 "/reviews/**",

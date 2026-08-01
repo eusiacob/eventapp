@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Serviciile mele</title>
+
+  <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" rel="stylesheet">
+
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <link rel="stylesheet"
+        th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- ADMIN PAGE -->
+<div class="container py-4">
+
+  <h5 class="fw-bold mb-4 text-dark">
+    Dashboard Administrator
+  </h5>
+
+  <div class="row g-4">
+
+    <!-- Total Business -->
+
+    <div class="col-lg-3 col-md-6">
+
+      <div class="dashboard-card">
+
+        <i class="bi bi-buildings-fill dashboard-icon"></i>
+
+        <h2 class="text-muted" th:text="${totalBusinesses}"></h2>
+
+        <p>Servicii</p>
+
+      </div>
+
+    </div>
+
+    <!-- Pending -->
+
+    <div class="col-lg-3 col-md-6">
+
+      <div class="dashboard-card warning">
+
+        <i class="bi bi-hourglass-split dashboard-icon"></i>
+
+        <h2 class="text-muted" th:text="${pendingBusinesses}"></h2>
+
+        <p>În așteptare</p>
+
+      </div>
+
+    </div>
+
+    <!-- Reviews -->
+
+    <div class="col-lg-3 col-md-6">
+
+      <div class="dashboard-card success">
+
+        <i class="bi bi-star-fill dashboard-icon"></i>
+
+        <h2 class="text-muted" th:text="${totalReviews}"></h2>
+
+        <p>Recenzii</p>
+
+      </div>
+
+    </div>
+
+    <!-- Users -->
+
+    <div class="col-lg-3 col-md-6">
+
+      <div class="dashboard-card primary">
+
+        <i class="bi bi-people-fill dashboard-icon"></i>
+
+        <h2 class="text-muted" th:text="${totalUsers}"></h2>
+
+        <p>Utilizatori</p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

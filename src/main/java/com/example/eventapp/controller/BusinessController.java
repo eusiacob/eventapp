@@ -157,15 +157,16 @@ public class BusinessController {
 
         redirectAttributes.addAttribute("businessCreated", true);
 
-        return "redirect:/business/edit/" + profile.getId();
+        return "redirect:/business/edit/" + profile.getUuid();
     }
 
-    @GetMapping("/business/{id}")
-    public String businessDetails(@PathVariable Long id,
+    @GetMapping("/business/{uuid}")
+    public String businessDetails(@PathVariable String uuid,
                                   Model model,
                                   @AuthenticationPrincipal UserDetails userDetails) {
 
-        BusinessProfile profile = businessProfileService.findById(id);
+        BusinessProfile profile =
+                businessProfileService.findByUuid(uuid);
 
         if(profile.getStatus()!= BusinessProfile.BusinessStatus.APPROVED){
 
@@ -181,7 +182,7 @@ public class BusinessController {
 
         if (userDetails != null) {
             model.addAttribute("hasReviewed",
-                    reviewService.hasUserReviewed(id, userDetails.getUsername()));
+                    reviewService.hasUserReviewed(uuid, userDetails.getUsername()));
 
             User user = userService.findByEmail(userDetails.getUsername());
 
@@ -212,57 +213,111 @@ public class BusinessController {
         return "dashboard";
     }
 
-    @GetMapping("/business/edit/{id}")
-    public String editBusinessForm(@PathVariable Long id,
-                                   Model model,
-                                   @AuthenticationPrincipal UserDetails userDetails) {
+    @GetMapping("/business/edit/{uuid}")
+    public String editBusinessForm(
+            @PathVariable String uuid,
+            Model model,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
 
-        User user = userService.findByEmail(userDetails.getUsername());
+        User user = userService.findByEmail(
+                userDetails.getUsername()
+        );
+
 
         BusinessProfile profile =
-                businessProfileService.findByIdAndValidateOwner(id, user);
+                businessProfileService.findByUuidAndValidateOwner(
+                        uuid,
+                        user
+                );
 
-        List<String> unavailableDateStrings = profile.getUnavailableDates()
-                .stream()
-                .map(d -> d.getUnavailableDate().toString())
-                .toList();
+
+        List<String> unavailableDateStrings =
+                profile.getUnavailableDates()
+                        .stream()
+                        .map(d -> d.getUnavailableDate().toString())
+                        .toList();
+
 
         long currentImageCount =
-                businessImageService.countImagesByBusinessId(profile.getId());
+                businessImageService.countImagesByBusinessId(
+                        profile.getId()
+                );
 
-        model.addAttribute("currentImageCount", currentImageCount);
-        model.addAttribute("maxImageCount", 20);
 
-        model.addAttribute("profile", profile);
-        model.addAttribute("categories", businessProfileService.getCategories());
-        model.addAttribute("unavailableDateStrings", unavailableDateStrings);
+        model.addAttribute(
+                "currentImageCount",
+                currentImageCount
+        );
+
+
+        model.addAttribute(
+                "maxImageCount",
+                20
+        );
+
+
+        model.addAttribute(
+                "profile",
+                profile
+        );
+
+
+        model.addAttribute(
+                "categories",
+                businessProfileService.getCategories()
+        );
+
+
+        model.addAttribute(
+                "unavailableDateStrings",
+                unavailableDateStrings
+        );
+
 
         return "business-edit";
     }
 
-    @PostMapping("/business/edit/{id}")
-    public String updateBusiness(@PathVariable Long id,
-                                 @Valid @ModelAttribute("profile") BusinessProfile profile,
-                                 BindingResult result,
-                                 @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
-                                 @AuthenticationPrincipal UserDetails userDetails,
-                                 Model model, RedirectAttributes redirectAttributes) throws IOException {
+    @PostMapping("/business/edit/{uuid}")
+    public String updateBusiness(
+            @PathVariable String uuid,
+            @Valid @ModelAttribute("profile") BusinessProfile profile,
+            BindingResult result,
+            @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+            @AuthenticationPrincipal UserDetails userDetails,
+            Model model,
+            RedirectAttributes redirectAttributes
+    ) throws IOException {
 
-        User user = userService.findByEmail(userDetails.getUsername());
+
+        User user = userService.findByEmail(
+                userDetails.getUsername()
+        );
+
 
         BusinessProfile existingProfile =
-                businessProfileService.findByIdAndValidateOwner(id, user);
+                businessProfileService.findByUuidAndValidateOwner(
+                        uuid,
+                        user
+                );
+
 
         if (result.hasErrors()) {
+
             profile.setId(existingProfile.getId());
+            profile.setUuid(existingProfile.getUuid());
             profile.setUser(existingProfile.getUser());
             profile.setImagePath(existingProfile.getImagePath());
             profile.setGalleryImages(existingProfile.getGalleryImages());
 
-            model.addAttribute("categories", businessProfileService.getCategories());
+            model.addAttribute(
+                    "categories",
+                    businessProfileService.getCategories()
+            );
 
             return "business-edit";
         }
+
 
         existingProfile.setName(profile.getName());
         existingProfile.setCategory(profile.getCategory());
@@ -272,18 +327,14 @@ public class BusinessController {
         existingProfile.setEmail(profile.getEmail());
         existingProfile.setWebsite(profile.getWebsite());
 
-        if (imageFile != null && !imageFile.isEmpty()) {
 
-            String category = profile.getCategory()
-                    .name()
-                    .toLowerCase();
+        if (imageFile != null && !imageFile.isEmpty()) {
 
 
             Path uploadPath = Paths.get(
                     "uploads",
                     "businesses",
-                    category,
-                    profile.getUuid()
+                    existingProfile.getUuid()
             );
 
 
@@ -296,54 +347,87 @@ public class BusinessController {
                     imageFile.getOriginalFilename();
 
 
-            String extension = originalFileName.substring(
-                    originalFileName.lastIndexOf(".")
-            );
+            if (originalFileName != null &&
+                    originalFileName.contains(".")) {
 
 
-            String fileName = "cover" + extension;
+                String extension =
+                        originalFileName.substring(
+                                originalFileName.lastIndexOf(".")
+                        );
 
 
-            Path filePath = uploadPath.resolve(fileName);
+                String fileName =
+                        "cover" + extension;
 
 
-            Files.write(
-                    filePath,
-                    imageFile.getBytes()
-            );
+                Path filePath =
+                        uploadPath.resolve(fileName);
 
 
-            existingProfile.setImagePath(
-                    "/uploads/businesses/"
-                            + category
-                            + "/"
-                            + profile.getUuid()
-                            + "/"
-                            + fileName
-            );
+                Files.write(
+                        filePath,
+                        imageFile.getBytes()
+                );
+
+
+                existingProfile.setImagePath(
+                        "/uploads/businesses/"
+                                + existingProfile.getUuid()
+                                + "/"
+                                + fileName
+                );
+            }
         }
+
 
         businessProfileService.save(existingProfile);
 
-        redirectAttributes.addAttribute("businessCreated", true);
+
+        redirectAttributes.addAttribute(
+                "businessUpdated",
+                true
+        );
+
 
         return "redirect:/dashboard";
     }
 
-    @PostMapping("/business/delete/{id}")
-    public String deleteBusiness(@PathVariable Long id,
-                                 @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
+    @PostMapping("/business/delete/{uuid}")
+    public String deleteBusiness(
+            @PathVariable String uuid,
+            @AuthenticationPrincipal UserDetails userDetails,
+            RedirectAttributes redirectAttributes
+    ) {
 
-        User user = userService.findByEmail(userDetails.getUsername());
+
+        User user = userService.findByEmail(
+                userDetails.getUsername()
+        );
+
 
         BusinessProfile profile =
-                businessProfileService.findByIdAndValidateOwner(id, user);
+                businessProfileService.findByUuidAndValidateOwner(
+                        uuid,
+                        user
+                );
 
-        userService.removeBusinessFromAllFavorites(profile.getId());
 
-        businessProfileService.delete(profile.getId());
+        userService.removeBusinessFromAllFavorites(
+                profile.getId()
+        );
 
-        redirectAttributes.addAttribute("businessDeleted", true);
+
+        businessProfileService.delete(
+                profile.getId()
+        );
+
+
+        redirectAttributes.addAttribute(
+                "businessDeleted",
+                true
+        );
+
 
         return "redirect:/dashboard";
     }

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container py-4">
+
+  <h2 class="fw-bold mb-4">
+
+    Business-uri în așteptare
+
+  </h2>
+
+  <div class="table-responsive">
+
+    <table class="table align-middle">
+
+      <thead>
+
+      <tr>
+
+        <th></th>
+
+        <th>Nume</th>
+
+        <th>Categorie</th>
+
+        <th>Județ</th>
+
+        <th>Status</th>
+
+        <th></th>
+
+      </tr>
+
+      </thead>
+
+      <tbody>
+
+      <tr th:each="business : ${businesses}">
+
+        <td>
+
+          <img th:src="@{${business.imagePath}}"
+               style="width:70px;height:70px;object-fit:cover;border-radius:12px;">
+
+        </td>
+
+        <td>
+
+          <strong th:text="${business.name}"></strong>
+
+        </td>
+
+        <td th:text="${business.category.displayName}"></td>
+
+        <td th:text="${business.city}"></td>
+
+        <td>
+
+                    <span class="badge bg-warning">
+
+                        Pending
+
+                    </span>
+
+        </td>
+
+        <td>
+
+          <a class="btn btn-dark btn-sm">
+
+            Vezi
+
+          </a>
+
+        </td>
+
+      </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+</body>
+</html>

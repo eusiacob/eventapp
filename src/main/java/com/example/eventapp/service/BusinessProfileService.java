@@ -21,9 +21,17 @@ public class BusinessProfileService {
         this.businessProfileRepository = businessProfileRepository;
     }
 
+    public BusinessProfile findByUuid(String uuid){
+
+        return businessProfileRepository
+                .findByUuid(uuid)
+                .orElseThrow(() ->
+                        new RuntimeException("Serviciul nu există."));
+    }
+
     public BusinessProfile findById(Long id) {
         return businessProfileRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Business profile not found"));
+                .orElseThrow(() -> new RuntimeException("Serviciul nu există."));
     }
 
     public void save(BusinessProfile businessProfile) {
@@ -49,6 +57,27 @@ public class BusinessProfileService {
         if (!isOwner(profile, user)) {
             throw new RuntimeException("You are not allowed to access this business profile");
         }
+
+        return profile;
+    }
+
+    public BusinessProfile findByUuidAndValidateOwner(
+            String uuid,
+            User user
+    ) {
+
+        BusinessProfile profile =
+                findByUuid(uuid);
+
+
+        if (!profile.getUser().getId()
+                .equals(user.getId())) {
+
+            throw new RuntimeException(
+                    "Nu ai permisiunea."
+            );
+        }
+
 
         return profile;
     }
