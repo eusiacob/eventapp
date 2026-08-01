@@ -112,7 +112,7 @@ public class BusinessController {
                     "uploads",
                     "businesses",
                     categoryFolder,
-                    profile.getSlug()
+                    profile.getUuid()
             );
 
 
@@ -152,7 +152,7 @@ public class BusinessController {
                         "/uploads/businesses/"
                                 + categoryFolder
                                 + "/"
-                                + profile.getSlug()
+                                + profile.getUuid()
                                 + "/"
                                 + fileName
                 );
@@ -176,10 +176,7 @@ public class BusinessController {
 
         if(profile.getStatus()!= BusinessProfile.BusinessStatus.APPROVED){
 
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND
-            );
-
+            return "redirect:/business/edit/" + profile.getId();
         }
 
         model.addAttribute("profile", profile);
@@ -293,7 +290,7 @@ public class BusinessController {
                     "uploads",
                     "businesses",
                     category,
-                    profile.getSlug()
+                    profile.getUuid()
             );
 
 
@@ -327,7 +324,7 @@ public class BusinessController {
                     "/uploads/businesses/"
                             + category
                             + "/"
-                            + profile.getSlug()
+                            + profile.getUuid()
                             + "/"
                             + fileName
             );

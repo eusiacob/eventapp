@@ -46,7 +46,7 @@ public class BusinessImageService {
                 "uploads",
                 "businesses",
                 category,
-                businessProfile.getSlug()
+                businessProfile.getUuid()
         );
 
 
@@ -116,7 +116,7 @@ public class BusinessImageService {
                     "/uploads/businesses/"
                             + category
                             + "/"
-                            + businessProfile.getSlug()
+                            + businessProfile.getUuid()
                             + "/"
                             + fileName
             );
