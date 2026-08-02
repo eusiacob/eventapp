@@ -1,14 +1,8 @@
 package com.example.eventapp.controller;
 
-import com.example.eventapp.model.BusinessCategory;
-import com.example.eventapp.model.BusinessProfile;
-import com.example.eventapp.model.Review;
-import com.example.eventapp.model.User;
+import com.example.eventapp.model.*;
 import com.example.eventapp.repository.UserRepository;
-import com.example.eventapp.service.BusinessImageService;
-import com.example.eventapp.service.BusinessProfileService;
-import com.example.eventapp.service.ReviewService;
-import com.example.eventapp.service.UserService;
+import com.example.eventapp.service.*;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,14 +31,22 @@ public class BusinessController {
     private final ReviewService reviewService;
     private final UserService userService;
     private final BusinessImageService businessImageService;
+    private final UserNotificationService userNotificationService;
 
-    public BusinessController(BusinessProfileService businessProfileService, UserRepository userRepository, ReviewService reviewService, UserService userService, BusinessImageService businessImageService) {
-
+    public BusinessController(
+            BusinessProfileService businessProfileService,
+            UserRepository userRepository,
+            ReviewService reviewService,
+            UserService userService,
+            BusinessImageService businessImageService,
+            UserNotificationService userNotificationService
+    ) {
         this.businessProfileService = businessProfileService;
         this.businessImageService = businessImageService;
         this.userRepository = userRepository;
         this.reviewService = reviewService;
         this.userService = userService;
+        this.userNotificationService = userNotificationService;
     }
 
     @GetMapping("/businesses")
@@ -152,6 +154,26 @@ public class BusinessController {
 
 
                 businessProfileService.save(profile);
+
+                List<User> admins =
+                        userRepository.findByRole(Role.ADMIN);
+
+
+                for (User admin : admins) {
+
+                    userNotificationService.create(
+
+                            admin,
+
+                            "Business nou în așteptare",
+
+                            "Business-ul "
+                                    + profile.getName()
+                                    + " a fost trimis pentru aprobare."
+
+                    );
+
+                }
             }
         }
 
@@ -250,7 +272,6 @@ public class BusinessController {
                         uuid,
                         user
                 );
-
 
         List<String> unavailableDateStrings =
                 profile.getUnavailableDates()

@@ -98,7 +98,7 @@ public class UserService {
 
     //Se sterge serviciul din favorite de la toti userii
     public void removeBusinessFromAllFavorites(Long businessId) {
-        List<User> users = userRepository.findUsersWhoFavoritedBusiness(businessId);
+        List<User> users = userRepository.findUsersWhoFavoriteBusiness(businessId);
 
         for (User user : users) {
             user.getFavoriteBusinesses().removeIf(

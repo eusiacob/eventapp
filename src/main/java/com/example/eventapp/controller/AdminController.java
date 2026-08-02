@@ -6,6 +6,7 @@ import com.example.eventapp.repository.BusinessProfileRepository;
 import com.example.eventapp.repository.ReviewRepository;
 import com.example.eventapp.repository.UserRepository;
 import com.example.eventapp.service.BusinessProfileService;
+import com.example.eventapp.service.UserNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,7 @@ public class AdminController {
 
     private final BusinessProfileRepository businessProfileRepository;
     private final BusinessProfileService  businessProfileService;
+    private final UserNotificationService notificationService;
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
 
@@ -108,6 +110,17 @@ public class AdminController {
 
         business.setStatus(BusinessProfile.BusinessStatus.APPROVED);
 
+        notificationService.create(
+
+                business.getUser(),
+
+                "Serviciu aprobat",
+
+                "Serviciul "
+                        + business.getName()
+                        + " a fost aprobat și este acum vizibil public."
+        );
+
         businessProfileService.save(business);
 
 
@@ -136,6 +149,18 @@ public class AdminController {
                 BusinessProfile.BusinessStatus.REJECTED
         );
 
+        notificationService.create(
+
+                business.getUser(),
+
+                "Serviciu respins",
+
+                "Serviciul "
+                        + business.getName()
+                        + " a fost respins. Motiv: "
+                        + reason
+
+        );
 
         business.setRejectionReason(
                 reason

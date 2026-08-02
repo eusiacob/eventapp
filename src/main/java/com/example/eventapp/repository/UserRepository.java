@@ -1,5 +1,6 @@
 package com.example.eventapp.repository;
 
+import com.example.eventapp.model.Role;
 import com.example.eventapp.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,5 +15,7 @@ public interface UserRepository extends JpaRepository <User, Long> {
     boolean existsByEmail(String email);
 
     @Query("SELECT u FROM User u JOIN u.favoriteBusinesses b WHERE b.id = :businessId")
-    List<User> findUsersWhoFavoritedBusiness(@Param("businessId") Long businessId);
+    List<User> findUsersWhoFavoriteBusiness(@Param("businessId") Long businessId);
+
+    List<User> findByRole(Role role);
 }
