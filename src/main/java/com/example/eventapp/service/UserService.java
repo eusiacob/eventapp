@@ -67,21 +67,22 @@ public class UserService {
 
 
     //    Toggle favorite heart
-    public boolean toggleFavorite(Long businessId, String email) {
+    public boolean toggleFavorite(String businessUuid, String email) {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        BusinessProfile businessProfile = businessProfileRepository.findById(businessId)
+        BusinessProfile businessProfile = businessProfileRepository.findByUuid(businessUuid)
                 .orElseThrow(() -> new RuntimeException("Business not found"));
 
         boolean alreadyFavorite = user.getFavoriteBusinesses()
                 .stream()
-                .anyMatch(b -> b.getId().equals(businessId));
+                .anyMatch(b -> b.getUuid().equals(businessUuid));
 
         if (alreadyFavorite) {
+
             user.getFavoriteBusinesses()
-                    .removeIf(b -> b.getId().equals(businessId));
+                    .removeIf(b -> b.getUuid().equals(businessUuid));
 
             userRepository.save(user);
 

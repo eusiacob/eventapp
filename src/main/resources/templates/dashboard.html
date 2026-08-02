@@ -39,14 +39,16 @@
         Încă nu ai nici un serviciu.
     </div>
 
-
     <div th:if="${param.businessCreated}" class="alert alert-success">
-        Serviciu adăugat!
+        Serviciu adăugat și trimis către aprobare!
     </div>
 
-
     <div th:if="${param.businessDeleted}" class="alert alert-success">
-        Serviciu șters!
+        Serviciu șters! Acțiunea este ireversibilă!
+    </div>
+
+    <div th:if="${param.businessUpdated}" class="alert alert-success">
+        Serviciu actualizat și trimis către aprobare!
     </div>
 
     <!-- CARDS -->

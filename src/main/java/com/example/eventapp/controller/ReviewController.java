@@ -23,8 +23,8 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @PostMapping("/business/{businessId}/reviews")
-    public String addReview(@PathVariable Long businessId,
+    @PostMapping("/business/{businessUuid}/reviews")
+    public String addReview(@PathVariable String businessUuid,
                             @Valid @ModelAttribute("review") Review review,
                             BindingResult result,
                             @AuthenticationPrincipal UserDetails userDetails,
@@ -32,17 +32,17 @@ public class ReviewController {
 
         if (result.hasErrors()) {
             redirectAttributes.addAttribute("reviewError", true);
-            return "redirect:/business/" + businessId;
+            return "redirect:/business/" + businessUuid;
         }
 
         try {
-            reviewService.addReview(businessId, userDetails.getUsername(), review);
+            reviewService.addReview(businessUuid, userDetails.getUsername(), review);
         } catch (RuntimeException e) {
             redirectAttributes.addAttribute("alreadyReviewed", true);
-            return "redirect:/business/" + businessId;
+            return "redirect:/business/" + businessUuid;
         }
 
-        return "redirect:/business/" + businessId;
+        return "redirect:/business/" + businessUuid;
     }
 
     @GetMapping("/reviews/edit/{id}")
@@ -73,7 +73,7 @@ public class ReviewController {
                 userDetails.getUsername()
         );
 
-        Long businessId = existingReview.getBusinessProfile().getId();
+        String businessId = existingReview.getBusinessProfile().getUuid();
 
         if (result.hasErrors()) {
 

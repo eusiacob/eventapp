@@ -93,9 +93,9 @@
                      sec:authorize="isAuthenticated()">
 
                     <button class="favorite-heart ajax-favorite-btn"
-                            th:classappend="${favoriteIds.contains(p.id)} ? ' filled-heart' : ' empty-heart'"
-                            th:data-business-id="${p.id}"
-                            th:data-favorite="${favoriteIds.contains(p.id)}"
+                            th:classappend="${favoriteIds.contains(p.uuid)} ? ' filled-heart' : ' empty-heart'"
+                            th:data-business-uuid="${p.uuid}"
+                            th:data-favorite="${favoriteIds.contains(p.uuid)}"
                             type="button">
                         <span th:text="${favoriteIds.contains(p.id)} ? '♥' : '♡'"></span>
 
@@ -222,9 +222,9 @@
             button.addEventListener("click", function (event) {
                 event.stopPropagation();
 
-                const businessId = this.dataset.businessId;
+                const businessUuid = this.dataset.businessUuid;
 
-                axios.post(`/favorites/toggle/${businessId}`, {}, {
+                axios.post(`/favorites/toggle/${businessUuid}`, {}, {
                     headers: csrfHeader && csrfToken ? {
                         [csrfHeader]: csrfToken
                     } : {}

@@ -129,7 +129,7 @@
 
                     </div>
 
-                    <div class="alert alert-info" style="padding: 0.5em" sec:authorize="isAnonymous()">
+                    <div class="alert alert-info" sec:authorize="isAnonymous()" style="padding: 0.5em">
 
                         <span>Trebuie să fii conectat pentru a vedea galeria.</span>
                     </div>
@@ -159,7 +159,7 @@
                 <div sec:authorize="isAuthenticated()" th:if="${!hasReviewed}">
                     <form class="card p-4 shadow-sm mb-4"
                           method="post"
-                          th:action="@{/business/{businessId}/reviews(businessId=${profile.id})}"
+                          th:action="@{/business/{businessUuid}/reviews(businessUuid=${profile.getUuid()})}"
                           th:object="${review}">
 
                         <div class="mb-3">
@@ -190,12 +190,18 @@
                     </form>
                 </div>
 
-                <div class="alert alert-info" style="padding: 0.5em" sec:authorize="isAnonymous()">
+                <div class="alert alert-info" sec:authorize="isAnonymous()" style="padding: 0.5em">
                     Trebuie să fii conectat pentru a adăuga o recenzie.
                 </div>
 
-                <div class="alert alert-success" th:if="${hasReviewed}" style="padding: 0.5em">
+                <div class="alert alert-success" style="padding: 0.5em" th:if="${hasReviewed}">
                     Ai adăugat deja o recenzie.
+                </div>
+
+                <div class="alert alert-warning"
+                     style="padding: 0.5em"
+                     th:if="${hasPendingReview}">
+                    Recenzia ta este în curs de aprobare.
                 </div>
 
                 <div class="text-muted" th:if="${#lists.isEmpty(reviews)}">
@@ -259,12 +265,13 @@
 
             </div>
 
+<!--            ADD/REMOVE FROM FAVORITES BUTTON-->
             <div class="mt-3" sec:authorize="isAuthenticated()">
 
                 <button class="btn favorite-details-btn"
                         id="detailsFavoriteBtn"
                         th:classappend="${isFavorite} ? ' btn-danger' : ' btn-outline-danger'"
-                        th:data-business-id="${profile.id}"
+                        th:data-business-uuid="${profile.uuid}"
                         type="button">
 
                     <span id="detailsFavoriteIcon"
@@ -334,9 +341,9 @@
     </button>
 
     <img alt="Imagine galerie"
-         loading="lazy"
          class="lightbox-image"
          id="lightbox-image"
+         loading="lazy"
          src="">
 
     <button class="lightbox-arrow lightbox-next"
@@ -448,9 +455,9 @@
         }
 
         favoriteBtn.addEventListener("click", function () {
-            const businessId = this.dataset.businessId;
+            const businessUuid = this.dataset.businessUuid;
 
-            axios.post(`/favorites/toggle/${businessId}`, {}, {
+            axios.post(`/favorites/toggle/${businessUuid}`, {}, {
                 headers: csrfHeader && csrfToken ? {
                     [csrfHeader]: csrfToken
                 } : {}

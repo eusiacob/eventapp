@@ -23,8 +23,8 @@ public class ReviewService {
         this.userService = userService;
     }
 
-    public void addReview(Long businessId, String userEmail, Review review) {
-        BusinessProfile business = businessProfileService.findById(businessId);
+    public void addReview(String businessId, String userEmail, Review review) {
+        BusinessProfile business = businessProfileService.findByUuid(businessId);
         User user = userService.findByEmail(userEmail);
 
         boolean alreadyReviewed = reviewRepository
@@ -67,6 +67,7 @@ public class ReviewService {
 
         existingReview.setRating(updatedReview.getRating());
         existingReview.setComment(updatedReview.getComment());
+        existingReview.setReviewStatus(Review.ReviewStatus.PENDING);
 
         reviewRepository.save(existingReview);
     }
@@ -107,5 +108,19 @@ public class ReviewService {
         User user = userService.findByEmail(userEmail);
 
         return reviewRepository.findByBusinessProfileAndUser(business, user).isPresent();
+    }
+
+    public boolean hasPendingReview(
+            String businessUuid,
+            String email
+    ) {
+
+        User user = userService.findByEmail(email);
+
+        return reviewRepository.existsByBusinessProfileUuidAndUserAndReviewStatus(
+                businessUuid,
+                user,
+                Review.ReviewStatus.PENDING
+        );
     }
 }

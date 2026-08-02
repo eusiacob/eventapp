@@ -53,12 +53,12 @@ public class FavoritesController {
         return "redirect:" + (referer != null ? referer : "/businesses");
     }
 
-    @PostMapping("/favorites/toggle/{id}")
+    @PostMapping("/favorites/toggle/{businessUuid}")
     @ResponseBody
-    public Map<String, Object> toggleFavorite(@PathVariable Long id,
+    public Map<String, Object> toggleFavorite(@PathVariable String businessUuid,
                                               @AuthenticationPrincipal UserDetails userDetails) {
 
-        boolean isFavorite = userService.toggleFavorite(id, userDetails.getUsername());
+        boolean isFavorite = userService.toggleFavorite(businessUuid, userDetails.getUsername());
 
         User user = userService.findByEmail(userDetails.getUsername());
 

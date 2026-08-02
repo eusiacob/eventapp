@@ -168,9 +168,9 @@ public class BusinessController {
         BusinessProfile profile =
                 businessProfileService.findByUuid(uuid);
 
-        if(profile.getStatus()!= BusinessProfile.BusinessStatus.APPROVED){
+        if (profile.getStatus() != BusinessProfile.BusinessStatus.APPROVED) {
 
-            return "redirect:/business/edit/" + profile.getId();
+            return "redirect:/business/edit/" + profile.getUuid();
         }
 
         model.addAttribute("profile", profile);
@@ -181,18 +181,38 @@ public class BusinessController {
         model.addAttribute("reviewCount", reviewService.getReviewCount(profile));
 
         if (userDetails != null) {
-            model.addAttribute("hasReviewed",
-                    reviewService.hasUserReviewed(uuid, userDetails.getUsername()));
 
-            User user = userService.findByEmail(userDetails.getUsername());
+            model.addAttribute(
+                    "hasReviewed",
+                    reviewService.hasUserReviewed(
+                            uuid,
+                            userDetails.getUsername()
+                    )
+            );
+
+            model.addAttribute(
+                    "hasPendingReview",
+                    reviewService.hasPendingReview(
+                            uuid,
+                            userDetails.getUsername()
+                    )
+            );
+
+            User user =
+                    userService.findByEmail(
+                            userDetails.getUsername()
+                    );
 
             boolean isFavorite = user.getFavoriteBusinesses()
                     .stream()
                     .anyMatch(b -> b.getId().equals(profile.getId()));
 
             model.addAttribute("isFavorite", isFavorite);
+
         } else {
+
             model.addAttribute("hasReviewed", false);
+            model.addAttribute("hasPendingReview", false);
             model.addAttribute("isFavorite", false);
         }
 
@@ -326,6 +346,7 @@ public class BusinessController {
         existingProfile.setDescription(profile.getDescription());
         existingProfile.setEmail(profile.getEmail());
         existingProfile.setWebsite(profile.getWebsite());
+        existingProfile.setStatus(BusinessProfile.BusinessStatus.PENDING);
 
 
         if (imageFile != null && !imageFile.isEmpty()) {

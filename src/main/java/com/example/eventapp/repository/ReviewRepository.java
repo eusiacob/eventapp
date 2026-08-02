@@ -16,5 +16,11 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             BusinessProfile businessProfile,
             Review.ReviewStatus status);
 
+    boolean existsByBusinessProfileUuidAndUserAndReviewStatus(
+            String uuid,
+            User user,
+            Review.ReviewStatus status
+    );
+
     long countByReviewStatus(Review.ReviewStatus status);
 }
