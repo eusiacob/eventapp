@@ -3,89 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
 </head>
 <body>
+
+<!-- NAVBAR -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
 <div class="container py-4">
 
-  <h2 class="fw-bold mb-4">
+    <h2 class="fw-bold mb-4 text-dark">
+        Business-uri în așteptare
+    </h2>
 
-    Business-uri în așteptare
+    <div class="table-responsive">
+        <table class="table align-middle">
 
-  </h2>
+            <thead>
+            <tr>
+                <th></th>
+                <th>Nume</th>
+                <th>Categorie</th>
+                <th>Județ</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+            </thead>
 
-  <div class="table-responsive">
+            <tbody>
+            <tr th:each="business : ${businesses}">
+                <td>
+                    <img style="width:70px;height:70px;object-fit:cover;border-radius:12px;"
+                         th:src="@{${business.imagePath}}">
+                </td>
 
-    <table class="table align-middle">
+                <td>
+                    <strong th:text="${business.name}"></strong>
+                </td>
 
-      <thead>
+                <td th:text="${business.category.displayName}"></td>
 
-      <tr>
+                <td th:text="${business.city}"></td>
 
-        <th></th>
-
-        <th>Nume</th>
-
-        <th>Categorie</th>
-
-        <th>Județ</th>
-
-        <th>Status</th>
-
-        <th></th>
-
-      </tr>
-
-      </thead>
-
-      <tbody>
-
-      <tr th:each="business : ${businesses}">
-
-        <td>
-
-          <img th:src="@{${business.imagePath}}"
-               style="width:70px;height:70px;object-fit:cover;border-radius:12px;">
-
-        </td>
-
-        <td>
-
-          <strong th:text="${business.name}"></strong>
-
-        </td>
-
-        <td th:text="${business.category.displayName}"></td>
-
-        <td th:text="${business.city}"></td>
-
-        <td>
-
+                <td>
                     <span class="badge bg-warning">
-
                         Pending
-
                     </span>
+                </td>
 
-        </td>
+                <td>
+                    <a class="btn btn-dark"
+                       th:href="@{/admin/business/{uuid}(uuid=${business.uuid})}">
+                        Vezi
+                    </a>
+                </td>
 
-        <td>
+            </tr>
 
-          <a class="btn btn-dark btn-sm">
+            </tbody>
 
-            Vezi
+        </table>
 
-          </a>
-
-        </td>
-
-      </tr>
-
-      </tbody>
-
-    </table>
-
-  </div>
+    </div>
 
 </div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

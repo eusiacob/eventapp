@@ -20,7 +20,7 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
 
     BusinessProfile findBySlug(String slug);
 
-    List<BusinessProfile> findByStatus(BusinessProfile.BusinessStatus status);
+    List<BusinessProfile> findByStatusOrderByCreatedAtAsc(BusinessProfile.BusinessStatus status);
 
     @Query("""
                 SELECT DISTINCT b.city FROM BusinessProfile b
