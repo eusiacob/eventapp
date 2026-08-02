@@ -29,6 +29,14 @@
 
     </a>
 
+    <div class="alert alert-success" style="padding: 0.5em" th:if="${param.success}">
+        Serviciul a fost aprobat cu succes!
+    </div>
+
+    <div class="alert alert-danger" style="padding: 0.5em" th:if="${param.rejected}">
+        Serviciul a fost respins!
+    </div>
+
     <div class="card shadow-sm border-0 rounded-4">
 
         <img class="card-img-top"
@@ -237,6 +245,7 @@
     </div>
 
 </div>
+
 <div th:replace="~{fragments/footer :: footer}"></div>
 
 <div class="modal fade"
@@ -293,9 +302,7 @@
                     <button type="button"
                             class="btn btn-secondary"
                             data-bs-dismiss="modal">
-
                         Anulează
-
                     </button>
 
 

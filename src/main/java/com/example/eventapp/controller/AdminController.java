@@ -126,9 +126,8 @@ public class AdminController {
         businessProfileService.save(business);
 
 
-        redirectAttributes.addFlashAttribute(
-                "success",
-                "Business-ul a fost aprobat."
+        redirectAttributes.addAttribute(
+                "success", true
         );
 
 
@@ -175,9 +174,8 @@ public class AdminController {
         );
 
 
-        redirectAttributes.addFlashAttribute(
-                "success",
-                "Business-ul a fost respins."
+        redirectAttributes.addAttribute(
+                "rejected", true
         );
 
 
