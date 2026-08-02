@@ -7,8 +7,8 @@
     <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
           integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" rel="stylesheet">
 
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet">
 
     <link rel="stylesheet"
           th:href="@{/css/style.css}">
@@ -20,62 +20,53 @@
 
 <div class="container py-4">
 
-
-    <h4 class="fw-bold mb-4 text-dark">
-
+    <h5 class="fw-bold mb-4 text-dark">
         Servicii
+    </h5>
 
-    </h4>
+    <div class="d-flex flex-wrap gap-3 mb-4">
 
-
-    <div class="btn-group mb-4">
-
-
-        <a class="btn btn-dark"
+        <a class="admin-filter-btn all"
+           th:classappend="${selectedStatus == null} ? ' active'"
            th:href="@{/admin/businesses}">
-
             Toate
-
         </a>
 
 
-        <a class="btn btn-outline-warning"
+        <a class="admin-filter-btn pending"
+           th:classappend="${selectedStatus?.name() == 'PENDING'} ? ' active'"
            th:href="@{/admin/businesses(status='PENDING')}">
-
             În așteptare
-
         </a>
 
 
-        <a class="btn btn-outline-success text-center"
+        <a class="admin-filter-btn approved"
+           th:classappend="${selectedStatus?.name() == 'APPROVED'} ? ' active'"
            th:href="@{/admin/businesses(status='APPROVED')}">
-
             Aprobate
-
         </a>
 
 
-        <a class="btn btn-outline-danger"
+        <a class="admin-filter-btn rejected"
+           th:classappend="${selectedStatus?.name() == 'REJECTED'} ? ' active'"
            th:href="@{/admin/businesses(status='REJECTED')}">
-
             Refuzate
-
         </a>
-
 
     </div>
 
-
 </div>
+
+<div class="admin-business-body">
 
 <div class="row g-4 px-4">
 
-    <div class="col-lg-4 col-md-6"
+    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4"
          th:each="business : ${businesses}">
 
 
-        <a th:href="@{/admin/business/{uuid}(uuid=${business.uuid})}"
-           class="admin-business-card-link">
+        <a class="admin-business-card-link"
+           th:href="@{/admin/business/{uuid}(uuid=${business.uuid})}">
 
 
             <div class="card shadow-sm border-0 rounded-4 h-100">
@@ -83,9 +74,9 @@
 
                 <!-- Cover -->
 
-                <img th:src="@{${business.imagePath}}"
-                     class="card-img-top rounded-top-4"
-                     style="height:220px; object-fit:cover;">
+                <img class="admin-business-image rounded-top-4"
+                     style="height:220px; object-fit:cover;"
+                     th:src="@{${business.imagePath}}">
 
 
                 <div class="card-body">
@@ -99,7 +90,7 @@
                         </h5>
 
 
-                        <span class="badge"
+                        <span class="admin-status-badge"
                               th:classappend="
                               ${business.status.name() == 'PENDING'} ? ' bg-warning text-dark' :
                               (${business.status.name() == 'APPROVED'} ? ' bg-success' :
@@ -150,6 +141,10 @@
 
 </div>
 
+</div>
+
 <div th:replace="~{fragments/footer :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

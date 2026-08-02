@@ -43,7 +43,6 @@ public class SecurityConfig {
                                 "/business/{id}/gallery/upload",
                                 "/business/gallery/delete/**",
                                 "/business/{id}/availability/toggle"
-
                         ).hasRole("BUSINESS")
 
                         .requestMatchers("/admin/**")
@@ -53,10 +52,11 @@ public class SecurityConfig {
                                 "/favorites/**",
                                 "/reviews/**",
                                 "/profile",
-                                "/business/{id}/reviews"
+                                "/business/{id}/reviews",
+                                "/notifications/**"
                         ).authenticated()
 
-                        .requestMatchers(HttpMethod.GET, "/business/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/business/{uuid}").permitAll()
 
                         .anyRequest().denyAll()
                 )

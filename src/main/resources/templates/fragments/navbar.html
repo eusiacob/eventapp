@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="ro"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
 
 <body>
 
@@ -35,6 +35,54 @@
 
 
                     </a>
+                </li>
+
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+
+                    <a class="nav-link position-relative"
+                       data-bs-toggle="dropdown"
+                       href="#"
+                       role="button">
+
+                        <i class="bi bi-bell fs-5"></i>
+
+                        <span class="notification-badge"
+                              th:if="${notificationCount > 0}">
+                            <span th:text="${notificationCount}">
+                            </span>
+                        </span>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end notification-dropdown p-2">
+
+                        <li th:if="${#lists.isEmpty(notifications)}">
+
+                            <span class="dropdown-item-text text-muted">
+                                Nu ai notificări
+                            </span>
+
+                        </li>
+
+                        <li th:each="notification : ${notifications}">
+
+                            <a class="dropdown-item rounded notification-item"
+                               th:href="@{/notifications/{id}(id=${notification.id})}">
+
+                                <strong th:text="${notification.title}">
+                                </strong>
+
+                                <br>
+
+                                <small class="text-muted notification-message"
+                                       th:text="${notification.message}">
+                                </small>
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
                 </li>
 
                 <li class="nav-item dropdown" sec:authorize="isAuthenticated()">

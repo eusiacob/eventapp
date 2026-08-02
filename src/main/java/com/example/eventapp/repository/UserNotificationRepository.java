@@ -2,11 +2,11 @@ package com.example.eventapp.repository;
 
 import com.example.eventapp.model.UserNotification;
 import com.example.eventapp.model.User;
-import com.example.eventapp.model.UserNotification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserNotificationRepository
@@ -17,4 +17,8 @@ public interface UserNotificationRepository
 
     long countByUserAndReadFalse(User user);
 
+    Optional<UserNotification> findByIdAndUser(
+            Long id,
+            User user
+    );
 }

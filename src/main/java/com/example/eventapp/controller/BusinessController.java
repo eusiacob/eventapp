@@ -169,7 +169,10 @@ public class BusinessController {
 
                             "Business-ul "
                                     + profile.getName()
-                                    + " a fost trimis pentru aprobare."
+                                    + " a fost trimis pentru aprobare.",
+
+                            "/admin/business/"
+                                    + profile.getUuid()
 
                     );
 

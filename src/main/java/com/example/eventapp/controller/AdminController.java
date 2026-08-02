@@ -22,7 +22,7 @@ public class AdminController {
 
     private final BusinessProfileRepository businessProfileRepository;
     private final BusinessProfileService  businessProfileService;
-    private final UserNotificationService notificationService;
+    private final UserNotificationService userNotificationService;
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
 
@@ -75,12 +75,10 @@ public class AdminController {
                 businesses
         );
 
-
         model.addAttribute(
                 "selectedStatus",
                 status
         );
-
 
         return "admin/businesses";
     }
@@ -110,7 +108,7 @@ public class AdminController {
 
         business.setStatus(BusinessProfile.BusinessStatus.APPROVED);
 
-        notificationService.create(
+        userNotificationService.create(
 
                 business.getUser(),
 
@@ -118,7 +116,11 @@ public class AdminController {
 
                 "Serviciul "
                         + business.getName()
-                        + " a fost aprobat și este acum vizibil public."
+                        + " a fost aprobat.",
+
+                "/business/"
+                        + business.getUuid()
+
         );
 
         businessProfileService.save(business);
@@ -149,7 +151,7 @@ public class AdminController {
                 BusinessProfile.BusinessStatus.REJECTED
         );
 
-        notificationService.create(
+        userNotificationService.create(
 
                 business.getUser(),
 
@@ -158,8 +160,9 @@ public class AdminController {
                 "Serviciul "
                         + business.getName()
                         + " a fost respins. Motiv: "
-                        + reason
-
+                        + reason,
+                "/business/"
+                        + business.getUuid()
         );
 
         business.setRejectionReason(
