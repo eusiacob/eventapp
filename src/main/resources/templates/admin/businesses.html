@@ -20,61 +20,136 @@
 
 <div class="container py-4">
 
-    <h2 class="fw-bold mb-4 text-dark">
-        Business-uri în așteptare
-    </h2>
 
-    <div class="table-responsive">
-        <table class="table align-middle">
+    <h4 class="fw-bold mb-4">
 
-            <thead>
-            <tr>
-                <th></th>
-                <th>Nume</th>
-                <th>Categorie</th>
-                <th>Județ</th>
-                <th>Status</th>
-                <th></th>
-            </tr>
-            </thead>
+        Servicii
 
-            <tbody>
-            <tr th:each="business : ${businesses}">
-                <td>
-                    <img style="width:70px;height:70px;object-fit:cover;border-radius:12px;"
-                         th:src="@{${business.imagePath}}">
-                </td>
+    </h4>
 
-                <td>
-                    <strong th:text="${business.name}"></strong>
-                </td>
 
-                <td th:text="${business.category.displayName}"></td>
+    <div class="btn-group mb-4">
 
-                <td th:text="${business.city}"></td>
 
-                <td>
-                    <span class="badge bg-warning">
-                        Pending
-                    </span>
-                </td>
+        <a class="btn btn-dark"
+           th:href="@{/admin/businesses}">
 
-                <td>
-                    <a class="btn btn-dark"
-                       th:href="@{/admin/business/{uuid}(uuid=${business.uuid})}">
-                        Vezi
-                    </a>
-                </td>
+            Toate
 
-            </tr>
+        </a>
 
-            </tbody>
 
-        </table>
+        <a class="btn btn-outline-warning"
+           th:href="@{/admin/businesses(status='PENDING')}">
+
+            În așteptare
+
+        </a>
+
+
+        <a class="btn btn-outline-success text-center"
+           th:href="@{/admin/businesses(status='APPROVED')}">
+
+            Aprobate
+
+        </a>
+
+
+        <a class="btn btn-outline-danger"
+           th:href="@{/admin/businesses(status='REJECTED')}">
+
+            Refuzate
+
+        </a>
+
+
+    </div>
+
+
+</div>
+
+<div class="row g-4">
+
+    <div class="col-lg-4 col-md-6"
+         th:each="business : ${businesses}">
+
+
+        <a th:href="@{/admin/business/{uuid}(uuid=${business.uuid})}"
+           class="admin-business-card-link">
+
+
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+
+
+                <!-- Cover -->
+
+                <img th:src="@{${business.imagePath}}"
+                     class="card-img-top rounded-top-4"
+                     style="height:220px; object-fit:cover;">
+
+
+                <div class="card-body">
+
+
+                    <div class="d-flex justify-content-between align-items-start">
+
+
+                        <h5 class="fw-bold mb-2"
+                            th:text="${business.name}">
+                        </h5>
+
+
+                        <span class="badge"
+                              th:classappend="
+                              ${business.status.name() == 'PENDING'} ? ' bg-warning text-dark' :
+                              (${business.status.name() == 'APPROVED'} ? ' bg-success' :
+                              ' bg-danger')"
+                              th:text="${business.status}">
+                        </span>
+
+
+                    </div>
+
+
+                    <p class="text-muted mb-1">
+
+                        <i class="bi bi-tag"></i>
+
+                        <span th:text="${business.category}">
+                        </span>
+
+                    </p>
+
+
+                    <p class="text-muted mb-1">
+
+                        <i class="bi bi-geo-alt"></i>
+
+                        <span th:text="${business.city}">
+                        </span>
+
+                    </p>
+
+
+                    <small class="text-secondary">
+
+                        Creat:
+
+                        <span th:text="${#temporals.format(business.createdAt,'dd.MM.yyyy')}">
+                        </span>
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </a>
 
     </div>
 
 </div>
+
 <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

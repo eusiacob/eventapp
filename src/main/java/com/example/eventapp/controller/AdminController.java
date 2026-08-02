@@ -9,10 +9,7 @@ import com.example.eventapp.service.BusinessProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -49,13 +46,39 @@ public class AdminController {
     }
 
     @GetMapping("/businesses")
-    public String pendingBusinesses(Model model) {
+    public String businesses(
+            @RequestParam(required = false) BusinessProfile.BusinessStatus status,
+            Model model
+    ) {
 
-        List<BusinessProfile> businesses =
-                businessProfileRepository.findByStatusOrderByCreatedAtAsc(
-                        BusinessProfile.BusinessStatus.PENDING);
+        List<BusinessProfile> businesses;
 
-        model.addAttribute("businesses", businesses);
+
+        if (status == null) {
+
+            businesses =
+                    businessProfileRepository
+                            .findAllByOrderByCreatedAtDesc();
+
+        } else {
+
+            businesses =
+                    businessProfileRepository
+                            .findByStatusOrderByCreatedAtDesc(status);
+        }
+
+
+        model.addAttribute(
+                "businesses",
+                businesses
+        );
+
+
+        model.addAttribute(
+                "selectedStatus",
+                status
+        );
+
 
         return "admin/businesses";
     }
@@ -91,6 +114,42 @@ public class AdminController {
         redirectAttributes.addFlashAttribute(
                 "success",
                 "Business-ul a fost aprobat."
+        );
+
+
+        return "redirect:/admin/business/" + uuid;
+    }
+
+    @PostMapping("/business/{uuid}/reject")
+    public String rejectBusiness(
+            @PathVariable String uuid,
+            @RequestParam String reason,
+            RedirectAttributes redirectAttributes
+    ) {
+
+
+        BusinessProfile business =
+                businessProfileService.findByUuid(uuid);
+
+
+        business.setStatus(
+                BusinessProfile.BusinessStatus.REJECTED
+        );
+
+
+        business.setRejectionReason(
+                reason
+        );
+
+
+        businessProfileService.save(
+                business
+        );
+
+
+        redirectAttributes.addFlashAttribute(
+                "success",
+                "Business-ul a fost respins."
         );
 
 

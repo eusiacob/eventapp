@@ -22,6 +22,12 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
 
     List<BusinessProfile> findByStatusOrderByCreatedAtAsc(BusinessProfile.BusinessStatus status);
 
+    List<BusinessProfile> findByStatusOrderByCreatedAtDesc(
+            BusinessProfile.BusinessStatus status
+    );
+
+    List<BusinessProfile> findAllByOrderByCreatedAtDesc();
+
     @Query("""
                 SELECT DISTINCT b.city FROM BusinessProfile b
                 WHERE b.category = :category

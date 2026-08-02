@@ -67,6 +67,7 @@ public class BusinessProfile {
         PENDING, APPROVED, REJECTED
     }
 
+    @Column(length = 1000)
     private String rejectionReason;
 
     @Enumerated(EnumType.STRING)
