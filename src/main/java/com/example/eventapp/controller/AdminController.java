@@ -6,6 +6,7 @@ import com.example.eventapp.repository.BusinessProfileRepository;
 import com.example.eventapp.repository.ReviewRepository;
 import com.example.eventapp.repository.UserRepository;
 import com.example.eventapp.service.BusinessProfileService;
+import com.example.eventapp.service.ReviewService;
 import com.example.eventapp.service.UserNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,7 @@ public class AdminController {
     private final UserNotificationService userNotificationService;
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
+    private final ReviewService reviewService;
 
     @GetMapping
     public String dashboard(Model model) {
@@ -180,5 +182,70 @@ public class AdminController {
 
 
         return "redirect:/admin/business/" + uuid;
+    }
+
+    @GetMapping("/reviews")
+    public String adminReviews(
+            @RequestParam(required = false) Review.ReviewStatus status,
+            Model model
+    ) {
+
+        List<Review> reviews;
+
+        if (status != null) {
+            reviews = reviewService.findByStatus(status);
+        } else {
+            reviews = reviewService.findAll();
+        }
+
+        model.addAttribute("reviews", reviews);
+        model.addAttribute("selectedStatus", status);
+
+        return "admin/reviews";
+    }
+
+    @GetMapping("review/{id}")
+    public String reviewDetails(
+            @PathVariable Long id,
+            Model model
+    ) {
+
+        Review review = reviewService.findById(id);
+
+        model.addAttribute("review", review);
+
+        return "admin/review-details";
+    }
+
+    @PostMapping("/review/{id}/approve")
+    public String approveReview(
+            @PathVariable Long id,
+            RedirectAttributes redirectAttributes
+    ) {
+
+        reviewService.approveReview(id);
+
+        redirectAttributes.addAttribute(
+                "reviewApproved",
+                true
+        );
+
+        return "redirect:/admin/review/" + id;
+    }
+
+    @PostMapping("/review/{id}/reject")
+    public String rejectReview(
+            @PathVariable Long id,
+            RedirectAttributes redirectAttributes
+    ) {
+
+        reviewService.rejectReview(id);
+
+        redirectAttributes.addAttribute(
+                "reviewRejected",
+                true
+        );
+
+        return "redirect:/admin/review/" + id;
     }
 }

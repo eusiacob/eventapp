@@ -23,6 +23,14 @@ public class ReviewService {
         this.userService = userService;
     }
 
+    public List<Review> findAll() {
+        return reviewRepository.findAllByOrderByCreatedAtDesc();
+    }
+
+    public List<Review> findByStatus(Review.ReviewStatus status) {
+        return reviewRepository.findByReviewStatusOrderByCreatedAtDesc(status);
+    }
+
     public void addReview(String businessId, String userEmail, Review review) {
         BusinessProfile business = businessProfileService.findByUuid(businessId);
         User user = userService.findByEmail(userEmail);
@@ -122,5 +130,25 @@ public class ReviewService {
                 user,
                 Review.ReviewStatus.PENDING
         );
+    }
+
+    public void approveReview(Long id) {
+
+        Review review = findById(id);
+
+        review.setReviewStatus(Review.ReviewStatus.APPROVED);
+
+        reviewRepository.save(review);
+
+    }
+
+    public void rejectReview(Long id) {
+
+        Review review = findById(id);
+
+        review.setReviewStatus(Review.ReviewStatus.REJECTED);
+
+        reviewRepository.save(review);
+
     }
 }

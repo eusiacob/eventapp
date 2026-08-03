@@ -20,8 +20,8 @@
 
 <div class="container py-4">
 
-    <h5 class="fw-bold mb-4 text-dark">
-        Servicii
+    <h5 class="fw-bold mb-3 text-dark">
+        Moderare servicii
     </h5>
 
     <div class="d-flex flex-wrap gap-3 mb-4">
@@ -55,93 +55,95 @@
 
     </div>
 
-</div>
+    <div class="admin-business-body">
 
-<div class="admin-business-body">
+        <div class="row g-4">
 
-<div class="row g-4 px-4">
-
-    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4"
-         th:each="business : ${businesses}">
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4"
+                 th:each="business : ${businesses}">
 
 
-        <a class="admin-business-card-link"
-           th:href="@{/admin/business/{uuid}(uuid=${business.uuid})}">
+                <a class="admin-business-card-link"
+                   th:href="@{/admin/business/{uuid}(uuid=${business.uuid})}">
 
 
-            <div class="card shadow-sm border-0 rounded-4 h-100">
+                    <div class="card shadow-sm border-0 rounded-4 h-100">
 
 
-                <!-- Cover -->
+                        <!-- Cover -->
 
-                <img class="admin-business-image rounded-top-4"
-                     style="height:220px; object-fit:cover;"
-                     th:src="@{${business.imagePath}}">
-
-
-                <div class="card-body">
+                        <img class="admin-business-image rounded-top-4"
+                             style="height:220px; object-fit:cover;"
+                             th:src="@{${business.imagePath}}">
 
 
-                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="card-body">
 
 
-                        <h5 class="fw-bold mb-2"
-                            th:text="${business.name}">
-                        </h5>
+                            <div class="d-flex justify-content-between align-items-start">
 
 
-                        <span class="admin-status-badge"
-                              th:classappend="
+                                <h5 class="fw-bold mb-2"
+                                    th:text="${business.name}">
+                                </h5>
+
+
+                                <span class="admin-status-badge"
+                                      th:classappend="
                               ${business.status.name() == 'PENDING'} ? ' bg-warning text-dark' :
                               (${business.status.name() == 'APPROVED'} ? ' bg-success' :
                               ' bg-danger')"
-                              th:text="${business.status}">
+                                      th:text="${business.status}">
                         </span>
 
+
+                            </div>
+
+
+                            <p class="text-muted mb-1">
+
+                                <i class="bi bi-tag"></i>
+
+                                <span th:text="${business.category}">
+                        </span>
+
+                            </p>
+
+
+                            <p class="text-muted mb-1">
+
+                                <i class="bi bi-geo-alt"></i>
+
+                                <span th:text="${business.city}">
+                        </span>
+
+                            </p>
+
+
+                            <small class="text-secondary">
+
+                                Creat:
+
+                                <span th:text="${#temporals.format(business.createdAt,'dd.MM.yyyy')}">
+                        </span>
+
+                            </small>
+
+                        </div>
 
                     </div>
 
-
-                    <p class="text-muted mb-1">
-
-                        <i class="bi bi-tag"></i>
-
-                        <span th:text="${business.category}">
-                        </span>
-
-                    </p>
-
-
-                    <p class="text-muted mb-1">
-
-                        <i class="bi bi-geo-alt"></i>
-
-                        <span th:text="${business.city}">
-                        </span>
-
-                    </p>
-
-
-                    <small class="text-secondary">
-
-                        Creat:
-
-                        <span th:text="${#temporals.format(business.createdAt,'dd.MM.yyyy')}">
-                        </span>
-
-                    </small>
-
-                </div>
+                </a>
 
             </div>
 
-        </a>
+        </div>
 
     </div>
 
 </div>
 
-</div>
+
 
 <div th:replace="~{fragments/footer :: footer}"></div>
 

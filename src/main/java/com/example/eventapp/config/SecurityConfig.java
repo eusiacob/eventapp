@@ -21,6 +21,29 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers(
+                                "/business/create",
+                                "/business/edit/**",
+                                "/business/delete/**",
+                                "/dashboard",
+                                "/business/{id}/availability/block",
+                                "/business/{id}/gallery/upload",
+                                "/business/gallery/delete/**",
+                                "/business/{id}/availability/toggle"
+                        ).hasRole("BUSINESS")
+
+                        .requestMatchers(
+                                "/admin/**")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(
+                                "/favorites/**",
+                                "/reviews/**",
+                                "/profile",
+                                "/business/{id}/reviews",
+                                "/notifications/**"
+                        ).authenticated()
+
+                        .requestMatchers(
                                 "/",
                                 "/login",
                                 "/register",
@@ -33,28 +56,6 @@ public class SecurityConfig {
                                 "/terms",
                                 "/forgot"
                         ).permitAll()
-
-                        .requestMatchers(
-                                "/business/create",
-                                "/business/edit/**",
-                                "/business/delete/**",
-                                "/dashboard",
-                                "/business/{id}/availability/block",
-                                "/business/{id}/gallery/upload",
-                                "/business/gallery/delete/**",
-                                "/business/{id}/availability/toggle"
-                        ).hasRole("BUSINESS")
-
-                        .requestMatchers("/admin/**")
-                        .hasRole("ADMIN")
-
-                        .requestMatchers(
-                                "/favorites/**",
-                                "/reviews/**",
-                                "/profile",
-                                "/business/{id}/reviews",
-                                "/notifications/**"
-                        ).authenticated()
 
                         .requestMatchers(HttpMethod.GET, "/business/{uuid}").permitAll()
 

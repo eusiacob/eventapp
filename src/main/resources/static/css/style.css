@@ -1767,10 +1767,6 @@ form,
 
 }
 
-.admin-business-body {
-    padding: 15px;
-}
-
 .admin-business-card-link h5 {
 
     font-size: 1rem;
@@ -2022,5 +2018,64 @@ form,
 .admin-filter-btn.active::after {
 
     content: "✓";
+
+}
+.admin-table{
+
+    border-radius:16px;
+
+    overflow:hidden;
+
+    background:white;
+
+    box-shadow:0 5px 18px rgba(0,0,0,.05);
+
+}
+
+.admin-table thead{
+
+    background:#f8f9fa;
+
+}
+
+.admin-table th{
+
+    font-weight:600;
+
+    border-bottom:none;
+
+    color:#495057;
+
+}
+
+.admin-table td{
+
+    vertical-align:middle;
+
+}
+
+.admin-table tbody tr{
+
+    transition:.15s;
+
+}
+
+.admin-table tbody tr:hover{
+
+    background:#f8f9fa;
+
+}
+
+.clickable-row{
+
+    cursor:pointer;
+
+    transition:.15s;
+
+}
+
+.clickable-row:hover{
+
+    background:#f6f9fc;
 
 }
