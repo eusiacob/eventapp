@@ -14,17 +14,21 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final BusinessProfileService businessProfileService;
     private final UserService userService;
+    private final UserNotificationService userNotificationService;
 
     public ReviewService(ReviewRepository reviewRepository,
                          BusinessProfileService businessProfileService,
-                         UserService userService) {
+                         UserService userService, UserNotificationService userNotificationService) {
         this.reviewRepository = reviewRepository;
         this.businessProfileService = businessProfileService;
         this.userService = userService;
+        this.userNotificationService = userNotificationService;
     }
 
     public List<Review> findAll() {
+
         return reviewRepository.findAllByOrderByCreatedAtDesc();
+
     }
 
     public List<Review> findByStatus(Review.ReviewStatus status) {
@@ -48,6 +52,8 @@ public class ReviewService {
         review.setUser(user);
 
         reviewRepository.save(review);
+
+        userNotificationService.notifyAdminsNewReview(review);
     }
 
     public Review findById(Long reviewId) {
@@ -68,26 +74,6 @@ public class ReviewService {
         }
 
         return review;
-    }
-
-    public void updateReview(Long reviewId, String userEmail, Review updatedReview) {
-        Review existingReview = findByIdAndValidateOwner(reviewId, userEmail);
-
-        existingReview.setRating(updatedReview.getRating());
-        existingReview.setComment(updatedReview.getComment());
-        existingReview.setReviewStatus(Review.ReviewStatus.PENDING);
-
-        reviewRepository.save(existingReview);
-    }
-
-    public Long deleteReview(Long reviewId, String userEmail) {
-        Review review = findByIdAndValidateOwner(reviewId, userEmail);
-
-        Long businessId = review.getBusinessProfile().getId();
-
-        reviewRepository.delete(review);
-
-        return businessId;
     }
 
     public List<Review> getReviewsForBusiness(BusinessProfile businessProfile) {
@@ -138,17 +124,26 @@ public class ReviewService {
 
         review.setReviewStatus(Review.ReviewStatus.APPROVED);
 
+        review.setRejectionReason(null);
+
         reviewRepository.save(review);
 
+        userNotificationService.notifyReviewApproved(review);
     }
 
-    public void rejectReview(Long id) {
+    public void rejectReview(Long id, String reason) {
 
         Review review = findById(id);
 
         review.setReviewStatus(Review.ReviewStatus.REJECTED);
 
+        review.setRejectionReason(
+                reason == null ? null : reason.trim()
+        );
+
         reviewRepository.save(review);
+
+        userNotificationService.notifyReviewRejected(review);
 
     }
 }

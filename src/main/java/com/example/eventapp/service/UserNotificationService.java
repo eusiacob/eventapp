@@ -1,23 +1,30 @@
 package com.example.eventapp.service;
 
+import com.example.eventapp.model.Review;
+import com.example.eventapp.model.Role;
 import com.example.eventapp.model.UserNotification;
 import com.example.eventapp.model.User;
 import com.example.eventapp.repository.UserNotificationRepository;
+import com.example.eventapp.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class UserNotificationService {
 
     private final UserNotificationRepository userNotificationRepository;
+    private final UserRepository userRepository;
 
     public UserNotificationService(
-            UserNotificationRepository userNotificationRepository
+            UserNotificationRepository userNotificationRepository,
+            UserRepository userRepository
     ) {
         this.userNotificationRepository = userNotificationRepository;
+        this.userRepository = userRepository;
     }
 
     public void create(
@@ -81,6 +88,74 @@ public class UserNotificationService {
 
         return notification.getLink();
 
+    }
+
+    public void notifyAdminsNewReview(Review review) {
+
+        List<User> admins = userRepository.findByRole(Role.ADMIN);
+
+        for (User admin : admins) {
+
+            UserNotification notification = new UserNotification();
+
+            notification.setUser(admin);
+
+            notification.setTitle("Recenzie nouă");
+
+            notification.setMessage(
+                    "A fost adăugată o recenzie nouă pentru serviciul \"" +
+                            review.getBusinessProfile().getName() +
+                            "\" și așteaptă aprobare."
+            );
+
+            notification.setCreatedAt(LocalDateTime.now());
+
+            notification.setRead(false);
+
+            userNotificationRepository.save(notification);
+        }
+    }
+
+    public void notifyReviewApproved(Review review) {
+
+        UserNotification notification = new UserNotification();
+
+        notification.setUser(review.getUser());
+
+        notification.setTitle("Recenzie aprobată");
+
+        notification.setMessage(
+                "Recenzia ta pentru \"" +
+                        review.getBusinessProfile().getName() +
+                        "\" a fost aprobată și este acum vizibilă public."
+        );
+
+        notification.setRead(false);
+
+        notification.setCreatedAt(LocalDateTime.now());
+
+        userNotificationRepository.save(notification);
+    }
+
+    public void notifyReviewRejected(Review review) {
+
+        UserNotification notification = new UserNotification();
+
+        notification.setUser(review.getUser());
+
+        notification.setTitle("Recenzie respinsă");
+
+        notification.setMessage(
+                "Recenzia ta pentru \"" +
+                        review.getBusinessProfile().getName() +
+                        "\" a fost respinsă de un administrator."
+        );
+
+        notification.setRead(false);
+
+        notification.setCreatedAt(LocalDateTime.now());
+
+        userNotificationRepository.save(notification);
     }
 
 }

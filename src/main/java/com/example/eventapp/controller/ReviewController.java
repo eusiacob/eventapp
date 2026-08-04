@@ -6,9 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,71 +43,4 @@ public class ReviewController {
         return "redirect:/business/" + businessUuid;
     }
 
-    @GetMapping("/reviews/edit/{id}")
-    public String editReviewForm(@PathVariable Long id,
-                                 @AuthenticationPrincipal UserDetails userDetails,
-                                 Model model) {
-
-        Review review = reviewService.findByIdAndValidateOwner(
-                id,
-                userDetails.getUsername()
-        );
-
-        model.addAttribute("review", review);
-
-        return "review-edit";
-    }
-
-    @PostMapping("/reviews/edit/{id}")
-    public String updateReview(@PathVariable Long id,
-                               @Valid @ModelAttribute("review") Review review,
-                               BindingResult result,
-                               @AuthenticationPrincipal UserDetails userDetails,
-                               Model model,
-                               RedirectAttributes redirectAttributes) {
-
-        Review existingReview = reviewService.findByIdAndValidateOwner(
-                id,
-                userDetails.getUsername()
-        );
-
-        String businessId = existingReview.getBusinessProfile().getUuid();
-
-        if (result.hasErrors()) {
-
-            review.setId(existingReview.getId());
-            review.setBusinessProfile(existingReview.getBusinessProfile());
-            review.setUser(existingReview.getUser());
-            review.setCreatedAt(existingReview.getCreatedAt());
-
-            model.addAttribute("review", review);
-
-            return "review-edit";
-        }
-
-        reviewService.updateReview(
-                id,
-                userDetails.getUsername(),
-                review
-        );
-
-        redirectAttributes.addAttribute("reviewUpdated", true);
-
-        return "redirect:/business/" + businessId;
-    }
-
-    @PostMapping("/reviews/delete/{id}")
-    public String deleteReview(@PathVariable Long id,
-                               @AuthenticationPrincipal UserDetails userDetails,
-                               RedirectAttributes redirectAttributes) {
-
-        Long businessId = reviewService.deleteReview(
-                id,
-                userDetails.getUsername()
-        );
-
-        redirectAttributes.addAttribute("reviewDeleted", true);
-
-        return "redirect:/business/" + businessId;
-    }
 }

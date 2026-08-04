@@ -236,10 +236,11 @@ public class AdminController {
     @PostMapping("/review/{id}/reject")
     public String rejectReview(
             @PathVariable Long id,
+            @RequestParam String reason,
             RedirectAttributes redirectAttributes
     ) {
 
-        reviewService.rejectReview(id);
+        reviewService.rejectReview(id, reason);
 
         redirectAttributes.addAttribute(
                 "reviewRejected",

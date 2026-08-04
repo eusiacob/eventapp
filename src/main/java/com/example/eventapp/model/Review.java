@@ -32,6 +32,9 @@ public class Review {
         PENDING, APPROVED, REJECTED
     }
 
+    @Column(length = 500)
+    private String rejectionReason;
+
     @Enumerated(EnumType.STRING)
     public ReviewStatus reviewStatus = ReviewStatus.PENDING;
 
