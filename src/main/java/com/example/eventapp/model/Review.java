@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,7 +23,8 @@ public class Review {
     @Max(value = 5, message = "Evaluarea trebuie să fie cel mult 5")
     private int rating;
 
-    @NotBlank(message = "Recenzia este obligatorie!")
+    @NotBlank(message = "Recenzia nu poate fi goală.")
+    @Size(max = 1000, message = "Recenzia poate avea maximum 1000 de caractere.")
     @Column(length = 1000)
     private String comment;
 

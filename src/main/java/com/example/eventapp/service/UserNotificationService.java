@@ -145,11 +145,18 @@ public class UserNotificationService {
 
         notification.setTitle("Recenzie respinsă");
 
-        notification.setMessage(
+        String message =
                 "Recenzia ta pentru \"" +
                         review.getBusinessProfile().getName() +
-                        "\" a fost respinsă de un administrator."
-        );
+                        "\" a fost respinsă.";
+
+        if (review.getRejectionReason() != null &&
+                !review.getRejectionReason().isBlank()) {
+
+            message += "\n\nMotiv: " + review.getRejectionReason();
+        }
+
+        notification.setMessage(message);
 
         notification.setRead(false);
 

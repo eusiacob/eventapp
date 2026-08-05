@@ -22,7 +22,7 @@ import java.util.List;
 public class AdminController {
 
     private final BusinessProfileRepository businessProfileRepository;
-    private final BusinessProfileService  businessProfileService;
+    private final BusinessProfileService businessProfileService;
     private final UserNotificationService userNotificationService;
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
@@ -239,14 +239,21 @@ public class AdminController {
             @RequestParam String reason,
             RedirectAttributes redirectAttributes
     ) {
+        try {
 
-        reviewService.rejectReview(id, reason);
+            reviewService.rejectReview(id, reason);
 
-        redirectAttributes.addAttribute(
-                "reviewRejected",
-                true
-        );
+            redirectAttributes.addFlashAttribute(
+                    "reviewRejected",
+                    true
+            );
+        } catch (IllegalArgumentException ex) {
 
+            redirectAttributes.addFlashAttribute(
+                    "rejectError",
+                    ex.getMessage()
+            );
+        }
         return "redirect:/admin/review/" + id;
     }
 }

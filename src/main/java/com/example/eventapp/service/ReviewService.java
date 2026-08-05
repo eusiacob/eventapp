@@ -137,9 +137,13 @@ public class ReviewService {
 
         review.setReviewStatus(Review.ReviewStatus.REJECTED);
 
-        review.setRejectionReason(
-                reason == null ? null : reason.trim()
-        );
+        if (reason == null || reason.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Motivul respingerii este obligatoriu."
+            );
+        }
+
+        review.setRejectionReason(reason.trim());
 
         reviewRepository.save(review);
 
