@@ -1,5 +1,6 @@
 package com.example.eventapp.controller;
 
+import com.example.eventapp.dto.UserAdminDto;
 import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.Review;
 import com.example.eventapp.model.Role;
@@ -154,7 +155,14 @@ public class AdminController {
             users = userService.findAll();
         }
 
-        model.addAttribute("users", users);
+        List<UserAdminDto> userDtos = users.stream()
+                .map(user -> new UserAdminDto(
+                        user,
+                        reviewService.countByUser(user)
+                ))
+                .toList();
+
+        model.addAttribute("users", userDtos);
         model.addAttribute("selectedRole", role);
 
         return "admin/users";

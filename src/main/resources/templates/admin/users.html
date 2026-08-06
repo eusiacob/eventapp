@@ -115,16 +115,16 @@
 
             <tr class="clickable-row"
 
-                th:data-href="@{/admin/user/{id}(id=${user.id})}"
+                th:data-href="@{/admin/user/{id}(id=${userDto.user.id})}"
 
-                th:each="user : ${users}">
+                th:each="userDto : ${users}">
 
                 <td class="fw-semibold"
-                    th:text="${user.firstName} + ' ' + ${user.lastName}">
+                    th:text="${userDto.user.firstName} + ' ' + ${userDto.user.lastName}">
                 </td>
 
                 <td
-                        th:text="${user.email}">
+                        th:text="${userDto.user.email}">
                 </td>
 
                 <td>
@@ -132,26 +132,31 @@
                 <span class="badge"
 
                       th:classappend="
-                            ${user.role.name == 'ADMIN'} ? 'bg-dark' :
-                            (${user.role.name == 'BUSINESS'} ? 'bg-success' : 'bg-primary')"
+                            ${userDto.user.role.name == 'ADMIN'} ? 'bg-dark' :
+                            (${userDto.user.role.name == 'BUSINESS'} ? 'bg-success' : 'bg-primary')"
 
-                      th:text="${user.role.name}">
+                      th:text="${userDto.user.role.name}">
 
                 </span>
 
                 </td>
 
                 <td
-                        th:text="${user.businessProfiles.size()}">
+                        th:text="${userDto.user.businessProfiles.size()}">
                 </td>
 
                 <td
-                        th:text="${user.favoriteBusinesses.size()}">
+                        th:text="${userDto.user.favoriteBusinesses.size()}">
 
                 </td>
 
                 <td
-                        th:text="${#temporals.format(user.createdAt,'dd.MM.yyyy')}">
+                        th:text="${userDto.reviewCount}">
+
+                </td>
+
+                <td
+                        th:text="${#temporals.format(userDto.user.createdAt,'dd.MM.yyyy')}">
                 </td>
 
             </tr>

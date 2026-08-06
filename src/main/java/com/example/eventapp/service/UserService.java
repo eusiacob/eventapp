@@ -4,7 +4,6 @@ import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.Role;
 import com.example.eventapp.model.User;
 import com.example.eventapp.repository.BusinessProfileRepository;
-import com.example.eventapp.repository.ReviewRepository;
 import com.example.eventapp.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,14 +16,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final BusinessProfileRepository businessProfileRepository;
-    private final ReviewRepository reviewRepository;
 
     public UserService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder, ReviewRepository reviewRepository, BusinessProfileRepository businessProfileRepository) {
+                       PasswordEncoder passwordEncoder, BusinessProfileRepository businessProfileRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.businessProfileRepository = businessProfileRepository;
-        this.reviewRepository = reviewRepository;
     }
 
     public List<User> findAll() {
@@ -87,11 +84,6 @@ public class UserService {
                         new RuntimeException("User not found"));
 
     }
-
-    public long getReviewCount(User user) {
-        return reviewRepository.countByUser(user);
-    }
-
 
     //    Toggle favorite heart
     public boolean toggleFavorite(String businessUuid, String email) {

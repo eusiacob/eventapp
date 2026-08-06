@@ -37,12 +37,6 @@ public class ReviewService {
 
     }
 
-    public List<Review> findByUser(User user) {
-
-        return reviewRepository.findByUser(user);
-
-    }
-
     public List<Review> findByStatus(Review.ReviewStatus status) {
         return reviewRepository.findByReviewStatusOrderByCreatedAtDesc(status);
     }
@@ -77,21 +71,6 @@ public class ReviewService {
     public Review findById(Long reviewId) {
         return reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new RuntimeException("Review not found"));
-    }
-
-    public boolean isOwner(Review review, String userEmail) {
-        return review.getUser() != null
-                && review.getUser().getEmail().equals(userEmail);
-    }
-
-    public Review findByIdAndValidateOwner(Long reviewId, String userEmail) {
-        Review review = findById(reviewId);
-
-        if (!isOwner(review, userEmail)) {
-            throw new RuntimeException("You are not allowed to modify this review");
-        }
-
-        return review;
     }
 
     public List<Review> getReviewsForBusiness(BusinessProfile businessProfile) {
