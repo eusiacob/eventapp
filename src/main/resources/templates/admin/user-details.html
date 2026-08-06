@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta content="width=device-width, initial-scale=1.0"
+          name="viewport">
+
+    <title>Detalii utilizator</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
+
+</head>
+
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h4 class="fw-bold mb-3 text-dark">
+
+            Detalii utilizator
+
+        </h4>
+
+        <a class="btn btn-outline-secondary"
+           th:href="@{/admin/users}">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Înapoi
+
+        </a>
+
+    </div>
+
+
+    <div class="card shadow-sm border-0 rounded-4">
+
+        <div class="card-body p-4">
+
+            <div class="d-flex align-items-center mb-4">
+
+                <div class="rounded-circle bg-dark text-white d-flex align-items-center justify-content-center me-3"
+                     style="width:70px;height:70px;font-size:28px;">
+
+                    <i class="bi bi-person-fill"></i>
+
+                </div>
+
+                <div>
+
+                    <h3 class="mb-1 fw-bold"
+                        th:text="${user.firstName + ' ' + user.lastName}">
+
+                    </h3>
+
+                    <span class="badge"
+
+                          th:classappend="
+                          ${user.role.name() == 'ADMIN'} ? ' bg-dark' :
+                          (${user.role.name() == 'BUSINESS'} ? ' bg-success' :
+                          ' bg-primary')"
+
+                          th:text="${user.role}">
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <div class="row gy-4">
+
+                <div class="col-md-6">
+
+                    <h6 class="fw-bold">
+
+                        Email
+
+                    </h6>
+
+                    <p class="text-muted"
+                       th:text="${user.email}">
+                    </p>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <h6 class="fw-bold">
+
+                        Data înregistrării
+
+                    </h6>
+
+                    <p class="text-muted"
+                       th:text="${#temporals.format(user.createdAt,'dd.MM.yyyy HH:mm')}">
+                    </p>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <h6 class="fw-bold mb-4">
+
+                Serviciile utilizatorului
+
+            </h6>
+
+            <div th:if="${businesses.isEmpty()}">
+
+                <div class="alert alert-light border">
+
+                    Acest utilizator nu deține niciun serviciu.
+
+                </div>
+
+            </div>
+
+            <div class="list-group"
+                 th:if="${!businesses.isEmpty()}">
+
+                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+
+                   th:each="business : ${businesses}"
+
+                   th:href="@{/admin/business/{uuid}(uuid=${business.uuid})}">
+
+                    <div>
+
+                        <h6 class="mb-1"
+                            th:text="${business.name}">
+                        </h6>
+
+                        <small class="text-muted"
+                               th:text="${business.city}">
+                        </small>
+
+                    </div>
+
+                    <span class="badge rounded-pill"
+
+                          th:classappend="
+                  ${business.status.name == 'APPROVED'} ? ' bg-success' :
+                  (${business.status.name == 'PENDING'} ? ' bg-warning text-dark' :
+                  ' bg-danger')"
+
+                          th:text="${business.status.name}">
+        </span>
+
+                </a>
+
+            </div>
+
+            <hr class="my-5">
+
+            <h6 class="fw-bold mb-4">
+
+                Ultimele recenzii
+
+            </h6>
+
+            <div th:if="${latestReviews.isEmpty()}">
+
+                <div class="alert alert-light border">
+
+                    Utilizatorul nu a scris încă nicio recenzie.
+
+                </div>
+
+            </div>
+
+            <div class="list-group"
+                 th:if="${!latestReviews.isEmpty()}">
+
+                <a class="list-group-item list-group-item-action"
+
+                   th:each="review : ${latestReviews}"
+
+                   th:href="@{/admin/review/{id}(id=${review.id})}">
+
+                    <div class="d-flex justify-content-between">
+
+                        <h6 class="mb-1"
+                            th:text="${review.businessProfile.name}">
+                        </h6>
+
+                        <small class="text-muted"
+                               th:text="${#temporals.format(review.createdAt,'dd.MM.yyyy')}">
+                        </small>
+
+                    </div>
+
+                    <div class="mb-2">
+
+            <span class="text-warning"
+                  th:each="i : ${#numbers.sequence(1,5)}">
+
+                <span th:text="${i <= review.rating} ? '★' : '☆'"></span>
+
+            </span>
+
+                    </div>
+
+                    <p class="mb-2 text-muted"
+
+                       th:text="${#strings.abbreviate(review.comment,120)}">
+                    </p>
+
+                    <span class="badge"
+
+                          th:classappend="
+                    ${review.reviewStatus.name() == 'APPROVED'} ? 'bg-success' :
+                    (${review.reviewStatus.name() == 'PENDING'} ? 'bg-warning text-dark' :
+                    'bg-danger')"
+
+                          th:text="${review.reviewStatus}">
+
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

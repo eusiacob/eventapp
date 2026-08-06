@@ -37,7 +37,7 @@
             <a class="dashboard-card-link"
                th:href="@{/admin/businesses}">
 
-                <div class="dashboard-card">
+                <div class="dashboard-card" style="border-top: 5px solid">
 
                     <i class="bi bi-buildings-fill dashboard-icon text-dark"></i>
 
@@ -57,7 +57,7 @@
           <a th:href="@{/admin/businesses(status='PENDING')}"
              class="dashboard-card-link">
 
-            <div class="dashboard-card warning">
+            <div class="dashboard-card warning-card">
 
               <i class="bi bi-hourglass-split dashboard-icon text-dark"></i>
 
@@ -78,7 +78,7 @@
           <a th:href="@{/admin/reviews}"
              class="dashboard-card-link">
 
-            <div class="dashboard-card success">
+            <div class="dashboard-card success-card">
 
               <i class="bi bi-star-fill dashboard-icon text-dark"></i>
 
@@ -99,7 +99,7 @@
           <a th:href="@{/admin/users}"
              class="dashboard-card-link">
 
-            <div class="dashboard-card primary">
+            <div class="dashboard-card primary-card">
 
               <i class="bi bi-people-fill dashboard-icon text-dark"></i>
 

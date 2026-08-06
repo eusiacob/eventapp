@@ -1,8 +1,10 @@
 package com.example.eventapp.service;
 
 import com.example.eventapp.model.BusinessProfile;
+import com.example.eventapp.model.Role;
 import com.example.eventapp.model.User;
 import com.example.eventapp.repository.BusinessProfileRepository;
+import com.example.eventapp.repository.ReviewRepository;
 import com.example.eventapp.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,12 +17,25 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final BusinessProfileRepository businessProfileRepository;
+    private final ReviewRepository reviewRepository;
 
     public UserService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder, BusinessProfileRepository businessProfileRepository) {
+                       PasswordEncoder passwordEncoder, ReviewRepository reviewRepository, BusinessProfileRepository businessProfileRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.businessProfileRepository = businessProfileRepository;
+        this.reviewRepository = reviewRepository;
+    }
+
+    public List<User> findAll() {
+
+        return userRepository.findAll();
+    }
+
+    public List<User> findByRole(Role role) {
+
+        return userRepository.findByRole(role);
+
     }
 
     public boolean emailExists(String email) {
@@ -63,6 +78,18 @@ public class UserService {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public User findById(Long id) {
+
+        return userRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+    }
+
+    public long getReviewCount(User user) {
+        return reviewRepository.countByUser(user);
     }
 
 

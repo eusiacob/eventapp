@@ -2,12 +2,15 @@ package com.example.eventapp.controller;
 
 import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.Review;
+import com.example.eventapp.model.Role;
+import com.example.eventapp.model.User;
 import com.example.eventapp.repository.BusinessProfileRepository;
 import com.example.eventapp.repository.ReviewRepository;
 import com.example.eventapp.repository.UserRepository;
 import com.example.eventapp.service.BusinessProfileService;
 import com.example.eventapp.service.ReviewService;
 import com.example.eventapp.service.UserNotificationService;
+import com.example.eventapp.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +30,7 @@ public class AdminController {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final ReviewService reviewService;
+    private final UserService userService;
 
     @GetMapping
     public String dashboard(Model model) {
@@ -134,6 +138,41 @@ public class AdminController {
 
 
         return "redirect:/admin/business/" + uuid;
+    }
+
+    @GetMapping("/users")
+    public String adminUsers(
+            @RequestParam(required = false) Role role,
+            Model model
+    ) {
+
+        List<User> users;
+
+        if (role != null) {
+            users = userService.findByRole(role);
+        } else {
+            users = userService.findAll();
+        }
+
+        model.addAttribute("users", users);
+        model.addAttribute("selectedRole", role);
+
+        return "admin/users";
+    }
+
+    @GetMapping("/user/{id}")
+    public String userDetails(
+            @PathVariable Long id,
+            Model model
+    ) {
+
+        User user = userService.findById(id);
+
+        model.addAttribute("user", user);
+        model.addAttribute("businesses", user.getBusinessProfiles());
+        model.addAttribute("latestReviews", reviewService.findLatestByUser(user));
+
+        return "admin/user-details";
     }
 
     @PostMapping("/business/{uuid}/reject")

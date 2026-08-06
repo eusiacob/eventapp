@@ -31,8 +31,26 @@ public class ReviewService {
 
     }
 
+    public long countByUser(User user) {
+
+        return reviewRepository.countByUser(user);
+
+    }
+
+    public List<Review> findByUser(User user) {
+
+        return reviewRepository.findByUser(user);
+
+    }
+
     public List<Review> findByStatus(Review.ReviewStatus status) {
         return reviewRepository.findByReviewStatusOrderByCreatedAtDesc(status);
+    }
+
+    public List<Review> findLatestByUser(User user) {
+
+        return reviewRepository.findTop5ByUserOrderByCreatedAtDesc(user);
+
     }
 
     public void addReview(String businessId, String userEmail, Review review) {

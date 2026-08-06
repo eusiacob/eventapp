@@ -1749,19 +1749,37 @@ form,
 
 }
 
-.warning {
+.warning-card {
 
     border-top: 5px solid #ffc107;
 
 }
 
-.success {
+.success-card {
 
     border-top: 5px solid #28a745;
 
 }
 
-.primary {
+.admin-filter-btn.primary {
+
+    background-color: #d1e7dd;
+
+    color: #00afff;
+
+    border-color: #badbcc;
+}
+
+.admin-filter-btn.success {
+
+    background-color: #d1e7dd;
+
+    color: #0f5132;
+
+    border-color: #badbcc;
+}
+
+.primary-card {
 
     border-top: 5px solid #0d6efd;
 

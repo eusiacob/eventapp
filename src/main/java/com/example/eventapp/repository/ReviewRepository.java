@@ -12,11 +12,17 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     Optional<Review> findByBusinessProfileAndUser(BusinessProfile businessProfile, User user);
 
+    long countByUser(User user);
+
+    List<Review> findByUser(User user);
+
     List<Review> findAllByOrderByCreatedAtDesc();
 
     List<Review> findByReviewStatusOrderByCreatedAtDesc(
             Review.ReviewStatus status
     );
+
+    List<Review> findTop5ByUserOrderByCreatedAtDesc(User user);
 
     List<Review> findByBusinessProfileAndReviewStatus(
             BusinessProfile businessProfile,

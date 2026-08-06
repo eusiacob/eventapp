@@ -28,7 +28,7 @@ public class Review {
     @Column(length = 1000)
     private String comment;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     public enum ReviewStatus {
         PENDING, APPROVED, REJECTED
@@ -39,13 +39,6 @@ public class Review {
 
     @Enumerated(EnumType.STRING)
     public ReviewStatus reviewStatus = ReviewStatus.PENDING;
-
-    @PrePersist
-    public void prePersist() {
-        if (createdAt == null) {
-            createdAt = LocalDateTime.now();
-        }
-    }
 
     @ManyToOne
     @JoinColumn(name = "business_id")

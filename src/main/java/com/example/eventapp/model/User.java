@@ -1,12 +1,16 @@
 package com.example.eventapp.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -37,6 +41,8 @@ public class User {
     @NotBlank(message = "Introdu parola!")
     private String password;
 
+    private LocalDateTime createdAt = LocalDateTime.now();
+
     @Transient
     private String confirmPassword;
 
@@ -47,14 +53,11 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<BusinessProfile> businessProfiles = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(
-            name = "favorite_businesses",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "business_id")
-    )
+    @JoinTable(name = "favorite_businesses", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "business_id"))
     Set<BusinessProfile> favoriteBusinesses;
 }

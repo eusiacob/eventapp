@@ -92,7 +92,7 @@
 
     <div class="table-responsive mt-2">
 
-        <table class="table table-hover align-middle admin-table">
+        <table class="table table-hover align-middle admin-table text-center">
 
             <thead>
 
@@ -124,6 +124,7 @@
 
                 <td class="fw-semibold"
                     th:text="${review.businessProfile.name}">
+
                 </td>
 
                 <td
@@ -149,9 +150,9 @@
                 <span class="badge"
 
                       th:classappend="
-                            ${review.reviewStatus.name == 'APPROVED'} ? ' bg-success' :
-                            (${review.reviewStatus.name == 'REJECTED'} ? ' bg-danger' :
-                            ' bg-warning text-dark')"
+                            ${review.reviewStatus.name == 'APPROVED'} ? 'bg-success' :
+                            (${review.reviewStatus.name == 'REJECTED'} ? 'bg-danger' :
+                            'bg-warning text-dark')"
 
                       th:text="${review.reviewStatus}">
 
