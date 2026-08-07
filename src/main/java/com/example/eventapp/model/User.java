@@ -63,4 +63,8 @@ public class User {
     @JoinTable(name = "favorite_businesses", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "business_id"))
     Set<BusinessProfile> favoriteBusinesses;
 
+    @OneToOne(mappedBy = "user",
+            cascade = CascadeType.ALL)
+    private Subscription subscription;
+
 }

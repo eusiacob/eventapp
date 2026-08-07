@@ -71,7 +71,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .failureHandler(customAuthenticationFailureHandler)
-                        .defaultSuccessUrl("/", true)
+                        .defaultSuccessUrl("/businesses", true)
                         .permitAll()
                 )
                 .logout(LogoutConfigurer::permitAll);

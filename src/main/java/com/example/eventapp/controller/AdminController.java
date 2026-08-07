@@ -1,17 +1,11 @@
 package com.example.eventapp.controller;
 
 import com.example.eventapp.dto.UserAdminDto;
-import com.example.eventapp.model.BusinessProfile;
-import com.example.eventapp.model.Review;
-import com.example.eventapp.model.Role;
-import com.example.eventapp.model.User;
+import com.example.eventapp.model.*;
 import com.example.eventapp.repository.BusinessProfileRepository;
 import com.example.eventapp.repository.ReviewRepository;
 import com.example.eventapp.repository.UserRepository;
-import com.example.eventapp.service.BusinessProfileService;
-import com.example.eventapp.service.ReviewService;
-import com.example.eventapp.service.UserNotificationService;
-import com.example.eventapp.service.UserService;
+import com.example.eventapp.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,6 +28,7 @@ public class AdminController {
     private final UserRepository userRepository;
     private final ReviewService reviewService;
     private final UserService userService;
+    private final SubscriptionService subscriptionService;
 
     @GetMapping
     public String dashboard(Model model) {
@@ -335,5 +330,24 @@ public class AdminController {
         }
 
         return "redirect:/admin/user/" + id;
+    }
+
+    @GetMapping("/test-subscription/{userId}")
+    @ResponseBody
+    public String testSubscription(
+            @PathVariable Long userId
+    ) {
+
+        User user = userService.findById(userId);
+
+        Subscription subscription =
+                subscriptionService.findByUser(user);
+
+        if(subscription == null) {
+            return "Nu exista abonament";
+        }
+
+        return subscription.getStatus().name();
+
     }
 }
