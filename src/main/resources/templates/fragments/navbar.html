@@ -134,6 +134,12 @@
                     </a>
                 </li>
 
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link add-service-link" href="/admin">
+                        Administrare
+                    </a>
+                </li>
+
                 <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" href="/login">
                         Login
