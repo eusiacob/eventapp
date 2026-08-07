@@ -1809,7 +1809,7 @@ form,
 
     transition: all .25s ease;
 
-    text-decoration:none;
+    text-decoration: none;
 
     color: inherit;
 
@@ -1832,7 +1832,7 @@ form,
 
     box-shadow: 0 8px 25px rgba(0, 0, 0, .12);
 
-    text-decoration:none;
+    text-decoration: none;
 
     color: inherit;
 
@@ -2018,7 +2018,6 @@ form,
 
 }
 
-
 .admin-filter-btn:hover {
 
     transform: translateY(-2px);
@@ -2038,62 +2037,63 @@ form,
     content: "✓";
 
 }
-.admin-table{
 
-    border-radius:16px;
+.admin-table {
 
-    overflow:hidden;
+    border-radius: 16px;
 
-    background:white;
+    overflow: hidden;
 
-    box-shadow:0 5px 18px rgba(0,0,0,.05);
+    background: white;
 
-}
-
-.admin-table thead{
-
-    background:#f8f9fa;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, .05);
 
 }
 
-.admin-table th{
+.admin-table thead {
 
-    font-weight:600;
-
-    border-bottom:none;
-
-    color:#495057;
+    background: #f8f9fa;
 
 }
 
-.admin-table td{
+.admin-table th {
 
-    vertical-align:middle;
+    font-weight: 600;
 
-}
+    border-bottom: none;
 
-.admin-table tbody tr{
-
-    transition:.15s;
+    color: #495057;
 
 }
 
-.admin-table tbody tr:hover{
+.admin-table td {
 
-    background:#f8f9fa;
-
-}
-
-.clickable-row{
-
-    cursor:pointer;
-
-    transition:.15s;
+    vertical-align: middle;
 
 }
 
-.clickable-row:hover{
+.admin-table tbody tr {
 
-    background:#f6f9fc;
+    transition: .15s;
+
+}
+
+.admin-table tbody tr:hover {
+
+    background: #f8f9fa;
+
+}
+
+.clickable-row {
+
+    cursor: pointer;
+
+    transition: .15s;
+
+}
+
+.clickable-row:hover {
+
+    background: #f6f9fc;
 
 }

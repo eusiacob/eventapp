@@ -358,17 +358,33 @@ public class AdminController {
     }
 
     @GetMapping("/subscriptions")
-    public String subscriptions(Model model) {
+    public String subscriptions(
+            @RequestParam(required = false) String status,
+            Model model
+    ) {
 
-        model.addAttribute(
-                "subscriptions",
-                subscriptionService.findAll()
-        );
+        List<Subscription> subscriptions;
+
+        if (status == null || status.isBlank()) {
+
+            subscriptions = subscriptionService.findAll();
+
+        } else {
+
+            subscriptions = subscriptionService.findByStatus(
+                    Subscription.SubscriptionStatus.valueOf(status)
+            );
+
+        }
+
+        model.addAttribute("subscriptions", subscriptions);
+        model.addAttribute("currentStatus", status);
 
         return "admin/subscriptions";
+
     }
 
-//    DOAR PENTRU TEST - VA FI FACUT AUTOMAT
+    //    DOAR PENTRU TEST - VA FI FACUT AUTOMAT
     @PostMapping("/user/{id}/subscription/activate")
     public String activateSubscription(
             @PathVariable Long id,

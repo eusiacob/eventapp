@@ -18,4 +18,8 @@ public interface SubscriptionRepository
 
     List<Subscription> findAllByOrderByCreatedAtDesc();
 
+    List<Subscription> findAllByStatusOrderByCreatedAtDesc(
+            Subscription.SubscriptionStatus status
+    );
+
 }

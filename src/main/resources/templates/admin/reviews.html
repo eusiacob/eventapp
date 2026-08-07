@@ -72,7 +72,11 @@
     <!-- LISTA -->
 
     <span class="text-muted"
-          th:text="${reviews.size()} + ' recenzii'">
+          th:text="${reviews.size()}">
+        </span>
+
+    <span class="text-muted"
+          th:text="${reviews.size()} == 1 ? ' recenzie': ' recenzii'">
         </span>
 
     <div class="card border-0 shadow-sm rounded-4 mt-2">
@@ -208,5 +212,6 @@
     });
 
 </script>
+
 </body>
 </html>

@@ -103,4 +103,13 @@ public class SubscriptionService {
 
     }
 
+    public List<Subscription> findByStatus(
+            Subscription.SubscriptionStatus status
+    ) {
+
+        return subscriptionRepository
+                .findAllByStatusOrderByCreatedAtDesc(status);
+
+    }
+
 }

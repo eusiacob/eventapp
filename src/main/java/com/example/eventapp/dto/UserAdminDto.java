@@ -12,9 +12,6 @@ public class UserAdminDto {
 
     private long reviewCount;
 
-    public UserAdminDto() {
-    }
-
     public UserAdminDto(User user, long reviewCount) {
         this.user = user;
         this.reviewCount = reviewCount;

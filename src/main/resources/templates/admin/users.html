@@ -41,21 +41,21 @@
             Toți
         </a>
 
-        <a class="admin-filter-btn all"
+        <a class="admin-filter-btn bg-primary text-white"
            th:classappend="${selectedRole?.name() == 'USER'} ? ' active'"
            th:href="@{/admin/users(role='USER')}">
 
             USER
         </a>
 
-        <a class="admin-filter-btn success"
+        <a class="admin-filter-btn bg-success text-white"
            th:classappend="${selectedRole?.name() == 'BUSINESS'} ? ' active'"
            th:href="@{/admin/users(role='BUSINESS')}">
 
             BUSINESS
         </a>
 
-        <a class="admin-filter-btn pending"
+        <a class="admin-filter-btn bg-dark text-white"
            th:classappend="${selectedRole?.name() == 'ADMIN'} ? ' active'"
            th:href="@{/admin/users(role='ADMIN')}">
 
@@ -68,7 +68,11 @@
     <!--    LISTA-->
 
     <span class="text-muted"
-          th:text="${users.size()} + ' utilizatori'">
+          th:text="${users.size()}">
+        </span>
+
+    <span class="text-muted"
+          th:text="${users.size()} == 1 ? ' utilizator' : ' utilizatori'">
         </span>
 
     <div class="card border-0 shadow-sm rounded-4 mt-2">
