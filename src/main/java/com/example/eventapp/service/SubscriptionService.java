@@ -5,9 +5,11 @@ import com.example.eventapp.model.Subscription;
 import com.example.eventapp.model.User;
 import com.example.eventapp.repository.SubscriptionRepository;
 import com.example.eventapp.repository.UserRepository;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class SubscriptionService {
@@ -15,34 +17,26 @@ public class SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final UserRepository userRepository;
 
-    public SubscriptionService(
-            SubscriptionRepository subscriptionRepository,
-            UserRepository userRepository
-    ) {
+    public SubscriptionService(SubscriptionRepository subscriptionRepository, UserRepository userRepository) {
         this.subscriptionRepository = subscriptionRepository;
         this.userRepository = userRepository;
     }
 
     public Subscription findByUser(User user) {
 
-        return subscriptionRepository.findByUser(user)
-                .orElse(null);
+        return subscriptionRepository.findByUser(user).orElse(null);
     }
 
-    public Subscription activateSubscription(
+    public void activateSubscription(
             User user,
-            Subscription.SubscriptionPlan plan
-    ) {
+            Subscription.SubscriptionPlan plan) {
 
-        Subscription subscription =
-                subscriptionRepository.findByUser(user)
-                        .orElse(new Subscription());
+        Subscription subscription = subscriptionRepository.
+                findByUser(user).orElse(new Subscription());
 
         subscription.setUser(user);
         subscription.setPlan(plan);
-        subscription.setStatus(
-                Subscription.SubscriptionStatus.ACTIVE
-        );
+        subscription.setStatus(Subscription.SubscriptionStatus.ACTIVE);
 
 
         LocalDateTime now = LocalDateTime.now();
@@ -52,21 +46,48 @@ public class SubscriptionService {
 
         if (plan == Subscription.SubscriptionPlan.MONTHLY) {
 
-            subscription.setEndDate(
-                    now.plusMonths(1)
-            );
+            subscription.setEndDate(now.plusMonths(1));
 
         } else {
 
-            subscription.setEndDate(
-                    now.plusYears(1)
-            );
+            subscription.setEndDate(now.plusYears(1));
 
         }
 
         user.setRole(Role.BUSINESS);
         userRepository.save(user);
-        return subscriptionRepository.save(subscription);
+        subscriptionRepository.save(subscription);
+
+    }
+
+    @Scheduled(cron = "*/30 * * * * *")
+    public void checkExpiredSubscriptions() {
+
+        List<Subscription> subscriptions = subscriptionRepository.
+                findByStatus(Subscription.SubscriptionStatus.ACTIVE);
+
+        LocalDateTime now = LocalDateTime.now();
+
+        for (Subscription subscription : subscriptions) {
+
+            if (subscription.getEndDate().isBefore(now)) {
+
+                subscription.setStatus(Subscription.SubscriptionStatus.EXPIRED);
+
+                User user = subscription.getUser();
+
+                if (user.getRole() == Role.BUSINESS) {
+
+                    user.setRole(Role.USER);
+                    userRepository.save(user);
+
+                }
+
+                subscriptionRepository.save(subscription);
+
+            }
+
+        }
 
     }
 

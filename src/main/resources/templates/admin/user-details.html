@@ -170,6 +170,93 @@
 
             <hr>
 
+            <h6 class="fw-bold mb-2">
+
+                Abonament
+
+            </h6>
+
+            <!--FARA ABONAMENT-->
+            <div th:if="${subscription == null}">
+
+                <div class="mb-2">
+
+                    Utilizatorul nu are un abonament activ.
+
+                </div>
+
+
+                <form method="post"
+                      th:action="@{/admin/user/{id}/subscription/activate(id=${user.id})}">
+
+
+                    <button class="btn btn-outline-success">
+
+                        <i class="bi bi-star-fill me-2"></i>
+                        Activează abonament lunar
+                    </button>
+
+                </form>
+            </div>
+
+            <!--CU  ABONAMENT-->
+            <div th:if="${subscription != null}"
+                 class="card border-0">
+
+                <div class="card-body p-2">
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+
+                            <small class="text-muted">
+                                Plan
+                            </small>
+
+                            <h6 th:text="${subscription.plan}">
+                            </h6>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <small class="text-muted">
+                                Status
+                            </small>
+
+                            <h6>
+                                <span class="badge bg-success"
+                                      th:if="${subscription.status.name() == 'ACTIVE'}"
+                                      th:text="${subscription.status}">
+                                </span>
+
+                                <span class="badge bg-danger"
+                                      th:if="${subscription.status.name() == 'EXPIRED'}"
+                                      th:text="${subscription.status}">
+                                </span>
+                            </h6>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <small class="text-muted">
+                                Expiră
+                            </small>
+
+                            <h6 th:text="${#temporals.format(subscription.endDate,'dd.MM.yyyy')}">
+                            </h6>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
             <h6 class="fw-bold mb-4">
 
                 Serviciile utilizatorului
@@ -222,7 +309,7 @@
 
             </div>
 
-            <hr class="my-5">
+            <hr>
 
             <h6 class="fw-bold mb-4">
 

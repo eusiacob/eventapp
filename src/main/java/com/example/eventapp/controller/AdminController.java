@@ -174,6 +174,7 @@ public class AdminController {
         User user = userService.findById(id);
 
         model.addAttribute("user", user);
+        model.addAttribute("subscription", subscriptionService.findByUser(user));
         model.addAttribute("businesses", user.getBusinessProfiles());
         model.addAttribute("latestReviews", reviewService.findLatestByUser(user));
 
@@ -343,11 +344,34 @@ public class AdminController {
         Subscription subscription =
                 subscriptionService.findByUser(user);
 
-        if(subscription == null) {
+        if (subscription == null) {
             return "Nu exista abonament";
         }
 
         return subscription.getStatus().name();
 
     }
+
+//    DOAR PENTRU TEST - VA FI FACUT AUTOMAT
+    @PostMapping("/user/{id}/subscription/activate")
+    public String activateSubscription(
+            @PathVariable Long id,
+            RedirectAttributes redirectAttributes
+    ) {
+
+        User user = userService.findById(id);
+
+        subscriptionService.activateSubscription(
+                user,
+                Subscription.SubscriptionPlan.MONTHLY
+        );
+
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                "Abonamentul a fost activat."
+        );
+
+        return "redirect:/admin/user/" + id;
+    }
+
 }
