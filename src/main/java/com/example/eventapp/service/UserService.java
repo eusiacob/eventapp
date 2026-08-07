@@ -115,6 +115,24 @@ public class UserService {
         return true;
     }
 
+    public void toggleEnabled(Long userId, String currentAdminEmail) {
+
+        User user = findById(userId);
+
+        User currentAdmin = findByEmail(currentAdminEmail);
+
+        if (user.getId().equals(currentAdmin.getId())) {
+            throw new IllegalStateException(
+                    "Nu vă puteți suspenda propriul cont."
+            );
+        }
+
+        user.setEnabled(!user.isEnabled());
+
+        userRepository.save(user);
+
+    }
+
     //Se sterge serviciul din favorite de la toti userii
     public void removeBusinessFromAllFavorites(Long businessId) {
         List<User> users = userRepository.findUsersWhoFavoriteBusiness(businessId);

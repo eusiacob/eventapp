@@ -46,6 +46,15 @@
 
     </div>
 
+    <div class="alert alert-success p-2"
+         th:if="${successMessage}"
+         th:text="${successMessage}">
+    </div>
+
+    <div class="alert alert-danger p-2"
+         th:if="${errorMessage}"
+         th:text="${errorMessage}">
+    </div>
 
     <div class="card shadow-sm border-0 rounded-4">
 
@@ -77,6 +86,49 @@
                           th:text="${user.role}">
 
                     </span>
+
+                    <div class="mt-2">
+                        <span class="badge bg-success"
+                              th:if="${user.enabled}">
+                            <i class="bi bi-check-circle-fill"></i>
+                            Cont activ
+                        </span>
+
+                        <span class="badge bg-danger"
+                              th:unless="${user.enabled}">
+                            <i class="bi bi-x-circle-fill"></i>
+                            Cont suspendat
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="mt-5">
+
+                    <form method="post"
+                          th:action="@{/admin/user/{id}/toggle-enabled(id=${user.id})}">
+
+                        <button class="btn"
+
+                                th:classappend="${user.enabled}
+                    ? ' btn-outline-danger'
+                    : ' btn-outline-success'">
+
+                            <i class="bi"
+                               th:classappend="${user.enabled}
+                    ? ' bi-person-x'
+                    : ' bi-person-check'"></i>
+
+                            <span th:text="${user.enabled}
+                    ? 'Suspendă utilizatorul'
+                    : 'Reactivează utilizatorul'">
+
+                            </span>
+
+                        </button>
+
+                    </form>
 
                 </div>
 
@@ -163,7 +215,8 @@
                   ' bg-danger')"
 
                           th:text="${business.status.name}">
-        </span>
+
+                    </span>
 
                 </a>
 

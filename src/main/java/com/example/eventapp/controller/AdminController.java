@@ -13,6 +13,8 @@ import com.example.eventapp.service.ReviewService;
 import com.example.eventapp.service.UserNotificationService;
 import com.example.eventapp.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -302,5 +304,36 @@ public class AdminController {
             );
         }
         return "redirect:/admin/review/" + id;
+    }
+
+    @PostMapping("/user/{id}/toggle-enabled")
+    public String toggleUserEnabled(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails,
+            RedirectAttributes redirectAttributes
+    ) {
+
+        try {
+
+            userService.toggleEnabled(
+                    id,
+                    userDetails.getUsername()
+            );
+
+            redirectAttributes.addFlashAttribute(
+                    "successMessage",
+                    "Starea contului a fost actualizată."
+            );
+
+        } catch (IllegalStateException ex) {
+
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    ex.getMessage()
+            );
+
+        }
+
+        return "redirect:/admin/user/" + id;
     }
 }

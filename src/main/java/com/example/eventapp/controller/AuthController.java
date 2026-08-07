@@ -46,9 +46,10 @@ public class AuthController {
         }
 
         user.setRole(Role.USER);
-
+        user.setEnabled(true);
         userService.registerUser(user);
 
         return "redirect:/login?registered";
     }
+
 }

@@ -53,6 +53,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(nullable = false)
+    private boolean enabled = true;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<BusinessProfile> businessProfiles = new ArrayList<>();
@@ -60,4 +62,5 @@ public class User {
     @ManyToMany
     @JoinTable(name = "favorite_businesses", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "business_id"))
     Set<BusinessProfile> favoriteBusinesses;
+
 }
