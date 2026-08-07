@@ -60,7 +60,7 @@ public class SubscriptionService {
 
     }
 
-    @Scheduled(cron = "*/30 * * * * *")
+    @Scheduled(cron = "0 0 2 * * *")
     public void checkExpiredSubscriptions() {
 
         List<Subscription> subscriptions = subscriptionRepository.
@@ -88,6 +88,18 @@ public class SubscriptionService {
             }
 
         }
+
+    }
+
+    public List<Subscription> findAll() {
+
+        return subscriptionRepository
+                .findAllByOrderByCreatedAtDesc();
+    }
+
+    public long count() {
+
+        return subscriptionRepository.count();
 
     }
 

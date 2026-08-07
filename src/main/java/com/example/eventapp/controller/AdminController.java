@@ -48,6 +48,11 @@ public class AdminController {
         model.addAttribute("totalUsers",
                 userRepository.count());
 
+        model.addAttribute(
+                "totalSubscriptions",
+                subscriptionService.count()
+        );
+
         return "admin/dashboard";
     }
 
@@ -350,6 +355,17 @@ public class AdminController {
 
         return subscription.getStatus().name();
 
+    }
+
+    @GetMapping("/subscriptions")
+    public String subscriptions(Model model) {
+
+        model.addAttribute(
+                "subscriptions",
+                subscriptionService.findAll()
+        );
+
+        return "admin/subscriptions";
     }
 
 //    DOAR PENTRU TEST - VA FI FACUT AUTOMAT

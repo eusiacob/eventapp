@@ -24,14 +24,15 @@
 <!-- ADMIN PAGE -->
 <div class="container py-4">
 
-    <h5 class="fw-bold mb-4 text-dark">
+    <h5 class="fw-bold mb-3 text-dark">
+
         Dashboard Administrator
+
     </h5>
 
     <div class="row g-4">
 
         <!-- Total Business -->
-
         <div class="col-lg-3 col-md-6">
 
             <a class="dashboard-card-link"
@@ -51,7 +52,6 @@
         </div>
 
         <!-- Pending -->
-
         <div class="col-lg-3 col-md-6">
 
           <a th:href="@{/admin/businesses(status='PENDING')}"
@@ -72,7 +72,6 @@
         </div>
 
         <!-- Reviews -->
-
         <div class="col-lg-3 col-md-6">
 
           <a th:href="@{/admin/reviews}"
@@ -93,7 +92,6 @@
         </div>
 
         <!-- Users -->
-
         <div class="col-lg-3 col-md-6">
 
           <a th:href="@{/admin/users}"
@@ -110,6 +108,28 @@
             </div>
 
           </a>
+
+        </div>
+
+        <!--Subscriptions -->
+        <div class="col-lg-3 col-md-6">
+
+            <a th:href="@{/admin/subscriptions}"
+               class="text-decoration-none">
+
+                <div class="dashboard-card primary">
+
+                    <i class="bi bi-credit-card-fill dashboard-icon text-dark"></i>
+
+                    <h2 class="text-muted"
+                        th:text="${totalSubscriptions}">
+                    </h2>
+
+                    <p>Abonamente</p>
+
+                </div>
+
+            </a>
 
         </div>
 

@@ -27,24 +27,11 @@
 
 <div class="container py-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-3 text-dark">
 
-        <h4 class="fw-bold mb-3 text-dark">
+        Detalii utilizator
 
-            Detalii utilizator
-
-        </h4>
-
-        <a class="btn btn-outline-secondary"
-           th:href="@{/admin/users}">
-
-            <i class="bi bi-arrow-left"></i>
-
-            Înapoi
-
-        </a>
-
-    </div>
+    </h5>
 
     <div class="alert alert-success p-2"
          th:if="${successMessage}"
@@ -200,8 +187,8 @@
             </div>
 
             <!--CU  ABONAMENT-->
-            <div th:if="${subscription != null}"
-                 class="card border-0">
+            <div class="card border-0"
+                 th:if="${subscription != null}">
 
                 <div class="card-body p-2">
 

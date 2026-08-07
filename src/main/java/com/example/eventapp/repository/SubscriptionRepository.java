@@ -16,4 +16,6 @@ public interface SubscriptionRepository
             Subscription.SubscriptionStatus status
     );
 
+    List<Subscription> findAllByOrderByCreatedAtDesc();
+
 }

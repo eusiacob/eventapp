@@ -24,25 +24,11 @@
 <!-- ADMIN PAGE -->
 <div class="container py-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-2">
+    <h5 class="fw-bold mb-3 text-dark">
 
+        Moderare utilizatori
 
-        <h4 class="fw-bold mb-3 text-dark">
-
-            Moderare utilizatori
-
-        </h4>
-
-        <a class="btn btn-outline-secondary"
-           th:href="@{/admin}">
-
-            <i class="bi bi-arrow-left"></i>
-
-            Înapoi
-
-        </a>
-
-    </div>
+    </h5>
 
     <!--    FILTRE-->
 
@@ -85,49 +71,53 @@
           th:text="${users.size()} + ' utilizatori'">
         </span>
 
-    <div class="table-responsive mt-2">
+    <div class="card border-0 shadow-sm rounded-4 mt-2">
 
-        <table class="table table-hover align-middle admin-table text-center">
+        <div class="card-body">
 
-            <thead>
+            <div class="table-responsive">
 
-            <tr>
+                <table class="table align-middle table-hover">
 
-                <th>Utilizator</th>
+                    <thead>
 
-                <th>Email</th>
+                    <tr>
 
-                <th>Rol</th>
+                        <th>Utilizator</th>
 
-                <th>Servicii</th>
+                        <th>Email</th>
 
-                <th>Favorite</th>
+                        <th>Rol</th>
 
-                <th>Recenzii</th>
+                        <th>Servicii</th>
 
-                <th>Înregistrat</th>
+                        <th>Favorite</th>
 
-            </tr>
+                        <th>Recenzii</th>
 
-            </thead>
+                        <th>Înregistrat</th>
 
-            <tbody>
+                    </tr>
 
-            <tr class="clickable-row"
+                    </thead>
 
-                th:data-href="@{/admin/user/{id}(id=${userDto.user.id})}"
+                    <tbody>
 
-                th:each="userDto : ${users}">
+                    <tr class="clickable-row"
 
-                <td class="fw-semibold"
-                    th:text="${userDto.user.firstName} + ' ' + ${userDto.user.lastName}">
-                </td>
+                        th:data-href="@{/admin/user/{id}(id=${userDto.user.id})}"
 
-                <td
-                        th:text="${userDto.user.email}">
-                </td>
+                        th:each="userDto : ${users}">
 
-                <td>
+                        <td class="fw-semibold"
+                            th:text="${userDto.user.firstName} + ' ' + ${userDto.user.lastName}">
+                        </td>
+
+                        <td
+                                th:text="${userDto.user.email}">
+                        </td>
+
+                        <td>
 
                 <span class="badge"
 
@@ -139,31 +129,35 @@
 
                 </span>
 
-                </td>
+                        </td>
 
-                <td
-                        th:text="${userDto.user.businessProfiles.size()}">
-                </td>
+                        <td
+                                th:text="${userDto.user.businessProfiles.size()}">
+                        </td>
 
-                <td
-                        th:text="${userDto.user.favoriteBusinesses.size()}">
+                        <td
+                                th:text="${userDto.user.favoriteBusinesses.size()}">
 
-                </td>
+                        </td>
 
-                <td
-                        th:text="${userDto.reviewCount}">
+                        <td
+                                th:text="${userDto.reviewCount}">
 
-                </td>
+                        </td>
 
-                <td
-                        th:text="${#temporals.format(userDto.user.createdAt,'dd.MM.yyyy')}">
-                </td>
+                        <td
+                                th:text="${#temporals.format(userDto.user.createdAt,'dd.MM.yyyy')}">
+                        </td>
 
-            </tr>
+                    </tr>
 
-            </tbody>
+                    </tbody>
 
-        </table>
+                </table>
+
+            </div>
+
+        </div>
 
     </div>
 

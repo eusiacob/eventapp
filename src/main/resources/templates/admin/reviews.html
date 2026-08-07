@@ -24,26 +24,11 @@
 <!-- ADMIN PAGE -->
 <div class="container py-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-2">
+    <h5 class="fw-bold mb-3 text-dark">
 
+        Moderare recenzii
 
-        <h4 class="fw-bold mb-3 text-dark">
-
-            Moderare recenzii
-
-        </h4>
-
-        <a class="btn btn-outline-secondary"
-           th:href="@{/admin}">
-
-            <i class="bi bi-arrow-left"></i>
-
-            Înapoi
-
-        </a>
-
-    </div>
-
+    </h5>
 
     <!-- FILTRE -->
 
@@ -90,48 +75,52 @@
           th:text="${reviews.size()} + ' recenzii'">
         </span>
 
-    <div class="table-responsive mt-2">
+    <div class="card border-0 shadow-sm rounded-4 mt-2">
 
-        <table class="table table-hover align-middle admin-table text-center">
+        <div class="card-body">
 
-            <thead>
+            <div class="table-responsive">
 
-            <tr>
+                <table class="table align-middle table-hover">
 
-                <th>Business</th>
+                    <thead>
 
-                <th>Autor</th>
+                    <tr>
 
-                <th>Rating</th>
+                        <th>Business</th>
 
-                <th>Recenzie</th>
+                        <th>Autor</th>
 
-                <th>Status</th>
+                        <th>Rating</th>
 
-                <th>Data</th>
+                        <th>Recenzie</th>
 
-            </tr>
+                        <th>Status</th>
 
-            </thead>
+                        <th>Data</th>
 
-            <tbody>
+                    </tr>
 
-            <tr class="clickable-row"
+                    </thead>
 
-                th:each="review : ${reviews}"
+                    <tbody>
 
-                th:data-href="@{/admin/review/{id}(id=${review.id})}">
+                    <tr class="clickable-row"
 
-                <td class="fw-semibold"
-                    th:text="${review.businessProfile.name}">
+                        th:data-href="@{/admin/review/{id}(id=${review.id})}"
 
-                </td>
+                        th:each="review : ${reviews}">
 
-                <td
-                        th:text="${review.user.firstName + ' ' + review.user.lastName}">
-                </td>
+                        <td class="fw-semibold"
+                            th:text="${review.businessProfile.name}">
 
-                <td>
+                        </td>
+
+                        <td
+                                th:text="${review.user.firstName + ' ' + review.user.lastName}">
+                        </td>
+
+                        <td>
 
                 <span th:each="i : ${#numbers.sequence(1, review.rating)}">
 
@@ -139,13 +128,13 @@
 
                 </span>
 
-                </td>
+                        </td>
 
-                <td style="max-width:350px;"
-                    th:text="${#strings.abbreviate(review.comment,80)}">
-                </td>
+                        <td style="max-width:350px;"
+                            th:text="${#strings.abbreviate(review.comment,80)}">
+                        </td>
 
-                <td>
+                        <td>
 
                 <span class="badge"
 
@@ -158,17 +147,21 @@
 
                 </span>
 
-                </td>
+                        </td>
 
-                <td
-                        th:text="${#temporals.format(review.createdAt,'dd.MM.yyyy')}">
-                </td>
+                        <td
+                                th:text="${#temporals.format(review.createdAt,'dd.MM.yyyy')}">
+                        </td>
 
-            </tr>
+                    </tr>
 
-            </tbody>
+                    </tbody>
 
-        </table>
+                </table>
+
+            </div>
+
+        </div>
 
     </div>
 
@@ -198,21 +191,21 @@
 <!--ACTION BUTTONS FOR REVIEW-->
 <script>
 
-  document.addEventListener("DOMContentLoaded", function(){
+    document.addEventListener("DOMContentLoaded", function () {
 
-    document.querySelectorAll(".clickable-row")
+        document.querySelectorAll(".clickable-row")
 
-            .forEach(function(row){
+            .forEach(function (row) {
 
-              row.addEventListener("click", function(){
+                row.addEventListener("click", function () {
 
-                window.location = this.dataset.href;
+                    window.location = this.dataset.href;
 
-              });
+                });
 
             });
 
-  });
+    });
 
 </script>
 </body>
