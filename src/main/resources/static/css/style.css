@@ -1229,6 +1229,11 @@ form,
     color: #ffffff;
 }
 
+.profile-stat-icon.gold {
+    background-color: #ffc600;
+    color: #000000;
+}
+
 .profile-info-row {
     display: flex;
     justify-content: space-between;

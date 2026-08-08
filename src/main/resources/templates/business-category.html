@@ -27,6 +27,8 @@
 
 <div class="container py-3">
 
+    <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
+
     <!-- SEARCH -->
     <form class="search-card card p-4 mt-4 shadow-sm border-0"
           method="get"

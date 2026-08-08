@@ -57,12 +57,10 @@ public class BusinessController {
 
         model.addAttribute("premiumBusinesses",
                 businessProfileService.getPremiumBusinesses());
-
         model.addAttribute(
                 "mostFavoriteBusinesses",
                 businessProfileService.getMostFavoriteBusinesses()
         );
-
         model.addAttribute(
                 "topRatedBusinesses",
                 businessProfileService.getTopRatedBusinesses()
@@ -75,7 +73,10 @@ public class BusinessController {
     public String showCreateForm(Model model) {
         model.addAttribute("profile", new BusinessProfile());
         model.addAttribute("categories", businessProfileService.getCategories());
-
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Acasă", "/businesses"),
+                new BreadcrumbDTO("Adăugare serviciu", null)
+        ));
         return "business-form";
     }
 
@@ -103,7 +104,6 @@ public class BusinessController {
                     .name()
                     .toLowerCase();
 
-
             Path uploadPath = Paths.get(
                     "uploads",
                     "businesses",
@@ -111,38 +111,30 @@ public class BusinessController {
                     profile.getUuid()
             );
 
-
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-
             String originalFileName =
                     file.getOriginalFilename();
 
-
             if (originalFileName != null &&
                     originalFileName.contains(".")) {
-
 
                 String extension =
                         originalFileName.substring(
                                 originalFileName.lastIndexOf(".")
                         );
 
-
                 String fileName = "cover" + extension;
-
 
                 Path filePath =
                         uploadPath.resolve(fileName);
-
 
                 Files.write(
                         filePath,
                         file.getBytes()
                 );
-
 
                 profile.setImagePath(
                         "/uploads/businesses/"
@@ -153,12 +145,10 @@ public class BusinessController {
                                 + fileName
                 );
 
-
                 businessProfileService.save(profile);
 
                 List<User> admins =
                         userRepository.findByRole(Role.ADMIN);
-
 
                 for (User admin : admins) {
 
@@ -205,23 +195,20 @@ public class BusinessController {
         model.addAttribute("reviews", reviewService.getReviewsForBusiness(profile));
         model.addAttribute("averageRating", reviewService.getAverageRating(profile));
         model.addAttribute("reviewCount", reviewService.getReviewCount(profile));
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Acasă", "/businesses"),
+                new BreadcrumbDTO(profile.getCategory().getDisplayName(), "/businesses/category/" + profile.getCategory().name()),
+                new BreadcrumbDTO(profile.getName(), null)));
 
         if (userDetails != null) {
 
-            model.addAttribute(
-                    "hasReviewed",
-                    reviewService.hasUserReviewed(
-                            uuid,
-                            userDetails.getUsername()
-                    )
+            model.addAttribute("hasReviewed",
+                    reviewService.hasUserReviewed(uuid, userDetails.getUsername())
             );
 
             model.addAttribute(
                     "hasPendingReview",
-                    reviewService.hasPendingReview(
-                            uuid,
-                            userDetails.getUsername()
-                    )
+                    reviewService.hasPendingReview(uuid, userDetails.getUsername())
             );
 
             User user =
@@ -237,10 +224,6 @@ public class BusinessController {
 
         } else {
 
-            model.addAttribute("breadcrumbs", List.of(
-                    new BreadcrumbDTO("Servicii", "/businesses"),
-                    new BreadcrumbDTO(profile.getName(), null)
-            ));
             model.addAttribute("hasReviewed", false);
             model.addAttribute("hasPendingReview", false);
             model.addAttribute("isFavorite", false);
@@ -257,8 +240,10 @@ public class BusinessController {
         List<BusinessProfile> profiles = user.getBusinessProfiles();
 
         model.addAttribute("profiles", profiles);
-
         model.addAttribute("businessSaved", new Review());
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Acasă", "/businesses"),
+                new BreadcrumbDTO("Serviciile mele", null)));
 
         return "dashboard";
     }
@@ -287,42 +272,17 @@ public class BusinessController {
                         .map(d -> d.getUnavailableDate().toString())
                         .toList();
 
-
         long currentImageCount =
-                businessImageService.countImagesByBusinessId(
-                        profile.getId()
-                );
+                businessImageService.countImagesByBusinessId(profile.getId());
 
-
-        model.addAttribute(
-                "currentImageCount",
-                currentImageCount
-        );
-
-
-        model.addAttribute(
-                "maxImageCount",
-                20
-        );
-
-
-        model.addAttribute(
-                "profile",
-                profile
-        );
-
-
-        model.addAttribute(
-                "categories",
-                businessProfileService.getCategories()
-        );
-
-
-        model.addAttribute(
-                "unavailableDateStrings",
-                unavailableDateStrings
-        );
-
+        model.addAttribute("currentImageCount", currentImageCount);
+        model.addAttribute("maxImageCount", 20);
+        model.addAttribute("profile", profile);
+        model.addAttribute("categories", businessProfileService.getCategories());
+        model.addAttribute("unavailableDateStrings", unavailableDateStrings);
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Acasă", "/businesses"),
+                new BreadcrumbDTO( "Editare " + profile.getName(), null)));
 
         return "business-edit";
     }
@@ -367,7 +327,6 @@ public class BusinessController {
             return "business-edit";
         }
 
-
         existingProfile.setName(profile.getName());
         existingProfile.setCategory(profile.getCategory());
         existingProfile.setCity(profile.getCity());
@@ -380,46 +339,33 @@ public class BusinessController {
 
         if (imageFile != null && !imageFile.isEmpty()) {
 
-
-            Path uploadPath = Paths.get(
-                    "uploads",
-                    "businesses",
-                    existingProfile.getUuid()
-            );
-
+            Path uploadPath = Paths.get("uploads", "businesses",
+                    existingProfile.getUuid());
 
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-
             String originalFileName =
                     imageFile.getOriginalFilename();
 
-
             if (originalFileName != null &&
                     originalFileName.contains(".")) {
-
 
                 String extension =
                         originalFileName.substring(
                                 originalFileName.lastIndexOf(".")
                         );
 
-
-                String fileName =
-                        "cover" + extension;
-
+                String fileName = "cover" + extension;
 
                 Path filePath =
                         uploadPath.resolve(fileName);
-
 
                 Files.write(
                         filePath,
                         imageFile.getBytes()
                 );
-
 
                 existingProfile.setImagePath(
                         "/uploads/businesses/"
@@ -433,12 +379,7 @@ public class BusinessController {
 
         businessProfileService.save(existingProfile);
 
-
-        redirectAttributes.addAttribute(
-                "businessUpdated",
-                true
-        );
-
+        redirectAttributes.addAttribute("businessUpdated", true);
 
         return "redirect:/dashboard";
     }
@@ -450,11 +391,9 @@ public class BusinessController {
             RedirectAttributes redirectAttributes
     ) {
 
-
         User user = userService.findByEmail(
                 userDetails.getUsername()
         );
-
 
         BusinessProfile profile =
                 businessProfileService.findByUuidAndValidateOwner(
@@ -462,22 +401,15 @@ public class BusinessController {
                         user
                 );
 
-
         userService.removeBusinessFromAllFavorites(
                 profile.getId()
         );
-
 
         businessProfileService.delete(
                 profile.getId()
         );
 
-
-        redirectAttributes.addAttribute(
-                "businessDeleted",
-                true
-        );
-
+        redirectAttributes.addAttribute("businessDeleted", true);
 
         return "redirect:/dashboard";
     }
@@ -504,6 +436,9 @@ public class BusinessController {
         model.addAttribute("city", city);
         model.addAttribute("eventDate", eventDate);
         model.addAttribute("cities", businessProfileService.getCitiesByCategory(category));
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Acasă", "/businesses"),
+                new BreadcrumbDTO(category.getDisplayName(), null)));
 
         if (userDetails != null) {
             User user = userService.findByEmail(userDetails.getUsername());
