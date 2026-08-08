@@ -1,5 +1,6 @@
 package com.example.eventapp.controller;
 
+import com.example.eventapp.dto.BreadcrumbDTO;
 import com.example.eventapp.model.*;
 import com.example.eventapp.repository.UserRepository;
 import com.example.eventapp.service.*;
@@ -236,6 +237,10 @@ public class BusinessController {
 
         } else {
 
+            model.addAttribute("breadcrumbs", List.of(
+                    new BreadcrumbDTO("Servicii", "/businesses"),
+                    new BreadcrumbDTO(profile.getName(), null)
+            ));
             model.addAttribute("hasReviewed", false);
             model.addAttribute("hasPendingReview", false);
             model.addAttribute("isFavorite", false);

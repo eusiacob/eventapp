@@ -1,5 +1,6 @@
 package com.example.eventapp.controller;
 
+import com.example.eventapp.dto.BreadcrumbDTO;
 import com.example.eventapp.dto.UserAdminDto;
 import com.example.eventapp.model.*;
 import com.example.eventapp.repository.BusinessProfileRepository;
@@ -35,23 +36,16 @@ public class AdminController {
 
         model.addAttribute("totalBusinesses",
                 businessProfileRepository.count());
-
         model.addAttribute("pendingBusinesses",
                 businessProfileRepository.countByStatus(BusinessProfile.BusinessStatus.PENDING));
-
         model.addAttribute("totalReviews",
                 reviewRepository.count());
-
         model.addAttribute("pendingReviews",
                 reviewRepository.countByReviewStatus(Review.ReviewStatus.PENDING));
-
         model.addAttribute("totalUsers",
                 userRepository.count());
-
-        model.addAttribute(
-                "totalSubscriptions",
-                subscriptionService.count()
-        );
+        model.addAttribute("totalSubscriptions",
+                subscriptionService.count());
 
         return "admin/dashboard";
     }
@@ -64,13 +58,11 @@ public class AdminController {
 
         List<BusinessProfile> businesses;
 
-
         if (status == null) {
 
             businesses =
                     businessProfileRepository
                             .findAllByOrderByCreatedAtDesc();
-
         } else {
 
             businesses =
@@ -78,16 +70,12 @@ public class AdminController {
                             .findByStatusOrderByCreatedAtDesc(status);
         }
 
-
-        model.addAttribute(
-                "businesses",
-                businesses
-        );
-
-        model.addAttribute(
-                "selectedStatus",
-                status
-        );
+        model.addAttribute("businesses", businesses);
+        model.addAttribute("selectedStatus", status);
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Dashboard", "/admin"),
+                new BreadcrumbDTO("Servicii", null)
+        ));
 
         return "admin/businesses";
     }
@@ -98,10 +86,14 @@ public class AdminController {
             Model model
     ) {
 
-        BusinessProfile business =
-                businessProfileService.findByUuid(uuid);
+        BusinessProfile business = businessProfileService.findByUuid(uuid);
 
         model.addAttribute("business", business);
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Dashboard", "/admin"),
+                new BreadcrumbDTO("Servicii", "/businesses"),
+                new BreadcrumbDTO("Detalii serviciu", null)
+        ));
 
         return "admin/business-details";
     }
@@ -166,6 +158,10 @@ public class AdminController {
 
         model.addAttribute("users", userDtos);
         model.addAttribute("selectedRole", role);
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Dashboard", "/admin"),
+                new BreadcrumbDTO("Utilizatori", null)
+        ));
 
         return "admin/users";
     }
@@ -182,6 +178,11 @@ public class AdminController {
         model.addAttribute("subscription", subscriptionService.findByUser(user));
         model.addAttribute("businesses", user.getBusinessProfiles());
         model.addAttribute("latestReviews", reviewService.findLatestByUser(user));
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Dashboard", "/admin"),
+                new BreadcrumbDTO("Utilizatori", "/admin/users"),
+                new BreadcrumbDTO("Detalii utilizator", null)
+        ));
 
         return "admin/user-details";
     }
@@ -193,14 +194,8 @@ public class AdminController {
             RedirectAttributes redirectAttributes
     ) {
 
-
-        BusinessProfile business =
-                businessProfileService.findByUuid(uuid);
-
-
-        business.setStatus(
-                BusinessProfile.BusinessStatus.REJECTED
-        );
+        BusinessProfile business = businessProfileService.findByUuid(uuid);
+        business.setStatus(BusinessProfile.BusinessStatus.REJECTED);
 
         userNotificationService.create(
 
@@ -216,20 +211,12 @@ public class AdminController {
                         + business.getUuid()
         );
 
-        business.setRejectionReason(
-                reason
-        );
-
-
-        businessProfileService.save(
-                business
-        );
-
+        business.setRejectionReason(reason);
+        businessProfileService.save(business);
 
         redirectAttributes.addAttribute(
                 "rejected", true
         );
-
 
         return "redirect:/admin/business/" + uuid;
     }
@@ -250,6 +237,10 @@ public class AdminController {
 
         model.addAttribute("reviews", reviews);
         model.addAttribute("selectedStatus", status);
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Dashboard", "/admin"),
+                new BreadcrumbDTO("Recenzii", null)
+        ));
 
         return "admin/reviews";
     }
@@ -263,6 +254,11 @@ public class AdminController {
         Review review = reviewService.findById(id);
 
         model.addAttribute("review", review);
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Dashboard", "/admin"),
+                new BreadcrumbDTO("Recenzii", "/admin/reviews"),
+                new BreadcrumbDTO("Detalii recenzie", null)
+        ));
 
         return "admin/review-details";
     }
@@ -338,25 +334,6 @@ public class AdminController {
         return "redirect:/admin/user/" + id;
     }
 
-    @GetMapping("/test-subscription/{userId}")
-    @ResponseBody
-    public String testSubscription(
-            @PathVariable Long userId
-    ) {
-
-        User user = userService.findById(userId);
-
-        Subscription subscription =
-                subscriptionService.findByUser(user);
-
-        if (subscription == null) {
-            return "Nu exista abonament";
-        }
-
-        return subscription.getStatus().name();
-
-    }
-
     @GetMapping("/subscriptions")
     public String subscriptions(
             @RequestParam(required = false) String status,
@@ -379,6 +356,10 @@ public class AdminController {
 
         model.addAttribute("subscriptions", subscriptions);
         model.addAttribute("currentStatus", status);
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Dashboard", "/admin"),
+                new BreadcrumbDTO("Abonamente", null)
+        ));
 
         return "admin/subscriptions";
 

@@ -27,11 +27,7 @@
 
 <div class="container py-4">
 
-    <h5 class="fw-bold mb-3 text-dark">
-
-        Detalii utilizator
-
-    </h5>
+    <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
     <div class="alert alert-success p-2"
          th:if="${successMessage}"
