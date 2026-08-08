@@ -195,6 +195,17 @@
             <span>Adaugă serviciu</span>
         </a>
 
+        <a class="mobile-nav-item mobile-add-item"
+           href="/admin"
+           sec:authorize="hasRole('ADMIN')">
+
+            <span class="mobile-add-circle">
+                <i class="bi bi-person-badge-fill"></i>
+            </span>
+
+            <span>Administrare</span>
+        </a>
+
         <a class="mobile-nav-item"
            href="/profile"
            sec:authorize="isAuthenticated()">
