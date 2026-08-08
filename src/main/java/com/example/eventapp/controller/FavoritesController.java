@@ -1,5 +1,6 @@
 package com.example.eventapp.controller;
 
+import com.example.eventapp.dto.BreadcrumbDTO;
 import com.example.eventapp.model.User;
 import com.example.eventapp.repository.UserRepository;
 import com.example.eventapp.service.UserService;
@@ -10,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -29,6 +31,9 @@ public class FavoritesController {
         User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
 
         model.addAttribute("favorites", user.getFavoriteBusinesses());
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Acasă", "/businesses"),
+                new BreadcrumbDTO("Favorite", null)));
 
         return "favorites";
     }
@@ -43,12 +48,12 @@ public class FavoritesController {
         return "redirect:" + (referer != null ? referer : "/businesses");
     }
 
-    @PostMapping("/favorites/remove/{id}")
-    public String removeFavorite(@PathVariable Long id,
+    @PostMapping("/favorites/remove/{uuid}")
+    public String removeFavorite(@PathVariable String uuid,
                                  @AuthenticationPrincipal UserDetails userDetails,
                                  @RequestHeader(value = "Referer", required = false) String referer) {
 
-        userService.removeFavorite(id, userDetails.getUsername());
+        userService.removeFavorite(uuid, userDetails.getUsername());
 
         return "redirect:" + (referer != null ? referer : "/businesses");
     }

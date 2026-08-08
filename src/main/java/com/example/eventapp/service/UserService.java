@@ -64,13 +64,13 @@ public class UserService {
         }
     }
 
-    public void removeFavorite(Long businessId, String email) {
+    public void removeFavorite(String businessId, String email) {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow();
 
         user.getFavoriteBusinesses()
-                .removeIf(b -> b.getId().equals(businessId));
+                .removeIf(b -> b.getUuid().equals(businessId));
 
         userRepository.save(user);
     }

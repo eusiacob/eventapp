@@ -5,8 +5,7 @@
 
     <meta charset="UTF-8">
 
-    <meta content="width=device-width, initial-scale=1.0"
-          name="viewport">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <title>Detalii utilizator</title>
 
@@ -292,7 +291,7 @@
 
             <div th:if="${businesses.isEmpty()}">
 
-                <div class="alert alert-light border">
+                <div class="text-muted">
 
                     Acest utilizator nu deține niciun serviciu.
 
@@ -346,7 +345,7 @@
 
             <div th:if="${latestReviews.isEmpty()}">
 
-                <div class="alert alert-light border">
+                <div class="text-muted">
 
                     Utilizatorul nu a scris încă nicio recenzie.
 

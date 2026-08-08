@@ -91,7 +91,7 @@ public class AdminController {
         model.addAttribute("business", business);
         model.addAttribute("breadcrumbs", List.of(
                 new BreadcrumbDTO("Dashboard", "/admin"),
-                new BreadcrumbDTO("Servicii", "/businesses"),
+                new BreadcrumbDTO("Servicii", "/admin/businesses"),
                 new BreadcrumbDTO("Detalii serviciu", null)
         ));
 
@@ -115,9 +115,8 @@ public class AdminController {
 
                 "Serviciu aprobat",
 
-                "Serviciul "
-                        + business.getName()
-                        + " a fost aprobat.",
+                business.getName()
+                        + " este acum vizibil pe site.",
 
                 "/business/"
                         + business.getUuid()
@@ -203,8 +202,7 @@ public class AdminController {
 
                 "Serviciu respins",
 
-                "Serviciul "
-                        + business.getName()
+                business.getName()
                         + " a fost respins. Motiv: "
                         + reason,
                 "/business/"

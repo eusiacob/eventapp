@@ -172,6 +172,7 @@ public class BusinessController {
         }
 
         redirectAttributes.addAttribute("businessCreated", true);
+        redirectAttributes.addAttribute("businessNotApproved", true);
 
         return "redirect:/business/edit/" + profile.getUuid();
     }
@@ -179,14 +180,17 @@ public class BusinessController {
     @GetMapping("/business/{uuid}")
     public String businessDetails(@PathVariable String uuid,
                                   Model model,
-                                  @AuthenticationPrincipal UserDetails userDetails) {
+                                  @AuthenticationPrincipal UserDetails userDetails,
+                                  RedirectAttributes redirectAttributes) {
 
-        BusinessProfile profile =
-                businessProfileService.findByUuid(uuid);
+        BusinessProfile profile = businessProfileService.findByUuid(uuid);
 
         if (profile.getStatus() != BusinessProfile.BusinessStatus.APPROVED) {
 
+            redirectAttributes.addAttribute("businessNotApproved", true);
+
             return "redirect:/business/edit/" + profile.getUuid();
+
         }
 
         model.addAttribute("profile", profile);
@@ -259,7 +263,6 @@ public class BusinessController {
                 userDetails.getUsername()
         );
 
-
         BusinessProfile profile =
                 businessProfileService.findByUuidAndValidateOwner(
                         uuid,
@@ -282,6 +285,7 @@ public class BusinessController {
         model.addAttribute("unavailableDateStrings", unavailableDateStrings);
         model.addAttribute("breadcrumbs", List.of(
                 new BreadcrumbDTO("Acasă", "/businesses"),
+                new BreadcrumbDTO("Serviciile mele", "/dashboard"),
                 new BreadcrumbDTO( "Editare " + profile.getName(), null)));
 
         return "business-edit";
@@ -323,6 +327,8 @@ public class BusinessController {
                     "categories",
                     businessProfileService.getCategories()
             );
+
+            redirectAttributes.addAttribute("businessUpdated", true);
 
             return "business-edit";
         }

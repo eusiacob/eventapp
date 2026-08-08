@@ -28,7 +28,9 @@
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <!-- PAGE -->
-<div class="container py-5">
+<div class="container py-2">
+
+    <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
     <div class="row g-4 align-items-start">
 
@@ -41,19 +43,27 @@
 
                 </h2>
 
-                <div class="alert alert-success" style="padding: 0.5em" th:if="${param.businessCreated}">
+                <div class="alert alert-success p-2"  th:if="${param.businessCreated}">
                     Serviciu creat cu succes! Acum poți adăuga detalii, poze și multe altele.
                 </div>
 
-                <div class="alert alert-success" style="padding: 0.5em" th:if="${param.gallerySuccess}">
+                <div class="alert alert-success p-2"  th:if="${param.businessUpdated}">
+                    Serviciu actualizat cu succes!
+                </div>
+
+                <div class="alert alert-warning p-2"  th:if="${param.businessNotApproved}">
+                    Serviciul va fi vizibil pe site după aprobare. Vei primi o notificare după ce un administrator va aproba listarea serviciului.
+                </div>
+
+                <div class="alert alert-success p-2" th:if="${param.gallerySuccess}">
                     Imagini adăugate cu succes.
                 </div>
 
-                <div class="alert alert-danger" style="padding: 0.5em" th:if="${param.galleryError}">
+                <div class="alert alert-danger p-2" th:if="${param.galleryError}">
                     Eroare la încărcarea imaginilor. Te rugăm să încerci din nou.
                 </div>
 
-                <div class="alert alert-success" style="padding: 0.5em" th:if="${param.galleryDeleted}">
+                <div class="alert alert-success p-2" th:if="${param.galleryDeleted}">
                     Imagine ștearsă cu succes.
                 </div>
 

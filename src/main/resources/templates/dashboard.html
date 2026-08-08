@@ -27,7 +27,7 @@
     <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
     <!-- EMPTY STATE -->
-    <div class="alert alert-info opacity-75"
+    <div class="text-muted mt-4"
          th:if="${#lists.isEmpty(profiles)}">
         Încă nu ai nici un serviciu.
     </div>
