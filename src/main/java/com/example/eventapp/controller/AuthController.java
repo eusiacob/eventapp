@@ -1,5 +1,6 @@
 package com.example.eventapp.controller;
 
+import com.example.eventapp.model.AccountStatusReason;
 import com.example.eventapp.model.Role;
 import com.example.eventapp.model.User;
 import com.example.eventapp.service.UserService;
@@ -10,6 +11,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.time.LocalDateTime;
 
 @Controller
 public class AuthController {
@@ -47,6 +50,9 @@ public class AuthController {
 
         user.setRole(Role.USER);
         user.setEnabled(true);
+        user.setLastActivityAt(LocalDateTime.now());
+        user.setAccountStatusReason(AccountStatusReason.NONE);
+
         userService.registerUser(user);
 
         return "redirect:/login?registered";

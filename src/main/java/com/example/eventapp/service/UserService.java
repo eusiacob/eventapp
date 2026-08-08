@@ -1,13 +1,16 @@
 package com.example.eventapp.service;
 
+import com.example.eventapp.model.AccountStatusReason;
 import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.Role;
 import com.example.eventapp.model.User;
 import com.example.eventapp.repository.BusinessProfileRepository;
 import com.example.eventapp.repository.UserRepository;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -129,7 +132,42 @@ public class UserService {
 
         user.setEnabled(!user.isEnabled());
 
+        if (user.isEnabled()) {
+            user.setAccountStatusReason(AccountStatusReason.NONE);
+            user.setLastActivityAt(LocalDateTime.now());
+
+        } else {
+            user.setAccountStatusReason(AccountStatusReason.MANUAL);
+        }
+
         userRepository.save(user);
+
+    }
+
+    @Scheduled(cron = "0 0 3 * * *")
+    public void disableInactiveUsers() {
+
+        LocalDateTime limit =
+                LocalDateTime.now().minusMonths(6);
+
+        List<User> inactiveUsers =
+                userRepository.findByEnabledTrueAndLastActivityAtBefore(
+                        limit
+                );
+
+        for (User user : inactiveUsers) {
+
+            if (user.getRole() == Role.ADMIN) {
+                continue;
+            }
+
+            user.setEnabled(false);
+
+            user.setAccountStatusReason(AccountStatusReason.INACTIVITY);
+
+        }
+
+        userRepository.saveAll(inactiveUsers);
 
     }
 

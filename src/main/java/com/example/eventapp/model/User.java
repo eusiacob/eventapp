@@ -56,6 +56,13 @@ public class User {
     @Column(nullable = false)
     private boolean enabled = true;
 
+    @Column
+    private LocalDateTime lastActivityAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AccountStatusReason accountStatusReason = AccountStatusReason.NONE;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<BusinessProfile> businessProfiles = new ArrayList<>();
 

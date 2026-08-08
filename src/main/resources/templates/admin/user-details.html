@@ -56,7 +56,7 @@
 
                 </div>
 
-                <div>
+                <div style="margin-right: 1em;">
 
                     <h3 class="mb-1 fw-bold"
                         th:text="${user.firstName + ' ' + user.lastName}">
@@ -75,18 +75,42 @@
                     </span>
 
                     <div class="mt-2">
-                        <span class="badge bg-success"
-                              th:if="${user.enabled}">
-                            <i class="bi bi-check-circle-fill"></i>
-                            Cont activ
-                        </span>
 
-                        <span class="badge bg-danger"
-                              th:unless="${user.enabled}">
-                            <i class="bi bi-x-circle-fill"></i>
-                            Cont suspendat
-                        </span>
+                        <div th:if="${user.enabled}">
 
+                            <span class="badge rounded-pill bg-success-subtle text-success-emphasis">
+
+                                <i class="bi bi-check-circle me-1"></i>
+
+                                Activ
+
+                            </span>
+
+                        </div>
+
+                        <div th:if="${!user.enabled}">
+
+                            <span class="badge rounded-pill bg-danger-subtle text-danger-emphasis"
+
+                                  th:if="${user.accountStatusReason.name() == 'MANUAL'}">
+
+                                <i class="bi bi-person-x me-1"></i>
+
+                                Suspendat de administrator
+
+                            </span>
+
+                            <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis"
+
+                                  th:if="${user.accountStatusReason.name() == 'INACTIVITY'}">
+
+                                <i class="bi bi-clock-history me-1"></i>
+
+                                Dezactivat pentru inactivitate
+
+                            </span>
+
+                        </div>
                     </div>
 
                 </div>
@@ -125,7 +149,7 @@
 
             <div class="row gy-4">
 
-                <div class="col-md-6">
+                <div class="col-md-4">
 
                     <h6 class="fw-bold">
 
@@ -139,7 +163,7 @@
 
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
 
                     <h6 class="fw-bold">
 
@@ -150,6 +174,26 @@
                     <p class="text-muted"
                        th:text="${#temporals.format(user.createdAt,'dd.MM.yyyy HH:mm')}">
                     </p>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <h6 class="fw-bold">
+                        Ultima activitate
+                    </h6>
+
+                    <span class="text-muted"
+                          th:if="${user.lastActivityAt != null}"
+                          th:text="${#temporals.format(user.lastActivityAt, 'dd.MM.yyyy HH:mm')}">
+                    </span>
+
+                    <span class="text-muted"
+                          th:if="${user.lastActivityAt == null}">
+
+                        Nicio activitate înregistrată
+
+                    </span>
 
                 </div>
 

@@ -99,7 +99,9 @@
 
                         <th>Recenzii</th>
 
-                        <th>Înregistrat</th>
+                        <th>Data înregistrării</th>
+
+                        <th>Status cont</th>
 
                     </tr>
 
@@ -151,6 +153,38 @@
 
                         <td
                                 th:text="${#temporals.format(userDto.user.createdAt,'dd.MM.yyyy')}">
+                        </td>
+
+                        <td>
+                            <!-- Cont activ -->
+                            <span class="badge rounded-pill bg-success-subtle text-success-emphasis"
+                                  th:if="${userDto.user.enabled}">
+
+                                <i class="bi bi-check-circle me-1"></i>
+                                Activ
+
+                            </span>
+
+                            <!-- Suspendat manual -->
+                            <span class="badge rounded-pill bg-danger-subtle text-danger-emphasis"
+                                  th:if="${!userDto.user.enabled and userDto.user.accountStatusReason.name() == 'MANUAL'}"
+                                  title="Suspendat de administrator">
+
+                                <i class="bi bi-person-x me-1"></i>
+                                Suspendat
+
+                            </span>
+
+                            <!-- Dezactivat pentru inactivitate -->
+                            <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis"
+                                  th:if="${!userDto.user.enabled and userDto.user.accountStatusReason.name() == 'INACTIVITY'}"
+                                  title="Dezactivat automat după 6 luni fără activitate">
+
+                                <i class="bi bi-clock-history me-1"></i>
+                                Inactiv
+
+                            </span>
+
                         </td>
 
                     </tr>

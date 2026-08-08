@@ -405,5 +405,4 @@ public class AdminController {
 
         return "redirect:/admin/user/" + id;
     }
-
 }
