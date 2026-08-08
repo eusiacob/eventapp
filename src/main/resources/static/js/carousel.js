@@ -63,7 +63,6 @@ function getCardsPerScroll() {
 }
 
 function updateCarouselButtons(carousel) {
-
     const id = carousel.id;
 
     const prev = document.querySelector(
@@ -78,19 +77,18 @@ function updateCarouselButtons(carousel) {
         return;
     }
 
-    const maxScroll =
-        carousel.scrollWidth - carousel.clientWidth;
+    const maxScroll = carousel.scrollWidth - carousel.clientWidth;
 
-    prev.classList.toggle(
-        "disabled",
-        carousel.scrollLeft <= 5
-    );
+    const isPrevDisabled = carousel.scrollLeft <= 5;
+    const isNextDisabled = carousel.scrollLeft >= maxScroll - 5;
 
-    next.classList.toggle(
-        "disabled",
-        carousel.scrollLeft >= maxScroll - 5
-    );
+    prev.classList.toggle("disabled", isPrevDisabled);
+    next.classList.toggle("disabled", isNextDisabled);
 
+    const hideButtons = isPrevDisabled && isNextDisabled;
+
+    prev.hidden = hideButtons;
+    next.hidden = hideButtons;
 }
 
 function initCarousel(carousel) {
@@ -118,5 +116,4 @@ window.addEventListener("resize", () => {
     document
         .querySelectorAll(".category-carousel")
         .forEach(updateCarouselButtons);
-
 });

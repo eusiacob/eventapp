@@ -9,6 +9,7 @@
     <div class="carousel-controls">
 
       <button type="button"
+              id="previousButton"
               class="carousel-btn prev"
               th:attr="data-carousel=${carouselId}"
               onclick="carouselPrev(this)">
@@ -18,6 +19,7 @@
       </button>
 
       <button type="button"
+              id="nextButton"
               class="carousel-btn next"
               th:attr="data-carousel=${carouselId}"
               onclick="carouselNext(this)">
