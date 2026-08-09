@@ -21,10 +21,8 @@ public class UserNotificationController {
             UserNotificationService userNotificationService,
             UserService userService
     ) {
-        this.userNotificationService =
-                userNotificationService;
-        this.userService =
-                userService;
+        this.userNotificationService = userNotificationService;
+        this.userService = userService;
     }
 
     @GetMapping("/{id}")
@@ -33,15 +31,10 @@ public class UserNotificationController {
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         User user =
-                userService.findByEmail(
-                        userDetails.getUsername()
-                );
+                userService.findByEmail(userDetails.getUsername());
         String link =
-                userNotificationService
-                        .markAsRead(
-                                id,
-                                user
-                        );
+                userNotificationService.markAsRead(id, user);
+
         return "redirect:" + link;
     }
 }

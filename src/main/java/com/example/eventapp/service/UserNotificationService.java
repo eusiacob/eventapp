@@ -34,17 +34,12 @@ public class UserNotificationService {
             String link
     ){
 
-        UserNotification notification =
-                new UserNotification();
+        UserNotification notification = new UserNotification();
 
         notification.setUser(user);
-
         notification.setTitle(title);
-
         notification.setMessage(message);
-
         notification.setLink(link);
-
         userNotificationRepository.save(notification);
     }
 
@@ -65,26 +60,16 @@ public class UserNotificationService {
             User user
     ) {
 
-
         UserNotification notification =
                 userNotificationRepository
-                        .findByIdAndUser(
-                                notificationId,
-                                user
-                        )
+                        .findByIdAndUser(notificationId, user)
                         .orElseThrow(
                                 () -> new ResponseStatusException(
                                         HttpStatus.FORBIDDEN,
-                                        "Access denied"
-                                )
-                        );
-
+                                        "Access denied"));
 
         notification.setRead(true);
-
-
         userNotificationRepository.save(notification);
-
 
         return notification.getLink();
 
@@ -99,9 +84,7 @@ public class UserNotificationService {
             UserNotification notification = new UserNotification();
 
             notification.setUser(admin);
-
             notification.setTitle("Recenzie nouă");
-
             notification.setMessage(
                     "A fost adăugată o recenzie nouă pentru serviciul \"" +
                             review.getBusinessProfile().getName() +
@@ -109,9 +92,8 @@ public class UserNotificationService {
             );
 
             notification.setCreatedAt(LocalDateTime.now());
-
             notification.setRead(false);
-
+            notification.setLink("/admin/review/" + review.getId());
             userNotificationRepository.save(notification);
         }
     }
@@ -131,20 +113,16 @@ public class UserNotificationService {
         );
 
         notification.setRead(false);
-
         notification.setCreatedAt(LocalDateTime.now());
-
+        notification.setLink("/business/" + review.getBusinessProfile().getUuid());
         userNotificationRepository.save(notification);
     }
 
     public void notifyReviewRejected(Review review) {
 
         UserNotification notification = new UserNotification();
-
         notification.setUser(review.getUser());
-
         notification.setTitle("Recenzie respinsă");
-
         String message =
                 "Recenzia ta pentru \"" +
                         review.getBusinessProfile().getName() +
@@ -157,11 +135,8 @@ public class UserNotificationService {
         }
 
         notification.setMessage(message);
-
         notification.setRead(false);
-
         notification.setCreatedAt(LocalDateTime.now());
-
         userNotificationRepository.save(notification);
     }
 

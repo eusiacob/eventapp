@@ -240,31 +240,12 @@ body {
     }
 }
 
-
-/* =========================
-   ADD SERVICE DESKTOP
-========================= */
-
-.add-service-link {
-    background-color: #212529;
-    color: #ffffff !important;
-    border-radius: 999px;
-    padding: 8px 16px !important;
-}
-
-.add-service-link:hover {
-    background-color: #000000;
-    color: #ffffff !important;
-}
-
-
 /* =========================
    REGISTER BUTTON
 ========================= */
 
 .navbar-register-btn {
     border-radius: 999px;
-    padding: 8px 18px;
     font-weight: 600;
 }
 
@@ -901,7 +882,7 @@ form,
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.92);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-    font-size: 28px;
+    font-size: 0.8rem;
     line-height: 1;
     display: flex;
     align-items: center;
@@ -917,8 +898,8 @@ form,
 
 .favorite-details-btn {
     border-radius: 14px;
-    padding: 12px 18px;
     font-weight: 600;
+    font-size: 1rem;
     transition: all 0.2s ease;
 }
 
@@ -927,8 +908,7 @@ form,
 }
 
 #detailsFavoriteIcon {
-    font-size: 1.25rem;
-    margin-right: 6px;
+    font-size: 1rem;
 }
 
 /*ADD/REMOVE MESSAGE STYLE*/

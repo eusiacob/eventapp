@@ -47,62 +47,98 @@
         <!-- CONTENT -->
         <div class="p-3">
 
-            <!-- CATEGORY -->
-            <span class="badge bg-dark px-3 py-2 mb-3"
-                  th:text="${profile.category.displayName}">
-            </span>
+            <div class="d-flex justify-content-between">
+
+                <!-- CATEGORY -->
+                <span class="badge bg-dark px-3 py-2 mb-3"
+                      th:text="${profile.category.displayName}"></span>
+
+                <!--ADD/REMOVE FROM FAVORITES BUTTON-->
+                <div sec:authorize="isAuthenticated()">
+
+                    <button class="btn favorite-details-btn"
+                            id="detailsFavoriteBtn"
+                            th:classappend="${isFavorite} ? ' btn-danger' : ' btn-outline-danger'"
+                            th:data-business-uuid="${profile.uuid}"
+                            type="button">
+
+                    <span id="detailsFavoriteIcon"
+                          th:text="${isFavorite} ? '♥' : '♡'">
+                    </span>
+
+                        <span id="detailsFavoriteText"
+                              th:text="${isFavorite} ? 'Șterge de la favorite' : 'Adaugă la favorite'">
+                    </span>
+                    </button>
+
+                </div>
+            </div>
 
             <!-- NAME -->
-            <h1 class="fw-bold mb-3"
+
+            <h5 class="fw-bold mb-2"
                 th:text="${profile.name}">
-            </h1>
+            </h5>
 
             <div sec:authorize="isAuthenticated()">
-                <!-- CITY -->
-                <p class="text-muted fs-5">
+
+                <p class="text-muted">
                     📍 <span th:text="${profile.city}"></span>
                 </p>
 
-                <!-- PHONE -->
-                <div class="row g-3">
+                <div>
 
-                    <div class="col-12 col-md-6" th:if="${profile.phone != null and !profile.phone.isBlank()}">
-                        <a class="btn btn-dark w-100"
-                           th:href="'tel:' + ${profile.phone}">
-                            Sună
+                    <span th:if="${profile.phone != null and !profile.phone.isBlank()}">
+                        <a class="btn bi bi-telephone"
+                           style="color: green; font-size: 1.5em"
+                           th:href="'tel:' + ${profile.phone}"
+                           title="Sună!">
                         </a>
-                    </div>
+                    </span>
 
-                    <div class="col-12 col-md-6" th:if="${profile.email != null and !profile.email.isBlank()}">
-                        <a class="btn btn-outline-dark w-100"
-                           th:href="'mailto:' + ${profile.email}">
-                            Trimite mail
+                    <span>
+                        <a aria-label="Chat on WhatsApp"
+                           class="btn bi bi-whatsapp"
+                           style="color: green; font-size: 1.5em"
+                           th:href="'https://wa.me/4' + ${profile.phone}"
+                           title="Trimite mesaj!">
                         </a>
-                    </div>
+                    </span>
 
-                    <div class="col-12" th:if="${profile.website != null and !profile.website.isBlank()}">
-                        <a class="btn btn-outline-secondary w-100"
-                           target="_blank"
-                           th:href="${profile.website}">
-                            Vizitează site
+                    <span th:if="${profile.email != null and !profile.email.isBlank()}">
+                        <a class="btn bi bi-envelope-at"
+                           style="font-size: 1.5em"
+                           th:href="'mailto:' + ${profile.email}"
+                           title="Trimite email!">
                         </a>
-                    </div>
+                    </span>
+
+                    <span th:if="${profile.website != null and !profile.website.isBlank()}">
+                        <a target="_blank"
+                           class="btn"
+                           style="font-size: 1em;"
+                           th:href="${profile.website}"
+                           title="Vizitează website!"> Website
+                        </a>
+                    </span>
 
                 </div>
 
-                <hr>
+                <hr style="margin: 0.5rem 0">
 
                 <!-- DESCRIPTION -->
-                <h4 class="fw-bold mb-3">
+                <h5 class="fw-bold mb-3">
                     Despre
-                </h4>
+                </h5>
 
-                <p class="lead"
-                   th:text="${profile.description}">
+                <p th:text="${profile.description}">
                 </p>
+
+                <hr style="margin: 0.5rem 0">
+
             </div>
 
-            <div class="alert alert-info" sec:authorize="isAnonymous()" style="padding: 0.5em">
+            <div class="alert alert-info mb-2 p-1" sec:authorize="isAnonymous()">
                 <span>Trebuie să fii conectat pentru a vedea conținutul.</span>
             </div>
 
@@ -143,12 +179,21 @@
 
                 <!--RECENZII-->
 
-                <h4 class="fw-bold mb-3">
-                    Recenzii
-                </h4>
+                <div class="d-flex justify-content-between">
 
-                <div class="mb-4">
-                    <span class="fs-4 text-warning">★</span>
+                    <h5 class="fw-bold">
+                        Recenzii
+                    </h5>
+
+                    <div class="btn btn-outline-dark navbar-register-btn">
+                        Adaugă recenzie
+                    </div>
+
+                </div>
+
+
+                <div class="mb-2">
+                    <span class="text-warning">★</span>
                     <strong th:text="${#numbers.formatDecimal(averageRating, 1, 1)}"></strong>
 
                     (<span th:text="${reviewCount}"></span>
@@ -159,45 +204,45 @@
                     Recenzia nu poate fi goală.
                 </div>
 
-                <div sec:authorize="isAuthenticated()" th:if="${!hasReviewed}">
-                    <form class="card p-4 shadow-sm mb-4"
-                          method="post"
-                          th:action="@{/business/{businessUuid}/reviews(businessUuid=${profile.getUuid()})}"
-                          th:object="${review}">
+<!--                <div sec:authorize="isAuthenticated()" th:if="${!hasReviewed}">-->
+<!--                    <form class="card p-4 shadow-sm"-->
+<!--                          method="post"-->
+<!--                          th:action="@{/business/{businessUuid}/reviews(businessUuid=${profile.getUuid()})}"-->
+<!--                          th:object="${review}">-->
 
-                        <div class="mb-3">
-                            <label class="form-label">Evaluare</label>
-                            <select class="form-select" th:field="*{rating}">
-                                <option value="5">★★★★★ - Excelent</option>
-                                <option value="4">★★★★ - Foarte bun</option>
-                                <option value="3">★★★ - Bun</option>
-                                <option value="2">★★ - Slab</option>
-                                <option value="1">★ - Foarte slab</option>
-                            </select>
-                        </div>
+<!--                        <div class="mb-3">-->
+<!--                            <label class="form-label">Evaluare</label>-->
+<!--                            <select class="form-select" th:field="*{rating}">-->
+<!--                                <option value="5">★★★★★ - Excelent</option>-->
+<!--                                <option value="4">★★★★ - Foarte bun</option>-->
+<!--                                <option value="3">★★★ - Bun</option>-->
+<!--                                <option value="2">★★ - Slab</option>-->
+<!--                                <option value="1">★ - Foarte slab</option>-->
+<!--                            </select>-->
+<!--                        </div>-->
 
-                        <div class="mb-3">
-                            <label class="form-label">Comentariu</label>
-                            <textarea class="form-control"
-                                      placeholder="Scrie o recenzie..."
-                                      required
-                                      rows="3"
-                                      th:field="*{comment}">
-                            </textarea>
-                        </div>
+<!--                        <div class="mb-3">-->
+<!--                            <label class="form-label">Comentariu</label>-->
+<!--                            <textarea class="form-control"-->
+<!--                                      placeholder="Scrie o recenzie..."-->
+<!--                                      required-->
+<!--                                      rows="3"-->
+<!--                                      th:field="*{comment}">-->
+<!--                            </textarea>-->
+<!--                        </div>-->
 
-                        <button class="btn btn-dark" type="submit">
-                            Adaugă recenzie
-                        </button>
+<!--                        <button class="btn btn-dark" type="submit">-->
+<!--                            Adaugă recenzie-->
+<!--                        </button>-->
 
-                    </form>
-                </div>
+<!--                    </form>-->
+<!--                </div>-->
 
-                <div class="alert alert-info" sec:authorize="isAnonymous()" style="padding: 0.5em">
+                <div class="alert alert-info p-1" sec:authorize="isAnonymous()">
                     Trebuie să fii conectat pentru a adăuga o recenzie.
                 </div>
 
-                <div class="alert alert-success" style="padding: 0.5em" th:if="${hasReviewed}">
+                <div class="alert alert-success p-1" th:if="${hasReviewed}">
                     Ai adăugat deja o recenzie.
                 </div>
 
@@ -211,7 +256,9 @@
                     Nici o recenzie.
                 </div>
 
-                <div class="card review-card p-3 mb-3 shadow-sm" th:each="r : ${reviews}">
+                <div class="review-card" th:each="r : ${reviews}">
+
+                    <hr class="mb-3" style="margin: 0">
 
                     <div class="d-flex justify-content-between align-items-start">
 
@@ -239,30 +286,9 @@
 
                     </div>
 
-                    <p class="mb-2 mt-3" th:text="${r.comment}"></p>
+                    <p class="mt-3" th:text="${r.comment}"></p>
 
                 </div>
-
-            </div>
-
-            <!--            ADD/REMOVE FROM FAVORITES BUTTON-->
-            <div class="mt-3" sec:authorize="isAuthenticated()">
-
-                <button class="btn favorite-details-btn"
-                        id="detailsFavoriteBtn"
-                        th:classappend="${isFavorite} ? ' btn-danger' : ' btn-outline-danger'"
-                        th:data-business-uuid="${profile.uuid}"
-                        type="button">
-
-                    <span id="detailsFavoriteIcon"
-                          th:text="${isFavorite} ? '♥' : '♡'">
-                    </span>
-
-                    <span id="detailsFavoriteText"
-                          th:text="${isFavorite} ? 'Șterge de la favorite' : 'Adaugă la favorite'">
-
-                    </span>
-                </button>
 
             </div>
 
@@ -466,17 +492,17 @@
                         favoriteBtn.classList.add("btn-danger");
 
                         icon.textContent = "♥";
-                        text.textContent = "Remove from Favorites";
+                        text.textContent = "Șterge de la favorite";
 
-                        showFavoriteToast("Added to favorites");
+                        showFavoriteToast("Adăugat la favorite");
                     } else {
                         favoriteBtn.classList.remove("btn-danger");
                         favoriteBtn.classList.add("btn-outline-danger");
 
                         icon.textContent = "♡";
-                        text.textContent = "Add to Favorites";
+                        text.textContent = "Adaugă la favorite";
 
-                        showFavoriteToast("Removed from favorites");
+                        showFavoriteToast("Șters de la favorite");
                     }
                 })
                 .catch(error => {

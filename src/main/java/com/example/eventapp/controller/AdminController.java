@@ -288,15 +288,11 @@ public class AdminController {
             reviewService.rejectReview(id, reason);
 
             redirectAttributes.addFlashAttribute(
-                    "reviewRejected",
-                    true
-            );
+                    "reviewRejected", true);
         } catch (IllegalArgumentException ex) {
 
             redirectAttributes.addFlashAttribute(
-                    "rejectError",
-                    ex.getMessage()
-            );
+                    "rejectError", ex.getMessage());
         }
         return "redirect:/admin/review/" + id;
     }
