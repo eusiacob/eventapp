@@ -114,9 +114,9 @@
                     </span>
 
                     <span th:if="${profile.website != null and !profile.website.isBlank()}">
-                        <a target="_blank"
-                           class="btn"
+                        <a class="btn"
                            style="font-size: 1em;"
+                           target="_blank"
                            th:href="${profile.website}"
                            title="Vizitează website!"> Website
                         </a>
@@ -177,20 +177,42 @@
                 </div>
 
 
-                <!--RECENZII-->
-
-                <div class="d-flex justify-content-between">
+                <!--ADAUGĂ RECENZIE-->
+                <div class="d-flex justify-content-between align-items-center">
 
                     <h5 class="fw-bold">
                         Recenzii
                     </h5>
 
-                    <div class="btn btn-outline-dark navbar-register-btn">
-                        Adaugă recenzie
+                    <div class="text-end"
+                         sec:authorize="isAuthenticated()"
+                         th:if="${!hasReviewed}">
+
+                        <span id="reviewMessage" class="text-muted mb-2">Vrei să ne împărtășești experiența ta?</span>
+
+                        <form method="post"
+                              th:action="@{/business/{businessUuid}/reviews(businessUuid=${profile.getUuid()})}"
+                              th:object="${review}">
+
+                            <input th:name="${_csrf.parameterName}"
+                                   th:value="${_csrf.token}"
+                                   type="hidden">
+
+                            <button class="btn btn-outline-dark navbar-register-btn"
+                                    data-bs-target="#reviewModal"
+                                    data-bs-toggle="modal"
+                                    type="button">
+
+                                Adaugă o recenzie
+
+                            </button>
+
+                        </form>
+
                     </div>
 
-                </div>
 
+                </div>
 
                 <div class="mb-2">
                     <span class="text-warning">★</span>
@@ -203,40 +225,6 @@
                 <div class="alert alert-danger" th:if="${param.reviewError}">
                     Recenzia nu poate fi goală.
                 </div>
-
-<!--                <div sec:authorize="isAuthenticated()" th:if="${!hasReviewed}">-->
-<!--                    <form class="card p-4 shadow-sm"-->
-<!--                          method="post"-->
-<!--                          th:action="@{/business/{businessUuid}/reviews(businessUuid=${profile.getUuid()})}"-->
-<!--                          th:object="${review}">-->
-
-<!--                        <div class="mb-3">-->
-<!--                            <label class="form-label">Evaluare</label>-->
-<!--                            <select class="form-select" th:field="*{rating}">-->
-<!--                                <option value="5">★★★★★ - Excelent</option>-->
-<!--                                <option value="4">★★★★ - Foarte bun</option>-->
-<!--                                <option value="3">★★★ - Bun</option>-->
-<!--                                <option value="2">★★ - Slab</option>-->
-<!--                                <option value="1">★ - Foarte slab</option>-->
-<!--                            </select>-->
-<!--                        </div>-->
-
-<!--                        <div class="mb-3">-->
-<!--                            <label class="form-label">Comentariu</label>-->
-<!--                            <textarea class="form-control"-->
-<!--                                      placeholder="Scrie o recenzie..."-->
-<!--                                      required-->
-<!--                                      rows="3"-->
-<!--                                      th:field="*{comment}">-->
-<!--                            </textarea>-->
-<!--                        </div>-->
-
-<!--                        <button class="btn btn-dark" type="submit">-->
-<!--                            Adaugă recenzie-->
-<!--                        </button>-->
-
-<!--                    </form>-->
-<!--                </div>-->
 
                 <div class="alert alert-info p-1" sec:authorize="isAnonymous()">
                     Trebuie să fii conectat pentru a adăuga o recenzie.
@@ -361,6 +349,92 @@
 
 </div>
 
+<!--MODAL PENTRU RECENZII-->
+<div aria-labelledby="reviewModal"
+     class="modal fade"
+     id="reviewModal"
+     tabindex="-1">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form class="text-dark"
+                  method="post"
+                  th:action="@{/business/{businessUuid}/reviews(businessUuid=${profile.getUuid()})}"
+                  th:object="${review}">
+
+                <input th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}"
+                       type="hidden">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Adaugă recenzie
+                    </h5>
+
+                    <button class="btn-close"
+                            data-bs-dismiss="modal"
+                            type="button">
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <label class="form-label">Evaluare</label>
+                    <div class="mb-3">
+                        <select class="form-select" th:field="*{rating}">
+                            <option value="5">★★★★★ - Excelent</option>
+                            <option value="4">★★★★ - Foarte bun</option>
+                            <option value="3">★★★ - Bun</option>
+                            <option value="2">★★ - Slab</option>
+                            <option value="1">★ - Foarte slab</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+
+                        <div class="text-danger small mb-2 d-none"
+                             id="noReviewError">
+
+                            Introduceți recenzia!
+
+                        </div>
+
+                        <textarea class="form-control"
+                                  name="comment"
+                                  placeholder="Scrie o recenzie..."
+                                  required
+                                  rows="5"
+                                  th:field="*{comment}">
+                            </textarea>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button class="nav-link mx-4"
+                            data-bs-dismiss="modal"
+                            type="button">
+
+                        Renunță
+
+                    </button>
+
+                    <button class="btn btn-outline-dark navbar-register-btn" type="submit">
+
+                        Adaugă recenzie
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
 <!--Script lightbox imagini-->
 <script>
     let galleryImages = [];
@@ -425,6 +499,35 @@
 
         document.body.style.overflow = '';
     }
+</script>
+
+<!--MODAL JAVASCRIPT-->
+<script>
+
+    document.querySelector('#reviewModal form')
+
+        .addEventListener('submit', function (e) {
+
+            const textarea = this.querySelector('textarea');
+
+            const error = document.getElementById('noReviewError');
+
+            if (textarea.value.trim() === '') {
+
+                e.preventDefault();
+
+                error.classList.remove('d-none');
+
+                textarea.focus();
+
+                return;
+
+            }
+
+            error.classList.add('d-none');
+
+        });
+
 </script>
 
 <!--IMPORTS-->

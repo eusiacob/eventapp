@@ -505,6 +505,10 @@ body {
         height: 135px;
     }
 
+    #reviewMessage {
+        display: none;
+    }
+
     .gallery-manage-image {
         height: 120px;
     }
@@ -1639,8 +1643,27 @@ form,
         gap: 30px;
     }
 
+    .favorite-heart {
+        font-size: 1.5rem;
+    }
+
+    .site-footer {
+        margin-top: 20px;
+        padding: 20px 0 10px;
+    }
+
+    .footer-bottom {
+        margin-top: 20px;
+        padding-top: 10px;
+    }
+
     .footer-brand {
         grid-column: 1 / -1;
+        font-size: 1rem;
+    }
+
+    .footer-section {
+        font-size: 1rem;
     }
 
 }

@@ -170,9 +170,7 @@
 
             <div class="mt-4 d-flex gap-3">
 
-
                 <!-- APROBARE -->
-
                 <form method="post"
                       th:action="@{/admin/review/{id}/approve(id=${review.id})}"
                       th:if="${review.reviewStatus.name != 'APPROVED'}">
@@ -192,10 +190,7 @@
 
                 </form>
 
-
                 <!-- RESPINGERE -->
-
-
                 <form method="post"
                       th:action="@{/admin/review/{id}/reject(id=${review.id})}"
                       th:if="${review.reviewStatus.name != 'REJECTED'}">
@@ -205,6 +200,7 @@
                            type="hidden">
 
                     <button class="btn btn-danger"
+
                             data-bs-target="#rejectReviewModal"
 
                             data-bs-toggle="modal"
@@ -219,9 +215,7 @@
 
                     </button>
 
-
                 </form>
-
 
             </div>
 
@@ -342,6 +336,7 @@
 <script>
 
     document.querySelector('#rejectReviewModal form')
+
         .addEventListener('submit', function (e) {
 
             const textarea = this.querySelector('textarea');
