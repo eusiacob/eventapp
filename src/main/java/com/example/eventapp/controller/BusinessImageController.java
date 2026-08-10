@@ -1,9 +1,12 @@
 package com.example.eventapp.controller;
 
 import com.example.eventapp.model.BusinessProfile;
+import com.example.eventapp.model.Role;
 import com.example.eventapp.model.User;
+import com.example.eventapp.repository.UserRepository;
 import com.example.eventapp.service.BusinessImageService;
 import com.example.eventapp.service.BusinessProfileService;
+import com.example.eventapp.service.UserNotificationService;
 import com.example.eventapp.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,13 +24,17 @@ public class BusinessImageController {
     private final BusinessImageService businessImageService;
     private final BusinessProfileService businessProfileService;
     private final UserService userService;
+    private final UserRepository userRepository;
+    private final UserNotificationService userNotificationService;
 
     public BusinessImageController(BusinessImageService businessImageService,
                                    BusinessProfileService businessProfileService,
-                                   UserService userService) {
+                                   UserService userService, UserRepository userRepository, UserNotificationService userNotificationService) {
         this.businessImageService = businessImageService;
         this.businessProfileService = businessProfileService;
         this.userService = userService;
+        this.userRepository = userRepository;
+        this.userNotificationService = userNotificationService;
     }
 
     @PostMapping("/business/{uuid}/gallery/upload")
@@ -67,30 +74,39 @@ public class BusinessImageController {
             return "redirect:/business/edit/" + uuid;
         }
 
-
         try {
 
-            businessImageService.uploadImages(
-                    businessProfile.getId(),
-                    images
-            );
+            businessImageService.uploadImages(businessProfile.getId(), images);
 
-
-            redirectAttributes.addFlashAttribute(
-                    "gallerySuccess",
-                    "Imaginile au fost încărcate cu succes."
-            );
-
+            redirectAttributes.addFlashAttribute("gallerySuccess", "Imaginile au fost încărcate cu succes.");
 
         } catch (IOException e) {
 
-
-            redirectAttributes.addFlashAttribute(
-                    "galleryError",
-                    "A apărut o eroare la încărcarea imaginilor."
-            );
+            redirectAttributes.addFlashAttribute("galleryError", "A apărut o eroare la încărcarea imaginilor.");
         }
 
+        List<User> admins =
+                userRepository.findByRole(Role.ADMIN);
+
+        for (User admin : admins) {
+
+            userNotificationService.create(
+
+                    admin,
+
+                    "Galerie actualizată",
+
+                    businessProfile.getName()
+                            + " a fost editat și trimis pentru aprobare.",
+
+                    "/admin/business/"
+                            + businessProfile.getUuid()
+            );
+
+        }
+
+        redirectAttributes.addAttribute("businessUpdated", true);
+        redirectAttributes.addAttribute("businessNotApproved", true);
 
         return "redirect:/business/edit/" + uuid;
     }

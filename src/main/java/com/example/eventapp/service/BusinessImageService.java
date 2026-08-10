@@ -44,68 +44,54 @@ public class BusinessImageService {
                 businessProfile.getUuid()
         );
 
-
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
-
 
         long currentImages =
                 businessImageRepository
                         .countByBusinessProfile(businessProfile);
 
-
         for (MultipartFile file : files) {
-
 
             if (file.isEmpty()) {
                 continue;
             }
 
-
             if (currentImages >= 20) {
                 break;
             }
 
-
             String originalFileName =
                     file.getOriginalFilename();
-
 
             if (originalFileName == null ||
                     !originalFileName.contains(".")) {
                 continue;
             }
 
-
             String extension =
                     originalFileName.substring(
                             originalFileName.lastIndexOf(".")
                     );
 
-
             currentImages++;
-
 
             String fileName =
                     "gallery_"
                             + currentImages
                             + extension;
 
-
             Path filePath =
                     uploadPath.resolve(fileName);
-
 
             Files.write(
                     filePath,
                     file.getBytes()
             );
 
-
             BusinessImage image =
                     new BusinessImage();
-
 
             image.setImagePath(
                     "/uploads/businesses/"
@@ -116,11 +102,9 @@ public class BusinessImageService {
                             + fileName
             );
 
+            image.setBusinessProfile(businessProfile);
 
-            image.setBusinessProfile(
-                    businessProfile
-            );
-
+            businessProfile.setStatus(BusinessProfile.BusinessStatus.PENDING);
 
             businessImageRepository.save(image);
         }

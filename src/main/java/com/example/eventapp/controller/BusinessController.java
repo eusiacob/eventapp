@@ -302,18 +302,10 @@ public class BusinessController {
             RedirectAttributes redirectAttributes
     ) throws IOException {
 
-
-        User user = userService.findByEmail(
-                userDetails.getUsername()
-        );
-
+        User user = userService.findByEmail(userDetails.getUsername());
 
         BusinessProfile existingProfile =
-                businessProfileService.findByUuidAndValidateOwner(
-                        uuid,
-                        user
-                );
-
+                businessProfileService.findByUuidAndValidateOwner(uuid, user);
 
         if (result.hasErrors()) {
 
@@ -328,8 +320,6 @@ public class BusinessController {
                     businessProfileService.getCategories()
             );
 
-            redirectAttributes.addAttribute("businessUpdated", true);
-
             return "business-edit";
         }
 
@@ -341,7 +331,6 @@ public class BusinessController {
         existingProfile.setEmail(profile.getEmail());
         existingProfile.setWebsite(profile.getWebsite());
         existingProfile.setStatus(BusinessProfile.BusinessStatus.PENDING);
-
 
         if (imageFile != null && !imageFile.isEmpty()) {
 
@@ -382,12 +371,28 @@ public class BusinessController {
             }
         }
 
-
         businessProfileService.save(existingProfile);
 
-        redirectAttributes.addAttribute("businessUpdated", true);
+        List<User> admins = userRepository.findByRole(Role.ADMIN);
 
-        return "redirect:/dashboard";
+        for (User admin : admins) {
+
+            userNotificationService.create(
+
+                    admin,
+                    "Serviciu actualizat",
+                    profile.getName()
+                            + " a fost editat și trimis pentru aprobare.",
+                    "/admin/business/"
+                            + profile.getUuid()
+            );
+        }
+
+        redirectAttributes.addAttribute("businessUpdated", true);
+        redirectAttributes.addAttribute("businessNotApproved", true);
+
+        return "redirect:/business/edit/" + profile.getUuid();
+
     }
 
     @PostMapping("/business/delete/{uuid}")

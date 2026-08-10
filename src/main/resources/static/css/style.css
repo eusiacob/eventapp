@@ -572,10 +572,6 @@ form,
     line-height: 1.5;
 }
 
-.business-card:hover .business-image {
-    transform: scale(1.05);
-}
-
 .clickable-card {
     cursor: pointer;
 }
@@ -854,6 +850,10 @@ form,
     .gallery-manage-image {
         height: 150px;
     }
+
+    .favorite-heart {
+        font-size: 1.5rem;
+    }
 }
 
 @media (max-width: 768px) {
@@ -863,6 +863,10 @@ form,
 
     .gallery-manage-image {
         height: 130px;
+    }
+
+    .favorite-heart {
+        font-size: 1.5rem;
     }
 }
 
@@ -886,7 +890,7 @@ form,
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.92);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-    font-size: 0.8rem;
+    font-size: 1.5rem;
     line-height: 1;
     display: flex;
     align-items: center;
@@ -930,6 +934,18 @@ form,
     letter-spacing: 1px;
 }
 
+#userDetailPersonFill {
+    width: 70px;
+
+    font-size: 50px;
+}
+
+@media (max-width: 768px) {
+
+    #userDetailPersonFill {
+        display: none;
+    }
+}
 
 /*SEARCH*/
 .search-card {
@@ -942,6 +958,10 @@ form,
 
     body {
         font-size: 17px;
+    }
+
+    #detailsFavoriteText {
+        display: none;
     }
 
     .form-control,
@@ -964,7 +984,6 @@ form,
 
     .details-image {
         width: 100%;
-        height: auto;
         object-fit: cover;
     }
 
