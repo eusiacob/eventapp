@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Abonamente</title>
+
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!--MAIN PAGE-->
+<div class="container py-2">
+
+    <div class="row justify-content-center">
+
+        <div class="col-12 col-md-8 col-lg-6">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4 p-md-5 text-center">
+
+                    <h2 class="fw-bold mb-3">
+                        Confirmă abonamentul
+                    </h2>
+
+                    <p class="text-muted mb-4">
+                        Verifică detaliile abonamentului înainte de
+                        a continua.
+                    </p>
+
+
+                    <div class="border rounded-3 p-4 mb-4">
+
+                        <h3 class="fw-bold"
+                            th:text="${plan.name}">
+                        </h3>
+
+                        <p class="text-muted"
+                           th:text="${plan.description}">
+                        </p>
+
+
+                        <div class="my-4">
+
+                            <span class="display-5 fw-bold"
+                                  th:text="${plan.price + ' lei'}">
+                            </span>
+
+                        </div>
+
+
+                        <div class="text-muted">
+
+                            <i class="bi bi-calendar3 me-1"></i>
+
+                            Durată:
+
+                            <strong
+                                    th:text="${plan.durationMonths == 1 ?
+                                '1 lună' :
+                                (plan.durationMonths == 6 ?
+                                '6 luni' : '12 luni')}">
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <form method="post"
+                          th:action="@{/subscriptions/create}">
+
+                        <input name="plan"
+                               th:value="${plan.plan}"
+                               type="hidden">
+
+
+                        <button class="btn btn-primary w-100"
+                                type="submit">
+
+                            Confirmă abonamentul
+
+                        </button>
+
+                    </form>
+
+
+                    <a class="btn btn-link mt-3"
+                       th:href="@{/subscriptions}">
+
+                        Înapoi la abonamente
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

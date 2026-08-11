@@ -44,6 +44,7 @@ public class Subscription {
     public enum SubscriptionPlan {
 
         MONTHLY,
+        SIXMONTHS,
         YEARLY
 
     }

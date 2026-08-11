@@ -60,14 +60,10 @@ public class AdminController {
 
         if (status == null) {
 
-            businesses =
-                    businessProfileRepository
-                            .findAllByOrderByCreatedAtDesc();
+            businesses = businessProfileRepository.findAllByOrderByCreatedAtDesc();
         } else {
 
-            businesses =
-                    businessProfileRepository
-                            .findByStatusOrderByCreatedAtDesc(status);
+            businesses = businessProfileRepository.findByStatusOrderByCreatedAtDesc(status);
         }
 
         model.addAttribute("businesses", businesses);
