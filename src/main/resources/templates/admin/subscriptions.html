@@ -48,6 +48,14 @@
 
         </a>
 
+        <a class="admin-filter-btn pending"
+           th:classappend="${currentStatus == 'PENDING'} ?' active'"
+           th:href="@{/admin/subscriptions(status='PENDING')}">
+
+            În așteptare
+
+        </a>
+
         <a class="admin-filter-btn rejected"
            th:classappend="${currentStatus == 'EXPIRED'} ? 'active'"
            th:href="@{/admin/subscriptions(status='EXPIRED')}">
@@ -78,81 +86,116 @@
 
     <div class="card border-0 shadow-sm rounded-4">
 
+        <!--        SUBSCRIPTIONS-->
         <div class="card-body">
 
             <div class="table-responsive">
 
-                <table class="table align-middle table-hover">
+                <table class="table align-middle">
 
                     <thead>
 
                     <tr>
 
-                        <th>Utilizator</th>
+                        <th>
+                            Utilizator
+                        </th>
 
-                        <th>Email</th>
+                        <th>
+                            Tip
+                        </th>
 
-                        <th>Plan</th>
+                        <th>
+                            Durată
+                        </th>
 
-                        <th>Status</th>
+                        <th>
+                            Preț
+                        </th>
 
-                        <th>Început</th>
+                        <th>
+                            Status
+                        </th>
 
-                        <th>Expirare</th>
+                        <th>
+                            Început
+                        </th>
+
+                        <th>
+                            Sfârșit
+                        </th>
+
 
                     </tr>
 
                     </thead>
 
+
                     <tbody>
 
-                    <tr class="clickable-row"
-                        th:data-href="@{/admin/user/{id}(id=${subscription.user.id})}"
-                        th:each="subscription : ${subscriptions}">
+                    <tr th:each="subscription : ${subscriptions}">
 
-                        <td th:text="${subscription.user.firstName + ' ' + subscription.user.lastName}">
+                        <td
+                                th:text="${subscription.user.email}">
                         </td>
 
-                        <td th:text="${subscription.user.email}">
+
+                        <td
+                                th:text="${subscription.plan.type}">
                         </td>
+
+
+                        <td
+                                th:text="${subscription.plan.duration.name() == 'MONTHLY'} ? '1 lună' :
+                                (${subscription.plan.duration.name() == 'SIX_MONTHS'} ? '6 luni' :
+                                (${subscription.plan.duration.name() == 'YEARLY'} ? '1 an' : '2 ani'))">
+
+                        </td>
+
 
                         <td>
 
-                            <span class="badge bg-dark"
-                                  th:text="${subscription.plan}">
+                            <span
+                                    th:text="${subscription.price + ' lei'}">
                             </span>
 
                         </td>
+
 
                         <td>
 
-                            <span class="badge bg-success"
-                                  th:if="${subscription.status.name() == 'ACTIVE'}">
+                            <span class="badge"
 
-                                Activ
+                                  th:classappend="
+                            ${subscription.status.name() == 'ACTIVE'} ? 'bg-success' :
+                            (${subscription.status.name() == 'EXPIRED' || subscription.status.name() =='CANCELLED'} ? 'bg-danger' :
+                            'bg-warning text-dark')"
 
-                            </span>
-
-                            <span class="badge bg-danger"
-                                  th:if="${subscription.status.name() == 'EXPIRED'}">
-
-                                Expirat
-
-                            </span>
-
-                            <span class="badge bg-secondary"
-                                  th:if="${subscription.status.name() == 'CANCELLED'}">
-
-                                Anulat
-
+                                  th:text="${subscription.status}">
                             </span>
 
                         </td>
 
-                        <td th:text="${#temporals.format(subscription.startDate,'dd.MM.yyyy')}">
+
+                        <td
+                                th:text="${subscription.startDate}">
                         </td>
 
-                        <td th:text="${#temporals.format(subscription.endDate,'dd.MM.yyyy')}">
+
+                        <td
+                                th:text="${subscription.endDate}">
+                        </td>
+
+                    </tr>
+
+
+                    <tr th:if="${#lists.isEmpty(subscriptions)}">
+
+                        <td class="text-center text-muted py-4"
+                            colspan="7">
+
+                            Nu există abonamente.
+
                         </td>
 
                     </tr>

@@ -28,68 +28,193 @@
     <div class="text-center mb-5">
 
         <h1 class="fw-bold text-dark">
-            Alege abonamentul potrivit
+            Alege abonamentul
         </h1>
 
         <p class="text-muted">
-            Activează-ți profilul Business și oferă clienților
-            acces la serviciile tale.
+            Alege planul potrivit pentru afacerea ta.
         </p>
 
     </div>
 
+
     <div class="row g-4 justify-content-center">
 
-        <div class="col-12 col-md-6 col-lg-4"
-             th:each="plan : ${plans}">
 
-            <div class="card h-100 border-0 shadow-sm">
+        <!-- STANDARD -->
 
-                <div class="card-body p-4 text-center">
+        <div class="col-12 col-lg-5">
 
-                    <h3 class="fw-bold"
-                        th:text="${plan.name}">
-                    </h3>
+            <div class="card h-100 shadow-sm border-0">
 
-                    <p class="text-muted"
-                       th:text="${plan.description}">
-                    </p>
+                <div class="card-body p-4">
 
-                    <div class="my-4">
+                    <div class="text-center mb-4">
 
-                    <span class="display-5 fw-bold"
-                          th:text="${plan.price + ' lei'}">
-                    </span>
+                        <h2 class="fw-bold">
+                            Standard
+                        </h2>
 
-                        <span class="text-muted"
-                              th:if="${plan.durationMonths == 1}">
-                        / lună
-                    </span>
-
-                        <span class="text-muted"
-                              th:if="${plan.durationMonths == 6}">
-                        / 6 luni
-                    </span>
-
-                        <span class="text-muted"
-                              th:if="${plan.durationMonths == 12}">
-                        / an
-                    </span>
+                        <p class="text-muted">
+                            Funcțiile esențiale pentru afacerea ta.
+                        </p>
 
                     </div>
 
-                    <a th:href="@{/subscriptions/confirm(plan=${plan.plan})}"
-                       class="btn btn-primary w-100">
 
-                        Alege abonamentul
+                    <div class="list-group list-group-flush">
 
-                    </a>
+                        <div th:each="plan : ${plans}"
+                             th:if="${plan.type.name() == 'STANDARD'}"
+                             class="list-group-item px-0">
+
+                            <div class="d-flex
+                                        justify-content-between
+                                        align-items-center">
+
+                                <div>
+
+                                    <strong
+                                            th:switch="${plan.duration}">
+
+                                        <span th:case="${T(com.example.eventapp.model.SubscriptionPlan.SubscriptionDuration).MONTHLY}">
+                                            1 lună
+                                        </span>
+
+                                        <span th:case="${T(com.example.eventapp.model.SubscriptionPlan.SubscriptionDuration).SIX_MONTHS}">
+                                            6 luni
+                                        </span>
+
+                                        <span th:case="${T(com.example.eventapp.model.SubscriptionPlan.SubscriptionDuration).YEARLY}">
+                                            1 an
+                                        </span>
+
+                                        <span th:case="${T(com.example.eventapp.model.SubscriptionPlan.SubscriptionDuration).TWO_YEARS}">
+                                            2 ani
+                                        </span>
+
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="text-end">
+
+                                    <div class="fw-bold"
+                                         th:text="${plan.price + ' lei'}">
+                                    </div>
+
+                                    <a th:href="@{/subscriptions/confirm(
+                                            planId=${plan.id}
+                                        )}"
+                                       class="btn btn-sm btn-primary mt-1">
+
+                                        Alege
+
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
             </div>
 
         </div>
+
+
+
+        <!-- PREMIUM -->
+
+        <div class="col-12 col-lg-5">
+
+            <div class="card h-100 shadow-sm border-0">
+
+                <div class="card-body p-4">
+
+                    <div class="text-center mb-4">
+
+                        <h2 class="fw-bold">
+                            Premium
+                        </h2>
+
+                        <p class="text-muted">
+                            Funcții avansate pentru afacerea ta.
+                        </p>
+
+                    </div>
+
+
+                    <div class="list-group list-group-flush">
+
+                        <div th:each="plan : ${plans}"
+                             th:if="${plan.type.name() == 'PREMIUM'}"
+                             class="list-group-item px-0">
+
+                            <div class="d-flex
+                                        justify-content-between
+                                        align-items-center">
+
+                                <div>
+
+                                    <strong
+                                            th:switch="${plan.duration}">
+
+                                        <span th:case="${T(com.example.eventapp.model.SubscriptionPlan.SubscriptionDuration).MONTHLY}">
+                                            1 lună
+                                        </span>
+
+                                        <span th:case="${T(com.example.eventapp.model.SubscriptionPlan.SubscriptionDuration).SIX_MONTHS}">
+                                            6 luni
+                                        </span>
+
+                                        <span th:case="${T(com.example.eventapp.model.SubscriptionPlan.SubscriptionDuration).YEARLY}">
+                                            1 an
+                                        </span>
+
+                                        <span th:case="${T(com.example.eventapp.model.SubscriptionPlan.SubscriptionDuration).TWO_YEARS}">
+                                            2 ani
+                                        </span>
+
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="text-end">
+
+                                    <div class="fw-bold"
+                                         th:text="${plan.price + ' lei'}">
+                                    </div>
+
+                                    <a th:href="@{/subscriptions/confirm(
+                                            planId=${plan.id}
+                                        )}"
+                                       class="btn btn-sm btn-primary mt-1">
+
+                                        Alege
+
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
 
     </div>
 

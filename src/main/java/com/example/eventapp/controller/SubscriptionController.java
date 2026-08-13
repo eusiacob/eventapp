@@ -1,7 +1,6 @@
 package com.example.eventapp.controller;
 
-import com.example.eventapp.dto.SubscriptionPlanDTO;
-import com.example.eventapp.model.Subscription;
+import com.example.eventapp.model.SubscriptionPlan;
 import com.example.eventapp.model.User;
 import com.example.eventapp.service.SubscriptionService;
 import com.example.eventapp.service.UserService;
@@ -34,47 +33,29 @@ public class SubscriptionController {
         return "subscriptions";
     }
 
-
     @GetMapping("/subscriptions/confirm")
     public String confirmSubscription(
-            @RequestParam Subscription.SubscriptionPlan plan,
+            @RequestParam Long planId,
             Model model
     ) {
 
-        SubscriptionPlanDTO selectedPlan =
-                subscriptionService
-                        .getAvailablePlans()
-                        .stream()
-                        .filter(p -> p.getPlan() == plan)
-                        .findFirst()
-                        .orElseThrow(() ->
-                                new IllegalArgumentException(
-                                        "Invalid subscription plan"
-                                )
-                        );
+        SubscriptionPlan plan = subscriptionService.findActivePlanById(planId);
 
-        model.addAttribute("plan", selectedPlan);
+        model.addAttribute("plan", plan);
 
         return "subscription-confirm";
     }
 
-
     @PostMapping("/subscriptions/create")
     public String createSubscription(
-            @RequestParam Subscription.SubscriptionPlan plan,
-            @AuthenticationPrincipal UserDetails userDetails, Model model
+            @RequestParam Long planId,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
 
-        User user =
-                userService.findByEmail(
-                        userDetails.getUsername()
-                );
+        User user = userService.findByEmail(userDetails.getUsername());
 
-        subscriptionService.createSubscription(
-                user,
-                plan
-        );
+        subscriptionService.createSubscription(user, planId);
 
-        return "redirect:/profile";
+        return "redirect:/subscriptions";
     }
 }

@@ -1,9 +1,10 @@
 package com.example.eventapp.service;
 
-import com.example.eventapp.dto.SubscriptionPlanDTO;
 import com.example.eventapp.model.Role;
 import com.example.eventapp.model.Subscription;
+import com.example.eventapp.model.SubscriptionPlan;
 import com.example.eventapp.model.User;
+import com.example.eventapp.repository.SubscriptionPlanRepository;
 import com.example.eventapp.repository.SubscriptionRepository;
 import com.example.eventapp.repository.UserRepository;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,52 +13,87 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
     private final UserRepository userRepository;
+    private final SubscriptionPlanRepository subscriptionPlanRepository;
 
-    public SubscriptionService(SubscriptionRepository subscriptionRepository, UserRepository userRepository) {
+    public SubscriptionService(
+            SubscriptionRepository subscriptionRepository,
+            UserRepository userRepository,
+            SubscriptionPlanRepository subscriptionPlanRepository
+    ) {
         this.subscriptionRepository = subscriptionRepository;
         this.userRepository = userRepository;
+        this.subscriptionPlanRepository = subscriptionPlanRepository;
     }
 
-    public Subscription findByUser(User user) {
+    public Subscription findActiveSubscription(User user) {
 
-        return subscriptionRepository.findByUser(user).orElse(null);
+        return subscriptionRepository
+                .findFirstByUserAndStatusOrderByEndDateDesc(
+                        user,
+                        Subscription.SubscriptionStatus.ACTIVE
+                )
+                .orElse(null);
     }
 
-    public void activateSubscription(
-            User user,
-            Subscription.SubscriptionPlan plan) {
+    public Subscription findById(Long id) {
 
-        Subscription subscription =
-                subscriptionRepository
-                        .findByUser(user)
-                        .orElse(new Subscription());
+        return subscriptionRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Subscription not found"
+                        )
+                );
+    }
 
-        subscription.setUser(user);
-        subscription.setPlan(plan);
+    public void activateSubscription(Subscription subscription) {
+
+        if (subscription.getStatus()
+                != Subscription.SubscriptionStatus.PENDING) {
+
+            throw new IllegalStateException(
+                    "Subscription is not pending"
+            );
+        }
+
+        User user = subscription.getUser();
+
+        Subscription activeSubscription =
+                findActiveSubscription(user);
+
+        if (activeSubscription != null) {
+
+            throw new IllegalStateException(
+                    "User already has an active subscription"
+            );
+        }
+
+        SubscriptionPlan plan =
+                subscription.getPlan();
+
+        LocalDateTime now =
+                LocalDateTime.now();
 
         subscription.setStatus(
                 Subscription.SubscriptionStatus.ACTIVE
         );
 
-        LocalDateTime now = LocalDateTime.now();
-
         subscription.setStartDate(now);
 
-        switch (plan) {
+        switch (plan.getDuration()) {
 
             case MONTHLY ->
                     subscription.setEndDate(
                             now.plusMonths(1)
                     );
 
-            case SIXMONTHS ->
+            case SIX_MONTHS ->
                     subscription.setEndDate(
                             now.plusMonths(6)
                     );
@@ -65,6 +101,11 @@ public class SubscriptionService {
             case YEARLY ->
                     subscription.setEndDate(
                             now.plusYears(1)
+                    );
+
+            case TWO_YEARS ->
+                    subscription.setEndDate(
+                            now.plusYears(2)
                     );
         }
 
@@ -75,41 +116,135 @@ public class SubscriptionService {
         subscriptionRepository.save(subscription);
     }
 
+    public void createSubscription(
+            User user,
+            Long planId
+    ) {
+
+        Subscription activeSubscription =
+                findActiveSubscription(user);
+
+        List<Subscription> userSubscriptions =
+                subscriptionRepository
+                        .findAllByUserOrderByCreatedAtDesc(user);
+
+        boolean hasPending =
+                userSubscriptions.stream()
+                        .anyMatch(subscription ->
+                                subscription.getStatus()
+                                        == Subscription.SubscriptionStatus.PENDING
+                        );
+
+        if (hasPending) {
+
+            throw new IllegalStateException(
+                    "User already has a pending subscription"
+            );
+        }
+
+        if (activeSubscription != null) {
+
+            throw new IllegalStateException(
+                    "User already has an active subscription"
+            );
+        }
+
+        SubscriptionPlan plan =
+                subscriptionPlanRepository
+                        .findById(planId)
+                        .orElseThrow(() ->
+                                new IllegalArgumentException(
+                                        "Subscription plan not found"
+                                )
+                        );
+
+        if (!plan.isActive()) {
+
+            throw new IllegalStateException(
+                    "Subscription plan is not active"
+            );
+        }
+
+        Subscription subscription = new Subscription();
+
+        subscription.setUser(user);
+        subscription.setPlan(plan);
+        subscription.setPrice(plan.getPrice());
+        subscription.setStatus(Subscription.SubscriptionStatus.PENDING);
+
+        subscriptionRepository.save(subscription);
+    }
+
+
     @Scheduled(cron = "0 0 2 * * *")
     public void checkExpiredSubscriptions() {
 
-        List<Subscription> subscriptions = subscriptionRepository.
-                findByStatus(Subscription.SubscriptionStatus.ACTIVE);
+        List<Subscription> subscriptions =
+                subscriptionRepository
+                        .findAllByStatusOrderByCreatedAtDesc(
+                                Subscription.SubscriptionStatus.ACTIVE
+                        );
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now =
+                LocalDateTime.now();
 
         for (Subscription subscription : subscriptions) {
 
-            if (subscription.getEndDate().isBefore(now)) {
+            if (subscription.getEndDate() != null
+                    && subscription.getEndDate().isBefore(now)) {
 
-                subscription.setStatus(Subscription.SubscriptionStatus.EXPIRED);
-
-                User user = subscription.getUser();
-
-                if (user.getRole() == Role.BUSINESS) {
-
-                    user.setRole(Role.USER);
-                    userRepository.save(user);
-
-                }
+                subscription.setStatus(
+                        Subscription.SubscriptionStatus.EXPIRED
+                );
 
                 subscriptionRepository.save(subscription);
 
+                User user =
+                        subscription.getUser();
+
+                Subscription nextSubscription =
+                        subscriptionRepository
+                                .findAllByUserOrderByCreatedAtDesc(user)
+                                .stream()
+                                .filter(s ->
+                                        s.getStatus()
+                                                == Subscription.SubscriptionStatus.PENDING
+                                )
+                                .findFirst()
+                                .orElse(null);
+
+                if (nextSubscription != null) {
+
+                    activateSubscription(nextSubscription);
+
+                } else {
+
+                    if (user.getRole() == Role.BUSINESS) {
+
+                        user.setRole(Role.USER);
+
+                        userRepository.save(user);
+                    }
+                }
             }
-
         }
-
     }
 
     public List<Subscription> findAll() {
 
         return subscriptionRepository
                 .findAllByOrderByCreatedAtDesc();
+    }
+
+    public SubscriptionPlan findPlanById(Long id) {
+
+        return subscriptionPlanRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Subscription plan not found"
+                        )
+                );
     }
 
     public long count() {
@@ -124,60 +259,66 @@ public class SubscriptionService {
 
         return subscriptionRepository
                 .findAllByStatusOrderByCreatedAtDesc(status);
+    }
+
+    public List<SubscriptionPlan> getAvailablePlans() {
+
+        return subscriptionPlanRepository.findByActiveTrue();
 
     }
 
-    public List<SubscriptionPlanDTO> getAvailablePlans() {
+    public List<SubscriptionPlan> findAllPlans() {
 
-        return List.of(
-
-                new SubscriptionPlanDTO(
-                        Subscription.SubscriptionPlan.MONTHLY,
-                        "Lunar",
-                        new BigDecimal("49.00"),
-                        1,
-                        "Flexibilitate maximă"
-                ),
-
-                new SubscriptionPlanDTO(
-                        Subscription.SubscriptionPlan.SIXMONTHS,
-                        "6 luni",
-                        new BigDecimal("249.00"),
-                        6,
-                        "Economisești față de plata lunară"
-                ),
-
-                new SubscriptionPlanDTO(
-                        Subscription.SubscriptionPlan.YEARLY,
-                        "Anual",
-                        new BigDecimal("449.00"),
-                        12,
-                        "Cea mai bună valoare"
-                )
-        );
+        return subscriptionPlanRepository.findAll();
     }
 
-    public void createSubscription(
-            User user,
-            Subscription.SubscriptionPlan plan
-    ) {
+    public SubscriptionPlan findActivePlanById(Long id) {
 
-        Optional<Subscription> existingSubscription =
-                subscriptionRepository.findByUser(user);
+        SubscriptionPlan plan =
+                subscriptionPlanRepository
+                        .findById(id)
+                        .orElseThrow(() ->
+                                new IllegalArgumentException(
+                                        "Subscription plan not found"
+                                )
+                        );
 
-        if (existingSubscription.isPresent()) {
+        if (!plan.isActive()) {
+
             throw new IllegalStateException(
-                    "User already has a subscription"
+                    "Subscription plan is not active"
             );
         }
 
-        Subscription subscription = new Subscription();
+        return plan;
+    }
 
-        subscription.setUser(user);
-        subscription.setPlan(plan);
-        subscription.setStatus(Subscription.SubscriptionStatus.PENDING);
+    public void updatePlan(
+            Long id,
+            BigDecimal price,
+            boolean active
+    ) {
 
-        subscriptionRepository.save(subscription);
+        SubscriptionPlan plan =
+                subscriptionPlanRepository
+                        .findById(id)
+                        .orElseThrow(() ->
+                                new IllegalArgumentException(
+                                        "Subscription plan not found"
+                                )
+                        );
+
+        if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {
+
+            throw new IllegalArgumentException(
+                    "Invalid price"
+            );
+        }
+
+        plan.setPrice(price);
+        plan.setActive(active);
+
+        subscriptionPlanRepository.save(plan);
     }
 
 }

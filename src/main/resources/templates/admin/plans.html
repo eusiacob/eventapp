@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Planuri de abonament</title>
+
+    <link crossorigin="anonymous"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
+
+</head>
+
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container py-4">
+
+    <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body">
+
+            <div class="d-flex
+                        justify-content-between
+                        align-items-center
+                        mb-4">
+
+                <h4 class="fw-bold mb-0">
+                    Planuri disponibile
+                </h4>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table align-middle">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Tip</th>
+
+                        <th>Durată</th>
+
+                        <th>Preț</th>
+
+                        <th>Status</th>
+
+                        <th class="text-end">Acțiuni</th>
+
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                    <tr th:each="plan : ${plans}">
+
+                        <td>
+
+                            <strong
+                                    th:text="${plan.type}">
+                            </strong>
+
+                        </td>
+
+
+                        <td
+                                th:text="${plan.duration.name() == 'MONTHLY'} ? '1 lună' :
+                                (${plan.duration.name() == 'SIX_MONTHS'} ? '6 luni' :
+                                (${plan.duration.name() == 'YEARLY'} ? '1 an' : '2 ani'))">
+                        </td>
+
+
+                        <td>
+
+                            <strong
+                                    th:text="${plan.price + ' lei'}">
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            <span
+                                    class="badge bg-success"
+                                    th:if="${plan.active}">
+
+                                Activ
+
+                            </span>
+
+                            <span class="badge bg-secondary"
+                                    th:unless="${plan.active}">
+
+                                Inactiv
+
+                            </span>
+
+                        </td>
+
+
+                        <td class="text-end">
+
+                            <a
+                                    class="btn btn-sm btn-outline-primary"
+                                    th:href="@{/admin/subscription-plans/{id}/edit(id=${plan.id})}">
+
+                                Editează
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+    document.querySelectorAll(".clickable-row")
+        .forEach(row => {
+
+            row.addEventListener("click", () => {
+
+                window.location.href = row.dataset.href;
+
+            });
+
+        });
+
+</script>
+
+</body>
+
+</html>

@@ -10,10 +10,13 @@ import java.util.Optional;
 public interface SubscriptionRepository
         extends JpaRepository<Subscription, Long> {
 
-    Optional<Subscription> findByUser(User user);
-
-    List<Subscription> findByStatus(
+    Optional<Subscription> findFirstByUserAndStatusOrderByEndDateDesc(
+            User user,
             Subscription.SubscriptionStatus status
+    );
+
+    List<Subscription> findAllByUserOrderByCreatedAtDesc(
+            User user
     );
 
     List<Subscription> findAllByOrderByCreatedAtDesc();

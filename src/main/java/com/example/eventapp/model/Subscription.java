@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,13 +16,9 @@ public class Subscription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private SubscriptionPlan plan;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -34,20 +31,12 @@ public class Subscription {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @PrePersist
-    public void prePersist() {
+    @ManyToOne
+    @JoinColumn(name = "plan_id", nullable = false)
+    private SubscriptionPlan plan;
 
-        createdAt = LocalDateTime.now();
-
-    }
-
-    public enum SubscriptionPlan {
-
-        MONTHLY,
-        SIXMONTHS,
-        YEARLY
-
-    }
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
 
     public enum SubscriptionStatus {
 
@@ -58,4 +47,8 @@ public class Subscription {
 
     }
 
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+    }
 }

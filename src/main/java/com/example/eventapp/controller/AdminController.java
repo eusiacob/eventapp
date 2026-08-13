@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
@@ -46,6 +47,8 @@ public class AdminController {
                 userRepository.count());
         model.addAttribute("totalSubscriptions",
                 subscriptionService.count());
+        model.addAttribute("plans",
+                subscriptionService.findAllPlans().size());
 
         return "admin/dashboard";
     }
@@ -170,7 +173,7 @@ public class AdminController {
         User user = userService.findById(id);
 
         model.addAttribute("user", user);
-        model.addAttribute("subscription", subscriptionService.findByUser(user));
+        model.addAttribute("subscription", subscriptionService.findActiveSubscription(user));
         model.addAttribute("businesses", user.getBusinessProfiles());
         model.addAttribute("latestReviews", reviewService.findLatestByUser(user));
         model.addAttribute("breadcrumbs", List.of(
@@ -345,6 +348,7 @@ public class AdminController {
         }
 
         model.addAttribute("subscriptions", subscriptions);
+        model.addAttribute("plans", subscriptionService.findAllPlans());
         model.addAttribute("currentStatus", status);
         model.addAttribute("breadcrumbs", List.of(
                 new BreadcrumbDTO("Dashboard", "/admin"),
@@ -355,25 +359,56 @@ public class AdminController {
 
     }
 
-    //    DOAR PENTRU TEST - VA FI FACUT AUTOMAT
-    @PostMapping("/user/{id}/subscription/activate")
-    public String activateSubscription(
-            @PathVariable Long id,
-            RedirectAttributes redirectAttributes
+    @GetMapping("/plans")
+    public String subscriptions(
+            Model model
     ) {
 
-        User user = userService.findById(id);
+        model.addAttribute("plans", subscriptionService.findAllPlans());
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Dashboard", "/admin"),
+                new BreadcrumbDTO("Planuri de abonament", null)
+        ));
 
-        subscriptionService.activateSubscription(
-                user,
-                Subscription.SubscriptionPlan.MONTHLY
-        );
-
-        redirectAttributes.addFlashAttribute(
-                "successMessage",
-                "Abonamentul a fost activat."
-        );
-
-        return "redirect:/admin/user/" + id;
+        return "admin/plans";
     }
+
+    @GetMapping("/subscription-plans/{id}/edit")
+    public String editSubscriptionPlan(
+            @PathVariable Long id,
+            Model model
+    ) {
+
+        SubscriptionPlan plan = subscriptionService.findPlanById(id);
+
+        model.addAttribute("plan", plan);
+
+        return "admin/subscription-plan-edit";
+    }
+
+    @PostMapping("/subscription-plans/{id}/edit")
+    public String updateSubscriptionPlan(
+            @PathVariable Long id,
+            @RequestParam BigDecimal price,
+            @RequestParam(defaultValue = "false") boolean active
+    ) {
+
+        subscriptionService.updatePlan(id, price, active);
+
+        return "redirect:/admin/subscriptions";
+    }
+
+    // DOAR PENTRU TEST - VA FI FACUT AUTOMAT
+    @PostMapping("/user/{id}/subscription/activate")
+    public String activateSubscription(
+            @PathVariable Long id
+    ) {
+
+        Subscription subscription = subscriptionService.findById(id);
+
+        subscriptionService.activateSubscription(subscription);
+
+        return "redirect:/admin/subscriptions";
+    }
+
 }

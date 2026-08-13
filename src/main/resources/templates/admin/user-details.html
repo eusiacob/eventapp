@@ -211,18 +211,6 @@
 
                 </div>
 
-
-                <form method="post"
-                      th:action="@{/admin/user/{id}/subscription/activate(id=${user.id})}">
-
-
-                    <button class="btn btn-outline-success">
-
-                        <i class="bi bi-star-fill me-2"></i>
-                        Activează abonament lunar
-                    </button>
-
-                </form>
             </div>
 
             <!--CU  ABONAMENT-->
@@ -239,7 +227,10 @@
                                 Plan
                             </small>
 
-                            <h6 th:text="${subscription.plan}">
+                            <h6 th:text="${subscription.plan.type} + ' - ' +
+                            (${subscription.plan.duration} == 'MONTHLY' ? '1 lună' :
+                            (${subscription.plan.duration} == 'SIX_MONTHS' ? '6 luni' :
+                            (${subscription.plan.duration} == 'YEARLY' ? '1 an' : '2 ani')))">
                             </h6>
 
                         </div>

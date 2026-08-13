@@ -33,64 +33,63 @@
 
                 <div class="card-body p-4 p-md-5 text-center">
 
-                    <h2 class="fw-bold mb-3">
+                    <h2 class="fw-bold mb-4">
                         Confirmă abonamentul
                     </h2>
 
-                    <p class="text-muted mb-4">
-                        Verifică detaliile abonamentului înainte de
-                        a continua.
-                    </p>
+
+                    <h3
+                            th:text="${plan.type}">
+                    </h3>
 
 
-                    <div class="border rounded-3 p-4 mb-4">
+                    <div class="my-4">
 
-                        <h3 class="fw-bold"
-                            th:text="${plan.name}">
-                        </h3>
-
-                        <p class="text-muted"
-                           th:text="${plan.description}">
-                        </p>
-
-
-                        <div class="my-4">
-
-                            <span class="display-5 fw-bold"
-                                  th:text="${plan.price + ' lei'}">
-                            </span>
-
-                        </div>
-
-
-                        <div class="text-muted">
-
-                            <i class="bi bi-calendar3 me-1"></i>
-
-                            Durată:
-
-                            <strong
-                                    th:text="${plan.durationMonths == 1 ?
-                                '1 lună' :
-                                (plan.durationMonths == 6 ?
-                                '6 luni' : '12 luni')}">
-                            </strong>
-
-                        </div>
+                        <span class="display-5 fw-bold"
+                              th:text="${plan.price + ' lei'}">
+                        </span>
 
                     </div>
 
 
-                    <form method="post"
-                          th:action="@{/subscriptions/create}">
+                    <p class="text-muted">
 
-                        <input name="plan"
-                               th:value="${plan.plan}"
-                               type="hidden">
+                        Durată:
+
+                        <strong
+                                th:switch="${plan.duration}">
+
+                            <span th:case="${T(com.example.eventapp.model.SubscriptionPlan.SubscriptionDuration).MONTHLY}">
+                                1 lună
+                            </span>
+
+                            <span th:case="${T(com.example.eventapp.model.SubscriptionPlan.SubscriptionDuration).SIX_MONTHS}">
+                                6 luni
+                            </span>
+
+                            <span th:case="${T(com.example.eventapp.model.SubscriptionPlan.SubscriptionDuration).YEARLY}">
+                                1 an
+                            </span>
+
+                            <span th:case="${T(com.example.eventapp.model.SubscriptionPlan.SubscriptionDuration).TWO_YEARS}">
+                                2 ani
+                            </span>
+
+                        </strong>
+
+                    </p>
 
 
-                        <button class="btn btn-primary w-100"
-                                type="submit">
+                    <form th:action="@{/subscriptions/create}"
+                          method="post">
+
+                        <input type="hidden"
+                               name="planId"
+                               th:value="${plan.id}">
+
+
+                        <button type="submit"
+                                class="btn btn-primary w-100">
 
                             Confirmă abonamentul
 
@@ -99,8 +98,8 @@
                     </form>
 
 
-                    <a class="btn btn-link mt-3"
-                       th:href="@{/subscriptions}">
+                    <a th:href="@{/subscriptions}"
+                       class="btn btn-link mt-3">
 
                         Înapoi la abonamente
 
