@@ -88,25 +88,21 @@ public class SubscriptionService {
 
         switch (plan.getDuration()) {
 
-            case MONTHLY ->
-                    subscription.setEndDate(
-                            now.plusMonths(1)
-                    );
+            case MONTHLY -> subscription.setEndDate(
+                    now.plusMonths(1)
+            );
 
-            case SIX_MONTHS ->
-                    subscription.setEndDate(
-                            now.plusMonths(6)
-                    );
+            case SIX_MONTHS -> subscription.setEndDate(
+                    now.plusMonths(6)
+            );
 
-            case YEARLY ->
-                    subscription.setEndDate(
-                            now.plusYears(1)
-                    );
+            case YEARLY -> subscription.setEndDate(
+                    now.plusYears(1)
+            );
 
-            case TWO_YEARS ->
-                    subscription.setEndDate(
-                            now.plusYears(2)
-                    );
+            case TWO_YEARS -> subscription.setEndDate(
+                    now.plusYears(2)
+            );
         }
 
         user.setRole(Role.BUSINESS);
@@ -116,13 +112,7 @@ public class SubscriptionService {
         subscriptionRepository.save(subscription);
     }
 
-    public void createSubscription(
-            User user,
-            Long planId
-    ) {
-
-        Subscription activeSubscription =
-                findActiveSubscription(user);
+    public void createSubscription(User user, Long planId) {
 
         List<Subscription> userSubscriptions =
                 subscriptionRepository
@@ -139,13 +129,6 @@ public class SubscriptionService {
 
             throw new IllegalStateException(
                     "User already has a pending subscription"
-            );
-        }
-
-        if (activeSubscription != null) {
-
-            throw new IllegalStateException(
-                    "User already has an active subscription"
             );
         }
 
@@ -166,15 +149,15 @@ public class SubscriptionService {
         }
 
         Subscription subscription = new Subscription();
-
         subscription.setUser(user);
         subscription.setPlan(plan);
         subscription.setPrice(plan.getPrice());
-        subscription.setStatus(Subscription.SubscriptionStatus.PENDING);
+        subscription.setStatus(
+                Subscription.SubscriptionStatus.PENDING
+        );
 
         subscriptionRepository.save(subscription);
     }
-
 
     @Scheduled(cron = "0 0 2 * * *")
     public void checkExpiredSubscriptions() {
@@ -185,8 +168,7 @@ public class SubscriptionService {
                                 Subscription.SubscriptionStatus.ACTIVE
                         );
 
-        LocalDateTime now =
-                LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
 
         for (Subscription subscription : subscriptions) {
 
@@ -199,8 +181,7 @@ public class SubscriptionService {
 
                 subscriptionRepository.save(subscription);
 
-                User user =
-                        subscription.getUser();
+                User user = subscription.getUser();
 
                 Subscription nextSubscription =
                         subscriptionRepository
@@ -261,6 +242,12 @@ public class SubscriptionService {
                 .findAllByStatusOrderByCreatedAtDesc(status);
     }
 
+    public List<Subscription> findAllByUser(User user) {
+
+        return subscriptionRepository
+                .findAllByUserOrderByCreatedAtDesc(user);
+    }
+
     public List<SubscriptionPlan> getAvailablePlans() {
 
         return subscriptionPlanRepository.findByActiveTrue();
@@ -291,6 +278,19 @@ public class SubscriptionService {
         }
 
         return plan;
+    }
+
+    public Subscription findPendingSubscription(User user) {
+
+        return subscriptionRepository
+                .findAllByUserOrderByCreatedAtDesc(user)
+                .stream()
+                .filter(subscription ->
+                        subscription.getStatus()
+                                == Subscription.SubscriptionStatus.PENDING
+                )
+                .findFirst()
+                .orElse(null);
     }
 
     public void updatePlan(

@@ -23,12 +23,26 @@ public class SubscriptionController {
 
 
     @GetMapping("/subscriptions")
-    public String subscriptionPlans(Model model) {
+    public String subscriptionPlans(
+            Model model,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
 
-        model.addAttribute(
-                "plans",
-                subscriptionService.getAvailablePlans()
-        );
+        model.addAttribute("plans", subscriptionService.getAvailablePlans());
+
+        if (userDetails != null) {
+
+            User user =
+                    userService.findByEmail(userDetails.getUsername());
+
+            model.addAttribute(
+                    "activeSubscription",
+                    subscriptionService.findActiveSubscription(user));
+
+            model.addAttribute(
+                    "pendingSubscription",
+                    subscriptionService.findPendingSubscription(user));
+        }
 
         return "subscriptions";
     }

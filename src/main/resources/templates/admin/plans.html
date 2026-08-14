@@ -83,9 +83,7 @@
 
 
                         <td
-                                th:text="${plan.duration.name() == 'MONTHLY'} ? '1 lună' :
-                                (${plan.duration.name() == 'SIX_MONTHS'} ? '6 luni' :
-                                (${plan.duration.name() == 'YEARLY'} ? '1 an' : '2 ani'))">
+                                th:text="${plan.duration.getDisplayName()}">
                         </td>
 
 

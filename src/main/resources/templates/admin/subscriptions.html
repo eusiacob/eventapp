@@ -125,6 +125,10 @@
                             Sfârșit
                         </th>
 
+                        <th>
+                            Actiuni
+                        </th>
+
 
                     </tr>
 
@@ -146,9 +150,7 @@
 
 
                         <td
-                                th:text="${subscription.plan.duration.name() == 'MONTHLY'} ? '1 lună' :
-                                (${subscription.plan.duration.name() == 'SIX_MONTHS'} ? '6 luni' :
-                                (${subscription.plan.duration.name() == 'YEARLY'} ? '1 an' : '2 ani'))">
+                                th:text="${subscription.plan.duration.getDisplayName()}">
 
                         </td>
 
@@ -176,14 +178,33 @@
 
                         </td>
 
-
                         <td
-                                th:text="${subscription.startDate}">
+                                th:text="${#temporals.format(subscription.startDate,'dd.MM.yyyy')}">
                         </td>
 
 
                         <td
-                                th:text="${subscription.endDate}">
+                                th:text="${#temporals.format(subscription.endDate,'dd.MM.yyyy')}">
+                        </td>
+
+                        <td>
+
+                            <form
+                                    th:if="${subscription.status.name() == 'PENDING'}"
+                                    th:action="@{/admin/user/{id}/subscription/activate(id=${subscription.id})}"
+                                    method="post"
+                                    class="d-inline">
+
+                                <button
+                                        type="submit"
+                                        class="btn btn-sm btn-success">
+
+                                    Activează
+
+                                </button>
+
+                            </form>
+
                         </td>
 
                     </tr>

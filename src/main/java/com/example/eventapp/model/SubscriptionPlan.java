@@ -37,13 +37,19 @@ public class SubscriptionPlan {
 
     }
 
+    @Getter
     public enum SubscriptionDuration {
 
-        MONTHLY (),
-        SIX_MONTHS,
-        YEARLY,
-        TWO_YEARS
+        MONTHLY ("1 lună"),
+        SIX_MONTHS ("6 luni"),
+        YEARLY ("1 an"),
+        TWO_YEARS ("2 ani");
 
+        private final String displayName;
+
+        SubscriptionDuration(String displayName) {
+            this.displayName = displayName;
+        }
     }
-
+    
 }
