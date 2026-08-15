@@ -24,7 +24,6 @@ public class SubscriptionPlanConfig {
 
 
             // STANDARD
-
             repository.save(createPlan(
                     SubscriptionPlan.SubscriptionType.STANDARD,
                     SubscriptionPlan.SubscriptionDuration.MONTHLY,
@@ -51,7 +50,6 @@ public class SubscriptionPlanConfig {
 
 
             // PREMIUM
-
             repository.save(createPlan(
                     SubscriptionPlan.SubscriptionType.PREMIUM,
                     SubscriptionPlan.SubscriptionDuration.MONTHLY,

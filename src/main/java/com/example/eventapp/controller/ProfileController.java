@@ -59,4 +59,19 @@ public class ProfileController {
                 new BreadcrumbDTO("Profil", null)));
         return "profile";
     }
+
+    @GetMapping("/profile/ratings")
+    public String userRatings(
+            @AuthenticationPrincipal UserDetails userDetails,
+            Model model
+    ) {
+
+        User user = userService.findByEmail(userDetails.getUsername());
+        model.addAttribute("reviews", reviewService.findUserReviews(user));
+        model.addAttribute("averageRating", reviewService.getUserAverageRating(user));
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Acasă", "/businesses"),
+                new BreadcrumbDTO("Recenziile mele", null)));
+        return "user-ratings";
+    }
 }

@@ -20,15 +20,18 @@ public class SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final UserRepository userRepository;
     private final SubscriptionPlanRepository subscriptionPlanRepository;
+    private final UserNotificationService userNotificationService;
 
     public SubscriptionService(
             SubscriptionRepository subscriptionRepository,
             UserRepository userRepository,
-            SubscriptionPlanRepository subscriptionPlanRepository
+            SubscriptionPlanRepository subscriptionPlanRepository,
+            UserNotificationService userNotificationService
     ) {
         this.subscriptionRepository = subscriptionRepository;
         this.userRepository = userRepository;
         this.subscriptionPlanRepository = subscriptionPlanRepository;
+        this.userNotificationService = userNotificationService;
     }
 
     public Subscription findActiveSubscription(User user) {
@@ -106,10 +109,16 @@ public class SubscriptionService {
         }
 
         user.setRole(Role.BUSINESS);
-
         userRepository.save(user);
-
         subscriptionRepository.save(subscription);
+        userNotificationService.create(
+                user,
+                "Abonamentul tău a fost activat",
+                "Abonamentul " + plan.getType() +
+                        " (" + plan.getDuration().getDisplayName() +
+                        ") este acum activ.",
+                "/profile"
+        );
     }
 
     public void createSubscription(User user, Long planId) {
@@ -183,6 +192,17 @@ public class SubscriptionService {
 
                 User user = subscription.getUser();
 
+                userNotificationService.create(
+                        user,
+                        "Abonamentul tău a expirat",
+                        "Abonamentul " + subscription.getPlan().getType()
+                                + " (" + subscription.getPlan()
+                                .getDuration()
+                                .getDisplayName()
+                                + ") a expirat.",
+                        "/profile"
+                );
+
                 Subscription nextSubscription =
                         subscriptionRepository
                                 .findAllByUserOrderByCreatedAtDesc(user)
@@ -247,6 +267,7 @@ public class SubscriptionService {
         return subscriptionRepository
                 .findAllByUserOrderByCreatedAtDesc(user);
     }
+
 
     public List<SubscriptionPlan> getAvailablePlans() {
 

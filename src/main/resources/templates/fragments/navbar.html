@@ -18,12 +18,14 @@
 
             <ul class="navbar-nav ms-auto align-items-center gap-2">
 
+                <!--EXPLORE-->
                 <li class="nav-item">
                     <a class="nav-link" href="/businesses">
                         Explorează
                     </a>
                 </li>
 
+                <!--FAVORITES-->
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <a class="nav-link favorites-link" href="/favorites">
                         <span>Favorite</span>
@@ -33,10 +35,19 @@
                                   th:text="${favoriteCount}">0</span>
                         </span>
 
-
                     </a>
                 </li>
 
+                <!--SUBSCRIPTIONS-->
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link"
+                       th:href="@{/subscriptions}">
+                        Abonamente
+                    </a>
+
+                </li>
+
+                <!--NOTIFICATIONS DROPDOWN LIST-->
                 <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
 
                     <a class="nav-link position-relative"
@@ -86,6 +97,7 @@
 
                 </li>
 
+                <!--ACCOUNT DROPDOWN LIST-->
                 <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
 
                     <a aria-expanded="false"
@@ -103,12 +115,6 @@
                         <li sec:authorize="hasRole('BUSINESS')">
                             <a class="dropdown-item" href="/dashboard">
                                 Serviciile mele
-                            </a>
-                        </li>
-
-                        <li>
-                            <a class="dropdown-item" href="/subscriptions">
-                                Abonament
                             </a>
                         </li>
 
@@ -135,24 +141,28 @@
 
                 </li>
 
+                <!--ADD BUSINESS-->
                 <li class="nav-item" sec:authorize="hasRole('BUSINESS')">
                     <a class="btn btn-outline-dark navbar-register-btn" href="/business/create">
                         Adaugă serviciu
                     </a>
                 </li>
 
+                <!--ADMIN PAGE-->
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                     <a class="btn btn-outline-dark navbar-register-btn" href="/admin">
                         Administrare
                     </a>
                 </li>
 
+                <!--LOGIN-->
                 <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" href="/login">
                         Login
                     </a>
                 </li>
 
+                <!--REGISTER-->
                 <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="btn btn-outline-dark navbar-register-btn" href="/register">
                         Register

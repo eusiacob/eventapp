@@ -23,7 +23,7 @@
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <!-- ADMIN PAGE -->
-<div class="container py-4">
+<div class="container py-4" style="min-height: 100vh">
 
     <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
@@ -62,7 +62,6 @@
     </div>
 
     <!--    LISTA-->
-
     <span class="text-muted"
           th:text="${users.size()}">
         </span>
@@ -193,6 +192,20 @@
 
         </div>
 
+    </div>
+
+    <!-- NU EXISTA UTILIZATORI -->
+    <div class="text-center py-5"
+         th:if="${users.isEmpty()}">
+
+        <i class="bi bi-people-fill"
+           style="font-size:60px;color:#ced4da;"></i>
+
+        <h5 class="mt-3 text-dark">
+
+            Nu există utilizatori.
+
+        </h5>
     </div>
 
 </div>

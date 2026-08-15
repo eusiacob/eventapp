@@ -26,7 +26,7 @@
 
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<div class="container py-4">
+<div class="container py-4" style="min-height: 100vh">
 
     <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
@@ -86,7 +86,7 @@
 
     <div class="card border-0 shadow-sm rounded-4">
 
-        <!--        SUBSCRIPTIONS-->
+        <!--SUBSCRIPTIONS-->
         <div class="card-body">
 
             <div class="table-responsive">
@@ -173,7 +173,7 @@
                             (${subscription.status.name() == 'EXPIRED' || subscription.status.name() =='CANCELLED'} ? 'bg-danger' :
                             'bg-warning text-dark')"
 
-                                  th:text="${subscription.status}">
+                                  th:text="${subscription.status.statusDisplayName}">
                             </span>
 
                         </td>
@@ -190,32 +190,20 @@
                         <td>
 
                             <form
-                                    th:if="${subscription.status.name() == 'PENDING'}"
-                                    th:action="@{/admin/user/{id}/subscription/activate(id=${subscription.id})}"
+                                    class="d-inline"
                                     method="post"
-                                    class="d-inline">
+                                    th:action="@{/admin/user/{id}/subscription/activate(id=${subscription.id})}"
+                                    th:if="${subscription.status.name() == 'PENDING'}">
 
                                 <button
-                                        type="submit"
-                                        class="btn btn-sm btn-success">
+                                        class="btn btn-sm btn-success"
+                                        type="submit">
 
                                     Activează
 
                                 </button>
 
                             </form>
-
-                        </td>
-
-                    </tr>
-
-
-                    <tr th:if="${#lists.isEmpty(subscriptions)}">
-
-                        <td class="text-center text-muted py-4"
-                            colspan="7">
-
-                            Nu există abonamente.
 
                         </td>
 
@@ -229,6 +217,20 @@
 
         </div>
 
+    </div>
+
+    <!-- NU EXISTA ABONAMENTE CREATE -->
+    <div class="text-center py-5"
+         th:if="${subscriptions.isEmpty()}">
+
+        <i class="bi bi-credit-card-fill"
+           style="font-size:60px;color:#ced4da;"></i>
+
+        <h5 class="mt-3 text-dark">
+
+            Nu există abonamente create.
+
+        </h5>
     </div>
 
 </div>

@@ -241,7 +241,7 @@
                       th:classappend="
                             ${business.status.name() == 'PENDING'} ? ' bg-warning text-dark' :
                             (${business.status.name() == 'APPROVED'} ? ' bg-success' : ' bg-danger')"
-                      th:text="${business.status}">
+                      th:text="${business.status.statusDisplayName}">
                 </span>
 
             </div>

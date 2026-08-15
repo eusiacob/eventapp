@@ -37,6 +37,20 @@ public class ReviewService {
 
     }
 
+    public List<Review> findUserReviews(User user) {
+
+        return reviewRepository
+                .findByUserOrderByCreatedAtDesc(user);
+    }
+
+    public double getUserAverageRating(User user) {
+
+        Double average =
+                reviewRepository.getAverageRatingByUser(user);
+
+        return average != null ? average : 0.0;
+    }
+
     public List<Review> findByStatus(Review.ReviewStatus status) {
         return reviewRepository.findByReviewStatusOrderByCreatedAtDesc(status);
     }

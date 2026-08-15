@@ -29,6 +29,7 @@
 
         <div class="col-12 col-lg-9">
 
+            <!--PROFILE CARD-->
             <div class="profile-hero card border-0 shadow-lg p-4 p-md-5 mb-4">
 
                 <div class="d-flex flex-column flex-md-row align-items-center gap-4">
@@ -57,14 +58,77 @@
 
             </div>
 
+            <!--REVIEWS, FAVS AND SERVICES CARD-->
+            <div class="row g-4 mb-4">
+
+                <div class="col-12 col-md-4 clickable-card"
+                     th:data-href="@{/favorites}">
+
+                    <div class="profile-stat-card card border-0 shadow-sm p-4 h-100">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="profile-stat-icon">
+                                <i class="bi bi-heart-fill"></i>
+                            </div>
+
+                            <div>
+                                <p class="text-muted mb-1">Favorite</p>
+                                <h3 class="fw-bold mb-0"
+                                    th:text="${favoriteCount}">
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4 clickable-card"
+                     th:data-href="@{profile/ratings}">
+
+                    <div class="profile-stat-card card border-0 shadow-sm p-4 h-100">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="profile-stat-icon gold">
+                                <i class="bi bi-star-fill"></i>
+                            </div>
+
+                            <div>
+                                <p class="text-muted mb-1">Recenzii</p>
+                                <h3 class="fw-bold mb-0"
+                                    th:text="${reviewCount}">
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4 clickable-card"
+                     sec:authorize="hasRole('BUSINESS')"
+                     th:data-href="@{/dashboard}">
+
+                    <div class="profile-stat-card card border-0 shadow-sm p-4 h-100">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="profile-stat-icon dark">
+                                <i class="bi bi-briefcase-fill"></i>
+                            </div>
+
+                            <div>
+                                <p class="text-muted mb-1">Servicii</p>
+                                <h3 class="fw-bold mb-0"
+                                    th:text="${businessCount}">
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
             <!--CARD ABONAMENT-->
             <div class="card shadow-sm border-0 mt-4 mb-4">
 
                 <div class="card-body p-4">
 
-                    <h4 class="fw-bold mb-4">
+                    <h5 class="fw-bold mb-4">
                         Abonamentul meu
-                    </h4>
+                    </h5>
 
                     <!-- ABONAMENT ACTIV -->
                     <div class="border rounded p-3 mb-3"
@@ -132,8 +196,8 @@
                             </a>
 
                             <div
-                                    th:if="${pendingSubscription != null}"
-                                    class="small text-muted mt-3">
+                                    class="small text-muted mt-3"
+                                    th:if="${pendingSubscription != null}">
 
                                 Ai deja un abonament programat.
 
@@ -196,7 +260,7 @@
 
                         <div>Nu ai niciun abonament activ.</div>
 
-                        <a class="btn btn-primary mt-3"
+                        <a class="btn mt-2 p-2" style="background-color: #fffdf5; border: 1px solid #d8c58b; color: #8b711f"
                            th:href="@{/subscriptions}">
 
                             Vezi abonamentele
@@ -211,9 +275,9 @@
 
                         <div class="card-body p-4">
 
-                            <h4 class="fw-bold mb-4">
+                            <h5 class="fw-bold mb-4">
                                 Istoricul abonamentelor
-                            </h4>
+                            </h5>
 
 
                             <div class="table-responsive">
@@ -336,71 +400,12 @@
 
             </div>
 
-            <div class="row g-4 mb-4">
-
-                <div class="col-12 col-md-4 clickable-card"
-                     th:data-href="@{/favorites}">
-
-                    <div class="profile-stat-card card border-0 shadow-sm p-4 h-100">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="profile-stat-icon">
-                                <i class="bi bi-heart-fill"></i>
-                            </div>
-
-                            <div>
-                                <p class="text-muted mb-1">Favorite</p>
-                                <h3 class="fw-bold mb-0"
-                                    th:text="${favoriteCount}">
-                                </h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-4">
-                    <div class="profile-stat-card card border-0 shadow-sm p-4 h-100">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="profile-stat-icon gold">
-                                <i class="bi bi-star-fill"></i>
-                            </div>
-
-                            <div>
-                                <p class="text-muted mb-1">Recenzii</p>
-                                <h3 class="fw-bold mb-0"
-                                    th:text="${reviewCount}">
-                                </h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-4 clickable-card"
-                     sec:authorize="hasRole('BUSINESS')"
-                     th:data-href="@{/dashboard}">
-
-                    <div class="profile-stat-card card border-0 shadow-sm p-4 h-100">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="profile-stat-icon dark">
-                                <i class="bi bi-briefcase-fill"></i>
-                            </div>
-
-                            <div>
-                                <p class="text-muted mb-1">Servicii</p>
-                                <h3 class="fw-bold mb-0"
-                                    th:text="${businessCount}">
-                                </h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
+            <!--ACCOUNT DETAILS-->
             <div class="card border-0 shadow-sm p-4 mb-4">
 
-                <h4 class="fw-bold mb-3">
+                <h5 class="fw-bold mb-3">
                     Date cont
-                </h4>
+                </h5>
 
                 <div class="profile-info-row">
                     <span>Email</span>

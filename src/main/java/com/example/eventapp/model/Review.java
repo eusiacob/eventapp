@@ -30,8 +30,17 @@ public class Review {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Getter
     public enum ReviewStatus {
-        PENDING, APPROVED, REJECTED
+        PENDING ("În așteptare"),
+        APPROVED("Aprobat"),
+        REJECTED("Refuzat");
+
+        private final String reviewStatusName;
+
+        ReviewStatus(String reviewStatusName) {
+            this.reviewStatusName = reviewStatusName;
+        }
     }
 
     @Column(length = 500)

@@ -1,5 +1,6 @@
 package com.example.eventapp.controller;
 
+import com.example.eventapp.dto.BreadcrumbDTO;
 import com.example.eventapp.model.SubscriptionPlan;
 import com.example.eventapp.model.User;
 import com.example.eventapp.service.SubscriptionService;
@@ -12,6 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 
 @Controller
@@ -28,20 +31,22 @@ public class SubscriptionController {
             @AuthenticationPrincipal UserDetails userDetails
     ) {
 
-        model.addAttribute("plans", subscriptionService.getAvailablePlans());
+        model.addAttribute("plans",
+                subscriptionService.getAvailablePlans());
 
         if (userDetails != null) {
 
-            User user =
-                    userService.findByEmail(userDetails.getUsername());
+            User user = userService.findByEmail(userDetails.getUsername());
 
             model.addAttribute(
                     "activeSubscription",
                     subscriptionService.findActiveSubscription(user));
-
             model.addAttribute(
                     "pendingSubscription",
                     subscriptionService.findPendingSubscription(user));
+            model.addAttribute("breadcrumbs", List.of(
+                    new BreadcrumbDTO("Acasă", "/businesses"),
+                    new BreadcrumbDTO("Planuri", null)));
         }
 
         return "subscriptions";

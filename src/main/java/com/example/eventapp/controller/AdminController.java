@@ -395,7 +395,7 @@ public class AdminController {
 
         subscriptionService.updatePlan(id, price, active);
 
-        return "redirect:/admin/subscriptions";
+        return "redirect:/admin/plans";
     }
 
     // DOAR PENTRU TEST - VA FI FACUT AUTOMAT

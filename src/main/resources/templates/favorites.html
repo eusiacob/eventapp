@@ -14,16 +14,65 @@
 
     <link rel="stylesheet"
           th:href="@{/css/style.css}">
+
+    <style>
+
+        .favorite-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+
+        .favorite-title {
+            margin: 0;
+
+            color: #181818;
+
+            font-size: 1.9rem;
+            font-weight: 700;
+
+            letter-spacing: -.025em;
+        }
+
+        .empty-favorites {
+
+            padding: 45px 20px;
+
+            text-align: center;
+
+            background: #fff;
+
+            border: 1px solid #e3e3e3;
+
+            border-radius: 14px;
+
+            color: #888;
+
+            font-size: .82rem;
+        }
+    </style>
+
 </head>
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<div class="container py-3">
+<div class="container py-3" style="min-height: 100vh">
 
     <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
+    <!-- HEADER -->
+    <header class="favorite-header">
+
+        <h1 class="favorite-title">
+
+            Servicii favorite
+
+        </h1>
+
+    </header>
+
     <!-- EMPTY STATE -->
-    <div class="text-muted mt-4"
+    <div class="empty-favorites"
          th:if="${#lists.isEmpty(favorites)}">
         Nu ai servicii favorite.
     </div>

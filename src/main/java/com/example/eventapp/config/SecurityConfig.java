@@ -47,7 +47,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/favorites/**",
                                 "/reviews/**",
-                                "/profile",
+                                "/profile/**",
                                 "/subscriptions/**",
                                 "/business/{id}/reviews",
                                 "/notifications/**"

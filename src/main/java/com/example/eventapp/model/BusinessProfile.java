@@ -63,8 +63,17 @@ public class BusinessProfile {
 
     private boolean premium;
 
+    @Getter
     public enum BusinessStatus {
-        PENDING, APPROVED, REJECTED
+        PENDING ("În așteptare"),
+        APPROVED ("Aprobat"),
+        REJECTED ("Respins");
+
+        private final String statusDisplayName;
+
+        BusinessStatus (String statusDisplayName) {
+            this.statusDisplayName = statusDisplayName;
+        }
     }
 
     @Column(length = 1000)

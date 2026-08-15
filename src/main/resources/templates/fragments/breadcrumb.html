@@ -1,8 +1,6 @@
 <nav aria-label="Breadcrumb" th:fragment="breadcrumbs(items)">
+
     <ol class="breadcrumb">
-<!--        <li class="breadcrumb-item">-->
-<!--            <a class="text-muted" th:href="@{/}">Acasă</a>-->
-<!--        </li>-->
 
         <li class="breadcrumb-item"
             th:classappend="${step.last} ? 'active' : ''"
@@ -17,6 +15,9 @@
                   th:if="${step.last}"
                   th:text="${item.label}">
             </span>
+
         </li>
+
     </ol>
+
 </nav>

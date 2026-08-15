@@ -38,12 +38,18 @@ public class Subscription {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
+    @Getter
     public enum SubscriptionStatus {
 
-        PENDING,
-        ACTIVE,
-        EXPIRED,
-        CANCELLED
+        PENDING ("În așteptare"),
+        ACTIVE ("Activ"),
+        EXPIRED ("Expirat"),
+        CANCELLED ("Anulat");
+
+        private final String statusDisplayName;
+        SubscriptionStatus(String statusDisplayName) {
+            this.statusDisplayName =statusDisplayName;
+        }
 
     }
 
