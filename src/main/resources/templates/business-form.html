@@ -32,6 +32,8 @@
 
             <div class="card shadow-lg p-4 opacity-75">
 
+                <div class="alert-danger mb-2" style="color: red" th:if="${error}" th:text="${error}"></div>
+
                 <form enctype="multipart/form-data"
                       method="post"
                       th:action="@{/business/create}"

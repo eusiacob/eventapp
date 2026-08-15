@@ -9,11 +9,137 @@
     <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
           integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" rel="stylesheet">
 
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet">
 
     <link rel="stylesheet"
           th:href="@{/css/style.css}">
+
+    <style>
+
+        .business-header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+
+        .business-title {
+            margin: 0;
+
+            color: #181818;
+
+            font-size: 1.9rem;
+            font-weight: 700;
+
+            letter-spacing: -.025em;
+        }
+
+        .empty-businesses {
+
+            padding: 45px 20px;
+
+            text-align: center;
+
+            background: #fff;
+
+            border: 1px solid #e3e3e3;
+
+            border-radius: 14px;
+
+            color: #888;
+
+            font-size: .82rem;
+        }
+
+        .subscription-notice {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            gap: 12px;
+
+            margin-bottom: 20px;
+
+            padding: 14px 16px;
+
+            background: #fafafa;
+
+            border: 1px solid #e3e3e3;
+
+            border-radius: 11px;
+
+            color: #666;
+        }
+
+
+        .subscription-notice-icon {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            width: 30px;
+
+            height: 30px;
+
+            flex-shrink: 0;
+
+            border-radius: 8px;
+
+            background: #f0f0f0;
+
+            color: #888;
+
+            font-size: .8rem;
+        }
+
+
+        .subscription-notice-title {
+
+            margin-bottom: 3px;
+
+            color: #333;
+
+            font-size: .78rem;
+
+            font-weight: 700;
+        }
+
+
+        .subscription-notice-text {
+
+            font-size: .72rem;
+
+            line-height: 1.5;
+
+            color: #777;
+        }
+
+
+        .subscription-notice-link {
+
+            display: inline-block;
+
+            margin-top: 6px;
+
+            color: #555;
+
+            font-size: .7rem;
+
+            font-weight: 700;
+
+            text-decoration: none;
+        }
+
+
+        .subscription-notice-link:hover {
+
+            color: #9a7d27;
+        }
+    </style>
 </head>
 
 <body>
@@ -26,21 +152,62 @@
 
     <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
-    <!-- EMPTY STATE -->
-    <div class="text-muted mt-4"
-         th:if="${#lists.isEmpty(profiles)}">
-        Încă nu ai nici un serviciu.
+    <!-- HEADER -->
+    <header class="business-header">
+
+        <h1 class="business-title">
+
+            Serviciile mele
+
+        </h1>
+
+    </header>
+
+    <div
+            class="subscription-notice"
+            th:if="${standardSubscription}">
+
+        <div class="subscription-notice-icon">
+            ◇
+        </div>
+
+        <div class="subscription-notice-content">
+
+            <div class="subscription-notice-title">
+                Abonament Standard
+            </div>
+
+            <div class="subscription-notice-text">
+                Abonamentul Standard îți permite să ai un singur serviciu.
+                Pentru a adăuga mai multe servicii, treci la un abonament Premium.
+            </div>
+
+            <a class="subscription-notice-link"
+               th:href="@{/subscriptions}">
+
+                Vezi abonamentele →
+
+            </a>
+
+        </div>
+
     </div>
 
-    <div th:if="${param.businessCreated}" class="alert alert-success">
+    <!-- EMPTY STATE -->
+    <div class="empty-businesses"
+         th:if="${#lists.isEmpty(profiles)}">
+        Nu ai servicii. Adaugă acum unul!
+    </div>
+
+    <div class="alert alert-success" th:if="${param.businessCreated}">
         Serviciu adăugat și trimis către aprobare!
     </div>
 
-    <div th:if="${param.businessDeleted}" class="alert alert-success">
+    <div class="alert alert-success" th:if="${param.businessDeleted}">
         Serviciu șters! Acțiunea este ireversibilă!
     </div>
 
-    <div th:if="${param.businessUpdated}" class="alert alert-success">
+    <div class="alert alert-success" th:if="${param.businessUpdated}">
         Serviciu actualizat și trimis către aprobare!
     </div>
 
@@ -55,30 +222,30 @@
 
                     <div class="card-body" style="position: relative; overflow: hidden;">
 
-                        <div th:if="${p.status.name() == 'APPROVED'}"
-                             class="status-ribbon approved">
+                        <div class="status-ribbon approved"
+                             th:if="${p.status.name() == 'APPROVED'}">
 
                             <i class="bi bi-check-circle-fill"></i>
                             APROBAT
                         </div>
 
-                        <div th:if="${p.status.name() == 'PENDING'}"
-                             class="status-ribbon pending">
+                        <div class="status-ribbon pending"
+                             th:if="${p.status.name() == 'PENDING'}">
 
                             <i class="bi bi-hourglass-split"></i>
                             ÎN AȘTEPTARE
                         </div>
 
-                        <div th:if="${p.status.name() == 'REJECTED'}"
-                             class="status-ribbon rejected">
+                        <div class="status-ribbon rejected"
+                             th:if="${p.status.name() == 'REJECTED'}">
 
                             <i class="bi bi-x-circle-fill"></i>
                             RESPINS
                         </div>
 
                         <img alt="business profile picture"
-                             loading="lazy"
                              class="img-fluid rounded mb-2"
+                             loading="lazy"
                              style="height:200px; object-fit:cover; width:100%"
                              th:if="${p.imagePath != null}"
                              th:src="@{${p.imagePath}}">

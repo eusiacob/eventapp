@@ -1,9 +1,7 @@
 package com.example.eventapp.service;
 
-import com.example.eventapp.model.Role;
-import com.example.eventapp.model.Subscription;
-import com.example.eventapp.model.SubscriptionPlan;
-import com.example.eventapp.model.User;
+import com.example.eventapp.model.*;
+import com.example.eventapp.repository.BusinessProfileRepository;
 import com.example.eventapp.repository.SubscriptionPlanRepository;
 import com.example.eventapp.repository.SubscriptionRepository;
 import com.example.eventapp.repository.UserRepository;
@@ -19,6 +17,7 @@ public class SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
     private final UserRepository userRepository;
+    private final BusinessProfileRepository businessProfileRepository;
     private final SubscriptionPlanRepository subscriptionPlanRepository;
     private final UserNotificationService userNotificationService;
 
@@ -26,10 +25,12 @@ public class SubscriptionService {
             SubscriptionRepository subscriptionRepository,
             UserRepository userRepository,
             SubscriptionPlanRepository subscriptionPlanRepository,
+            BusinessProfileRepository businessProfileRepository,
             UserNotificationService userNotificationService
     ) {
         this.subscriptionRepository = subscriptionRepository;
         this.userRepository = userRepository;
+        this.businessProfileRepository = businessProfileRepository;
         this.subscriptionPlanRepository = subscriptionPlanRepository;
         this.userNotificationService = userNotificationService;
     }
@@ -79,6 +80,21 @@ public class SubscriptionService {
 
         SubscriptionPlan plan =
                 subscription.getPlan();
+
+        if (plan.getType()
+                == SubscriptionPlan.SubscriptionType.PREMIUM) {
+
+            List<BusinessProfile> profiles =
+                    businessProfileRepository.findByUser(user);
+
+            for (BusinessProfile profile : profiles) {
+
+                profile.setPremium(true);
+
+            }
+
+            businessProfileRepository.saveAll(profiles);
+        }
 
         LocalDateTime now =
                 LocalDateTime.now();
