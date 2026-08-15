@@ -31,6 +31,7 @@ public class BusinessController {
     private final UserRepository userRepository;
     private final ReviewService reviewService;
     private final UserService userService;
+    private final SubscriptionService subscriptionService;
     private final BusinessImageService businessImageService;
     private final UserNotificationService userNotificationService;
 
@@ -40,6 +41,7 @@ public class BusinessController {
             ReviewService reviewService,
             UserService userService,
             BusinessImageService businessImageService,
+            SubscriptionService subscriptionService,
             UserNotificationService userNotificationService
     ) {
         this.businessProfileService = businessProfileService;
@@ -47,6 +49,7 @@ public class BusinessController {
         this.userRepository = userRepository;
         this.reviewService = reviewService;
         this.userService = userService;
+        this.subscriptionService = subscriptionService;
         this.userNotificationService = userNotificationService;
     }
 
@@ -93,6 +96,27 @@ public class BusinessController {
         User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
 
         profile.setUser(user);
+
+        if (!businessProfileService.canCreateBusinessProfile(user)) {
+
+            redirectAttributes.addFlashAttribute("error", "Ai atins limita de servicii pentru abonamentul tău.");
+
+            return "redirect:/business/create";
+        }
+
+        Subscription subscription =
+                subscriptionService.findActiveSubscription(user);
+
+        if (subscription != null &&
+                subscription.getPlan().getType()
+                        == SubscriptionPlan.SubscriptionType.PREMIUM) {
+
+            profile.setPremium(true);
+
+        } else {
+
+            profile.setPremium(false);
+        }
 
         profile.setCreatedAt(LocalDate.now());
 
@@ -237,12 +261,21 @@ public class BusinessController {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String dashboard(@AuthenticationPrincipal UserDetails userDetails, Model model, RedirectAttributes redirectAttributes) {
 
         User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
 
         List<BusinessProfile> profiles = user.getBusinessProfiles();
 
+        Subscription subscription =
+                subscriptionService.findActiveSubscription(user);
+
+        boolean standardSubscription =
+                subscription != null &&
+                        subscription.getPlan().getType()
+                                == SubscriptionPlan.SubscriptionType.STANDARD;
+
+        model.addAttribute("standardSubscription", standardSubscription);
         model.addAttribute("profiles", profiles);
         model.addAttribute("businessSaved", new Review());
         model.addAttribute("breadcrumbs", List.of(

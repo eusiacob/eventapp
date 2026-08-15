@@ -126,7 +126,7 @@
 
                 <div class="card-body p-4">
 
-                    <h5 class="fw-bold mb-4">
+                    <h5 class="mb-4">
                         Abonamentul meu
                     </h5>
 
@@ -199,7 +199,7 @@
                                     class="small text-muted mt-3"
                                     th:if="${pendingSubscription != null}">
 
-                                Ai deja un abonament programat.
+                                Ai deja un abonament în așteptare.
 
                             </div>
 
@@ -207,7 +207,7 @@
 
                     </div>
 
-                    <!-- ABONAMENT PROGRAMAT -->
+                    <!-- ABONAMENT ÎN AȘTEPTARE -->
                     <div class="border rounded p-3 mb-3"
                          th:if="${pendingSubscription != null}">
 
@@ -239,7 +239,7 @@
 
                             <span class="badge bg-warning text-dark align-self-start">
 
-                                Programat
+                                în așteptare
 
                             </span>
 
@@ -343,7 +343,7 @@
                                                     class="badge bg-warning text-dark"
                                                     th:if="${subscription.status.name() == 'PENDING'}">
 
-                                                Programat
+                                                În așteptare
 
                                             </span>
 

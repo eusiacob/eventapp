@@ -1,8 +1,6 @@
 package com.example.eventapp.service;
 
-import com.example.eventapp.model.BusinessCategory;
-import com.example.eventapp.model.BusinessProfile;
-import com.example.eventapp.model.User;
+import com.example.eventapp.model.*;
 import com.example.eventapp.repository.BusinessProfileRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,9 +14,11 @@ import java.util.List;
 public class BusinessProfileService {
 
     private final BusinessProfileRepository businessProfileRepository;
+    private final SubscriptionService subscriptionService;
 
-    public BusinessProfileService(BusinessProfileRepository businessProfileRepository) {
+    public BusinessProfileService(BusinessProfileRepository businessProfileRepository, SubscriptionService subscriptionService) {
         this.businessProfileRepository = businessProfileRepository;
+        this.subscriptionService = subscriptionService;
     }
 
     public BusinessProfile findByUuid(String uuid){
@@ -61,22 +61,38 @@ public class BusinessProfileService {
         return profile;
     }
 
+    public boolean canCreateBusinessProfile(User user) {
+
+        List<BusinessProfile> profiles =
+                businessProfileRepository.findByUser(user);
+
+        Subscription subscription =
+                subscriptionService.findActiveSubscription(user);
+
+        if (subscription == null) {
+            return false;
+        }
+
+        if (subscription.getPlan().getType()
+                == SubscriptionPlan.SubscriptionType.PREMIUM) {
+
+            return true;
+        }
+
+        return profiles.isEmpty();
+    }
+
     public BusinessProfile findByUuidAndValidateOwner(
             String uuid,
             User user
     ) {
 
-        BusinessProfile profile =
-                findByUuid(uuid);
-
+        BusinessProfile profile = findByUuid(uuid);
 
         if (!profile.getUser().getId()
                 .equals(user.getId())) {
 
-            throw new RuntimeException(
-                    "Nu ai permisiunea."
-            );
-        }
+            throw new RuntimeException("Nu ai permisiunea.");}
 
 
         return profile;
