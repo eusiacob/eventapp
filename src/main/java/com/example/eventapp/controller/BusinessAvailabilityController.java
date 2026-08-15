@@ -32,9 +32,9 @@ public class BusinessAvailabilityController {
         this.userService = userService;
     }
 
-    @PostMapping("/business/{businessId}/availability/toggle")
+    @PostMapping("/business/{uuid}/availability/toggle")
     @ResponseBody
-    public Map<String, Object> toggleAvailability(@PathVariable Long businessId,
+    public Map<String, Object> toggleAvailability(@PathVariable String uuid,
                                                   @RequestParam("date")
                                                   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
                                                   LocalDate date,
@@ -43,7 +43,7 @@ public class BusinessAvailabilityController {
         User user = userService.findByEmail(userDetails.getUsername());
 
         BusinessProfile businessProfile =
-                businessProfileService.findByIdAndValidateOwner(businessId, user);
+                businessProfileService.findByIdAndValidateOwner(uuid, user);
 
         Optional<BusinessUnavailableDate> existingDate =
                 unavailableDateRepository.findByBusinessProfileAndUnavailableDate(

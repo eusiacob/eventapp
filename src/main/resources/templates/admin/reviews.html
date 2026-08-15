@@ -104,9 +104,7 @@
                     <tbody>
 
                     <tr class="clickable-row"
-
                         th:data-href="@{/admin/review/{id}(id=${review.id})}"
-
                         th:each="review : ${reviews}">
 
                         <td class="fw-semibold"
@@ -114,17 +112,17 @@
 
                         </td>
 
-                        <td
-                                th:text="${review.user.firstName + ' ' + review.user.lastName}">
+                        <td th:text="${review.user.firstName + ' ' + review.user.lastName}">
                         </td>
 
                         <td>
+                            <div style="white-space: nowrap">
+                                <span th:each="i : ${#numbers.sequence(1, review.rating)}">
 
-                <span th:each="i : ${#numbers.sequence(1, review.rating)}">
+                                    <i class="bi bi-star-fill text-warning"></i>
 
-                    <i class="bi bi-star-fill text-warning"></i>
-
-                </span>
+                                </span>
+                            </div>
 
                         </td>
 

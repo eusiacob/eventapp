@@ -124,11 +124,10 @@ public class BusinessImageController {
         );
 
 
-        BusinessProfile profile =
-                businessProfileService.findByUuidAndValidateOwner(
-                        uuid,
-                        user
-                );
+        businessProfileService.findByUuidAndValidateOwner(
+                uuid,
+                user
+        );
 
 
         businessImageService.deleteImage(imageId);

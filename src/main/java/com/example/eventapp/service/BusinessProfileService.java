@@ -51,8 +51,8 @@ public class BusinessProfileService {
                 && businessProfile.getUser().getId().equals(user.getId());
     }
 
-    public BusinessProfile findByIdAndValidateOwner(Long profileId, User user) {
-        BusinessProfile profile = findById(profileId);
+    public BusinessProfile findByIdAndValidateOwner(String uuid, User user) {
+        BusinessProfile profile = findByUuid(uuid);
 
         if (!isOwner(profile, user)) {
             throw new RuntimeException("You are not allowed to access this business profile");
@@ -136,6 +136,29 @@ public class BusinessProfileService {
 
         return businessProfileRepository
                 .findTopRatedBusinesses(pageable);
+    }
+
+    public void activateStandardBusiness(
+            String uuid,
+            User user
+    ) {
+
+        BusinessProfile selected =
+                findByIdAndValidateOwner(uuid, user);
+
+        List<BusinessProfile> profiles =
+                businessProfileRepository.findByUser(user);
+
+        for (BusinessProfile profile : profiles) {
+
+            profile.setActive(false);
+            profile.setPremium(false);
+        }
+
+        selected.setActive(true);
+        selected.setPremium(false);
+
+        businessProfileRepository.saveAll(profiles);
     }
 
     //    Delete business

@@ -18,10 +18,6 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
 
     Optional<BusinessProfile> findByUuid(String uuid);
 
-    BusinessProfile findBySlug(String slug);
-
-    List<BusinessProfile> findByStatusOrderByCreatedAtAsc(BusinessProfile.BusinessStatus status);
-
     List<BusinessProfile> findByStatusOrderByCreatedAtDesc(
             BusinessProfile.BusinessStatus status
     );
@@ -49,6 +45,7 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
                     )
                 )
                 AND b.status = APPROVED
+                AND b.active = true
                 ORDER BY b.name ASC
             """)
     List<BusinessProfile> searchAvailableByCategoryNameCityAndDate(
@@ -63,6 +60,7 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
             FROM BusinessProfile b
             WHERE b.premium = true
             AND b.status = 'APPROVED'
+            AND b.active = true
             """)
     List<BusinessProfile> findTop10ByPremiumTrue();
 
@@ -71,6 +69,7 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
                 FROM User u
                 JOIN u.favoriteBusinesses b
                 WHERE b.status = APPROVED
+                AND b.active = true
                 GROUP BY b
                 ORDER BY COUNT(u) DESC
             """)
@@ -81,6 +80,7 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
                 FROM BusinessProfile b
                 JOIN b.reviews r
                 WHERE b.status = APPROVED
+                AND b.active = true
                 GROUP BY b
                 HAVING COUNT(r) >= 1
                 ORDER BY AVG(r.rating) DESC, COUNT(r) DESC

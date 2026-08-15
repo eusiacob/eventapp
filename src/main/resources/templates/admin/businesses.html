@@ -89,12 +89,14 @@
 
 
                                 <span class="admin-status-badge"
+                                      style="white-space: nowrap;"
                                       th:classappend="
                               ${business.status.name() == 'PENDING'} ? ' bg-warning text-dark' :
                               (${business.status.name() == 'APPROVED'} ? ' bg-success' :
                               ' bg-danger')"
                                       th:text="${business.status.statusDisplayName}">
-                        </span>
+
+                                </span>
 
 
                             </div>

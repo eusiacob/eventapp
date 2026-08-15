@@ -90,7 +90,7 @@ public class SubscriptionService {
             for (BusinessProfile profile : profiles) {
 
                 profile.setPremium(true);
-
+                profile.setActive(true);
             }
 
             businessProfileRepository.saveAll(profiles);
@@ -200,13 +200,18 @@ public class SubscriptionService {
             if (subscription.getEndDate() != null
                     && subscription.getEndDate().isBefore(now)) {
 
-                subscription.setStatus(
-                        Subscription.SubscriptionStatus.EXPIRED
-                );
+                User user = subscription.getUser();
+
+                SubscriptionPlan.SubscriptionType type = subscription.getPlan().getType();
+
+                if (type == SubscriptionPlan.SubscriptionType.PREMIUM) {
+
+                    downgradeToStandard(user);
+                }
+
+                subscription.setStatus(Subscription.SubscriptionStatus.EXPIRED);
 
                 subscriptionRepository.save(subscription);
-
-                User user = subscription.getUser();
 
                 userNotificationService.create(
                         user,
@@ -245,6 +250,25 @@ public class SubscriptionService {
                 }
             }
         }
+
+    }
+
+    private void downgradeToStandard(User user) {
+
+        List<BusinessProfile> profiles =
+                businessProfileRepository.findByUser(user);
+
+        if (profiles.isEmpty()) {
+            return;
+        }
+
+        for (BusinessProfile profile : profiles) {
+
+            profile.setPremium(false);
+            profile.setActive(false);
+        }
+
+        businessProfileRepository.saveAll(profiles);
     }
 
     public List<Subscription> findAll() {

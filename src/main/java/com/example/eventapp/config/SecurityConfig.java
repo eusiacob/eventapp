@@ -34,10 +34,11 @@ public class SecurityConfig {
                                 "/business/edit/**",
                                 "/business/delete/**",
                                 "/dashboard",
-                                "/business/{id}/availability/block",
-                                "/business/{id}/gallery/upload",
+                                "/business/{uuid}/activate",
+                                "/business/{uuid}/availability/block",
+                                "/business/{uuid}/gallery/upload",
                                 "/business/gallery/delete/**",
-                                "/business/{id}/availability/toggle"
+                                "/business/{uuid}/availability/toggle"
                         ).hasRole("BUSINESS")
 
                         .requestMatchers(

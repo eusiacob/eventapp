@@ -63,6 +63,9 @@ public class BusinessProfile {
 
     private boolean premium;
 
+    @Column(nullable = false)
+    private boolean active = true;
+
     @Getter
     public enum BusinessStatus {
         PENDING ("În așteptare"),

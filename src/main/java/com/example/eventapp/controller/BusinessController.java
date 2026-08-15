@@ -112,10 +112,12 @@ public class BusinessController {
                         == SubscriptionPlan.SubscriptionType.PREMIUM) {
 
             profile.setPremium(true);
+            profile.setActive(true);
 
         } else {
 
             profile.setPremium(false);
+            profile.setActive(true);
         }
 
         profile.setCreatedAt(LocalDate.now());
@@ -261,7 +263,7 @@ public class BusinessController {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(@AuthenticationPrincipal UserDetails userDetails, Model model, RedirectAttributes redirectAttributes) {
+    public String dashboard(@AuthenticationPrincipal UserDetails userDetails, Model model) {
 
         User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
 
@@ -283,6 +285,29 @@ public class BusinessController {
                 new BreadcrumbDTO("Serviciile mele", null)));
 
         return "dashboard";
+    }
+
+    @PostMapping("/business/{uuid}/activate")
+    public String activateBusiness(
+            @PathVariable String uuid,
+            @AuthenticationPrincipal UserDetails userDetails,
+            RedirectAttributes redirectAttributes
+    ) {
+
+        User user =
+                userRepository
+                        .findByEmail(userDetails.getUsername())
+                        .orElseThrow();
+
+        businessProfileService
+                .activateStandardBusiness(uuid, user);
+
+        redirectAttributes.addFlashAttribute(
+                "success",
+                "Serviciul a fost activat."
+        );
+
+        return "redirect:/dashboard";
     }
 
     @GetMapping("/business/edit/{uuid}")

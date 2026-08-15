@@ -43,16 +43,17 @@
 
                 </h2>
 
-                <div class="alert alert-success p-2"  th:if="${param.businessCreated}">
+                <div class="alert alert-success p-2" th:if="${param.businessCreated}">
                     Serviciu creat cu succes! Acum poți adăuga detalii, poze și multe altele.
                 </div>
 
-                <div class="alert alert-success p-2"  th:if="${param.businessUpdated}">
+                <div class="alert alert-success p-2" th:if="${param.businessUpdated}">
                     Serviciu actualizat cu succes!
                 </div>
 
-                <div class="alert alert-warning p-2"  th:if="${param.businessNotApproved}">
-                    Serviciul va fi vizibil pe site după aprobare. Vei primi o notificare după ce un administrator va aproba listarea serviciului.
+                <div class="alert alert-warning p-2" th:if="${param.businessNotApproved}">
+                    Serviciul va fi vizibil pe site după aprobare. Vei primi o notificare după ce un administrator va
+                    aproba listarea serviciului.
                 </div>
 
                 <div class="alert alert-success p-2" th:if="${param.gallerySuccess}">
@@ -228,15 +229,18 @@
                     </div>
 
                     <!-- BUTTONS -->
-                    <button class="btn btn-dark w-100 mt-4"
-                            type="submit">
-                        Salvare modificări
-                    </button>
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-dark p-2"
+                                type="submit">
+                            Salvare modificări
+                        </button>
 
-                    <a class="btn btn-outline-secondary w-100 mt-4"
-                       href="/dashboard">
-                        Anulare
-                    </a>
+                        <a class="btn btn-outline-secondary"
+                           href="/dashboard">
+                            Anulare
+                        </a>
+                    </div>
+
 
                 </form>
 
@@ -292,7 +296,7 @@
 
                     </div>
 
-                    <button class="btn btn-dark w-100"
+                    <button class="btn btn-dark p-2"
                             th:if="${currentImageCount < maxImageCount}"
                             type="submit">
                         Încarcă fotografii
