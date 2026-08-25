@@ -97,12 +97,12 @@ public class BusinessController {
 
         profile.setUser(user);
 
-        if (!businessProfileService.canCreateBusinessProfile(user)) {
-
-            redirectAttributes.addFlashAttribute("error", "Ai atins limita de servicii pentru abonamentul tău.");
-
-            return "redirect:/business/create";
-        }
+//        if (!businessProfileService.canCreateBusinessProfile(user)) {
+//
+//            redirectAttributes.addFlashAttribute("error", "Ai atins limita de servicii pentru abonamentul tău.");
+//
+//            return "redirect:/business/create";
+//        }
 
         Subscription subscription =
                 subscriptionService.findActiveSubscription(user);
