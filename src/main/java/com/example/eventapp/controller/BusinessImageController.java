@@ -67,7 +67,7 @@ public class BusinessImageController {
 
             redirectAttributes.addFlashAttribute(
                     "galleryError",
-                    "Galeria poate conține maximum 20 de imagini."
+                    "Galeria poate conține maximum 15 de imagini."
             );
 
 

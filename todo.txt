@@ -1,0 +1,9 @@
+- cand se adauga un serviciu, sa vada si adminul pozele serviciului.
+- la edit, sa vada adminul ce s-a modificat
+- adaugare video scurte pentru servicii
+- logica de dimensionare si imbunatatire imagini
+- serviciul de email (creare cont, resetare parola, notificari aprobare serviciu si recenzii)
+- sa apara 4 servicii pe pagina pe mobile ( de modificat style -ul)
+- de adaugat mesaje la adaugare serviciu referitor la numarul de servicii permis in functie de abonament
+- criptare baza de date? (email, nr de telefon)
+- adaugare functie contact (suport)

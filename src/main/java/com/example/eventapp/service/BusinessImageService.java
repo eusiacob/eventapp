@@ -3,9 +3,11 @@ package com.example.eventapp.service;
 import com.example.eventapp.model.BusinessImage;
 import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.repository.BusinessImageRepository;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.List;
@@ -27,22 +29,21 @@ public class BusinessImageService {
             List<MultipartFile> files
     ) throws IOException {
 
-
         BusinessProfile businessProfile =
                 businessProfileService.findById(businessId);
 
+        String category =
+                businessProfile.getCategory()
+                        .name()
+                        .toLowerCase();
 
-        String category = businessProfile.getCategory()
-                .name()
-                .toLowerCase();
-
-
-        Path uploadPath = Paths.get(
-                "uploads",
-                "businesses",
-                category,
-                businessProfile.getUuid()
-        );
+        Path uploadPath =
+                Paths.get(
+                        "uploads",
+                        "businesses",
+                        category,
+                        businessProfile.getUuid()
+                );
 
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
@@ -58,36 +59,44 @@ public class BusinessImageService {
                 continue;
             }
 
-            if (currentImages >= 20) {
-                break;
-            }
+            String contentType = file.getContentType();
 
-            String originalFileName =
-                    file.getOriginalFilename();
+            if (contentType == null ||
+                    !contentType.startsWith("image/")) {
 
-            if (originalFileName == null ||
-                    !originalFileName.contains(".")) {
                 continue;
             }
 
-            String extension =
-                    originalFileName.substring(
-                            originalFileName.lastIndexOf(".")
-                    );
+            if (file.getSize() > 10 * 1024 * 1024) {
+                continue;
+            }
+
+            if (currentImages >= 15) {
+                break;
+            }
 
             currentImages++;
 
             String fileName =
                     "gallery_"
                             + currentImages
-                            + extension;
+                            + ".jpg";
 
             Path filePath =
                     uploadPath.resolve(fileName);
 
+            ByteArrayOutputStream outputStream =
+                    new ByteArrayOutputStream();
+
+            Thumbnails.of(file.getInputStream())
+                    .size(1920, 1920)
+                    .outputFormat("jpg")
+                    .outputQuality(0.82)
+                    .toOutputStream(outputStream);
+
             Files.write(
                     filePath,
-                    file.getBytes()
+                    outputStream.toByteArray()
             );
 
             BusinessImage image =
@@ -102,9 +111,13 @@ public class BusinessImageService {
                             + fileName
             );
 
-            image.setBusinessProfile(businessProfile);
+            image.setBusinessProfile(
+                    businessProfile
+            );
 
-            businessProfile.setStatus(BusinessProfile.BusinessStatus.PENDING);
+            businessProfile.setStatus(
+                    BusinessProfile.BusinessStatus.PENDING
+            );
 
             businessImageRepository.save(image);
         }

@@ -209,6 +209,11 @@
         Serviciu actualizat și trimis către aprobare!
     </div>
 
+    <div class="mb-2">
+        <strong class="text-muted">Notă:</strong>
+        <span class="text-muted">Serviciile care nu sunt aprobate nu sunt vizibile public.</span>
+    </div>
+
     <!-- CARDS -->
     <div class="row">
 
@@ -264,7 +269,7 @@
 
                     <span class="badge bg-success-subtle text-success mb-2"
                           th:if="${p.active == true}">
-                            Activ
+                            Vizibil public
                         </span>
 
                     <span class="badge bg-danger-subtle text-dark mb-2"

@@ -3,7 +3,7 @@ body {
     background-position: center;
     background-attachment: fixed;
     background-repeat: no-repeat;
-    background-color: #e5e7eb;
+    background-color: #e5e7eb !important;
 
     min-height: 100vh;
 
@@ -1564,7 +1564,7 @@ form,
 
     padding: 40px 0 20px;
 
-    background: #f8f9fa;
+    background: #e5e7eb !important;
 
     border-top: 1px solid #e5e5e5;
 }

@@ -182,9 +182,9 @@ public class BusinessController {
 
                             admin,
 
-                            "Business nou în așteptare",
+                            "Serviciu nou în așteptare",
 
-                            "Business-ul "
+                            "Serviciul "
                                     + profile.getName()
                                     + " a fost trimis pentru aprobare.",
 
