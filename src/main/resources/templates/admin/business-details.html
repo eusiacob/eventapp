@@ -98,26 +98,82 @@
 
                         </div>
 
+                        <!-- FOTOGRAFII -->
                         <div th:if="${business.galleryImages != null and !#lists.isEmpty(business.galleryImages)}">
 
-                            <hr>
+                            <div class="gallery-section-title">
+                                <i class="bi bi-images"></i>
+                                Fotografii
+                            </div>
 
-                            <h5 class="fw-bold mb-3">
-                                Galerie
-                            </h5>
+                            <div class="gallery-photo-grid">
 
-                            <div class="row g-3 mb-4">
+                                <div class="gallery-photo-item"
+                                     th:each="img, iterStat : ${business.galleryImages}"
+                                     th:classappend="${iterStat.index >= 5} ? ' gallery-extra-image' : ''">
 
-                                <div class="col-6 col-md-4 col-lg-3"
-                                     th:each="img, iterStat : ${business.galleryImages}">
-
-                                    <img class="img-fluid rounded gallery-image"
+                                    <img class="gallery-thumbnail"
                                          loading="lazy"
                                          onclick="openLightbox(this)"
                                          th:attr="
-                                 data-image-src=@{${img.imagePath}},
-                                 data-index=${iterStat.index}"
-                                         th:src="@{${img.imagePath}}">
+                                         data-image-src=@{${img.imagePath}},
+                                         data-index=${iterStat.index}"
+                                         th:src="@{${img.imagePath}}"
+                                         alt="Fotografie galerie">
+
+                                </div>
+
+                            </div>
+
+                            <button class="btn btn-sm btn-outline-secondary gallery-more-btn"
+                                    id="showMoreImagesBtn"
+                                    th:if="${business.galleryImages.size() > 5}"
+                                    onclick="showMoreImages()"
+                                    type="button">
+
+                                <i class="bi bi-grid-3x3-gap"></i>
+
+                                Vezi toate fotografiile
+                                (<span th:text="${business.galleryImages.size()}"></span>)
+
+                            </button>
+
+                        </div>
+
+
+                        <!-- VIDEOCLIPURI -->
+                        <div class="gallery-videos-section"
+                             th:if="${business.galleryVideos != null and !business.galleryVideos.isEmpty()}">
+
+                            <div class="gallery-section-title">
+                                <i class="bi bi-play-circle"></i>
+                                Videoclipuri
+                            </div>
+
+                            <div class="gallery-video-grid">
+
+                                <div class="gallery-video-item"
+                                     th:each="video : ${business.galleryVideos}">
+
+                                    <div class="video-preview"
+                                         th:attr="data-video-src=${video.videoPath}"
+                                         onclick="playGalleryVideo(this)">
+
+                                        <video class="gallery-video-preview"
+                                               muted
+                                               preload="metadata">
+
+                                            <source th:src="${video.videoPath}"
+                                                    type="video/mp4">
+
+                                        </video>
+
+                                        <div class="video-play-button">
+                                            <i class="bi bi-play-fill"></i>
+                                        </div>
+
+                                    </div>
+
                                 </div>
 
                             </div>
@@ -129,7 +185,7 @@
                 </div>
 
                 <div th:if="${#lists.isEmpty(business.galleryImages)}" class="m-3">
-                    Userul nu are imagini în galerie.
+                    Utilizatorul nu are imagini în galerie.
                 </div>
 
             </div>
@@ -227,13 +283,14 @@
                         th:text="${business.name}">
                     </h2>
 
-                    <p class="text-muted mb-0">
+                    <div class="text-muted mb-0">
 
-                        <span th:text="${business.category.displayName}"></span>
+                        <div th:text="${business.category.displayName}"></div>
 
-                        <span th:text="${business.city}"></span>
+                        <div th:text="${business.city}"></div>
 
-                    </p>
+                    </div>
+
 
                 </div>
 
@@ -437,6 +494,26 @@
             .classList.remove('active');
 
         document.body.style.overflow = '';
+    }
+</script>
+
+<!--Show more images script-->
+<script>
+    function showMoreImages() {
+
+        const hiddenImages =
+            document.querySelectorAll('.gallery-extra-image');
+
+        hiddenImages.forEach(image => {
+            image.style.display = 'block';
+        });
+
+        const button =
+            document.getElementById('showMoreImagesBtn');
+
+        if (button) {
+            button.style.display = 'none';
+        }
     }
 </script>
 

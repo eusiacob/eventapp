@@ -38,9 +38,11 @@ public class SecurityConfig {
                                 "/business/*/availability/block",
                                 "/business/*/gallery/upload",
                                 "/business/*/videos/upload",
+                                "/business/videos/delete/*",
                                 "/business/gallery/delete/**",
                                 "/business/*/availability/toggle"
                         ).hasRole("BUSINESS")
+
                         .requestMatchers(
                                 "/admin/**")
                         .hasRole("ADMIN")

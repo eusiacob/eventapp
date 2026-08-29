@@ -79,31 +79,15 @@ public class BusinessImageController {
 
             businessImageService.uploadImages(businessProfile.getId(), images);
 
+            notifyAdminsAboutBusinessUpdate(
+                    businessProfile
+            );
+
             redirectAttributes.addFlashAttribute("gallerySuccess", "Imaginile au fost încărcate cu succes.");
 
         } catch (IOException e) {
 
             redirectAttributes.addFlashAttribute("galleryError", "A apărut o eroare la încărcarea imaginilor.");
-        }
-
-        List<User> admins =
-                userRepository.findByRole(Role.ADMIN);
-
-        for (User admin : admins) {
-
-            userNotificationService.create(
-
-                    admin,
-
-                    "Galerie actualizată",
-
-                    businessProfile.getName()
-                            + " a fost editat și trimis pentru aprobare.",
-
-                    "/admin/business/"
-                            + businessProfile.getUuid()
-            );
-
         }
 
         redirectAttributes.addAttribute("businessUpdated", true);
@@ -155,6 +139,10 @@ public class BusinessImageController {
                     videos
             );
 
+            notifyAdminsAboutBusinessUpdate(
+                    businessProfile
+            );
+
             redirectAttributes.addFlashAttribute(
                     "videoSuccess",
                     "Videoclipurile au fost încărcate cu succes."
@@ -177,38 +165,149 @@ public class BusinessImageController {
                     "videoError",
                     "A apărut o eroare la încărcarea videoclipurilor."
             );
+
+        } catch (InterruptedException e) {
+
+            Thread.currentThread().interrupt();
+
+            redirectAttributes.addFlashAttribute(
+                    "videoError",
+                    "Procesarea videoclipului a fost întreruptă."
+            );
         }
+
+        redirectAttributes.addAttribute("businessUpdated", true);
+        redirectAttributes.addAttribute("businessNotApproved", true);
 
         return "redirect:/business/edit/" + uuid;
     }
 
-    @PostMapping("/business/gallery/delete/{imageId}")
-    public String deleteGalleryImage(
-            @PathVariable Long imageId,
+    private void notifyAdminsAboutBusinessUpdate(
+            BusinessProfile businessProfile
+    ) {
+
+        List<User> admins =
+                userRepository.findByRole(Role.ADMIN);
+
+        for (User admin : admins) {
+
+            userNotificationService.create(
+
+                    admin,
+
+                    "Galerie actualizată",
+
+                    "Business-ul "
+                            + businessProfile.getName()
+                            + " a fost modificat și trimis din nou pentru aprobare.",
+
+                    "/admin/business/"
+                            + businessProfile.getUuid()
+            );
+        }
+    }
+
+    @PostMapping("/business/gallery/delete/{id}")
+    public String deleteImage(
+            @PathVariable Long id,
             @RequestParam("uuid") String uuid,
             @AuthenticationPrincipal UserDetails userDetails,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes
+    ) {
+
+        User user =
+                userService.findByEmail(
+                        userDetails.getUsername()
+                );
+
+        try {
+
+            BusinessProfile businessProfile =
+                    businessImageService.deleteImage(
+                            id,
+                            user
+                    );
+
+            notifyAdminsAboutBusinessUpdate(
+                    businessProfile
+            );
 
 
-        User user = userService.findByEmail(
-                userDetails.getUsername()
-        );
+            redirectAttributes.addFlashAttribute(
+                    "gallerySuccess",
+                    "Imaginea a fost ștearsă cu succes."
+            );
 
 
-        businessProfileService.findByUuidAndValidateOwner(
-                uuid,
-                user
-        );
+        } catch (IOException e) {
+
+            redirectAttributes.addFlashAttribute(
+                    "galleryError",
+                    "Imaginea nu a putut fi ștearsă de pe disc."
+            );
+
+        } catch (RuntimeException e) {
+
+            redirectAttributes.addFlashAttribute(
+                    "galleryError",
+                    e.getMessage()
+            );
+        }
+
+        redirectAttributes.addAttribute("businessUpdated", true);
+        redirectAttributes.addAttribute("businessNotApproved", true);
+
+        return "redirect:/business/edit/" + uuid;
+    }
+
+    @PostMapping("/business/videos/delete/{id}")
+    public String deleteVideo(
+            @PathVariable Long id,
+            @RequestParam("uuid") String uuid,
+            @AuthenticationPrincipal UserDetails userDetails,
+            RedirectAttributes redirectAttributes
+    ) {
+
+        User user =
+                userService.findByEmail(
+                        userDetails.getUsername()
+                );
+
+        try {
+
+            BusinessProfile businessProfile =
+                    businessVideoService.deleteVideo(
+                            id,
+                            user
+                    );
+
+            notifyAdminsAboutBusinessUpdate(
+                    businessProfile
+            );
+
+            redirectAttributes.addFlashAttribute(
+                    "videoSuccess",
+                    "Videoclipul a fost șters cu succes."
+            );
 
 
-        businessImageService.deleteImage(imageId);
+        } catch (IOException e) {
 
+            redirectAttributes.addFlashAttribute(
+                    "videoError",
+                    "Videoclipul nu a putut fi șters de pe disc."
+            );
 
-        redirectAttributes.addAttribute(
-                "galleryDeleted",
-                true
-        );
+        } catch (RuntimeException e) {
 
+            redirectAttributes.addFlashAttribute(
+                    "videoError",
+                    e.getMessage()
+            );
+        }
+
+        redirectAttributes.addAttribute("businessUpdated", true);
+        redirectAttributes.addAttribute("businessNotApproved", true);
 
         return "redirect:/business/edit/" + uuid;
     }

@@ -68,13 +68,13 @@
                     Imagine ștearsă cu succes.
                 </div>
 
-                <div th:if="${videoSuccess}"
-                     class="alert alert-success p-2"
+                <div class="alert alert-success p-2"
+                     th:if="${videoSuccess}"
                      th:text="${videoSuccess}">
                 </div>
 
-                <div th:if="${videoError}"
-                     class="alert alert-danger p-2"
+                <div class="alert alert-danger p-2"
+                     th:if="${videoError}"
                      th:text="${videoError}">
                 </div>
 
@@ -324,11 +324,10 @@
 
                         <div class="mb-3">
 
-                            <input accept="video/mp4"
+                            <input accept="video/mp4,video/quicktime,video/webm,video/x-msvideo"
                                    class="form-control"
                                    multiple
                                    name="videos"
-                                   required
                                    type="file">
 
                             <div class="form-text">
@@ -358,19 +357,23 @@
                     Încă nu ai imagini în galerie. Adaugă acum!
                 </div>
 
+                <div class="mb-2">
+                    <i class="bi bi-images"></i>
+                    Fotografii
+                </div>
+
                 <div class="row g-3"
                      th:if="${profile.galleryImages != null and !#lists.isEmpty(profile.galleryImages)}">
 
-                    <div class="col-6"
+                    <div class="col-6 col-md-4 col-lg-3"
                          th:each="img : ${profile.galleryImages}">
 
-                        <div class="gallery-manage-item">
+                        <div class="gallery-manage-item position-relative">
 
                             <img class="img-fluid rounded gallery-manage-image"
                                  th:src="@{${img.imagePath}}">
 
-                            <!-- DELETE FORM - SEPARATE FORM -->
-                            <form class="mt-2"
+                            <form class="gallery-delete-form"
                                   method="post"
                                   th:action="@{/business/gallery/delete/{id}(id=${img.id})}">
 
@@ -378,10 +381,63 @@
                                        th:value="${profile.uuid}"
                                        type="hidden">
 
-                                <button class="btn btn-outline-danger btn-sm w-100"
-                                        onclick="return confirm('Delete this image?');"
+                                <button aria-label="Șterge imaginea"
+                                        class="gallery-delete-btn"
+                                        onclick="return confirm('Ștergi această imagine?');"
+                                        title="Șterge imaginea"
                                         type="submit">
-                                    Șterge
+
+                                    <i class="bi bi-x"></i>
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="mt-4 mb-2">
+                    <i class="bi bi-play-circle"></i>
+                    Videoclipuri
+                </div>
+
+                <div class="row g-3"
+                     th:if="${profile.galleryVideos != null and !profile.galleryVideos.isEmpty()}">
+
+                    <div class="col-6 col-md-4 col-lg-3"
+                         th:each="video : ${profile.galleryVideos}">
+
+                        <div class="gallery-manage-item position-relative">
+
+                            <video class="img-fluid rounded gallery-manage-video"
+                                   muted
+                                   preload="metadata">
+
+                                <source th:src="${video.videoPath}">
+
+                                Browserul nu poate reda acest videoclip.
+
+                            </video>
+
+                            <form method="post"
+                                  th:action="@{/business/videos/delete/{id}(id=${video.id})}"
+                                  class="gallery-delete-form">
+
+                                <input name="uuid"
+                                       th:value="${profile.uuid}"
+                                       type="hidden">
+
+                                <button class="gallery-delete-btn"
+                                        onclick="return confirm('Ștergi acest videoclip?');"
+                                        type="submit"
+                                        title="Șterge videoclipul"
+                                        aria-label="Șterge videoclipul">
+
+                                    <i class="bi bi-x"></i>
+
                                 </button>
 
                             </form>

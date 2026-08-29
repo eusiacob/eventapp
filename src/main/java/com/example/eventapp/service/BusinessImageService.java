@@ -2,6 +2,7 @@ package com.example.eventapp.service;
 
 import com.example.eventapp.model.BusinessImage;
 import com.example.eventapp.model.BusinessProfile;
+import com.example.eventapp.model.User;
 import com.example.eventapp.repository.BusinessImageRepository;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class BusinessImageService {
@@ -53,6 +55,8 @@ public class BusinessImageService {
                 businessImageRepository
                         .countByBusinessProfile(businessProfile);
 
+        boolean uploaded = false;
+
         for (MultipartFile file : files) {
 
             if (file.isEmpty()) {
@@ -75,12 +79,12 @@ public class BusinessImageService {
                 break;
             }
 
-            currentImages++;
-
             String fileName =
                     "gallery_"
-                            + currentImages
-                            + ".jpg";
+                            + UUID.randomUUID()
+                            + ".webp";
+
+            currentImages++;
 
             Path filePath =
                     uploadPath.resolve(fileName);
@@ -115,11 +119,18 @@ public class BusinessImageService {
                     businessProfile
             );
 
+            businessImageRepository.save(image);
+
+            uploaded = true;
+        }
+
+        if (uploaded) {
+
             businessProfile.setStatus(
                     BusinessProfile.BusinessStatus.PENDING
             );
 
-            businessImageRepository.save(image);
+            businessProfileService.save(businessProfile);
         }
     }
 
@@ -129,10 +140,59 @@ public class BusinessImageService {
                 .countByBusinessProfileId(businessId);
     }
 
-    public void deleteImage(Long imageId) {
-        BusinessImage image = businessImageRepository.findById(imageId)
-                .orElseThrow(() -> new RuntimeException("Image not found"));
+    public BusinessProfile deleteImage(
+            Long imageId,
+            User user
+    ) throws IOException {
+
+        BusinessImage image =
+                businessImageRepository.findById(imageId)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Imaginea nu există."
+                                ));
+
+        BusinessProfile businessProfile =
+                image.getBusinessProfile();
+
+        if (businessProfile == null ||
+                businessProfile.getUser() == null ||
+                !businessProfile.getUser().getId()
+                        .equals(user.getId())) {
+
+            throw new RuntimeException(
+                    "Nu ai permisiunea să ștergi această imagine."
+            );
+        }
+
+        String imagePath =
+                image.getImagePath();
+
+        if (imagePath != null) {
+
+            String relativePath =
+                    imagePath.startsWith("/")
+                            ? imagePath.substring(1)
+                            : imagePath;
+
+            Path filePath =
+                    Paths.get(relativePath);
+
+            if (Files.exists(filePath)) {
+                Files.delete(filePath);
+            }
+        }
+
+        businessProfile.setStatus(
+                BusinessProfile.BusinessStatus.PENDING
+        );
+
+        businessProfileService.save(businessProfile);
 
         businessImageRepository.delete(image);
+
+        return businessProfile;
+
+
     }
 }
