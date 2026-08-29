@@ -337,7 +337,7 @@ public class BusinessController {
                 businessImageService.countImagesByBusinessId(profile.getId());
 
         model.addAttribute("currentImageCount", currentImageCount);
-        model.addAttribute("maxImageCount", 20);
+        model.addAttribute("maxImageCount", 15);
         model.addAttribute("profile", profile);
         model.addAttribute("categories", businessProfileService.getCategories());
         model.addAttribute("unavailableDateStrings", unavailableDateStrings);

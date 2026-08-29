@@ -1,13 +1,11 @@
 package com.example.eventapp.controller;
 
+import com.example.eventapp.exception.InvalidVideoException;
 import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.Role;
 import com.example.eventapp.model.User;
 import com.example.eventapp.repository.UserRepository;
-import com.example.eventapp.service.BusinessImageService;
-import com.example.eventapp.service.BusinessProfileService;
-import com.example.eventapp.service.UserNotificationService;
-import com.example.eventapp.service.UserService;
+import com.example.eventapp.service.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -26,13 +24,16 @@ public class BusinessImageController {
     private final UserService userService;
     private final UserRepository userRepository;
     private final UserNotificationService userNotificationService;
+    private final BusinessVideoService businessVideoService;
 
     public BusinessImageController(BusinessImageService businessImageService,
                                    BusinessProfileService businessProfileService,
+                                   BusinessVideoService businessVideoService,
                                    UserService userService, UserRepository userRepository, UserNotificationService userNotificationService) {
         this.businessImageService = businessImageService;
         this.businessProfileService = businessProfileService;
         this.userService = userService;
+        this.businessVideoService = businessVideoService;
         this.userRepository = userRepository;
         this.userNotificationService = userNotificationService;
     }
@@ -107,6 +108,76 @@ public class BusinessImageController {
 
         redirectAttributes.addAttribute("businessUpdated", true);
         redirectAttributes.addAttribute("businessNotApproved", true);
+
+        return "redirect:/business/edit/" + uuid;
+    }
+
+    @PostMapping("/business/{uuid}/videos/upload")
+    public String uploadVideos(
+            @PathVariable String uuid,
+            @RequestParam("videos") List<MultipartFile> videos,
+            @AuthenticationPrincipal UserDetails userDetails,
+            RedirectAttributes redirectAttributes
+    ) {
+
+        User user =
+                userService.findByEmail(
+                        userDetails.getUsername()
+                );
+
+        BusinessProfile businessProfile =
+                businessProfileService
+                        .findByUuidAndValidateOwner(
+                                uuid,
+                                user
+                        );
+
+        long existingVideos =
+                businessVideoService
+                        .countVideosByBusinessId(
+                                businessProfile.getId()
+                        );
+
+        if (existingVideos + videos.size() > 5) {
+
+            redirectAttributes.addFlashAttribute(
+                    "videoError",
+                    "Galeria poate conține maximum 5 videoclipuri."
+            );
+
+            return "redirect:/business/edit/" + uuid;
+        }
+
+        try {
+
+            businessVideoService.uploadVideos(
+                    businessProfile.getId(),
+                    videos
+            );
+
+            redirectAttributes.addFlashAttribute(
+                    "videoSuccess",
+                    "Videoclipurile au fost încărcate cu succes."
+            );
+
+        } catch (InvalidVideoException e) {
+
+            redirectAttributes.addFlashAttribute(
+                    "videoError",
+                    e.getMessage()
+            );
+
+            return "redirect:/business/edit/" + uuid;
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+            redirectAttributes.addFlashAttribute(
+                    "videoError",
+                    "A apărut o eroare la încărcarea videoclipurilor."
+            );
+        }
 
         return "redirect:/business/edit/" + uuid;
     }

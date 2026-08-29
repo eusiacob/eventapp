@@ -165,6 +165,31 @@
                                  th:src="@{${img.imagePath}}">
                         </div>
 
+                        <div class="mt-4"
+                             th:if="${profile.galleryVideos != null and !profile.galleryVideos.isEmpty()}">
+
+                            <div class="row g-3">
+
+                                <div class="col-md-4"
+                                     th:each="video : ${profile.galleryVideos}">
+
+                                    <video class="w-100 rounded"
+                                           controls
+                                           preload="metadata">
+
+                                        <source th:src="${video.videoPath}"
+                                                type="video/mp4">
+
+                                        Browserul tău nu poate reda acest videoclip.
+
+                                    </video>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
                     </div>
 
                     <div class="alert alert-info" sec:authorize="isAnonymous()" style="padding: 0.5em">

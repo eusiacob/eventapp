@@ -34,13 +34,13 @@ public class SecurityConfig {
                                 "/business/edit/**",
                                 "/business/delete/**",
                                 "/dashboard",
-                                "/business/{uuid}/activate",
-                                "/business/{uuid}/availability/block",
-                                "/business/{uuid}/gallery/upload",
+                                "/business/*/activate",
+                                "/business/*/availability/block",
+                                "/business/*/gallery/upload",
+                                "/business/*/videos/upload",
                                 "/business/gallery/delete/**",
-                                "/business/{uuid}/availability/toggle"
+                                "/business/*/availability/toggle"
                         ).hasRole("BUSINESS")
-
                         .requestMatchers(
                                 "/admin/**")
                         .hasRole("ADMIN")

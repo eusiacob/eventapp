@@ -68,6 +68,16 @@
                     Imagine ștearsă cu succes.
                 </div>
 
+                <div th:if="${videoSuccess}"
+                     class="alert alert-success p-2"
+                     th:text="${videoSuccess}">
+                </div>
+
+                <div th:if="${videoError}"
+                     class="alert alert-danger p-2"
+                     th:text="${videoError}">
+                </div>
+
                 <form enctype="multipart/form-data"
                       method="post"
                       th:action="@{/business/edit/{uuid}(uuid=${profile.uuid})}"
@@ -302,6 +312,42 @@
                         Încarcă fotografii
                     </button>
                 </form>
+
+                <!--VIDEOS-->
+                <div class="mt-4">
+
+                    <h4 class="mb-2">Videoclipuri</h4>
+
+                    <form enctype="multipart/form-data"
+                          method="post"
+                          th:action="@{/business/{uuid}/videos/upload(uuid=${profile.uuid})}">
+
+                        <div class="mb-3">
+
+                            <input accept="video/mp4"
+                                   class="form-control"
+                                   multiple
+                                   name="videos"
+                                   required
+                                   type="file">
+
+                            <div class="form-text">
+                                Poți încărca maximum 5 videoclipuri MP4,
+                                de maximum 1 minut fiecare.
+                            </div>
+
+                        </div>
+
+                        <button class="btn btn-dark p-2"
+                                type="submit">
+
+                            Încarcă videoclipurile
+
+                        </button>
+
+                    </form>
+
+                </div>
 
                 <hr class="my-4">
 

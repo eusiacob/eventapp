@@ -68,13 +68,13 @@ public class BusinessProfile {
 
     @Getter
     public enum BusinessStatus {
-        PENDING ("În așteptare"),
-        APPROVED ("Aprobat"),
-        REJECTED ("Respins");
+        PENDING("În așteptare"),
+        APPROVED("Aprobat"),
+        REJECTED("Respins");
 
         private final String statusDisplayName;
 
-        BusinessStatus (String statusDisplayName) {
+        BusinessStatus(String statusDisplayName) {
             this.statusDisplayName = statusDisplayName;
         }
     }
@@ -94,11 +94,23 @@ public class BusinessProfile {
     @ManyToMany(mappedBy = "favoriteBusinesses")
     Set<User> favorites;
 
-    @OneToMany(mappedBy = "businessProfile", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviews = new ArrayList<>();
+    @OneToMany(mappedBy = "businessProfile",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Review> reviews =
+            new ArrayList<>();
 
-    @OneToMany(mappedBy = "businessProfile", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BusinessImage> galleryImages = new ArrayList<>();
+    @OneToMany(mappedBy = "businessProfile",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<BusinessImage> galleryImages =
+            new ArrayList<>();
+
+    @OneToMany(mappedBy = "businessProfile",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<BusinessVideo> galleryVideos =
+            new ArrayList<>();
 
     public int getReviewCount() {
         if (reviews == null) {
