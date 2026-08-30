@@ -86,7 +86,7 @@
     <!--    CARDS-->
     <div class="row g-4">
 
-        <div class="col-md-6 col-lg-4"
+        <div class="col-6 col-md-6 col-lg-4"
              th:each="p : ${favorites}">
 
             <div class="business-card-link"
@@ -98,7 +98,7 @@
                     <img alt="Imagine serviciu"
                          class="card-img-top"
                          loading="lazy"
-                         style="height:250px; object-fit:cover;" th:src="@{${p.imagePath}}">
+                         th:src="@{${p.imagePath}}">
 
                     <div class="card-body">
 

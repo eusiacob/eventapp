@@ -1,6 +1,2 @@
 - serviciul de email (creare cont, resetare parola, notificari aprobare serviciu si
 recenzii)
-
-- sa apara 4 servicii pe pagina pe mobile ( de modificat style -ul)
-
-- criptare baza de date? (email, nr de telefon)

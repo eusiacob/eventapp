@@ -84,7 +84,7 @@
 
     <div class="row g-4 mt-2">
 
-        <div class="col-12 col-md-6 col-lg-4"
+        <div class="col-6 col-md-6 col-lg-4"
              th:each="p : ${profiles}">
 
             <div class="card border-0 shadow-lg h-100 business-card position-relative clickable-card"
@@ -110,12 +110,12 @@
                     <img class="card-img-top business-image"
                          loading="lazy"
                          th:if="${p.imagePath != null}"
-                         th:src="@{${p.imagePath}}">
+                         th:src="@{${p.imagePath}}" alt="Imagine serviciu">
 
                     <img class="card-img-top business-image"
                          loading="lazy"
                          src="https://i.ibb.co/d4nzt6TB/Image-not-found.png"
-                         th:if="${p.imagePath == null}">
+                         th:if="${p.imagePath == null}" alt="Imagine serviciu">
 
                     <span class="badge bg-dark position-absolute top-0 start-0 m-3 px-3 py-2"
                           th:text="${p.category.displayName}">

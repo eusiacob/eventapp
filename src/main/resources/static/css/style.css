@@ -942,6 +942,12 @@ form,
 
 /*SMARTPHONE DISPLAY*/
 
+.card-img-top {
+    object-fit: cover;
+    transition: transform 0.4s ease;
+    height: 250px;
+}
+
 @media (max-width: 768px) {
 
     body {
@@ -964,6 +970,7 @@ form,
 
     .business-image {
         object-fit: cover;
+        height: 120px;
     }
 
     .business-card {
@@ -982,7 +989,12 @@ form,
     }
 
     .business-card .card-body {
-        padding: 1.25rem;
+        padding: 10px;
+    }
+
+    .business-card p,
+    .business-card .mb-2 {
+        font-size: 0.8rem;
     }
 
     .home-hero {
@@ -1048,6 +1060,22 @@ form,
         border-radius: 14px;
         font-weight: 500;
         margin-top: 0.5rem;
+    }
+
+    .business-card-link {
+        min-height: auto;
+    }
+
+    .business-card-link p {
+        font-size: 0.8rem;
+    }
+
+    .business-card-link button {
+        font-size: 0.7rem;
+    }
+
+    .card-img-top {
+        height: 120px;
     }
 }
 
