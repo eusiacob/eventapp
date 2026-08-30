@@ -2,6 +2,7 @@ package com.example.eventapp.controller;
 
 import com.example.eventapp.dto.BreadcrumbDTO;
 import com.example.eventapp.model.User;
+import com.example.eventapp.repository.SupportTicketRepository;
 import com.example.eventapp.service.BusinessProfileService;
 import com.example.eventapp.service.ReviewService;
 import com.example.eventapp.service.SubscriptionService;
@@ -21,14 +22,17 @@ public class ProfileController {
     private final BusinessProfileService businessProfileService;
     private final ReviewService reviewService;
     private final SubscriptionService subscriptionService;
+    private final SupportTicketRepository supportTicketRepository;
 
     public ProfileController(UserService userService,
                              BusinessProfileService businessProfileService,
+                             SupportTicketRepository supportTicketRepository,
                              ReviewService reviewService, SubscriptionService subscriptionService) {
         this.userService = userService;
         this.businessProfileService = businessProfileService;
         this.reviewService = reviewService;
         this.subscriptionService = subscriptionService;
+        this.supportTicketRepository = supportTicketRepository;
     }
 
     @GetMapping("/profile")
@@ -54,6 +58,8 @@ public class ProfileController {
                 subscriptionService.findAllByUser(user));
         model.addAttribute("reviewCount", reviewCount);
         model.addAttribute("businessCount", businessCount);
+        model.addAttribute("ownTickets",
+                supportTicketRepository.findAllByUserOrderByUpdatedAtDesc(user).size());
         model.addAttribute("breadcrumbs", List.of(
                 new BreadcrumbDTO("Acasă", "/businesses"),
                 new BreadcrumbDTO("Profil", null)));

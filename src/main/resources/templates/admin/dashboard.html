@@ -134,7 +134,7 @@
 
         </div>
 
-        <!--Plans -->
+        <!--Plans-->
         <div class="col-lg-3 col-md-4">
 
             <a th:href="@{/admin/plans}"
@@ -149,6 +149,28 @@
                     </h2>
 
                     <p>Planuri</p>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        <!--Support-->
+        <div class="col-lg-3 col-md-4">
+
+            <a th:href="@{/admin/support}"
+               class="dashboard-card-link">
+
+                <div class="dashboard-card primary">
+
+                    <i class="bi bi-chat-text-fill dashboard-icon text-dark"></i>
+
+                    <h2 class="text-muted"
+                        th:text="${tickets}">
+                    </h2>
+
+                    <p>Support</p>
 
                 </div>
 

@@ -100,6 +100,25 @@
                 </div>
 
                 <div class="col-12 col-md-4 clickable-card"
+                     th:data-href="@{/support}">
+
+                    <div class="profile-stat-card card border-0 shadow-sm p-4 h-100">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="profile-stat-icon dark">
+                                <i class="bi bi-chat-text-fill"></i>
+                            </div>
+
+                            <div>
+                                <p class="text-muted mb-1">Support</p>
+                                <h3 class="fw-bold mb-0"
+                                    th:text="${ownTickets}">
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4 clickable-card"
                      sec:authorize="hasRole('BUSINESS')"
                      th:data-href="@{/dashboard}">
 

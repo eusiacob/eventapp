@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ro"
+      xmlns:th="http://www.thymeleaf.org"
+>
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0"
+          name="viewport">
+    <title>Support</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
+    <style>
+
+        .support-admin-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+
+        .support-admin-ticket {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 20px;
+
+            padding: 16px;
+
+            background: white;
+
+            border: 1px solid #e5e5e5;
+
+            border-radius: 10px;
+
+            text-decoration: none;
+
+            color: inherit;
+
+            transition: 0.15s ease;
+        }
+
+
+        .support-admin-ticket:hover {
+            border-color: #999;
+
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+
+            transform: translateY(-1px);
+        }
+
+
+        .support-admin-ticket-content {
+            min-width: 0;
+        }
+
+
+        @media (max-width: 576px) {
+
+            .support-admin-ticket {
+                padding: 12px;
+
+                gap: 10px;
+            }
+
+
+            .support-admin-ticket > div:last-child {
+                min-width: 80px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+
+<div class="container py-2">
+
+    <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
+
+    <!-- HEADER -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="text-dark fw-bold mb-1">
+                Support
+            </h3>
+
+            <p class="text-muted mb-0">
+                Gestionează solicitările utilizatorilor.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- FILTRE -->
+
+    <div class="d-flex flex-wrap gap-2 mb-4">
+
+        <a class="btn btn-sm btn-outline-dark"
+
+           th:href="@{/admin/support}">
+
+            Toate
+
+        </a>
+
+
+        <a class="btn btn-sm"
+
+           th:classappend="${selectedStatus != null
+                            and selectedStatus.name() == 'OPEN'}
+                           ? ' btn-success'
+                           : ' btn-outline-success'"
+
+           th:href="@{/admin/support/status/OPEN}">
+
+            Deschise
+
+        </a>
+
+
+        <a class="btn btn-sm"
+
+           th:classappend="${selectedStatus != null
+                            and selectedStatus.name() == 'IN_PROGRESS'}
+                           ? ' btn-warning'
+                           : ' btn-outline-warning'"
+
+           th:href="@{/admin/support/status/IN_PROGRESS}">
+
+            În lucru
+
+        </a>
+
+
+        <a class="btn btn-sm"
+
+           th:classappend="${selectedStatus != null
+                            and selectedStatus.name() == 'CLOSED'}
+                           ? ' btn-secondary'
+                           : ' btn-outline-secondary'"
+
+           th:href="@{/admin/support/status/CLOSED}">
+
+            Închise
+
+        </a>
+
+    </div>
+
+
+    <!-- NICIUN TICHET -->
+
+    <div class="alert alert-info"
+         th:if="${tickets == null or #lists.isEmpty(tickets)}">
+
+        <i class="bi bi-info-circle"></i>
+
+        Nu există solicitări.
+
+    </div>
+
+
+    <!-- LISTA -->
+
+    <div class="support-admin-list"
+
+         th:if="${tickets != null and !#lists.isEmpty(tickets)}">
+
+
+        <a class="support-admin-ticket"
+
+           th:each="ticket : ${tickets}"
+
+           th:href="@{/admin/support/{id}(id=${ticket.id})}">
+
+
+            <!-- STÂNGA -->
+
+            <div class="support-admin-ticket-content text-dark">
+
+                <div class="d-flex align-items-center gap-2 mb-1">
+
+                    <strong>
+
+                        #
+
+                        <span th:text="${ticket.id}">
+                        </span>
+
+                    </strong>
+
+
+                    <span class="badge"
+
+                          th:classappend="
+
+                          ${ticket.status.name() == 'OPEN'}
+                          ? ' bg-success'
+
+                          : (${ticket.status.name() == 'IN_PROGRESS'}
+                          ? ' bg-warning text-dark'
+
+                          : ' bg-secondary')
+
+                          "
+
+                          th:text="
+
+                          ${ticket.status.name() == 'OPEN'}
+                          ? 'Deschis'
+
+                          : (${ticket.status.name() == 'IN_PROGRESS'}
+                          ? 'În lucru'
+
+                          : 'Închis')
+
+                          ">
+
+                    </span>
+
+                </div>
+
+
+                <div class="fw-semibold mb-1"
+                     th:text="${ticket.subject}">
+
+                </div>
+
+
+                <div class="small text-muted">
+
+                    <span th:text="${ticket.user.firstName}">
+                    </span>
+
+                    <span th:text="${ticket.user.lastName}">
+                    </span>
+
+                    ·
+
+                    <span th:text="${ticket.category}">
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- DREAPTA -->
+
+            <div class="text-end">
+
+                <div class="small text-muted"
+
+                     th:if="${ticket.updatedAt != null}"
+
+                     th:text="${#temporals.format(ticket.updatedAt, 'dd.MM.yyyy HH:mm')}">
+
+                </div>
+
+
+                <i class="bi bi-chevron-right text-muted">
+                </i>
+
+            </div>
+
+
+        </a>
+
+
+    </div>
+
+</div>
+
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+</body>
+
+</html>

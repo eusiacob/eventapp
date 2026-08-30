@@ -53,7 +53,8 @@ public class SecurityConfig {
                                 "/profile/**",
                                 "/subscriptions/**",
                                 "/business/{id}/reviews",
-                                "/notifications/**"
+                                "/notifications/**",
+                                "/support/**"
                         ).authenticated()
 
                         .requestMatchers(

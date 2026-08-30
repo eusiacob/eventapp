@@ -5,6 +5,7 @@ import com.example.eventapp.dto.UserAdminDto;
 import com.example.eventapp.model.*;
 import com.example.eventapp.repository.BusinessProfileRepository;
 import com.example.eventapp.repository.ReviewRepository;
+import com.example.eventapp.repository.SupportTicketRepository;
 import com.example.eventapp.repository.UserRepository;
 import com.example.eventapp.service.*;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class AdminController {
     private final ReviewService reviewService;
     private final UserService userService;
     private final SubscriptionService subscriptionService;
+    private final SupportTicketRepository supportTicketRepository;
 
     @GetMapping
     public String dashboard(Model model) {
@@ -49,6 +51,8 @@ public class AdminController {
                 subscriptionService.count());
         model.addAttribute("plans",
                 subscriptionService.findAllPlans().size());
+        model.addAttribute("tickets",
+                supportTicketRepository.findAll().size());
 
         return "admin/dashboard";
     }

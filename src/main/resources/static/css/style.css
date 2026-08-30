@@ -2347,3 +2347,13 @@ form,
     background: rgba(220, 53, 69, 0.95);
     transform: scale(1.08);
 }
+
+.support-ticket-card {
+    transition: transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.support-ticket-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12) !important;
+}
