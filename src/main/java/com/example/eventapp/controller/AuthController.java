@@ -1,5 +1,6 @@
 package com.example.eventapp.controller;
 
+import com.example.eventapp.dto.RegisterUserDTO;
 import com.example.eventapp.model.AccountStatusReason;
 import com.example.eventapp.model.Role;
 import com.example.eventapp.model.User;
@@ -34,26 +35,35 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@Valid @ModelAttribute("user") User user, BindingResult result) {
+    public String register(
+            @Valid @ModelAttribute("user") RegisterUserDTO userDTO,
+            BindingResult result
+    ) {
 
-        if (userService.emailExists(user.getEmail())) {
-            result.rejectValue("email", "error.user", "Email already exists");
+        if (userService.emailExists(userDTO.getEmail())) {
+
+            result.rejectValue(
+                    "email",
+                    "error.user",
+                    "Email already exists"
+            );
         }
 
-        if (!user.getPassword().equals(user.getConfirmPassword())) {
-            result.rejectValue("confirmPassword", "error.user", "Passwords do not match");
+        if (!userDTO.getPassword()
+                .equals(userDTO.getConfirmPassword())) {
+
+            result.rejectValue(
+                    "confirmPassword",
+                    "error.user",
+                    "Passwords do not match"
+            );
         }
 
         if (result.hasErrors()) {
             return "register";
         }
 
-        user.setRole(Role.USER);
-        user.setEnabled(true);
-        user.setLastActivityAt(LocalDateTime.now());
-        user.setAccountStatusReason(AccountStatusReason.NONE);
-
-        userService.registerUser(user);
+        userService.registerUser(userDTO);
 
         return "redirect:/login?registered";
     }

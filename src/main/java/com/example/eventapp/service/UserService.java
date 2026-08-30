@@ -1,5 +1,6 @@
 package com.example.eventapp.service;
 
+import com.example.eventapp.dto.RegisterUserDTO;
 import com.example.eventapp.model.AccountStatusReason;
 import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.Role;
@@ -50,28 +51,36 @@ public class UserService {
             return false;
         }
 
-        String emailHash =
-                encryptionService.hash(
-                        email.trim().toLowerCase()
-                );
+        String normalizedEmail =
+                email.trim().toLowerCase();
 
-        return userRepository.existsByEmailHash(
-                emailHash
-        );
+        String emailHash =
+                encryptionService.hash(normalizedEmail);
+
+        return userRepository
+                .findByEmailHash(emailHash)
+                .isPresent();
     }
 
-    public void registerUser(User user) {
+    public void registerUser(RegisterUserDTO userDTO) {
+
+        User user = new User();
+
+        user.setFirstName(userDTO.getFirstName().trim());
+        user.setLastName(userDTO.getLastName().trim());
 
         String email =
-                user.getEmail()
+                userDTO.getEmail()
                         .trim()
                         .toLowerCase();
 
         String phone =
-                user.getPhone()
+                userDTO.getPhone()
                         .trim();
 
-        // Email
+        user.setEmail(email);
+        user.setPhone(phone);
+
         user.setEmailHash(
                 encryptionService.hash(email)
         );
@@ -80,7 +89,6 @@ public class UserService {
                 encryptionService.encrypt(email)
         );
 
-        // Telefon
         user.setPhoneHash(
                 encryptionService.hash(phone)
         );
@@ -89,12 +97,18 @@ public class UserService {
                 encryptionService.encrypt(phone)
         );
 
-        // Parola rămâne protejată prin BCrypt
         user.setPassword(
                 passwordEncoder.encode(
-                        user.getPassword()
+                        userDTO.getPassword()
                 )
         );
+
+        user.setConfirmPassword(null);
+
+        user.setRole(Role.USER);
+        user.setEnabled(true);
+        user.setLastActivityAt(LocalDateTime.now());
+        user.setAccountStatusReason(AccountStatusReason.NONE);
 
         userRepository.save(user);
     }

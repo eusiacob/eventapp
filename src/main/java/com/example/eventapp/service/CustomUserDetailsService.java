@@ -34,22 +34,16 @@ public class CustomUserDetailsService implements UserDetailsService {
         String emailHash =
                 encryptionService.hash(normalizedEmail);
 
-        User user =
-                userRepository
-                        .findByEmailHash(emailHash)
-                        .orElseThrow(
-                                () -> new UsernameNotFoundException(
-                                        "User not found"
-                                )
-                        );
-
-        String decryptedEmail =
-                encryptionService.decrypt(
-                        user.getEmailEncrypted()
+        User user = userRepository
+                .findByEmailHash(emailHash)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException(
+                                "User not found"
+                        )
                 );
 
         return org.springframework.security.core.userdetails.User
-                .withUsername(decryptedEmail)
+                .withUsername(normalizedEmail)
                 .password(user.getPassword())
                 .roles(user.getRole().name())
                 .disabled(!user.isEnabled())
