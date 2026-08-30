@@ -1,9 +1,6 @@
 package com.example.eventapp.service;
 
-import com.example.eventapp.model.Review;
-import com.example.eventapp.model.Role;
-import com.example.eventapp.model.UserNotification;
-import com.example.eventapp.model.User;
+import com.example.eventapp.model.*;
 import com.example.eventapp.repository.UserNotificationRepository;
 import com.example.eventapp.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -139,5 +136,96 @@ public class UserNotificationService {
         notification.setCreatedAt(LocalDateTime.now());
         userNotificationRepository.save(notification);
     }
+
+    public void notifyAdminsNewSupportTicket(
+            SupportTicket ticket
+    ) {
+
+        List<User> admins =
+                userRepository.findByRole(Role.ADMIN);
+
+        for (User admin : admins) {
+
+            UserNotification notification =
+                    new UserNotification();
+
+            notification.setUser(admin);
+
+            notification.setTitle(
+                    "Solicitare Support nouă"
+            );
+
+            notification.setMessage(
+                    "Utilizatorul " +
+                            ticket.getUser().getFirstName() +
+                            " " +
+                            ticket.getUser().getLastName() +
+                            " a deschis o solicitare: \"" +
+                            ticket.getSubject() +
+                            "\"."
+            );
+
+            notification.setRead(false);
+
+            notification.setCreatedAt(
+                    LocalDateTime.now()
+            );
+
+            notification.setLink(
+                    "/admin/support/" +
+                            ticket.getId()
+            );
+
+            userNotificationRepository.save(
+                    notification
+            );
+        }
+    }
+
+    public void notifyAdminsNewSupportMessage(
+            SupportTicket ticket
+    ) {
+
+        List<User> admins =
+                userRepository.findByRole(Role.ADMIN);
+
+        for (User admin : admins) {
+
+            UserNotification notification =
+                    new UserNotification();
+
+            notification.setUser(admin);
+
+            notification.setTitle(
+                    "Mesaj nou în Support"
+            );
+
+            notification.setMessage(
+                    "Utilizatorul " +
+                            ticket.getUser().getFirstName() +
+                            " " +
+                            ticket.getUser().getLastName() +
+                            " a trimis un mesaj nou în solicitarea \"" +
+                            ticket.getSubject() +
+                            "\"."
+            );
+
+            notification.setRead(false);
+
+            notification.setCreatedAt(
+                    LocalDateTime.now()
+            );
+
+            notification.setLink(
+                    "/admin/support/" +
+                            ticket.getId()
+            );
+
+            userNotificationRepository.save(
+                    notification
+            );
+        }
+    }
+
 
 }

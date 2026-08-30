@@ -15,13 +15,16 @@ public class SupportService {
 
     private final SupportTicketRepository supportTicketRepository;
     private final SupportMessageRepository supportMessageRepository;
+    private final UserNotificationService userNotificationService;
 
     public SupportService(
             SupportTicketRepository supportTicketRepository,
-            SupportMessageRepository supportMessageRepository
+            SupportMessageRepository supportMessageRepository,
+            UserNotificationService userNotificationService
     ) {
         this.supportTicketRepository = supportTicketRepository;
         this.supportMessageRepository = supportMessageRepository;
+        this.userNotificationService = userNotificationService;
     }
 
 
@@ -66,7 +69,6 @@ public class SupportService {
         SupportTicket savedTicket =
                 supportTicketRepository.save(ticket);
 
-
         // Primul mesaj al conversației
 
         SupportMessage supportMessage =
@@ -79,6 +81,8 @@ public class SupportService {
         supportMessageRepository.save(
                 supportMessage
         );
+
+        userNotificationService.notifyAdminsNewSupportTicket(savedTicket);
 
         return savedTicket;
     }
@@ -188,17 +192,17 @@ public class SupportService {
         );
 
 
-        SupportMessage savedMessage =
-                supportMessageRepository.save(
-                        supportMessage
-                );
-
+        SupportMessage savedMessage = supportMessageRepository.save(supportMessage);
 
         ticket.setStatus(
                 SupportTicket.SupportStatus.IN_PROGRESS
         );
 
         supportTicketRepository.save(ticket);
+
+        // Notificare către administratori
+
+        userNotificationService.notifyAdminsNewSupportMessage(ticket);
 
 
         return savedMessage;
@@ -241,7 +245,7 @@ public class SupportService {
 
 
     @Transactional
-    public SupportMessage addAdminMessage(
+    public void addAdminMessage(
             Long ticketId,
             User admin,
             String message
@@ -277,21 +281,22 @@ public class SupportService {
                 message.trim()
         );
 
+        SupportMessage savedMessage = supportMessageRepository.save(supportMessage);
 
-        SupportMessage savedMessage =
-                supportMessageRepository.save(
-                        supportMessage
-                );
-
-
-        ticket.setStatus(
-                SupportTicket.SupportStatus.IN_PROGRESS
-        );
+        ticket.setStatus(SupportTicket.SupportStatus.IN_PROGRESS);
 
         supportTicketRepository.save(ticket);
 
+        // Notificare către utilizator
 
-        return savedMessage;
+        userNotificationService.create(
+                ticket.getUser(),
+                "Răspuns nou de la Support",
+                "Ai primit un răspuns nou pentru solicitarea \"" +
+                        ticket.getSubject() +
+                        "\".",
+                "/support/" + ticket.getId()
+        );
     }
 
 
@@ -304,8 +309,49 @@ public class SupportService {
         SupportTicket ticket =
                 getAdminTicket(ticketId);
 
+        SupportTicket.SupportStatus oldStatus =
+                ticket.getStatus();
+
+        // Nu trimitem notificare dacă statusul nu s-a schimbat
+        if (oldStatus == status) {
+            return;
+        }
+
         ticket.setStatus(status);
 
         supportTicketRepository.save(ticket);
+
+
+        String statusMessage;
+
+        switch (status) {
+
+            case OPEN:
+                statusMessage =
+                        "Solicitarea ta a fost redeschisă.";
+                break;
+
+            case IN_PROGRESS:
+                statusMessage =
+                        "Solicitarea ta este acum în lucru.";
+                break;
+
+            case CLOSED:
+                statusMessage =
+                        "Solicitarea ta a fost închisă.";
+                break;
+
+            default:
+                statusMessage =
+                        "Statusul solicitării tale a fost modificat.";
+        }
+
+
+        userNotificationService.create(
+                ticket.getUser(),
+                "Status Support actualizat",
+                statusMessage,
+                "/support/" + ticket.getId()
+        );
     }
 }

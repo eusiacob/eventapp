@@ -196,6 +196,13 @@ public class SupportController {
                 messages
         );
 
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Servicii", "/businesses"),
+                new BreadcrumbDTO("Profil", "/profile"),
+                new BreadcrumbDTO("Support", "/support"),
+                new BreadcrumbDTO("Vizualizare tichet", null)
+        ));
+
         return "support/view";
     }
 
