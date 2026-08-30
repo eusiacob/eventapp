@@ -311,6 +311,21 @@
                             type="submit">
                         Încarcă fotografii
                     </button>
+
+                    <div class="progress mt-3 d-none"
+                         id="imageUploadProgressContainer"
+                         style="height: 25px;">
+
+                        <div class="progress-bar progress-bar-striped progress-bar-animated"
+                             id="imageUploadProgress"
+                             role="progressbar"
+                             style="width: 0%;">
+
+                            0%
+
+                        </div>
+
+                    </div>
                 </form>
 
                 <!--VIDEOS-->
@@ -344,6 +359,21 @@
 
                         </button>
 
+                        <div class="progress mt-3 d-none"
+                             id="videoUploadProgressContainer"
+                             style="height: 25px;">
+
+                            <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                 id="videoUploadProgress"
+                                 role="progressbar"
+                                 style="width: 0%;">
+
+                                0%
+
+                            </div>
+
+                        </div>
+
                     </form>
 
                 </div>
@@ -357,13 +387,14 @@
                     Încă nu ai imagini în galerie. Adaugă acum!
                 </div>
 
-                <div class="mb-2">
-                    <i class="bi bi-images"></i>
-                    Fotografii
-                </div>
-
                 <div class="row g-3"
                      th:if="${profile.galleryImages != null and !#lists.isEmpty(profile.galleryImages)}">
+
+                    <div class="mb-2"
+                         id="currentGalleryPhotos">
+                        <i class="bi bi-images"></i>
+                        Fotografii
+                    </div>
 
                     <div class="col-6 col-md-4 col-lg-3"
                          th:each="img : ${profile.galleryImages}">
@@ -399,13 +430,14 @@
 
                 </div>
 
-                <div class="mt-4 mb-2">
-                    <i class="bi bi-play-circle"></i>
-                    Videoclipuri
-                </div>
-
                 <div class="row g-3"
                      th:if="${profile.galleryVideos != null and !profile.galleryVideos.isEmpty()}">
+
+                    <div class="mt-4 mb-2"
+                    id="currentGalleryVideos">
+                        <i class="bi bi-play-circle"></i>
+                        Videoclipuri
+                    </div>
 
                     <div class="col-6 col-md-4 col-lg-3"
                          th:each="video : ${profile.galleryVideos}">
@@ -422,19 +454,19 @@
 
                             </video>
 
-                            <form method="post"
-                                  th:action="@{/business/videos/delete/{id}(id=${video.id})}"
-                                  class="gallery-delete-form">
+                            <form class="gallery-delete-form"
+                                  method="post"
+                                  th:action="@{/business/videos/delete/{id}(id=${video.id})}">
 
                                 <input name="uuid"
                                        th:value="${profile.uuid}"
                                        type="hidden">
 
-                                <button class="gallery-delete-btn"
+                                <button aria-label="Șterge videoclipul"
+                                        class="gallery-delete-btn"
                                         onclick="return confirm('Ștergi acest videoclip?');"
-                                        type="submit"
                                         title="Șterge videoclipul"
-                                        aria-label="Șterge videoclipul">
+                                        type="submit">
 
                                     <i class="bi bi-x"></i>
 
@@ -615,5 +647,296 @@
     });
 </script>
 
+<!--image upload bar-->
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const form =
+            document.querySelector('form[action*="/gallery/upload"]');
+
+        if (!form) {
+            return;
+        }
+
+        form.addEventListener("submit", function (event) {
+
+            event.preventDefault();
+
+            const input =
+                form.querySelector('input[name="images"]');
+
+            if (!input || input.files.length === 0) {
+
+                alert("Selectează cel puțin o fotografie.");
+
+                return;
+            }
+
+            const formData =
+                new FormData(form);
+
+            const progressContainer =
+                document.getElementById(
+                    "imageUploadProgressContainer"
+                );
+
+            const progressBar =
+                document.getElementById(
+                    "imageUploadProgress"
+                );
+
+            const submitButton =
+                form.querySelector('button[type="submit"]');
+
+            const csrfToken =
+                document.querySelector(
+                    'meta[name="_csrf"]'
+                )?.getAttribute("content");
+
+            const csrfHeader =
+                document.querySelector(
+                    'meta[name="_csrf_header"]'
+                )?.getAttribute("content");
+
+            progressContainer.classList.remove("d-none");
+
+            submitButton.disabled = true;
+
+            submitButton.textContent =
+                "Se încarcă...";
+
+            const headers = {};
+
+            if (csrfToken && csrfHeader) {
+                headers[csrfHeader] = csrfToken;
+            }
+
+            axios.post(
+                form.action,
+                formData,
+                {
+                    headers: headers,
+
+                    onUploadProgress: function (progressEvent) {
+
+                        if (!progressEvent.total) {
+                            return;
+                        }
+
+                        const percent =
+                            Math.round(
+                                (progressEvent.loaded * 100) /
+                                progressEvent.total
+                            );
+
+                        progressBar.style.width =
+                            percent + "%";
+
+                        progressBar.textContent =
+                            percent + "%";
+
+                        progressBar.setAttribute(
+                            "aria-valuenow",
+                            percent
+                        );
+                    }
+                }
+            )
+                .then(function () {
+
+                    progressBar.classList.remove(
+                        "progress-bar-animated"
+                    );
+
+                    progressBar.textContent =
+                        "Încărcare finalizată!";
+
+                    /*
+                     * Așteptăm puțin pentru ca utilizatorul
+                     * să vadă mesajul de finalizare.
+                     *
+                     * Apoi facem reload.
+                     *
+                     * Controllerul trebuie să aibă:
+                     *
+                     * redirect:/business/edit/{uuid}#gallery
+                     */
+
+                    setTimeout(function () {
+
+                        window.location.hash = "currentGalleryPhotos";
+
+                        window.location.reload();
+
+                    }, 1000);
+
+                })
+                .catch(function (error) {
+
+                    console.error(error);
+
+                    progressBar.classList.remove(
+                        "progress-bar-animated"
+                    );
+
+                    progressBar.classList.add(
+                        "bg-danger"
+                    );
+
+                    progressBar.textContent =
+                        "Încărcarea a eșuat.";
+
+                    submitButton.disabled = false;
+
+                    submitButton.textContent =
+                        "Încarcă fotografii";
+                });
+
+        });
+
+    });
+
+</script>
+<!--Video upload bar-->
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const form =
+            document.querySelector('form[action*="/videos/upload"]');
+
+        if (!form) {
+            return;
+        }
+
+        form.addEventListener("submit", function (event) {
+
+            event.preventDefault();
+
+            const input =
+                form.querySelector('input[name="videos"]');
+
+            if (!input || input.files.length === 0) {
+
+                alert("Selectează cel puțin un videoclip.");
+
+                return;
+            }
+
+            const formData =
+                new FormData(form);
+
+            const progressContainer =
+                document.getElementById(
+                    "videoUploadProgressContainer"
+                );
+
+            const progressBar =
+                document.getElementById(
+                    "videoUploadProgress"
+                );
+
+            const submitButton =
+                form.querySelector('button[type="submit"]');
+
+            const csrfToken =
+                document.querySelector(
+                    'meta[name="_csrf"]'
+                )?.getAttribute("content");
+
+            const csrfHeader =
+                document.querySelector(
+                    'meta[name="_csrf_header"]'
+                )?.getAttribute("content");
+
+            progressContainer.classList.remove("d-none");
+
+            submitButton.disabled = true;
+
+            submitButton.textContent =
+                "Se încarcă...";
+
+            const headers = {};
+
+            if (csrfToken && csrfHeader) {
+                headers[csrfHeader] = csrfToken;
+            }
+
+            axios.post(
+                form.action,
+                formData,
+                {
+                    headers: headers,
+
+                    onUploadProgress: function (progressEvent) {
+
+                        if (!progressEvent.total) {
+                            return;
+                        }
+
+                        const percent =
+                            Math.round(
+                                (progressEvent.loaded * 100) /
+                                progressEvent.total
+                            );
+
+                        progressBar.style.width =
+                            percent + "%";
+
+                        progressBar.textContent =
+                            percent + "%";
+
+                        progressBar.setAttribute(
+                            "aria-valuenow",
+                            percent
+                        );
+                    }
+                }
+            )
+                .then(function () {
+
+                    progressBar.classList.remove(
+                        "progress-bar-animated"
+                    );
+
+                    progressBar.textContent =
+                        "Încărcare finalizată!";
+
+                    setTimeout(function () {
+
+                        window.location.hash = "currentGalleryVideos";
+
+                        window.location.reload();
+
+                    }, 1000);
+
+                })
+                .catch(function (error) {
+
+                    console.error(error);
+
+                    progressBar.classList.remove(
+                        "progress-bar-animated"
+                    );
+
+                    progressBar.classList.add(
+                        "bg-danger"
+                    );
+
+                    progressBar.textContent =
+                        "Încărcarea a eșuat.";
+
+                    submitButton.disabled = false;
+
+                    submitButton.textContent =
+                        "Încarcă videoclipuri";
+                });
+
+        });
+
+    });
+
+</script>
 </body>
 </html>

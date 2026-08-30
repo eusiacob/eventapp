@@ -5,6 +5,7 @@ import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.BusinessVideo;
 import com.example.eventapp.model.User;
 import com.example.eventapp.repository.BusinessVideoRepository;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -75,58 +76,7 @@ public class BusinessVideoService {
             /*
              * LIMITA FIȘIERUL ORIGINAL
              */
-            if (file.getSize() > 100 * 1024 * 1024) {
-
-                throw new InvalidVideoException(
-                        "Videoclipul \""
-                                + file.getOriginalFilename()
-                                + "\" depășește limita de 100 MB."
-                );
-            }
-
-            /*
-             * FORMATE ACCEPTATE
-             */
-            String contentType =
-                    file.getContentType();
-
-            List<String> allowedVideoTypes =
-                    List.of(
-                            "video/mp4",
-                            "video/quicktime",
-                            "video/webm",
-                            "video/x-msvideo"
-                    );
-
-            if (contentType == null ||
-                    !allowedVideoTypes.contains(contentType)) {
-
-                throw new InvalidVideoException(
-                        "Videoclipul \""
-                                + file.getOriginalFilename()
-                                + "\" nu are un format acceptat. "
-                                + "Sunt acceptate MP4, MOV, WebM și AVI."
-                );
-            }
-
-            /*
-             * EXTENSIA ORIGINALĂ
-             */
-            String originalFileName =
-                    file.getOriginalFilename();
-
-            String extension = ".tmp";
-
-            if (originalFileName != null &&
-                    originalFileName.contains(".")) {
-
-                extension =
-                        originalFileName
-                                .substring(
-                                        originalFileName.lastIndexOf(".")
-                                )
-                                .toLowerCase();
-            }
+            String extension = getExtension(file);
 
             /*
              * FIȘIER TEMPORAR PENTRU INPUT
@@ -244,6 +194,62 @@ public class BusinessVideoService {
 
             businessProfileService.save(businessProfile);
         }
+    }
+
+    private static @NonNull String getExtension(MultipartFile file) {
+        if (file.getSize() > 500 * 1024 * 1024) {
+
+            throw new InvalidVideoException(
+                    "Videoclipul \""
+                            + file.getOriginalFilename()
+                            + "\" depășește limita de 500 MB."
+            );
+        }
+
+        /*
+         * FORMATE ACCEPTATE
+         */
+        String contentType =
+                file.getContentType();
+
+        List<String> allowedVideoTypes =
+                List.of(
+                        "video/mp4",
+                        "video/quicktime",
+                        "video/webm",
+                        "video/x-msvideo"
+                );
+
+        if (contentType == null ||
+                !allowedVideoTypes.contains(contentType)) {
+
+            throw new InvalidVideoException(
+                    "Videoclipul \""
+                            + file.getOriginalFilename()
+                            + "\" nu are un format acceptat. "
+                            + "Sunt acceptate MP4, MOV, WebM și AVI."
+            );
+        }
+
+        /*
+         * EXTENSIA ORIGINALĂ
+         */
+        String originalFileName =
+                file.getOriginalFilename();
+
+        String extension = ".tmp";
+
+        if (originalFileName != null &&
+                originalFileName.contains(".")) {
+
+            extension =
+                    originalFileName
+                            .substring(
+                                    originalFileName.lastIndexOf(".")
+                            )
+                            .toLowerCase();
+        }
+        return extension;
     }
 
     private double getVideoDuration(Path videoFile)

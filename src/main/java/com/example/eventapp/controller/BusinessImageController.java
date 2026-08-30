@@ -104,6 +104,18 @@ public class BusinessImageController {
             RedirectAttributes redirectAttributes
     ) {
 
+        if (videos == null ||
+                videos.isEmpty() ||
+                videos.stream().allMatch(MultipartFile::isEmpty)) {
+
+            redirectAttributes.addFlashAttribute(
+                    "videoError",
+                    "Selectează cel puțin un videoclip."
+            );
+
+            return "redirect:/business/edit/" + uuid;
+        }
+
         User user =
                 userService.findByEmail(
                         userDetails.getUsername()
@@ -179,7 +191,7 @@ public class BusinessImageController {
         redirectAttributes.addAttribute("businessUpdated", true);
         redirectAttributes.addAttribute("businessNotApproved", true);
 
-        return "redirect:/business/edit/" + uuid;
+        return "redirect:/business/edit/" + uuid ;
     }
 
     private void notifyAdminsAboutBusinessUpdate(

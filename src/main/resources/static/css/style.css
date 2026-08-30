@@ -2115,6 +2115,10 @@ form,
    GALERIE
    ========================= */
 
+#currentGallery {
+    scroll-margin-top: 90px;
+}
+
 .gallery-section-title {
     font-size: 0.85rem;
     font-weight: 600;
