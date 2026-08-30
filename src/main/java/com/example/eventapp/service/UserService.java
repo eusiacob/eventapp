@@ -19,12 +19,18 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final BusinessProfileRepository businessProfileRepository;
+    private final EncryptionService encryptionService;
 
-    public UserService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder, BusinessProfileRepository businessProfileRepository) {
+    public UserService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            BusinessProfileRepository businessProfileRepository,
+            EncryptionService encryptionService
+    ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.businessProfileRepository = businessProfileRepository;
+        this.encryptionService = encryptionService;
     }
 
     public List<User> findAll() {
@@ -39,18 +45,63 @@ public class UserService {
     }
 
     public boolean emailExists(String email) {
-        return userRepository.existsByEmail(email);
+
+        if (email == null || email.isBlank()) {
+            return false;
+        }
+
+        String emailHash =
+                encryptionService.hash(
+                        email.trim().toLowerCase()
+                );
+
+        return userRepository.existsByEmailHash(
+                emailHash
+        );
     }
 
     public void registerUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        String email =
+                user.getEmail()
+                        .trim()
+                        .toLowerCase();
+
+        String phone =
+                user.getPhone()
+                        .trim();
+
+        // Email
+        user.setEmailHash(
+                encryptionService.hash(email)
+        );
+
+        user.setEmailEncrypted(
+                encryptionService.encrypt(email)
+        );
+
+        // Telefon
+        user.setPhoneHash(
+                encryptionService.hash(phone)
+        );
+
+        user.setPhoneEncrypted(
+                encryptionService.encrypt(phone)
+        );
+
+        // Parola rămâne protejată prin BCrypt
+        user.setPassword(
+                passwordEncoder.encode(
+                        user.getPassword()
+                )
+        );
+
         userRepository.save(user);
     }
 
     public void addFavorite(Long businessId, String email) {
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow();
+        User user = findByEmail(email);
 
         BusinessProfile profile =
                 businessProfileRepository.findById(businessId)
@@ -66,8 +117,7 @@ public class UserService {
 
     public void removeFavorite(String businessId, String email) {
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow();
+        User user = findByEmail(email);
 
         user.getFavoriteBusinesses()
                 .removeIf(b -> b.getUuid().equals(businessId));
@@ -76,10 +126,23 @@ public class UserService {
     }
 
     public User findByEmail(String email) {
+
+        if (email == null || email.isBlank()) {
+            throw new RuntimeException("User not found");
+        }
+
+        String emailHash =
+                encryptionService.hash(
+                        email.trim().toLowerCase()
+                );
+
         return userRepository
-                .findByEmail(email)
-                .orElseThrow(()
-                        -> new RuntimeException("User not found"));
+                .findByEmailHash(emailHash)
+                .orElseThrow(
+                        () -> new RuntimeException(
+                                "User not found"
+                        )
+                );
     }
 
     public User findById(Long id) {
@@ -93,27 +156,39 @@ public class UserService {
     //    Toggle favorite heart
     public boolean toggleFavorite(String businessUuid, String email) {
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = findByEmail(email);
 
-        BusinessProfile businessProfile = businessProfileRepository.findByUuid(businessUuid)
-                .orElseThrow(() -> new RuntimeException("Business not found"));
+        BusinessProfile businessProfile =
+                businessProfileRepository.findByUuid(businessUuid)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Business not found"
+                                )
+                        );
 
-        boolean alreadyFavorite = user.getFavoriteBusinesses()
-                .stream()
-                .anyMatch(b -> b.getUuid().equals(businessUuid));
+        boolean alreadyFavorite =
+                user.getFavoriteBusinesses()
+                        .stream()
+                        .anyMatch(
+                                b -> b.getUuid()
+                                        .equals(businessUuid)
+                        );
 
         if (alreadyFavorite) {
 
             user.getFavoriteBusinesses()
-                    .removeIf(b -> b.getUuid().equals(businessUuid));
+                    .removeIf(
+                            b -> b.getUuid()
+                                    .equals(businessUuid)
+                    );
 
             userRepository.save(user);
 
             return false;
         }
 
-        user.getFavoriteBusinesses().add(businessProfile);
+        user.getFavoriteBusinesses()
+                .add(businessProfile);
 
         userRepository.save(user);
 

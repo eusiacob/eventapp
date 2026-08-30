@@ -34,9 +34,22 @@ public class User {
     @Size(min = 3, max = 10, message = "Lungimea trebuie să fie între 3 și 10 caractere.")
     private String lastName;
 
-    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags = Pattern.Flag.CASE_INSENSITIVE, message = "Format incorect! Trebuie să fie de forma nume@gmail.com")
-    @Column(unique = true)
+    @Transient
     private String email;
+
+    /**
+     * Email criptat AES-GCM.
+     * Va fi folosit ulterior pentru stocarea sigură a emailului.
+     */
+    @Column(name = "email_encrypted", length = 1000)
+    private String emailEncrypted;
+
+    /**
+     * Hash determinist al emailului normalizat.
+     * Va fi folosit ulterior pentru căutare/autentificare.
+     */
+    @Column(name = "email_hash", unique = true, length = 64)
+    private String emailHash;
 
     @NotBlank(message = "Introdu parola!")
     private String password;
@@ -46,9 +59,22 @@ public class User {
     @Transient
     private String confirmPassword;
 
-    @NotBlank(message = "Introdu numărul de telefon!")
-    @Pattern(regexp = "^[0-9+\\- ]{10}$", message = "Număr de telefon invalid! Trebuie să fie de forma 07X XXX XXX")
+
+    @Transient
     private String phone;
+
+    /**
+     * Telefon criptat AES-GCM.
+     */
+    @Column(name = "phone_encrypted", length = 1000)
+    private String phoneEncrypted;
+
+    /**
+     * Hash determinist al telefonului.
+     * Va fi folosit dacă vom avea nevoie să căutăm/verificăm numărul.
+     */
+    @Column(name = "phone_hash", length = 64)
+    private String phoneHash;
 
     @Enumerated(EnumType.STRING)
     private Role role;

@@ -26,14 +26,29 @@ public class FavoritesController {
     }
 
     @GetMapping("/favorites")
-    public String favorites(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    public String favorites(
+            Model model,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
 
-        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
+        User user =
+                userService.findByEmail(userDetails.getUsername());
 
-        model.addAttribute("favorites", user.getFavoriteBusinesses());
-        model.addAttribute("breadcrumbs", List.of(
-                new BreadcrumbDTO("Acasă", "/businesses"),
-                new BreadcrumbDTO("Favorite", null)));
+        model.addAttribute("favorites",user.getFavoriteBusinesses());
+
+        model.addAttribute(
+                "breadcrumbs",
+                List.of(
+                        new BreadcrumbDTO(
+                                "Acasă",
+                                "/businesses"
+                        ),
+                        new BreadcrumbDTO(
+                                "Favorite",
+                                null
+                        )
+                )
+        );
 
         return "favorites";
     }

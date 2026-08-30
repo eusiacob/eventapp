@@ -84,16 +84,27 @@ public class BusinessController {
     }
 
     @PostMapping("/business/create")
-    public String createProfile(@Valid @ModelAttribute("profile") BusinessProfile profile, BindingResult result,
-                                @RequestParam("imageFile") MultipartFile file, Model model,
-                                @AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) throws IOException {
+    public String createProfile(
+            @Valid @ModelAttribute("profile") BusinessProfile profile,
+            BindingResult result,
+            @RequestParam("imageFile") MultipartFile file,
+            Model model,
+            @AuthenticationPrincipal UserDetails userDetails,
+            RedirectAttributes redirectAttributes
+    ) throws IOException {
 
         if (result.hasErrors()) {
-            model.addAttribute("categories", businessProfileService.getCategories());
+            model.addAttribute(
+                    "categories",
+                    businessProfileService.getCategories()
+            );
             return "business-form";
         }
 
-        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
+        User user =
+                userService.findByEmail(
+                        userDetails.getUsername()
+                );
 
         profile.setUser(user);
 
@@ -263,11 +274,18 @@ public class BusinessController {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String dashboard(
+            @AuthenticationPrincipal UserDetails userDetails,
+            Model model
+    ) {
 
-        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
+        User user =
+                userService.findByEmail(
+                        userDetails.getUsername()
+                );
 
-        List<BusinessProfile> profiles = user.getBusinessProfiles();
+        List<BusinessProfile> profiles =
+                user.getBusinessProfiles();
 
         Subscription subscription =
                 subscriptionService.findActiveSubscription(user);
@@ -277,12 +295,34 @@ public class BusinessController {
                         subscription.getPlan().getType()
                                 == SubscriptionPlan.SubscriptionType.STANDARD;
 
-        model.addAttribute("standardSubscription", standardSubscription);
-        model.addAttribute("profiles", profiles);
-        model.addAttribute("businessSaved", new Review());
-        model.addAttribute("breadcrumbs", List.of(
-                new BreadcrumbDTO("Acasă", "/businesses"),
-                new BreadcrumbDTO("Serviciile mele", null)));
+        model.addAttribute(
+                "standardSubscription",
+                standardSubscription
+        );
+
+        model.addAttribute(
+                "profiles",
+                profiles
+        );
+
+        model.addAttribute(
+                "businessSaved",
+                new Review()
+        );
+
+        model.addAttribute(
+                "breadcrumbs",
+                List.of(
+                        new BreadcrumbDTO(
+                                "Acasă",
+                                "/businesses"
+                        ),
+                        new BreadcrumbDTO(
+                                "Serviciile mele",
+                                null
+                        )
+                )
+        );
 
         return "dashboard";
     }
@@ -295,9 +335,9 @@ public class BusinessController {
     ) {
 
         User user =
-                userRepository
-                        .findByEmail(userDetails.getUsername())
-                        .orElseThrow();
+                userService.findByEmail(
+                        userDetails.getUsername()
+                );
 
         businessProfileService
                 .activateStandardBusiness(uuid, user);

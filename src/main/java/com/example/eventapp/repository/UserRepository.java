@@ -15,9 +15,9 @@ public interface UserRepository
         extends JpaRepository<User, Long>,
         JpaSpecificationExecutor<User> {
 
-    Optional<User> findByEmail(String email);
+    Optional<User> findByEmailHash(String emailHash);
 
-    boolean existsByEmail(String email);
+    boolean existsByEmailHash(String emailHash);
 
     @Query("SELECT u FROM User u JOIN u.favoriteBusinesses b WHERE b.id = :businessId")
     List<User> findUsersWhoFavoriteBusiness(@Param("businessId") Long businessId);
