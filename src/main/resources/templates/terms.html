@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-
 <html lang="ro"
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
 
-  <title>Termeni și condiții - EventApp</title>
+    <meta charset="UTF-8">
 
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <meta content="width=device-width, initial-scale=1.0"
+          name="viewport">
 
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <title>Termeni și condiții</title>
 
-  <link rel="stylesheet"
-        th:href="@{/css/style.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
 
 </head>
 
@@ -25,133 +26,327 @@
 
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<main class="legal-page">
 
-  <div class="legal-container">
+<div class="container py-4">
 
-    <h1>Termeni și condiții</h1>
+    <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
-    <p class="text-muted">
-      Ultima actualizare: 2026
-    </p>
 
-    <section>
-      <h2>1. Despre platformă</h2>
+    <div class="row justify-content-center">
 
-      <p>
-        EventApp este o platformă care permite utilizatorilor să descopere
-        și să vizualizeze servicii oferite de diferite persoane sau
-        companii pentru evenimente.
-      </p>
+        <div class="col-12 col-lg-9">
 
-      <p>
-        Platforma oferă un spațiu pentru prezentarea serviciilor,
-        informațiilor despre acestea și a recenziilor utilizatorilor.
-      </p>
-    </section>
+            <div class="card border-0 shadow-sm">
 
-    <section>
-      <h2>2. Contul utilizatorului</h2>
+                <div class="card-body p-4 p-md-5">
 
-      <p>
-        Pentru utilizarea anumitor funcționalități ale platformei,
-        utilizatorii pot avea nevoie de un cont.
-      </p>
+                    <div class="text-center mb-5">
 
-      <p>
-        Utilizatorul este responsabil pentru păstrarea confidențialității
-        datelor de autentificare și pentru activitatea desfășurată prin
-        intermediul contului său.
-      </p>
-    </section>
+                        <i class="bi bi-file-earmark-text fs-1 text-dark"></i>
 
-    <section>
-      <h2>3. Serviciile listate pe platformă</h2>
+                        <h1 class="text-dark fw-bold mt-3">
+                            Termeni și condiții
+                        </h1>
 
-      <p>
-        Utilizatorii care dețin un profil de business sunt responsabili
-        pentru corectitudinea și actualitatea informațiilor publicate,
-        inclusiv fotografii, descrieri, date de contact și disponibilitate.
-      </p>
+                        <p class="text-muted mb-0">
+                            Ultima actualizare: [01 SEP 2026]
+                        </p>
 
-      <p>
-        EventApp nu garantează calitatea, disponibilitatea sau executarea
-        efectivă a serviciilor prezentate de utilizatori.
-      </p>
-    </section>
+                    </div>
 
-    <section>
-      <h2>4. Conținutul utilizatorilor</h2>
 
-      <p>
-        Utilizatorii sunt responsabili pentru conținutul încărcat pe
-        platformă, inclusiv fotografii, descrieri și alte informații.
-      </p>
+                    <section class="mb-5">
 
-      <p>
-        Este interzisă încărcarea de conținut ilegal, ofensator,
-        înșelător sau care încalcă drepturile altor persoane.
-      </p>
-    </section>
+                        <h4 class="fw-bold">
+                            1. Introducere
+                        </h4>
 
-    <section>
-      <h2>5. Recenzii și evaluări</h2>
+                        <p>
+                            Acești termeni și condiții reglementează utilizarea
+                            platformei și a serviciilor puse la dispoziție
+                            utilizatorilor.
+                        </p>
 
-      <p>
-        Utilizatorii trebuie să ofere recenzii și evaluări bazate pe
-        experiențe reale și să nu utilizeze platforma pentru a publica
-        conținut fals, defăimător sau manipulator.
-      </p>
-    </section>
+                        <p>
+                            Prin accesarea sau utilizarea platformei,
+                            utilizatorul confirmă că a citit, a înțeles și
+                            acceptă acești termeni și condiții.
+                        </p>
 
-    <section>
-      <h2>6. Suspendarea sau ștergerea contului</h2>
+                    </section>
 
-      <p>
-        Ne rezervăm dreptul de a suspenda sau elimina conturi și conținut
-        care încalcă acești termeni sau legislația aplicabilă.
-      </p>
-    </section>
 
-    <section>
-      <h2>7. Limitarea răspunderii</h2>
+                    <section class="mb-5">
 
-      <p>
-        EventApp nu este parte în contractele sau înțelegerile dintre
-        utilizatori și furnizorii de servicii.
-      </p>
+                        <h4 class="fw-bold">
+                            2. Descrierea platformei
+                        </h4>
 
-      <p>
-        Platforma nu este responsabilă pentru eventualele prejudicii,
-        pierderi sau dispute care rezultă din relația directă dintre
-        utilizatori.
-      </p>
-    </section>
+                        <p>
+                            Platforma permite utilizatorilor să descopere,
+                            să consulte și să interacționeze cu informații
+                            despre servicii și afaceri disponibile pe platformă.
+                        </p>
 
-    <section>
-      <h2>8. Modificarea termenilor</h2>
+                        <p>
+                            Utilizatorii autentificați pot beneficia, în
+                            funcție de funcționalitățile disponibile, de:
+                        </p>
 
-      <p>
-        Acești termeni pot fi modificați atunci când este necesar.
-        Versiunea actualizată va fi publicată pe această pagină.
-      </p>
-    </section>
+                        <ul>
+                            <li>crearea și administrarea unui cont;</li>
+                            <li>adăugarea serviciilor la favorite;</li>
+                            <li>publicarea recenziilor;</li>
+                            <li>gestionarea propriilor servicii;</li>
+                            <li>primirea notificărilor;</li>
+                            <li>contactarea echipei de suport.</li>
+                        </ul>
 
-    <section>
-      <h2>9. Contact</h2>
+                    </section>
 
-      <p>
-        Pentru întrebări referitoare la acești termeni, utilizatorii ne
-        pot contacta prin intermediul datelor de contact disponibile pe
-        platformă.
-      </p>
-    </section>
 
-  </div>
+                    <section class="mb-5">
 
-</main>
+                        <h4 class="fw-bold">
+                            3. Crearea și utilizarea contului
+                        </h4>
+
+                        <p>
+                            Pentru anumite funcționalități este necesară
+                            crearea unui cont de utilizator.
+                        </p>
+
+                        <p>
+                            Utilizatorul este responsabil pentru furnizarea
+                            unor informații corecte și actualizate și pentru
+                            păstrarea confidențialității datelor de autentificare.
+                        </p>
+
+                        <p>
+                            Un cont poate fi suspendat sau dezactivat în cazul
+                            încălcării acestor termeni, al utilizării abuzive
+                            a platformei sau în alte situații justificate.
+                        </p>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            4. Serviciile și informațiile publicate
+                        </h4>
+
+                        <p>
+                            Utilizatorii care publică servicii sunt responsabili
+                            pentru corectitudinea, legalitatea și actualitatea
+                            informațiilor furnizate.
+                        </p>
+
+                        <p>
+                            Platforma își rezervă dreptul de a verifica,
+                            aproba, modifica sau elimina informațiile care
+                            încalcă regulile platformei sau legislația aplicabilă.
+                        </p>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            5. Recenzii
+                        </h4>
+
+                        <p>
+                            Utilizatorii pot publica recenzii în condițiile
+                            stabilite de platformă.
+                        </p>
+
+                        <p>
+                            Recenziile trebuie să fie reale, relevante și să
+                            nu conțină conținut ilegal, ofensator, defăimător,
+                            discriminatoriu sau informații personale despre
+                            alte persoane.
+                        </p>
+
+                        <p>
+                            Recenziile pot fi supuse unui proces de verificare
+                            și aprobare înainte de afișarea publică.
+                        </p>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            6. Sistemul de favorite
+                        </h4>
+
+                        <p>
+                            Utilizatorii autentificați pot salva anumite
+                            servicii în lista de favorite.
+                        </p>
+
+                        <p>
+                            Lista de favorite este asociată contului
+                            utilizatorului și poate fi modificată sau
+                            eliminată în orice moment.
+                        </p>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            7. Notificări
+                        </h4>
+
+                        <p>
+                            Platforma poate transmite notificări privind
+                            activitatea contului, recenzii, servicii,
+                            solicitări de suport sau alte evenimente
+                            relevante.
+                        </p>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            8. Serviciul de suport
+                        </h4>
+
+                        <p>
+                            Utilizatorii pot transmite solicitări către echipa
+                            de suport prin intermediul sistemului de tichete.
+                        </p>
+
+                        <p>
+                            Mesajele transmise prin intermediul sistemului de
+                            suport trebuie să fie relevante pentru solicitarea
+                            respectivă și să nu conțină conținut ilegal sau
+                            abuziv.
+                        </p>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            9. Comportament interzis
+                        </h4>
+
+                        <p>
+                            Este interzisă utilizarea platformei pentru:
+                        </p>
+
+                        <ul>
+                            <li>activități ilegale;</li>
+                            <li>fraudă sau inducerea în eroare a altor utilizatori;</li>
+                            <li>publicarea de conținut ilegal sau ofensator;</li>
+                            <li>colectarea neautorizată de date despre alți utilizatori;</li>
+                            <li>încercarea de a compromite securitatea platformei;</li>
+                            <li>utilizarea automată abuzivă a serviciilor.</li>
+                        </ul>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            10. Securitatea platformei
+                        </h4>
+
+                        <p>
+                            Sunt implementate măsuri tehnice și organizatorice
+                            pentru protejarea conturilor și a datelor utilizatorilor.
+                        </p>
+
+                        <p>
+                            Cu toate acestea, nicio metodă de transmitere sau
+                            stocare electronică a informațiilor nu poate garanta
+                            un nivel absolut de securitate.
+                        </p>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            11. Limitarea răspunderii
+                        </h4>
+
+                        <p>
+                            Platforma nu garantează că toate informațiile
+                            publicate de utilizatori sunt complete, exacte sau
+                            permanent disponibile.
+                        </p>
+
+                        <p>
+                            Utilizatorii sunt responsabili pentru deciziile
+                            luate pe baza informațiilor disponibile pe platformă.
+                        </p>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            12. Modificarea termenilor
+                        </h4>
+
+                        <p>
+                            Acești termeni și condiții pot fi modificați atunci
+                            când este necesar pentru reflectarea modificărilor
+                            platformei, a serviciilor sau a legislației aplicabile.
+                        </p>
+
+                        <p>
+                            Versiunea actuală va fi disponibilă permanent pe
+                            această pagină.
+                        </p>
+
+                    </section>
+
+
+                    <section>
+
+                        <h4 class="fw-bold">
+                            13. Contact
+                        </h4>
+
+                        <p>
+                            Pentru întrebări referitoare la acești termeni și
+                            condiții, ne puteți contacta prin intermediul
+                            sistemului de suport al platformei.
+                        </p>
+
+                    </section>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 
 <div th:replace="~{fragments/footer :: footer}"></div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
 
 </body>
 

@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-
 <html lang="ro"
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
 
-  <title>Politica de confidențialitate - EventApp</title>
+    <meta charset="UTF-8">
 
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <meta content="width=device-width, initial-scale=1.0"
+          name="viewport">
 
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <title>Politica de confidențialitate</title>
 
-  <link rel="stylesheet"
-        th:href="@{/css/style.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          th:href="@{/css/style.css}">
 
 </head>
 
@@ -25,135 +26,392 @@
 
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<main class="legal-page">
 
-  <div class="legal-container">
+<div class="container py-4">
 
-    <h1>Politica de confidențialitate</h1>
+    <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
-    <p class="text-muted">
-      Ultima actualizare: 2026
-    </p>
 
-    <section>
-      <h2>1. Introducere</h2>
+    <div class="row justify-content-center">
 
-      <p>
-        Respectăm confidențialitatea utilizatorilor și ne angajăm să
-        protejăm datele personale prelucrate prin intermediul platformei
-        EventApp.
-      </p>
-    </section>
+        <div class="col-12 col-lg-9">
 
-    <section>
-      <h2>2. Datele pe care le putem colecta</h2>
+            <div class="card border-0 shadow-sm">
 
-      <p>
-        În funcție de funcționalitățile utilizate, putem colecta
-        următoarele categorii de date:
-      </p>
+                <div class="card-body p-4 p-md-5">
 
-      <ul>
-        <li>nume și prenume;</li>
-        <li>adresă de email;</li>
-        <li>date necesare pentru crearea și gestionarea contului;</li>
-        <li>informații despre serviciile publicate;</li>
-        <li>fotografii și alte informații încărcate de utilizator;</li>
-        <li>recenzii și evaluări publicate pe platformă.</li>
-      </ul>
-    </section>
+                    <div class="text-center mb-5">
 
-    <section>
-      <h2>3. Scopul prelucrării datelor</h2>
+                        <i class="bi bi-shield-lock fs-1 text-dark"></i>
 
-      <p>
-        Datele pot fi utilizate pentru:
-      </p>
+                        <h1 class="text-dark fw-bold mt-3">
+                            Politica de confidențialitate
+                        </h1>
 
-      <ul>
-        <li>crearea și gestionarea contului;</li>
-        <li>furnizarea funcționalităților platformei;</li>
-        <li>afișarea serviciilor și profilurilor publicate;</li>
-        <li>gestionarea serviciilor favorite;</li>
-        <li>prevenirea utilizării abuzive a platformei;</li>
-        <li>îmbunătățirea funcționalității și securității platformei.</li>
-      </ul>
-    </section>
+                        <p class="text-muted mb-0">
+                            Ultima actualizare: [01 SEP 2026]
+                        </p>
 
-    <section>
-      <h2>4. Datele publicate de utilizatori</h2>
+                    </div>
 
-      <p>
-        Informațiile publicate într-un profil de business, precum numele
-        serviciului, descrierea, localitatea, fotografiile și datele de
-        contact, pot fi vizibile altor utilizatori ai platformei.
-      </p>
-    </section>
 
-    <section>
-      <h2>5. Păstrarea datelor</h2>
+                    <section class="mb-5">
 
-      <p>
-        Datele personale sunt păstrate atât timp cât este necesar pentru
-        furnizarea serviciilor platformei sau pentru îndeplinirea
-        obligațiilor legale aplicabile.
-      </p>
-    </section>
+                        <h4 class="fw-bold">
+                            1. Introducere
+                        </h4>
 
-    <section>
-      <h2>6. Securitatea datelor</h2>
+                        <p>
+                            Protejarea datelor cu caracter personal este
+                            importantă pentru noi. Această politică explică
+                            modul în care sunt colectate, utilizate, stocate
+                            și protejate datele utilizatorilor platformei.
+                        </p>
 
-      <p>
-        Luăm măsuri tehnice și organizatorice rezonabile pentru protejarea
-        datelor împotriva accesului neautorizat, pierderii sau utilizării
-        necorespunzătoare.
-      </p>
-    </section>
+                    </section>
 
-    <section>
-      <h2>7. Drepturile utilizatorilor</h2>
 
-      <p>
-        În condițiile legislației aplicabile, utilizatorii pot avea
-        dreptul de a solicita accesul la datele personale, rectificarea,
-        ștergerea sau limitarea prelucrării acestora.
-      </p>
-    </section>
+                    <section class="mb-5">
 
-    <section>
-      <h2>8. Cookie-uri</h2>
+                        <h4 class="fw-bold">
+                            2. Operatorul datelor
+                        </h4>
 
-      <p>
-        Platforma poate utiliza cookie-uri și tehnologii similare pentru
-        funcționarea corectă a anumitor funcționalități și pentru
-        îmbunătățirea experienței utilizatorului.
-      </p>
-    </section>
+                        <p>
+                            Operatorul datelor cu caracter personal este:
+                        </p>
 
-    <section>
-      <h2>9. Modificarea politicii</h2>
+                        <div class="bg-light rounded p-3">
 
-      <p>
-        Această politică poate fi actualizată atunci când este necesar.
-        Versiunea actualizată va fi publicată pe această pagină.
-      </p>
-    </section>
+                            <strong>[DENUMIRE OPERATOR]</strong><br>
+                            [ADRESĂ]<br>
+                            [EMAIL CONTACT]<br>
+                            [ALTE DATE DE IDENTIFICARE, DACĂ ESTE CAZUL]
 
-    <section>
-      <h2>10. Contact</h2>
+                        </div>
 
-      <p>
-        Pentru întrebări legate de prelucrarea datelor personale,
-        utilizatorii ne pot contacta prin intermediul datelor de contact
-        disponibile pe platformă.
-      </p>
-    </section>
+                    </section>
 
-  </div>
 
-</main>
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            3. Ce date colectăm
+                        </h4>
+
+                        <p>
+                            În funcție de modul în care utilizați platforma,
+                            putem prelucra următoarele categorii de date:
+                        </p>
+
+                        <ul>
+
+                            <li>
+                                <strong>Date de identificare:</strong>
+                                prenume și nume.
+                            </li>
+
+                            <li>
+                                <strong>Date de contact:</strong>
+                                adresă de email și număr de telefon.
+                            </li>
+
+                            <li>
+                                <strong>Date despre cont:</strong>
+                                rolul utilizatorului, starea contului și
+                                date referitoare la activitatea contului.
+                            </li>
+
+                            <li>
+                                <strong>Date generate prin utilizarea
+                                    platformei:</strong>
+                                servicii favorite, recenzii și notificări.
+                            </li>
+
+                            <li>
+                                <strong>Date transmise serviciului de
+                                    suport:</strong>
+                                subiectul solicitării, categoria,
+                                mesajele și informațiile asociate tichetului.
+                            </li>
+
+                        </ul>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            4. Parolele
+                        </h4>
+
+                        <p>
+                            Parolele utilizatorilor nu sunt stocate în forma
+                            lor originală.
+                        </p>
+
+                        <p>
+                            Acestea sunt transformate utilizând mecanisme
+                            criptografice de tip hashing înainte de stocare.
+                        </p>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            5. Protejarea datelor de contact
+                        </h4>
+
+                        <p>
+                            Datele de contact, precum adresa de email și
+                            numărul de telefon, pot fi protejate prin
+                            criptare înainte de stocarea în baza de date.
+                        </p>
+
+                        <p>
+                            Pentru operațiunile tehnice care necesită
+                            identificarea unui utilizator, pot fi utilizate
+                            valori hash asociate datelor normalizate.
+                        </p>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            6. Scopurile prelucrării
+                        </h4>
+
+                        <p>
+                            Datele sunt utilizate, după caz, pentru:
+                        </p>
+
+                        <ul>
+
+                            <li>crearea și administrarea contului;</li>
+
+                            <li>autentificarea utilizatorilor;</li>
+
+                            <li>gestionarea serviciilor publicate;</li>
+
+                            <li>gestionarea recenziilor;</li>
+
+                            <li>gestionarea listei de favorite;</li>
+
+                            <li>transmiterea notificărilor;</li>
+
+                            <li>furnizarea serviciului de suport;</li>
+
+                            <li>asigurarea securității platformei;</li>
+
+                            <li>prevenirea utilizării abuzive a platformei.</li>
+
+                        </ul>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            7. Temeiul prelucrării
+                        </h4>
+
+                        <p>
+                            Prelucrarea datelor se realizează, după caz, în
+                            baza executării contractului sau a demersurilor
+                            efectuate la cererea utilizatorului, a
+                            obligațiilor legale, a intereselor legitime ale
+                            operatorului sau a consimțământului utilizatorului,
+                            atunci când acesta este necesar.
+                        </p>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            8. Păstrarea datelor
+                        </h4>
+
+                        <p>
+                            Datele sunt păstrate atât timp cât este necesar
+                            pentru furnizarea serviciilor, administrarea
+                            contului, îndeplinirea obligațiilor legale sau
+                            protejarea intereselor legitime ale operatorului.
+                        </p>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            9. Partajarea datelor
+                        </h4>
+
+                        <p>
+                            Datele personale nu sunt vândute către terți.
+                        </p>
+
+                        <p>
+                            Datele pot fi comunicate unor furnizori de servicii
+                            tehnice numai atunci când acest lucru este necesar
+                            pentru funcționarea platformei sau pentru
+                            îndeplinirea unei obligații legale.
+                        </p>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            10. Securitatea datelor
+                        </h4>
+
+                        <p>
+                            Sunt utilizate măsuri tehnice și organizatorice
+                            pentru protejarea datelor împotriva accesului
+                            neautorizat, pierderii, modificării sau divulgării.
+                        </p>
+
+                        <p>
+                            Printre aceste măsuri se pot include autentificarea,
+                            controlul accesului, protejarea parolelor,
+                            criptarea datelor sensibile și utilizarea
+                            conexiunilor securizate.
+                        </p>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            11. Drepturile utilizatorilor
+                        </h4>
+
+                        <p>
+                            În condițiile legislației aplicabile privind
+                            protecția datelor, utilizatorii pot beneficia de
+                            următoarele drepturi:
+                        </p>
+
+                        <ul>
+
+                            <li>dreptul de acces la date;</li>
+
+                            <li>dreptul la rectificarea datelor;</li>
+
+                            <li>dreptul la ștergerea datelor;</li>
+
+                            <li>dreptul la restricționarea prelucrării;</li>
+
+                            <li>dreptul la portabilitatea datelor;</li>
+
+                            <li>dreptul de a se opune anumitor prelucrări;</li>
+
+                            <li>
+                                dreptul de a retrage consimțământul,
+                                atunci când prelucrarea se bazează pe acesta.
+                            </li>
+
+                        </ul>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            12. Ștergerea contului
+                        </h4>
+
+                        <p>
+                            Utilizatorul poate solicita ștergerea contului și
+                            a datelor personale, sub rezerva situațiilor în
+                            care anumite informații trebuie păstrate pentru
+                            îndeplinirea unor obligații legale.
+                        </p>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            13. Cookies și tehnologii similare
+                        </h4>
+
+                        <p>
+                            Platforma poate utiliza cookie-uri și tehnologii
+                            similare necesare pentru autentificare, securitate,
+                            funcționarea corectă a serviciilor și, dacă este
+                            cazul, pentru analiza utilizării platformei.
+                        </p>
+
+                    </section>
+
+
+                    <section class="mb-5">
+
+                        <h4 class="fw-bold">
+                            14. Modificarea politicii
+                        </h4>
+
+                        <p>
+                            Această politică poate fi actualizată pentru a
+                            reflecta modificări ale platformei, ale
+                            modalităților de prelucrare sau ale legislației
+                            aplicabile.
+                        </p>
+
+                    </section>
+
+
+                    <section>
+
+                        <h4 class="fw-bold">
+                            15. Contact și reclamații
+                        </h4>
+
+                        <p>
+                            Pentru întrebări sau solicitări privind datele
+                            personale, utilizatorii ne pot contacta folosind
+                            datele de contact afișate mai sus sau sistemul
+                            de suport al platformei.
+                        </p>
+
+                        <p>
+                            Utilizatorii au, de asemenea, dreptul de a se
+                            adresa autorității competente pentru protecția
+                            datelor, în condițiile legislației aplicabile.
+                        </p>
+
+                    </section>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 
 <div th:replace="~{fragments/footer :: footer}"></div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
 
 </body>
 
