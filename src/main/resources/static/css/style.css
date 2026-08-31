@@ -958,6 +958,10 @@ form,
         display: none;
     }
 
+    .details-image {
+        height: 350px;
+    }
+
     .form-control,
     .form-select {
         font-size: 16px;
@@ -994,7 +998,7 @@ form,
 
     .business-card p,
     .business-card .mb-2 {
-        font-size: 0.8rem;
+        font-size: 1rem;
     }
 
     .home-hero {

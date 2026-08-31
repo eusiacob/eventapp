@@ -13,6 +13,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -99,6 +101,62 @@ public class BusinessController {
                     businessProfileService.getCategories()
             );
             return "business-form";
+        }
+
+        if (file != null && !file.isEmpty()) {
+
+            String contentType = file.getContentType();
+
+            if (contentType == null ||
+                    !(contentType.equals("image/jpeg")
+                            || contentType.equals("image/png")
+                            || contentType.equals("image/webp"))) {
+
+                model.addAttribute(
+                        "imageError",
+                        "Formatul imaginii nu este acceptat. Folosește JPG, PNG sau WebP."
+                );
+
+                model.addAttribute(
+                        "categories",
+                        businessProfileService.getCategories()
+                );
+
+                return "business-form";
+            }
+
+            BufferedImage image = ImageIO.read(file.getInputStream());
+
+            if (image == null) {
+
+                model.addAttribute(
+                        "imageError",
+                        "Fișierul selectat nu este o imagine validă."
+                );
+
+                model.addAttribute(
+                        "categories",
+                        businessProfileService.getCategories()
+                );
+
+                return "business-form";
+            }
+
+            if (image.getWidth() != 1200 ||
+                    image.getHeight() != 900) {
+
+                model.addAttribute(
+                        "imageError",
+                        "Imaginea trebuie să fie decupată înainte de salvare."
+                );
+
+                model.addAttribute(
+                        "categories",
+                        businessProfileService.getCategories()
+                );
+
+                return "business-form";
+            }
         }
 
         User user =
@@ -421,6 +479,63 @@ public class BusinessController {
             return "business-edit";
         }
 
+        if (imageFile != null && !imageFile.isEmpty()) {
+
+            String contentType = imageFile.getContentType();
+
+            if (contentType == null ||
+                    !(contentType.equals("image/jpeg")
+                            || contentType.equals("image/png")
+                            || contentType.equals("image/webp"))) {
+
+                model.addAttribute(
+                        "imageError",
+                        "Formatul imaginii nu este acceptat. Folosește JPG, PNG sau WebP."
+                );
+
+                model.addAttribute(
+                        "categories",
+                        businessProfileService.getCategories()
+                );
+
+                return "business-edit";
+            }
+
+            BufferedImage image =
+                    ImageIO.read(imageFile.getInputStream());
+
+            if (image == null) {
+
+                model.addAttribute(
+                        "imageError",
+                        "Fișierul selectat nu este o imagine validă."
+                );
+
+                model.addAttribute(
+                        "categories",
+                        businessProfileService.getCategories()
+                );
+
+                return "business-edit";
+            }
+
+            if (image.getWidth() != 1200 ||
+                    image.getHeight() != 900) {
+
+                model.addAttribute(
+                        "imageError",
+                        "Imaginea trebuie să fie decupată înainte de salvare."
+                );
+
+                model.addAttribute(
+                        "categories",
+                        businessProfileService.getCategories()
+                );
+
+                return "business-edit";
+            }
+        }
+
         existingProfile.setName(profile.getName());
         existingProfile.setCategory(profile.getCategory());
         existingProfile.setCity(profile.getCity());
@@ -432,41 +547,29 @@ public class BusinessController {
 
         if (imageFile != null && !imageFile.isEmpty()) {
 
-            Path uploadPath = Paths.get("uploads", "businesses",
-                    existingProfile.getUuid());
+            Path uploadPath = Paths.get(
+                    "uploads",
+                    "businesses",
+                    existingProfile.getUuid()
+            );
 
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-            String originalFileName =
-                    imageFile.getOriginalFilename();
+            Path filePath =
+                    uploadPath.resolve("cover.jpg");
 
-            if (originalFileName != null &&
-                    originalFileName.contains(".")) {
+            Files.write(
+                    filePath,
+                    imageFile.getBytes()
+            );
 
-                String extension =
-                        originalFileName.substring(
-                                originalFileName.lastIndexOf(".")
-                        );
-
-                String fileName = "cover" + extension;
-
-                Path filePath =
-                        uploadPath.resolve(fileName);
-
-                Files.write(
-                        filePath,
-                        imageFile.getBytes()
-                );
-
-                existingProfile.setImagePath(
-                        "/uploads/businesses/"
-                                + existingProfile.getUuid()
-                                + "/"
-                                + fileName
-                );
-            }
+            existingProfile.setImagePath(
+                    "/uploads/businesses/"
+                            + existingProfile.getUuid()
+                            + "/cover.jpg"
+            );
         }
 
         businessProfileService.save(existingProfile);
