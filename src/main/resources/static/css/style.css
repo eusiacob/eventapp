@@ -1347,15 +1347,15 @@ form,
 }
 
 .category-chip {
-    min-width: 110px;
+    min-width: 120px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-decoration: none;
     color: #444;
-    padding: 18px;
-    border-radius: 18px;
+    padding: 7px;
+    border-radius: 10px;
     transition: .25s;
     background: white;
     flex: 0 0 auto;
@@ -1366,8 +1366,6 @@ form,
     background: #111;
 
     color: white;
-
-    transform: translateY(-3px);
 }
 
 .category-chip i {
@@ -1379,9 +1377,9 @@ form,
 
 .category-chip span {
 
-    font-size: .92rem;
+    font-size: .9rem;
 
-    font-weight: 600;
+    font-weight: 500;
 }
 
 /*PREMIUM SERVICES*/
