@@ -1,2 +1,3 @@
 - serviciul de email (creare cont, resetare parola, notificari aprobare serviciu si
 recenzii)
+- contact page pentru guest (cu mail)
