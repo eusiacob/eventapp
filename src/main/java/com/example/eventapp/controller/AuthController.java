@@ -55,7 +55,7 @@ public class AuthController {
             result.rejectValue(
                     "confirmPassword",
                     "error.user",
-                    "Passwords do not match"
+                    "Parolele nu se potrivesc."
             );
         }
 
