@@ -87,6 +87,13 @@
                         Email sau parolă incorectă!
                     </div>
 
+                    <div class="alert alert-danger p-2"
+                         th:if="${param.locked}">
+                        <i class="bi bi-person-x-fill me-2"></i>
+                        Contul dumneavoastră a fost suspendat temporar.
+                        Încercați din nou peste 2 minute!
+                    </div>
+
                     <form method="post"
                           th:action="@{/login}">
 

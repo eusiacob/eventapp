@@ -3,6 +3,7 @@ package com.example.eventapp.service;
 import com.example.eventapp.model.User;
 import com.example.eventapp.repository.UserRepository;
 import org.jspecify.annotations.NonNull;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -41,6 +42,21 @@ public class CustomUserDetailsService implements UserDetailsService {
                                 "User not found"
                         )
                 );
+
+        if (user.getLoginBlockedUntil() != null) {
+
+            if (user.getLoginBlockedUntil().isAfter(java.time.LocalDateTime.now())) {
+
+                throw new LockedException(
+                        "Cont blocat temporar."
+                );
+            }
+
+            user.setLoginBlockedUntil(null);
+            user.setFailedLoginAttempts(0);
+
+            userRepository.save(user);
+        }
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(normalizedEmail)

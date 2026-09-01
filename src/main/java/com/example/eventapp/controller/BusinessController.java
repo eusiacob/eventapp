@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
@@ -442,7 +443,7 @@ public class BusinessController {
         model.addAttribute("breadcrumbs", List.of(
                 new BreadcrumbDTO("Acasă", "/businesses"),
                 new BreadcrumbDTO("Serviciile mele", "/dashboard"),
-                new BreadcrumbDTO( "Editare " + profile.getName(), null)));
+                new BreadcrumbDTO("Editare " + profile.getName(), null)));
 
         return "business-edit";
     }
@@ -481,16 +482,16 @@ public class BusinessController {
 
         if (imageFile != null && !imageFile.isEmpty()) {
 
+
             String contentType = imageFile.getContentType();
 
-            if (contentType == null ||
-                    !(contentType.equals("image/jpeg")
-                            || contentType.equals("image/png")
-                            || contentType.equals("image/webp"))) {
+            if (!"image/jpeg".equals(contentType)
+                    && !"image/png".equals(contentType)
+                    && !"image/webp".equals(contentType)) {
 
-                model.addAttribute(
+                redirectAttributes.addFlashAttribute(
                         "imageError",
-                        "Formatul imaginii nu este acceptat. Folosește JPG, PNG sau WebP."
+                        "Formatul imaginii nu este acceptat. Folosește JPEG, PNG sau WebP."
                 );
 
                 model.addAttribute(
@@ -498,7 +499,7 @@ public class BusinessController {
                         businessProfileService.getCategories()
                 );
 
-                return "business-edit";
+                return "redirect:/business/edit/" + uuid;
             }
 
             BufferedImage image =

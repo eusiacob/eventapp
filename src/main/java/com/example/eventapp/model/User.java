@@ -80,6 +80,12 @@ public class User {
     @Column(nullable = false)
     private boolean enabled = true;
 
+    @Column(nullable = false)
+    private int failedLoginAttempts = 0;
+
+    @Column
+    private LocalDateTime loginBlockedUntil;
+
     @Column
     private LocalDateTime lastActivityAt;
 

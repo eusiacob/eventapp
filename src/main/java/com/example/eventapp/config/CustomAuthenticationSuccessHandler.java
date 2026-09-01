@@ -50,6 +50,9 @@ public class CustomAuthenticationSuccessHandler
                             LocalDateTime.now()
                     );
 
+                    user.setFailedLoginAttempts(0);
+                    user.setLoginBlockedUntil(null);
+
                     userRepository.save(user);
                 });
 
