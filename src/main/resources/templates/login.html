@@ -72,17 +72,22 @@
                         vă rugăm să contactați administratorul platformei.
                     </div>
 
-                    <div class="alert alert-success text-center p-2"
+                    <div class="alert alert-success p-2"
                          th:if="${param.registered}">
-                        Cont creat cu succes! Acum te poti autentifica.
+                        Cont creat cu succes!
                     </div>
 
-                    <div class="alert alert-success text-center p-2"
+                    <div class="alert alert-success p-2"
+                         th:if="${param.resetSuccess}">
+                        Parolă resetată cu succes!
+                    </div>
+
+                    <div class="alert alert-success p-2"
                          th:if="${param.logout}">
                         Te-ai deconectat cu succes!
                     </div>
 
-                    <div class="alert alert-danger text-center p-2"
+                    <div class="alert alert-danger p-2"
                          th:if="${param.error}">
                         Email sau parolă incorectă!
                     </div>

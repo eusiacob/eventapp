@@ -36,9 +36,4 @@ public class HomeController {
 
         return "privacy";
     }
-
-    @GetMapping("/forgot")
-    public String forgot() {
-        return "forgot";
-    }
 }
