@@ -89,6 +89,9 @@ public class User {
     @Column
     private LocalDateTime lastActivityAt;
 
+    @Transient
+    private boolean privacyAccepted;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AccountStatusReason accountStatusReason = AccountStatusReason.NONE;

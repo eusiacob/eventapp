@@ -131,7 +131,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-12">
+                            <div class="col-12 mb-2">
                                 <input class="form-control"
                                        placeholder="07xx xxx xxx"
                                        th:field="*{phone}"
@@ -141,6 +141,33 @@
                                      th:errors="*{phone}"
                                      th:if="${#fields.hasErrors('phone')}">
                                 </div>
+                            </div>
+
+                            <!-- GDPR -->
+
+                            <div class="form-check mb-2">
+
+                                <input class="form-check-input"
+                                       id="privacyAccepted"
+                                       th:field="*{privacyAccepted}"
+                                       type="checkbox">
+
+                                <label class="form-check-label text-muted fw-normal"
+                                       for="privacyAccepted">
+
+                                    Sunt de acord cu
+                                    <a target="_blank"
+                                       th:href="@{/privacy}">
+                                        Politica de confidențialitate
+                                    </a>.
+
+                                </label>
+
+                                <div class="text-danger small mt-1"
+                                     th:errors="*{privacyAccepted}"
+                                     th:if="${#fields.hasErrors('privacyAccepted')}">
+                                </div>
+
                             </div>
 
                             <div class="col-12">
@@ -183,6 +210,9 @@
     </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
 
 </body>
 </html>

@@ -49,4 +49,9 @@ public class RegisterUserDTO {
     @NotBlank(message = "Confirmă parola!")
     @Size(min = 8, message = "Parola trebuie să conțină cel puțin 8 caractere.")
     private String confirmPassword;
+
+    @jakarta.validation.constraints.AssertTrue(
+            message = "Trebuie să accepți Politica de confidențialitate."
+    )
+    private boolean privacyAccepted;
 }
