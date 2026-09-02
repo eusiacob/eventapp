@@ -69,6 +69,7 @@ public class SecurityConfig {
                                 "/privacy",
                                 "/terms",
                                 "/forgot",
+                                "/contact",
                                 "/reset-password",
                                 "/images/**"
                         ).permitAll()
