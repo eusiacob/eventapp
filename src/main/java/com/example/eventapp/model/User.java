@@ -50,6 +50,7 @@ public class User {
     private String emailHash;
 
     @NotBlank(message = "Introdu parola!")
+    @Size(min = 8, message = "Parola trebuie să aibă cel puțin 8 caractere.")
     private String password;
 
     private LocalDateTime createdAt = LocalDateTime.now();

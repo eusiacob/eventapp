@@ -69,7 +69,8 @@ public class SecurityConfig {
                                 "/privacy",
                                 "/terms",
                                 "/forgot",
-                                "/reset-password"
+                                "/reset-password",
+                                "/images/**"
                         ).permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/business/{uuid}").permitAll()

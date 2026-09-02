@@ -2387,3 +2387,17 @@ form,
     transform: translateY(-2px);
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12) !important;
 }
+
+
+/*LOGO*/
+.mevent-brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.mevent-logo {
+    width: 70px;
+    height: auto;
+    display: block;
+}
