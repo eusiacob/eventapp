@@ -64,7 +64,7 @@ public class BusinessImageController {
                 );
 
 
-        if (existingImages + images.size() > 20) {
+        if (existingImages + images.size() > 15) {
 
             redirectAttributes.addFlashAttribute(
                     "galleryError",

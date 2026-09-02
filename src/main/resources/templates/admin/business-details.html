@@ -439,7 +439,7 @@
     function openLightbox(image) {
 
         galleryImages = Array.from(
-            document.querySelectorAll('.gallery-image')
+            document.querySelectorAll('.gallery-thumbnail')
         );
 
         currentImageIndex =
@@ -494,6 +494,42 @@
             .classList.remove('active');
 
         document.body.style.overflow = '';
+    }
+</script>
+
+<!--Play galley video-->
+<script>
+    function playGalleryVideo(container) {
+
+        const videoSrc =
+            container.dataset.videoSrc;
+
+        const video =
+            document.createElement('video');
+
+        video.className = 'gallery-video';
+        video.controls = true;
+        video.autoplay = true;
+        video.playsInline = true;
+
+        const source =
+            document.createElement('source');
+
+        source.src = videoSrc;
+        source.type = 'video/mp4';
+
+        video.appendChild(source);
+
+        container.innerHTML = '';
+
+        container.appendChild(video);
+
+        video.play().catch(error => {
+            console.error(
+                'Videoclipul nu a putut fi pornit:',
+                error
+            );
+        });
     }
 </script>
 

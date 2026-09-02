@@ -82,7 +82,7 @@ public class BusinessImageService {
             String fileName =
                     "gallery_"
                             + UUID.randomUUID()
-                            + ".webp";
+                            + ".jpg";
 
             currentImages++;
 
@@ -165,18 +165,27 @@ public class BusinessImageService {
             );
         }
 
-        String imagePath =
-                image.getImagePath();
+        String imagePath = image.getImagePath();
 
-        if (imagePath != null) {
+        if (imagePath != null && !imagePath.isBlank()) {
 
-            String relativePath =
-                    imagePath.startsWith("/")
-                            ? imagePath.substring(1)
-                            : imagePath;
+            String relativePath = imagePath.startsWith("/")
+                    ? imagePath.substring(1)
+                    : imagePath;
 
-            Path filePath =
-                    Paths.get(relativePath);
+            Path uploadsRoot = Paths.get("uploads")
+                    .toAbsolutePath()
+                    .normalize();
+
+            Path filePath = Paths.get(relativePath)
+                    .toAbsolutePath()
+                    .normalize();
+
+            if (!filePath.startsWith(uploadsRoot)) {
+                throw new IOException(
+                        "Calea fișierului nu este permisă."
+                );
+            }
 
             if (Files.exists(filePath)) {
                 Files.delete(filePath);
