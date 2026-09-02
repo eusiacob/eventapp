@@ -161,10 +161,19 @@ public class UserService {
 
     public User findById(Long id) {
 
-        return userRepository.findById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("User not found"));
 
+        if (user.getEmailEncrypted() != null) {
+            user.setEmail(
+                    encryptionService.decrypt(
+                            user.getEmailEncrypted()
+                    )
+            );
+        }
+
+        return user;
     }
 
     //    Toggle favorite heart

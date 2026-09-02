@@ -24,19 +24,19 @@ public class EmailService {
         message.setTo(recipient);
 
         message.setSubject(
-                "Resetarea parolei - EventApp"
+                "Resetarea parolei - M-Event"
         );
 
         message.setText(
-                "Bună,\n\n" +
-                        "Ai solicitat resetarea parolei pentru contul tău EventApp.\n\n" +
+                "Salutare,\n\n" +
+                        "Ai solicitat resetarea parolei pentru contul tău M-Event.\n\n" +
                         "Pentru a seta o parolă nouă, accesează următorul link:\n\n" +
                         resetLink +
                         "\n\n" +
                         "Linkul este valabil timp de 15 minute.\n\n" +
                         "Dacă nu ai solicitat resetarea parolei, " +
                         "poți ignora acest mesaj.\n\n" +
-                        "Echipa EventApp"
+                        "Echipa M-Event"
         );
 
         mailSender.send(message);
