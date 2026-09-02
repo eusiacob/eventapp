@@ -52,6 +52,12 @@ public class ForgotPasswordController {
             @RequestParam String confirmPassword
     ) {
 
+        if (password.length() < 8) {
+            return "redirect:/reset-password?token="
+                    + token
+                    + "&error=passwordTooShort";
+        }
+
         if (!password.equals(confirmPassword)) {
             return "redirect:/reset-password?token="
                     + token

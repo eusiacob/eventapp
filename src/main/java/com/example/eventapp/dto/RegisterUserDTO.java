@@ -43,8 +43,10 @@ public class RegisterUserDTO {
     private String phone;
 
     @NotBlank(message = "Introdu parola!")
+    @Size(min = 8, message = "Parola trebuie să conțină cel puțin 8 caractere.")
     private String password;
 
     @NotBlank(message = "Confirmă parola!")
+    @Size(min = 8, message = "Parola trebuie să conțină cel puțin 8 caractere.")
     private String confirmPassword;
 }

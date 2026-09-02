@@ -109,6 +109,10 @@
                                        th:field="*{password}"
                                        type="password">
 
+                                <span class="text-muted" style="font-size: 0.8rem !important;">
+                                    *Minim 8 caractere!
+                                </span>
+
                                 <div class="text-danger small mt-1"
                                      th:errors="*{password}"
                                      th:if="${#fields.hasErrors('password')}">
