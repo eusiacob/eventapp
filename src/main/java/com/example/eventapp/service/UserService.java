@@ -145,18 +145,13 @@ public class UserService {
             throw new RuntimeException("User not found");
         }
 
-        String emailHash =
-                encryptionService.hash(
-                        email.trim().toLowerCase()
-                );
+        String emailHash = encryptionService.hash(email.trim().toLowerCase());
 
         return userRepository
                 .findByEmailHash(emailHash)
                 .orElseThrow(
                         () -> new RuntimeException(
-                                "User not found"
-                        )
-                );
+                                "User not found"));
     }
 
     public User findById(Long id) {
@@ -168,9 +163,7 @@ public class UserService {
         if (user.getEmailEncrypted() != null) {
             user.setEmail(
                     encryptionService.decrypt(
-                            user.getEmailEncrypted()
-                    )
-            );
+                            user.getEmailEncrypted()));
         }
 
         return user;

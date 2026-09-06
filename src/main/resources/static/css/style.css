@@ -2401,3 +2401,7 @@ form,
     height: auto;
     display: block;
 }
+
+@media (min-width: 576px) {
+    .mobile-dashboard-card {}
+}

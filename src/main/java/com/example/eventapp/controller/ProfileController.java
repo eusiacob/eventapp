@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -41,6 +42,8 @@ public class ProfileController {
 
         User user = userService.findByEmail(userDetails.getUsername());
 
+        User userEmail = userService.findById(user.getId());
+
         int favoriteCount = user.getFavoriteBusinesses() != null
                 ? user.getFavoriteBusinesses().size() : 0;
 
@@ -48,7 +51,7 @@ public class ProfileController {
 
         Long reviewCount = reviewService.countByUser(user);
 
-        model.addAttribute("user", user);
+        model.addAttribute("user", userEmail);
         model.addAttribute("favoriteCount", favoriteCount);
         model.addAttribute("activeSubscription",
                 subscriptionService.findActiveSubscription(user));

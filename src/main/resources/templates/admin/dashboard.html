@@ -36,7 +36,7 @@
     <div class="row g-4">
 
         <!-- Total Business -->
-        <div class="col-lg-3 col-md-4">
+        <div class="col-lg-3 col-md-4 mobile-dashboard-card">
 
             <a class="dashboard-card-link"
                th:href="@{/admin/businesses}">
@@ -55,7 +55,7 @@
         </div>
 
         <!-- Pending -->
-        <div class="col-lg-3 col-md-4">
+        <div class="col-lg-3 col-md-4 mobile-dashboard-card">
 
           <a th:href="@{/admin/businesses(status='PENDING')}"
              class="dashboard-card-link">
@@ -75,7 +75,7 @@
         </div>
 
         <!-- Reviews -->
-        <div class="col-lg-3 col-md-4">
+        <div class="col-lg-3 col-md-4 mobile-dashboard-card">
 
           <a th:href="@{/admin/reviews}"
              class="dashboard-card-link">
@@ -95,7 +95,7 @@
         </div>
 
         <!-- Users -->
-        <div class="col-lg-3 col-md-4">
+        <div class="col-lg-3 col-md-4 mobile-dashboard-card">
 
           <a th:href="@{/admin/users}"
              class="dashboard-card-link">
@@ -115,7 +115,7 @@
         </div>
 
         <!--Subscriptions -->
-        <div class="col-lg-3 col-md-4">
+        <div class="col-lg-3 col-md-4 mobile-dashboard-card">
 
             <a th:href="@{/admin/subscriptions}"
                class="dashboard-card-link">
@@ -137,7 +137,7 @@
         </div>
 
         <!--Plans-->
-        <div class="col-lg-3 col-md-4">
+        <div class="col-lg-3 col-md-4 mobile-dashboard-card">
 
             <a th:href="@{/admin/plans}"
                class="dashboard-card-link">
@@ -159,7 +159,7 @@
         </div>
 
         <!--Support-->
-        <div class="col-lg-3 col-md-4">
+        <div class="col-lg-3 col-md-4 mobile-dashboard-card">
 
             <a th:href="@{/admin/support}"
                class="dashboard-card-link">
@@ -186,6 +186,30 @@
 
 
 <div th:replace="~{fragments/footer :: footer}"></div>
+
+
+<script>
+    const cards = document.querySelectorAll('.mobile-dashboard-card');
+
+    function adjustCards() {
+        cards.forEach(card => {
+            if (window.matchMedia("(max-width: 767px)").matches) {
+                // Mobile: Remove desktop classes, add col-6
+                card.classList.remove('col-lg-3', 'col-md-4');
+                card.classList.add('col-6');
+            } else {
+                // Desktop/Tablet: Revert back
+                card.classList.remove('col-6');
+                card.classList.add('col-lg-3', 'col-md-4');
+            }
+        });
+    }
+
+    // Run on load and whenever the screen resizes
+    adjustCards();
+    window.addEventListener('resize', adjustCards);
+
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
