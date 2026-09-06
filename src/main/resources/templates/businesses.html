@@ -95,7 +95,7 @@
 
     </section>
 
-    <!--    Top favorite section-->
+    <!--Top favorite section-->
     <section class="favorite-section mt-4" th:if="${not #lists.isEmpty(mostFavoriteBusinesses)}">
 
         <div th:replace="~{fragments/carousel-header :: header(
@@ -132,7 +132,7 @@
 
     </section>
 
-    <!--    Top-rated section-->
+    <!--Top-rated section-->
     <section class="top-rated-section mt-4" th:if="${not #lists.isEmpty(topRatedBusinesses)}">
 
         <div th:replace="~{fragments/carousel-header :: header(

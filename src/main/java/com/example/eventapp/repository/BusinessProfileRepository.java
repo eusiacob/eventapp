@@ -81,13 +81,12 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
                 JOIN b.reviews r
                 WHERE b.status = APPROVED
                 AND b.active = true
+                AND r.rating > 0
                 GROUP BY b
                 HAVING COUNT(r) >= 1
                 ORDER BY AVG(r.rating) DESC, COUNT(r) DESC
             """)
-
     List<BusinessProfile> findTopRatedBusinesses(Pageable pageable);
 
     long countByStatus(BusinessProfile.BusinessStatus status);
-
 }

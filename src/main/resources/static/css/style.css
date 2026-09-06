@@ -15,7 +15,7 @@ body {
 .bodyLR {
     background-image: linear-gradient(rgba(0, 0, 0, 0.5),
     rgba(0, 0, 0, 0.5)),
-    url('https://i.ibb.co/dwhRCbJR/background.avif');
+    url('/images/background.avif');
 
     background-size: cover;
     background-position: center;
@@ -43,7 +43,7 @@ body {
             rgba(0, 0, 0, 0.58),
             rgba(0, 0, 0, 0.58)
     ),
-    url('https://i.ibb.co/dwhRCbJR/background.avif');
+    url('/images/background.avif');
 
     background-size: cover;
     background-position: center;
@@ -657,7 +657,7 @@ form,
 .hero-section {
     background: linear-gradient(rgba(0, 0, 0, 0.5),
     rgba(0, 0, 0, 0.5)),
-    url('https://i.ibb.co/dwhRCbJR/background.avif');
+    url('/images/background.avif');
 
     background-size: cover;
     background-position: center;
@@ -684,7 +684,7 @@ form,
 .landing-page {
     min-height: 100vh;
     background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
-    url('https://i.ibb.co/dwhRCbJR/background.avif');
+    url('/images/background.avif');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -1090,7 +1090,7 @@ form,
             rgba(0, 0, 0, 0.58),
             rgba(0, 0, 0, 0.58)
     ),
-    url('https://i.ibb.co/dwhRCbJR/background.avif');
+    url('/images/background.avif');
 
     background-size: cover;
     background-position: center;
