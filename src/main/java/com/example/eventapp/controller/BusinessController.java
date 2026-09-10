@@ -37,6 +37,7 @@ public class BusinessController {
     private final SubscriptionService subscriptionService;
     private final BusinessImageService businessImageService;
     private final UserNotificationService userNotificationService;
+    private final BusinessVideoService businessVideoService;
 
     public BusinessController(
             BusinessProfileService businessProfileService,
@@ -45,8 +46,8 @@ public class BusinessController {
             UserService userService,
             BusinessImageService businessImageService,
             SubscriptionService subscriptionService,
-            UserNotificationService userNotificationService
-    ) {
+            UserNotificationService userNotificationService,
+            BusinessVideoService businessVideoService) {
         this.businessProfileService = businessProfileService;
         this.businessImageService = businessImageService;
         this.userRepository = userRepository;
@@ -54,6 +55,7 @@ public class BusinessController {
         this.userService = userService;
         this.subscriptionService = subscriptionService;
         this.userNotificationService = userNotificationService;
+        this.businessVideoService = businessVideoService;
     }
 
     @GetMapping("/businesses")
@@ -435,8 +437,13 @@ public class BusinessController {
         long currentImageCount =
                 businessImageService.countImagesByBusinessId(profile.getId());
 
+        long currentVideoCount =
+                businessVideoService.countVideosByBusinessId(profile.getId());
+
         model.addAttribute("currentImageCount", currentImageCount);
         model.addAttribute("maxImageCount", 15);
+        model.addAttribute("currentVideoCount", currentVideoCount);
+        model.addAttribute("maxVideoCount", 5);
         model.addAttribute("profile", profile);
         model.addAttribute("categories", businessProfileService.getCategories());
         model.addAttribute("unavailableDateStrings", unavailableDateStrings);

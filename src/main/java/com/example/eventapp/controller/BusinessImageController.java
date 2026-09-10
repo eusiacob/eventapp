@@ -45,11 +45,9 @@ public class BusinessImageController {
             @AuthenticationPrincipal UserDetails userDetails,
             RedirectAttributes redirectAttributes) {
 
-
         User user = userService.findByEmail(
                 userDetails.getUsername()
         );
-
 
         BusinessProfile businessProfile =
                 businessProfileService.findByUuidAndValidateOwner(
@@ -57,43 +55,74 @@ public class BusinessImageController {
                         user
                 );
 
-
         long existingImages =
                 businessImageService.countImagesByBusinessId(
                         businessProfile.getId()
                 );
 
+        if (images == null ||
+                images.isEmpty() ||
+                images.stream().allMatch(MultipartFile::isEmpty)) {
+
+            redirectAttributes.addFlashAttribute(
+                    "galleryError",
+                    "Selectează cel puțin o fotografie."
+            );
+
+            return "redirect:/business/edit/" + uuid
+                    + "#galleryUpload";
+        }
 
         if (existingImages + images.size() > 15) {
 
             redirectAttributes.addFlashAttribute(
                     "galleryError",
-                    "Galeria poate conține maximum 15 de imagini."
+                    "Galeria poate conține maximum 15 imagini."
             );
 
-
-            return "redirect:/business/edit/" + uuid;
+            return "redirect:/business/edit/" + uuid
+                    + "#galleryUpload";
         }
 
         try {
 
-            businessImageService.uploadImages(businessProfile.getId(), images);
+            businessImageService.uploadImages(
+                    businessProfile.getId(),
+                    images
+            );
 
             notifyAdminsAboutBusinessUpdate(
                     businessProfile
             );
 
-            redirectAttributes.addFlashAttribute("gallerySuccess", "Imaginile au fost încărcate cu succes.");
+            redirectAttributes.addFlashAttribute(
+                    "gallerySuccess",
+                    "Imaginile au fost încărcate cu succes."
+            );
+
+            redirectAttributes.addAttribute(
+                    "businessUpdated",
+                    true
+            );
+
+            redirectAttributes.addAttribute(
+                    "businessNotApproved",
+                    true
+            );
+
+            return "redirect:/business/edit/" + uuid
+                    + "#currentGalleryPhotos";
 
         } catch (IOException e) {
 
-            redirectAttributes.addFlashAttribute("galleryError", "A apărut o eroare la încărcarea imaginilor.");
+            redirectAttributes.addFlashAttribute(
+                    "galleryError",
+                    "A apărut o eroare la încărcarea imaginilor."
+            );
+
+            return "redirect:/business/edit/" + uuid
+                    + "#galleryUpload";
         }
-
-        redirectAttributes.addAttribute("businessUpdated", true);
-        redirectAttributes.addAttribute("businessNotApproved", true);
-
-        return "redirect:/business/edit/" + uuid;
     }
 
     @PostMapping("/business/{uuid}/videos/upload")
@@ -113,26 +142,24 @@ public class BusinessImageController {
                     "Selectează cel puțin un videoclip."
             );
 
-            return "redirect:/business/edit/" + uuid;
+            return "redirect:/business/edit/" + uuid
+                    + "#videoUpload";
         }
 
-        User user =
-                userService.findByEmail(
-                        userDetails.getUsername()
-                );
+        User user = userService.findByEmail(
+                userDetails.getUsername()
+        );
 
         BusinessProfile businessProfile =
-                businessProfileService
-                        .findByUuidAndValidateOwner(
-                                uuid,
-                                user
-                        );
+                businessProfileService.findByUuidAndValidateOwner(
+                        uuid,
+                        user
+                );
 
         long existingVideos =
-                businessVideoService
-                        .countVideosByBusinessId(
-                                businessProfile.getId()
-                        );
+                businessVideoService.countVideosByBusinessId(
+                        businessProfile.getId()
+                );
 
         if (existingVideos + videos.size() > 5) {
 
@@ -141,7 +168,8 @@ public class BusinessImageController {
                     "Galeria poate conține maximum 5 videoclipuri."
             );
 
-            return "redirect:/business/edit/" + uuid;
+            return "redirect:/business/edit/" + uuid
+                    + "#videoUpload";
         }
 
         try {
@@ -160,6 +188,19 @@ public class BusinessImageController {
                     "Videoclipurile au fost încărcate cu succes."
             );
 
+            redirectAttributes.addAttribute(
+                    "businessUpdated",
+                    true
+            );
+
+            redirectAttributes.addAttribute(
+                    "businessNotApproved",
+                    true
+            );
+
+            return "redirect:/business/edit/" + uuid
+                    + "#currentGalleryVideos";
+
         } catch (InvalidVideoException e) {
 
             redirectAttributes.addFlashAttribute(
@@ -167,16 +208,18 @@ public class BusinessImageController {
                     e.getMessage()
             );
 
-            return "redirect:/business/edit/" + uuid;
+            return "redirect:/business/edit/" + uuid
+                    + "#videoUpload";
 
         } catch (IOException e) {
-
-            e.printStackTrace();
 
             redirectAttributes.addFlashAttribute(
                     "videoError",
                     "A apărut o eroare la încărcarea videoclipurilor."
             );
+
+            return "redirect:/business/edit/" + uuid
+                    + "#videoUpload";
 
         } catch (InterruptedException e) {
 
@@ -186,12 +229,10 @@ public class BusinessImageController {
                     "videoError",
                     "Procesarea videoclipului a fost întreruptă."
             );
+
+            return "redirect:/business/edit/" + uuid
+                    + "#videoUpload";
         }
-
-        redirectAttributes.addAttribute("businessUpdated", true);
-        redirectAttributes.addAttribute("businessNotApproved", true);
-
-        return "redirect:/business/edit/" + uuid ;
     }
 
     private void notifyAdminsAboutBusinessUpdate(
@@ -246,7 +287,7 @@ public class BusinessImageController {
 
 
             redirectAttributes.addFlashAttribute(
-                    "gallerySuccess",
+                    "imageDeleteSuccess",
                     "Imaginea a fost ștearsă cu succes."
             );
 
@@ -254,14 +295,14 @@ public class BusinessImageController {
         } catch (IOException e) {
 
             redirectAttributes.addFlashAttribute(
-                    "galleryError",
+                    "imageDeleteError",
                     "Imaginea nu a putut fi ștearsă de pe disc."
             );
 
         } catch (RuntimeException e) {
 
             redirectAttributes.addFlashAttribute(
-                    "galleryError",
+                    "imageOtherError",
                     e.getMessage()
             );
         }
@@ -269,7 +310,7 @@ public class BusinessImageController {
         redirectAttributes.addAttribute("businessUpdated", true);
         redirectAttributes.addAttribute("businessNotApproved", true);
 
-        return "redirect:/business/edit/" + uuid;
+        return "redirect:/business/edit/" + uuid + "#currentGalleryPhotos";
     }
 
     @PostMapping("/business/videos/delete/{id}")
@@ -298,7 +339,7 @@ public class BusinessImageController {
             );
 
             redirectAttributes.addFlashAttribute(
-                    "videoSuccess",
+                    "videoDeleteSuccess",
                     "Videoclipul a fost șters cu succes."
             );
 
@@ -306,7 +347,7 @@ public class BusinessImageController {
         } catch (IOException e) {
 
             redirectAttributes.addFlashAttribute(
-                    "videoError",
+                    "videoDeleteError",
                     "Videoclipul nu a putut fi șters de pe disc."
             );
 
@@ -321,6 +362,6 @@ public class BusinessImageController {
         redirectAttributes.addAttribute("businessUpdated", true);
         redirectAttributes.addAttribute("businessNotApproved", true);
 
-        return "redirect:/business/edit/" + uuid;
+        return "redirect:/business/edit/" + uuid + "#currentGalleryVideos";
     }
 }

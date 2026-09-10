@@ -69,38 +69,15 @@
                     Serviciu actualizat cu succes!
                 </div>
 
-                <div class="alert alert-warning p-2" th:if="${param.businessNotApproved}">
-                    Serviciul va fi vizibil pe site după aprobare. Vei primi o notificare după ce un administrator va
-                    aproba listarea serviciului.
-                </div>
-
-                <div class="alert alert-success p-2" th:if="${param.gallerySuccess}">
-                    Imagini adăugate cu succes.
-                </div>
-
-                <div class="alert alert-danger p-2" th:if="${param.galleryError}">
-                    Eroare la încărcarea imaginilor. Te rugăm să încerci din nou.
-                </div>
-
-                <div class="alert alert-success p-2" th:if="${param.galleryDeleted}">
-                    Imagine ștearsă cu succes.
-                </div>
-
-                <div class="alert alert-success p-2"
-                     th:if="${videoSuccess}"
-                     th:text="${videoSuccess}">
-                </div>
-
-                <div class="alert alert-danger p-2"
-                     th:if="${videoError}"
-                     th:text="${videoError}">
-                </div>
-
                 <div class="alert alert-danger mb-2"
                      th:if="${imageError}"
                      th:text="${imageError}">
                 </div>
 
+                <div class="alert alert-warning p-2" th:if="${param.businessNotApproved}">
+                    Serviciul va fi vizibil pe site după aprobare. Vei primi o notificare după ce un administrator va
+                    aproba listarea serviciului.
+                </div>
 
                 <form enctype="multipart/form-data"
                       method="post"
@@ -251,9 +228,9 @@
                             Schimbă imaginea de profil
                         </label>
 
-                        <input id="imageFile"
-                               accept="image/jpeg,image/png,image/webp"
+                        <input accept="image/jpeg,image/png,image/webp"
                                class="form-control"
+                               id="imageFile"
                                name="imageFile"
                                type="file">
 
@@ -273,9 +250,9 @@
                         </label>
 
                         <div class="text-center">
-                            <img class="img-fluid rounded edit-main-preview"
-                                 th:src="@{${profile.imagePath}}"
-                                 alt="Imagine de profil curentă">
+                            <img alt="Imagine de profil curentă"
+                                 class="img-fluid rounded edit-main-preview"
+                                 th:src="@{${profile.imagePath}}">
                         </div>
 
                     </div>
@@ -290,10 +267,10 @@
                         </label>
 
                         <div>
-                            <img id="imagePreview"
-                                 src="#"
-                                 alt="Previzualizare imagine nouă"
+                            <img alt="Previzualizare imagine nouă"
                                  class="img-fluid rounded"
+                                 id="imagePreview"
+                                 src="#"
                                  style="max-height: 300px;">
                         </div>
 
@@ -327,51 +304,63 @@
 
                 <!-- GALLERY UPLOAD FORM - SEPARATE FORM -->
                 <form enctype="multipart/form-data"
+                      id="galleryUpload"
                       method="post"
                       th:action="@{/business/{uuid}/gallery/upload(uuid=${profile.uuid})}">
 
-                    <div class="mb-3">
+                    <div class="text-muted mb-2">
+                        <strong th:text="${currentImageCount}"></strong>
+                        /
+                        <strong th:text="${maxImageCount}"></strong>
+                        fotografii
+                    </div>
 
-                        <div class="text-muted mb-2">
-                            Galerie:
-                            <strong th:text="${currentImageCount}"></strong>
-                            /
-                            <strong th:text="${maxImageCount}"></strong>
-                            fotografii
-                        </div>
+                    <div class="small text-muted mb-2"
+                         th:if="${currentImageCount < maxImageCount}">
 
-                        <div class="small text-muted mb-2"
-                             th:if="${currentImageCount < maxImageCount}">
-
-                            Mai poți adăuga
-                            <strong th:text="${maxImageCount - currentImageCount}"></strong>
-                            fotografii.
-
-                        </div>
-
-                        <div class="alert alert-success"
-                             style="padding: 0.5em"
-                             th:if="${currentImageCount == maxImageCount}">
-
-                            Ai atins limita maximă de 15 fotografii.
-
-                        </div>
-
-                        <input accept="image/*"
-                               class="form-control"
-                               multiple
-                               name="images"
-                               required
-                               th:if="${currentImageCount < maxImageCount}"
-                               type="file">
+                        Mai poți adăuga
+                        <strong th:text="${maxImageCount - currentImageCount}"></strong>
+                        <span th:text="${(maxImageCount - currentImageCount) == 1? 'fotografie.' : 'fotografii.'}"></span>
 
                     </div>
 
-                    <button class="btn btn-dark p-2"
+                    <div class="alert alert-success"
+                         style="padding: 0.5em"
+                         th:if="${currentImageCount == maxImageCount}">
+
+                        Ai atins limita maximă de 15 fotografii.
+
+                    </div>
+
+                    <input accept="image/*"
+                           class="form-control"
+                           multiple
+                           name="images"
+                           required
+                           th:if="${currentImageCount < maxImageCount}"
+                           type="file">
+
+                    <div th:if="${uploadGalleryError}">
+                        <div class="alert alert-danger p-2" id="galleryPhotoError"
+                             th:text="${uploadGalleryError}"></div>
+                    </div>
+
+                    <button class="btn btn-dark p-2 mt-3"
                             th:if="${currentImageCount < maxImageCount}"
                             type="submit">
                         Încarcă fotografii
                     </button>
+
+                    <div th:if="${galleryError}" class="mt-2">
+                        <div class="alert alert-danger p-2"
+                             th:text="${galleryError}"></div>
+                    </div>
+
+                    <div th:if="${imageOtherError}" class="mt-2">
+                        <div class="alert alert-danger p-2"
+                             th:text="${imageOtherError}">
+                        </div>
+                    </div>
 
                     <div class="progress mt-3 d-none"
                          id="imageUploadProgressContainer"
@@ -380,7 +369,7 @@
                         <div class="progress-bar progress-bar-striped progress-bar-animated"
                              id="imageUploadProgress"
                              role="progressbar"
-                             style="width: 0%;">
+                             style="width: 0;">
 
                             0%
 
@@ -394,31 +383,67 @@
 
                     <h4 class="mb-2">Videoclipuri</h4>
 
+                    <p class="text-muted">
+                        Adăugare videoclipuri în galerie
+                    </p>
+
                     <form enctype="multipart/form-data"
+                          id="videoUpload"
                           method="post"
                           th:action="@{/business/{uuid}/videos/upload(uuid=${profile.uuid})}">
 
+                        <div class="text-muted mb-2">
+                            <strong th:text="${currentVideoCount}"></strong>
+                            /
+                            <strong th:text="${maxVideoCount}"></strong>
+                            videoclipuri
+                        </div>
+
                         <div class="mb-3">
+
+                            <div class="small text-muted mb-2"
+                                 th:if="${currentVideoCount < maxVideoCount}">
+
+                                Mai poți adăuga
+                                <strong th:text="${maxVideoCount - currentVideoCount}"></strong>
+                                <span th:text="${(maxVideoCount - currentVideoCount) == 1? 'videoclip.' : 'videoclipuri.'}"></span>
+
+                            </div>
+
+                            <div class="alert alert-success"
+                                 style="padding: 0.5em"
+                                 th:if="${currentVideoCount == maxVideoCount}">
+
+                                Ai atins limita maximă de 5 videoclipuri.
+
+                            </div>
 
                             <input accept="video/mp4,video/quicktime,video/webm,video/x-msvideo"
                                    class="form-control"
                                    multiple
                                    name="videos"
+                                   th:if="${currentVideoCount < maxVideoCount}"
                                    type="file">
 
-                            <div class="form-text">
-                                Poți încărca maximum 5 videoclipuri MP4,
-                                de maximum 30 secunde fiecare.
+                            <div class="form-text"
+                                 th:if="${currentVideoCount < maxVideoCount}">
+                                Poți încărca maximum 5 videoclipuri de maximum 30 secunde fiecare.
                             </div>
 
                         </div>
 
                         <button class="btn btn-dark p-2"
+                                th:if="${currentVideoCount < maxVideoCount}"
                                 type="submit">
 
                             Încarcă videoclipurile
 
                         </button>
+
+                        <div th:if="${videoError}" class="mt-2">
+                            <div class="alert alert-danger p-2"
+                                 th:text="${videoError}"></div>
+                        </div>
 
                         <div class="progress mt-3 d-none"
                              id="videoUploadProgressContainer"
@@ -427,7 +452,7 @@
                             <div class="progress-bar progress-bar-striped progress-bar-animated"
                                  id="videoUploadProgress"
                                  role="progressbar"
-                                 style="width: 0%;">
+                                 style="width: 0;">
 
                                 0%
 
@@ -449,10 +474,10 @@
                 </div>
 
                 <div class="row g-3"
+                     id="currentGalleryPhotos"
                      th:if="${profile.galleryImages != null and !#lists.isEmpty(profile.galleryImages)}">
 
-                    <div class="mb-2"
-                         id="currentGalleryPhotos">
+                    <div class="mb-2">
                         <i class="bi bi-images"></i>
                         Fotografii
                     </div>
@@ -489,13 +514,28 @@
 
                     </div>
 
+                    <div th:if="${gallerySuccess}">
+                        <div class="alert alert-success p-2"
+                             th:text="${gallerySuccess}"></div>
+                    </div>
+
+                    <div th:if="${imageDeleteSuccess}">
+                        <div class="alert alert-success p-2"
+                             th:text="${imageDeleteSuccess}"></div>
+                    </div>
+
+                    <div th:if="${imageDeleteError}">
+                        <div class="alert alert-danger p-2"
+                             th:text="${imageDeleteError}"></div>
+                    </div>
+
                 </div>
 
                 <div class="row g-3"
+                     id="currentGalleryVideos"
                      th:if="${profile.galleryVideos != null and !profile.galleryVideos.isEmpty()}">
 
-                    <div class="mt-4 mb-2"
-                         id="currentGalleryVideos">
+                    <div class="mt-4 mb-2">
                         <i class="bi bi-play-circle"></i>
                         Videoclipuri
                     </div>
@@ -537,6 +577,16 @@
 
                         </div>
 
+                    </div>
+
+                    <div th:if="${videoDeleteSuccess}">
+                        <div class="alert alert-success p-2"
+                             th:text="${videoDeleteSuccess}"></div>
+                    </div>
+
+                    <div th:if="${videoDeleteError}">
+                        <div class="alert alert-danger p-2"
+                             th:text="${videoDeleteError}"></div>
                     </div>
 
                 </div>
@@ -834,7 +884,7 @@
 
                         window.location.reload();
 
-                    }, 1000);
+                    }, 500);
 
                 })
                 .catch(function (error) {
@@ -974,7 +1024,7 @@
 
                         window.location.reload();
 
-                    }, 1000);
+                    }, 500);
 
                 })
                 .catch(function (error) {
@@ -1005,10 +1055,10 @@
 </script>
 
 <!-- IMAGE CROP MODAL -->
-<div class="modal fade"
+<div aria-hidden="true"
+     class="modal fade"
      id="cropModal"
-     tabindex="-1"
-     aria-hidden="true">
+     tabindex="-1">
 
     <div class="modal-dialog modal-lg modal-dialog-centered">
 
@@ -1020,10 +1070,10 @@
                     Decupează imaginea
                 </h5>
 
-                <button type="button"
+                <button aria-label="Închide"
                         class="btn-close"
                         data-bs-dismiss="modal"
-                        aria-label="Închide">
+                        type="button">
                 </button>
 
             </div>
@@ -1033,9 +1083,9 @@
 
                 <div class="crop-container">
 
-                    <img id="cropImage"
-                         src=""
-                         alt="Imagine pentru decupare">
+                    <img alt="Imagine pentru decupare"
+                         id="cropImage"
+                         src="">
 
                 </div>
 
@@ -1047,18 +1097,18 @@
 
                 <div class="d-flex justify-content-center gap-2 mt-3">
 
-                    <button type="button"
-                            class="btn btn-outline-secondary"
-                            id="zoomOutButton">
+                    <button class="btn btn-outline-secondary"
+                            id="zoomOutButton"
+                            type="button">
 
                         <i class="bi bi-dash-lg"></i>
 
                     </button>
 
 
-                    <button type="button"
-                            class="btn btn-outline-secondary"
-                            id="zoomInButton">
+                    <button class="btn btn-outline-secondary"
+                            id="zoomInButton"
+                            type="button">
 
                         <i class="bi bi-plus-lg"></i>
 
@@ -1071,18 +1121,18 @@
 
             <div class="modal-footer">
 
-                <button type="button"
-                        class="btn btn-outline-secondary"
-                        data-bs-dismiss="modal">
+                <button class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal"
+                        type="button">
 
                     Anulează
 
                 </button>
 
 
-                <button type="button"
-                        class="btn btn-dark"
-                        id="cropConfirmButton">
+                <button class="btn btn-dark"
+                        id="cropConfirmButton"
+                        type="button">
 
                     <i class="bi bi-check-lg"></i>
 
@@ -1097,6 +1147,39 @@
     </div>
 
 </div>
+
+<!--Scroll page after an action-->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        if (window.location.hash === "#currentGalleryPhotos") {
+
+            const gallery = document.getElementById("currentGalleryPhotos");
+
+            if (gallery) {
+                gallery.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            }
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        if (window.location.hash === "#currentGalleryVideos") {
+
+            const gallery = document.getElementById("currentGalleryVideos");
+
+            if (gallery) {
+                gallery.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            }
+        }
+    });
+</script>
 
 </body>
 </html>
