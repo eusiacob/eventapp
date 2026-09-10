@@ -6,12 +6,16 @@ import com.example.eventapp.model.Role;
 import com.example.eventapp.model.User;
 import com.example.eventapp.repository.UserRepository;
 import com.example.eventapp.service.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.List;
@@ -39,11 +43,21 @@ public class BusinessImageController {
     }
 
     @PostMapping("/business/{uuid}/gallery/upload")
-    public String uploadGalleryImages(
+    @ResponseBody
+    public ResponseEntity<ActionResponse> uploadGalleryImages(
             @PathVariable String uuid,
-            @RequestParam("images") List<MultipartFile> images,
-            @AuthenticationPrincipal UserDetails userDetails,
-            RedirectAttributes redirectAttributes) {
+            @RequestParam(value = "images", required = false) List<MultipartFile> images,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        if (images == null ||
+                images.isEmpty() ||
+                images.stream().allMatch(MultipartFile::isEmpty)) {
+
+            return error(
+                    HttpStatus.BAD_REQUEST,
+                    "Selectează cel puțin o fotografie."
+            );
+        }
 
         User user = userService.findByEmail(
                 userDetails.getUsername()
@@ -60,28 +74,12 @@ public class BusinessImageController {
                         businessProfile.getId()
                 );
 
-        if (images == null ||
-                images.isEmpty() ||
-                images.stream().allMatch(MultipartFile::isEmpty)) {
-
-            redirectAttributes.addFlashAttribute(
-                    "galleryError",
-                    "Selectează cel puțin o fotografie."
-            );
-
-            return "redirect:/business/edit/" + uuid
-                    + "#galleryUpload";
-        }
-
         if (existingImages + images.size() > 15) {
 
-            redirectAttributes.addFlashAttribute(
-                    "galleryError",
+            return error(
+                    HttpStatus.BAD_REQUEST,
                     "Galeria poate conține maximum 15 imagini."
             );
-
-            return "redirect:/business/edit/" + uuid
-                    + "#galleryUpload";
         }
 
         try {
@@ -95,55 +93,35 @@ public class BusinessImageController {
                     businessProfile
             );
 
-            redirectAttributes.addFlashAttribute(
-                    "gallerySuccess",
+            return success(
                     "Imaginile au fost încărcate cu succes."
             );
 
-            redirectAttributes.addAttribute(
-                    "businessUpdated",
-                    true
-            );
-
-            redirectAttributes.addAttribute(
-                    "businessNotApproved",
-                    true
-            );
-
-            return "redirect:/business/edit/" + uuid
-                    + "#currentGalleryPhotos";
-
         } catch (IOException e) {
 
-            redirectAttributes.addFlashAttribute(
-                    "galleryError",
+            return error(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
                     "A apărut o eroare la încărcarea imaginilor."
             );
-
-            return "redirect:/business/edit/" + uuid
-                    + "#galleryUpload";
         }
     }
 
     @PostMapping("/business/{uuid}/videos/upload")
-    public String uploadVideos(
+    @ResponseBody
+    public ResponseEntity<ActionResponse> uploadVideos(
             @PathVariable String uuid,
-            @RequestParam("videos") List<MultipartFile> videos,
-            @AuthenticationPrincipal UserDetails userDetails,
-            RedirectAttributes redirectAttributes
+            @RequestParam(value = "videos", required = false) List<MultipartFile> videos,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
 
         if (videos == null ||
                 videos.isEmpty() ||
                 videos.stream().allMatch(MultipartFile::isEmpty)) {
 
-            redirectAttributes.addFlashAttribute(
-                    "videoError",
+            return error(
+                    HttpStatus.BAD_REQUEST,
                     "Selectează cel puțin un videoclip."
             );
-
-            return "redirect:/business/edit/" + uuid
-                    + "#videoUpload";
         }
 
         User user = userService.findByEmail(
@@ -163,13 +141,10 @@ public class BusinessImageController {
 
         if (existingVideos + videos.size() > 5) {
 
-            redirectAttributes.addFlashAttribute(
-                    "videoError",
+            return error(
+                    HttpStatus.BAD_REQUEST,
                     "Galeria poate conține maximum 5 videoclipuri."
             );
-
-            return "redirect:/business/edit/" + uuid
-                    + "#videoUpload";
         }
 
         try {
@@ -183,56 +158,47 @@ public class BusinessImageController {
                     businessProfile
             );
 
-            redirectAttributes.addFlashAttribute(
-                    "videoSuccess",
+            return success(
                     "Videoclipurile au fost încărcate cu succes."
             );
 
-            redirectAttributes.addAttribute(
-                    "businessUpdated",
-                    true
-            );
-
-            redirectAttributes.addAttribute(
-                    "businessNotApproved",
-                    true
-            );
-
-            return "redirect:/business/edit/" + uuid
-                    + "#currentGalleryVideos";
-
         } catch (InvalidVideoException e) {
 
-            redirectAttributes.addFlashAttribute(
-                    "videoError",
+            return error(
+                    HttpStatus.BAD_REQUEST,
                     e.getMessage()
             );
 
-            return "redirect:/business/edit/" + uuid
-                    + "#videoUpload";
-
         } catch (IOException e) {
 
-            redirectAttributes.addFlashAttribute(
-                    "videoError",
+            return error(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
                     "A apărut o eroare la încărcarea videoclipurilor."
             );
-
-            return "redirect:/business/edit/" + uuid
-                    + "#videoUpload";
 
         } catch (InterruptedException e) {
 
             Thread.currentThread().interrupt();
 
-            redirectAttributes.addFlashAttribute(
-                    "videoError",
+            return error(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
                     "Procesarea videoclipului a fost întreruptă."
             );
-
-            return "redirect:/business/edit/" + uuid
-                    + "#videoUpload";
         }
+    }
+
+    private ResponseEntity<ActionResponse> success(String message) {
+        return ResponseEntity.ok(
+                new ActionResponse(true, message)
+        );
+    }
+
+    private ResponseEntity<ActionResponse> error(
+            HttpStatus status,
+            String message
+    ) {
+        return ResponseEntity.status(status)
+                .body(new ActionResponse(false, message));
     }
 
     private void notifyAdminsAboutBusinessUpdate(
@@ -261,11 +227,10 @@ public class BusinessImageController {
     }
 
     @PostMapping("/business/gallery/delete/{id}")
-    public String deleteImage(
+    @ResponseBody
+    public ResponseEntity<ActionResponse> deleteImage(
             @PathVariable Long id,
-            @RequestParam("uuid") String uuid,
-            @AuthenticationPrincipal UserDetails userDetails,
-            RedirectAttributes redirectAttributes
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
 
         User user =
@@ -286,39 +251,31 @@ public class BusinessImageController {
             );
 
 
-            redirectAttributes.addFlashAttribute(
-                    "imageDeleteSuccess",
+            return success(
                     "Imaginea a fost ștearsă cu succes."
             );
 
-
         } catch (IOException e) {
 
-            redirectAttributes.addFlashAttribute(
-                    "imageDeleteError",
+            return error(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
                     "Imaginea nu a putut fi ștearsă de pe disc."
             );
 
         } catch (RuntimeException e) {
 
-            redirectAttributes.addFlashAttribute(
-                    "imageOtherError",
+            return error(
+                    HttpStatus.BAD_REQUEST,
                     e.getMessage()
             );
         }
-
-        redirectAttributes.addAttribute("businessUpdated", true);
-        redirectAttributes.addAttribute("businessNotApproved", true);
-
-        return "redirect:/business/edit/" + uuid + "#currentGalleryPhotos";
     }
 
     @PostMapping("/business/videos/delete/{id}")
-    public String deleteVideo(
+    @ResponseBody
+    public ResponseEntity<ActionResponse> deleteVideo(
             @PathVariable Long id,
-            @RequestParam("uuid") String uuid,
-            @AuthenticationPrincipal UserDetails userDetails,
-            RedirectAttributes redirectAttributes
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
 
         User user =
@@ -338,30 +295,29 @@ public class BusinessImageController {
                     businessProfile
             );
 
-            redirectAttributes.addFlashAttribute(
-                    "videoDeleteSuccess",
+            return success(
                     "Videoclipul a fost șters cu succes."
             );
 
-
         } catch (IOException e) {
 
-            redirectAttributes.addFlashAttribute(
-                    "videoDeleteError",
+            return error(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
                     "Videoclipul nu a putut fi șters de pe disc."
             );
 
         } catch (RuntimeException e) {
 
-            redirectAttributes.addFlashAttribute(
-                    "videoError",
+            return error(
+                    HttpStatus.BAD_REQUEST,
                     e.getMessage()
             );
         }
+    }
 
-        redirectAttributes.addAttribute("businessUpdated", true);
-        redirectAttributes.addAttribute("businessNotApproved", true);
-
-        return "redirect:/business/edit/" + uuid + "#currentGalleryVideos";
+    public record ActionResponse(
+            boolean success,
+            String message
+    ) {
     }
 }

@@ -36,6 +36,30 @@
             display: block;
             max-width: 100%;
         }
+
+        .action-message-modal .modal-content {
+            border-radius: 1rem;
+        }
+
+        .action-message-icon {
+            align-items: center;
+            border-radius: 50%;
+            display: inline-flex;
+            font-size: 2rem;
+            height: 4.5rem;
+            justify-content: center;
+            width: 4.5rem;
+        }
+
+        .action-message-icon.success {
+            background-color: #d1e7dd;
+            color: #146c43;
+        }
+
+        .action-message-icon.danger {
+            background-color: #f8d7da;
+            color: #b02a37;
+        }
     </style>
 
 </head>
@@ -340,27 +364,11 @@
                            th:if="${currentImageCount < maxImageCount}"
                            type="file">
 
-                    <div th:if="${uploadGalleryError}">
-                        <div class="alert alert-danger p-2" id="galleryPhotoError"
-                             th:text="${uploadGalleryError}"></div>
-                    </div>
-
                     <button class="btn btn-dark p-2 mt-3"
                             th:if="${currentImageCount < maxImageCount}"
                             type="submit">
                         Încarcă fotografii
                     </button>
-
-                    <div th:if="${galleryError}" class="mt-2">
-                        <div class="alert alert-danger p-2"
-                             th:text="${galleryError}"></div>
-                    </div>
-
-                    <div th:if="${imageOtherError}" class="mt-2">
-                        <div class="alert alert-danger p-2"
-                             th:text="${imageOtherError}">
-                        </div>
-                    </div>
 
                     <div class="progress mt-3 d-none"
                          id="imageUploadProgressContainer"
@@ -440,11 +448,6 @@
 
                         </button>
 
-                        <div th:if="${videoError}" class="mt-2">
-                            <div class="alert alert-danger p-2"
-                                 th:text="${videoError}"></div>
-                        </div>
-
                         <div class="progress mt-3 d-none"
                              id="videoUploadProgressContainer"
                              style="height: 25px;">
@@ -483,12 +486,13 @@
                     </div>
 
                     <div class="col-6 col-md-4 col-lg-3"
+                         data-gallery-item="true"
                          th:each="img : ${profile.galleryImages}">
 
                         <div class="gallery-manage-item position-relative">
 
                             <img class="img-fluid rounded gallery-manage-image"
-                                 th:src="@{${img.imagePath}}">
+                                 th:src="@{${img.imagePath}}" alt="Imagine galerie">
 
                             <form class="gallery-delete-form"
                                   method="post"
@@ -514,21 +518,6 @@
 
                     </div>
 
-                    <div th:if="${gallerySuccess}">
-                        <div class="alert alert-success p-2"
-                             th:text="${gallerySuccess}"></div>
-                    </div>
-
-                    <div th:if="${imageDeleteSuccess}">
-                        <div class="alert alert-success p-2"
-                             th:text="${imageDeleteSuccess}"></div>
-                    </div>
-
-                    <div th:if="${imageDeleteError}">
-                        <div class="alert alert-danger p-2"
-                             th:text="${imageDeleteError}"></div>
-                    </div>
-
                 </div>
 
                 <div class="row g-3"
@@ -541,6 +530,7 @@
                     </div>
 
                     <div class="col-6 col-md-4 col-lg-3"
+                         data-gallery-item="true"
                          th:each="video : ${profile.galleryVideos}">
 
                         <div class="gallery-manage-item position-relative">
@@ -577,16 +567,6 @@
 
                         </div>
 
-                    </div>
-
-                    <div th:if="${videoDeleteSuccess}">
-                        <div class="alert alert-success p-2"
-                             th:text="${videoDeleteSuccess}"></div>
-                    </div>
-
-                    <div th:if="${videoDeleteError}">
-                        <div class="alert alert-danger p-2"
-                             th:text="${videoDeleteError}"></div>
                     </div>
 
                 </div>
@@ -762,6 +742,51 @@
     });
 </script>
 
+<script>
+    function showAsyncAlert(type, message) {
+        const modalElement =
+            document.getElementById("actionMessageModal");
+
+        const iconContainer =
+            document.getElementById("actionMessageIconContainer");
+
+        const icon =
+            document.getElementById("actionMessageIcon");
+
+        const title =
+            document.getElementById("actionMessageTitle");
+
+        const text =
+            document.getElementById("actionMessageText");
+
+        const isSuccess = type === "success";
+
+        iconContainer.className =
+            "action-message-icon " + (isSuccess ? "success" : "danger");
+
+        icon.className =
+            "bi " + (isSuccess ? "bi-check-lg" : "bi-exclamation-lg");
+
+        title.textContent = isSuccess ? "Succes" : "A apărut o eroare";
+        text.textContent = message;
+
+        bootstrap.Modal.getOrCreateInstance(modalElement).show();
+    }
+
+    function getAsyncErrorMessage(error, fallbackMessage) {
+        return error.response?.data?.message || fallbackMessage;
+    }
+
+    function getCsrfHeaders() {
+        const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute("content");
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute("content");
+
+        return csrfToken && csrfHeader
+            ? {[csrfHeader]: csrfToken}
+            : {};
+    }
+</script>
+
 <!--image upload bar-->
 <script>
 
@@ -782,8 +807,10 @@
                 form.querySelector('input[name="images"]');
 
             if (!input || input.files.length === 0) {
-
-                alert("Selectează cel puțin o fotografie.");
+                showAsyncAlert(
+                    "danger",
+                    "Selectează cel puțin o fotografie."
+                );
 
                 return;
             }
@@ -804,15 +831,8 @@
             const submitButton =
                 form.querySelector('button[type="submit"]');
 
-            const csrfToken =
-                document.querySelector(
-                    'meta[name="_csrf"]'
-                )?.getAttribute("content");
-
-            const csrfHeader =
-                document.querySelector(
-                    'meta[name="_csrf_header"]'
-                )?.getAttribute("content");
+            const originalButtonText =
+                submitButton.textContent.trim();
 
             progressContainer.classList.remove("d-none");
 
@@ -821,11 +841,7 @@
             submitButton.textContent =
                 "Se încarcă...";
 
-            const headers = {};
-
-            if (csrfToken && csrfHeader) {
-                headers[csrfHeader] = csrfToken;
-            }
+            const headers = getCsrfHeaders();
 
             axios.post(
                 form.action,
@@ -858,7 +874,7 @@
                     }
                 }
             )
-                .then(function () {
+                .then(function (response) {
 
                     progressBar.classList.remove(
                         "progress-bar-animated"
@@ -867,24 +883,14 @@
                     progressBar.textContent =
                         "Încărcare finalizată!";
 
-                    /*
-                     * Așteptăm puțin pentru ca utilizatorul
-                     * să vadă mesajul de finalizare.
-                     *
-                     * Apoi facem reload.
-                     *
-                     * Controllerul trebuie să aibă:
-                     *
-                     * redirect:/business/edit/{uuid}#gallery
-                     */
+                    showAsyncAlert(
+                        "success",
+                        response.data.message
+                    );
 
-                    setTimeout(function () {
-
-                        window.location.hash = "currentGalleryPhotos";
-
-                        window.location.reload();
-
-                    }, 500);
+                    form.reset();
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalButtonText;
 
                 })
                 .catch(function (error) {
@@ -902,10 +908,18 @@
                     progressBar.textContent =
                         "Încărcarea a eșuat.";
 
+                    showAsyncAlert(
+                        "danger",
+                        getAsyncErrorMessage(
+                            error,
+                            "A apărut o eroare la încărcarea imaginilor."
+                        )
+                    );
+
                     submitButton.disabled = false;
 
                     submitButton.textContent =
-                        "Încarcă fotografii";
+                        originalButtonText;
                 });
 
         });
@@ -933,8 +947,10 @@
                 form.querySelector('input[name="videos"]');
 
             if (!input || input.files.length === 0) {
-
-                alert("Selectează cel puțin un videoclip.");
+                showAsyncAlert(
+                    "danger",
+                    "Selectează cel puțin un videoclip."
+                );
 
                 return;
             }
@@ -955,15 +971,8 @@
             const submitButton =
                 form.querySelector('button[type="submit"]');
 
-            const csrfToken =
-                document.querySelector(
-                    'meta[name="_csrf"]'
-                )?.getAttribute("content");
-
-            const csrfHeader =
-                document.querySelector(
-                    'meta[name="_csrf_header"]'
-                )?.getAttribute("content");
+            const originalButtonText =
+                submitButton.textContent.trim();
 
             progressContainer.classList.remove("d-none");
 
@@ -972,11 +981,7 @@
             submitButton.textContent =
                 "Se încarcă...";
 
-            const headers = {};
-
-            if (csrfToken && csrfHeader) {
-                headers[csrfHeader] = csrfToken;
-            }
+            const headers = getCsrfHeaders();
 
             axios.post(
                 form.action,
@@ -1009,7 +1014,7 @@
                     }
                 }
             )
-                .then(function () {
+                .then(function (response) {
 
                     progressBar.classList.remove(
                         "progress-bar-animated"
@@ -1018,13 +1023,14 @@
                     progressBar.textContent =
                         "Încărcare finalizată!";
 
-                    setTimeout(function () {
+                    showAsyncAlert(
+                        "success",
+                        response.data.message
+                    );
 
-                        window.location.hash = "currentGalleryVideos";
-
-                        window.location.reload();
-
-                    }, 500);
+                    form.reset();
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalButtonText;
 
                 })
                 .catch(function (error) {
@@ -1042,16 +1048,111 @@
                     progressBar.textContent =
                         "Încărcarea a eșuat.";
 
+                    showAsyncAlert(
+                        "danger",
+                        getAsyncErrorMessage(
+                            error,
+                            "A apărut o eroare la încărcarea videoclipurilor."
+                        )
+                    );
+
                     submitButton.disabled = false;
 
                     submitButton.textContent =
-                        "Încarcă videoclipuri";
+                        originalButtonText;
                 });
 
         });
 
     });
 
+</script>
+
+<!-- Success and error modal -->
+<div aria-hidden="true"
+     aria-labelledby="actionMessageTitle"
+     class="modal fade action-message-modal"
+     id="actionMessageModal"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+
+        <div class="modal-content border-0 shadow">
+
+            <div class="modal-body p-4 text-center">
+
+                <div class="action-message-icon success mb-3"
+                     id="actionMessageIconContainer">
+
+                    <i class="bi bi-check-lg" id="actionMessageIcon"></i>
+
+                </div>
+
+                <h5 class="fw-bold" id="actionMessageTitle">Succes</h5>
+
+                <p class="mb-0 text-muted" id="actionMessageText"></p>
+
+            </div>
+
+            <div class="border-0 justify-content-center modal-footer pt-0">
+
+                <button class="btn btn-dark px-4"
+                        data-bs-dismiss="modal"
+                        type="button">
+                    Închide
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- Gallery deletion without page redirect -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".gallery-delete-form").forEach(function (form) {
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                const submitButton =
+                    form.querySelector('button[type="submit"]');
+
+                submitButton.disabled = true;
+
+                axios.post(
+                    form.action,
+                    new FormData(form),
+                    {headers: getCsrfHeaders()}
+                )
+                    .then(function (response) {
+                        const galleryItem =
+                            form.closest("[data-gallery-item]");
+
+                        if (galleryItem) {
+                            galleryItem.remove();
+                        }
+
+                        showAsyncAlert(
+                            "success",
+                            response.data.message
+                        );
+                    })
+                    .catch(function (error) {
+                        showAsyncAlert(
+                            "danger",
+                            getAsyncErrorMessage(
+                                error,
+                                "Elementul nu a putut fi șters."
+                            )
+                        );
+
+                        submitButton.disabled = false;
+                    });
+            });
+        });
+    });
 </script>
 
 <!-- IMAGE CROP MODAL -->
