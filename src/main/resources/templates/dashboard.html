@@ -156,6 +156,15 @@
         </h1>
 
     </header>
+
+    <div class="d-flex justify-content-center mb-3">
+        <a class="btn btn-dark"
+           th:href="@{/business/create}">
+            <i class="bi bi-plus-lg"></i>
+            Adaugă serviciu
+        </a>
+    </div>
+
     <!--STANDARD SUBSCRIPTION WARNING-->
     <div
             class="subscription-notice"
@@ -274,7 +283,7 @@
                             Inactiv
                         </span>
 
-                    <div class="d-flex justify-content-between">
+                    <div class="d-grid gap-2 mt-3">
 
                         <a class="btn btn-outline-dark"
                            th:href="@{/business/{uuid}(uuid=${p.uuid})}">
@@ -287,6 +296,7 @@
                         </a>
 
                         <form method="post"
+                              class="d-grid"
                               th:action="@{/business/{uuid}/activate(uuid=${p.uuid})}"
                               th:if="${!p.active}">
 

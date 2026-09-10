@@ -140,6 +140,24 @@
                     </div>
                 </div>
 
+                <div class="col-12 col-md-4 clickable-card"
+                     sec:authorize="hasRole('ADMIN')"
+                     th:data-href="@{/admin}">
+
+                    <div class="profile-stat-card card border-0 shadow-sm p-4 h-100">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="profile-stat-icon dark">
+                                <i class="bi bi-shield-lock-fill"></i>
+                            </div>
+
+                            <div>
+                                <p class="text-muted mb-1">Administrare</p>
+                                <h3 class="fw-bold mb-0">Panou</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!--CARD ABONAMENT --- VA URMA -->

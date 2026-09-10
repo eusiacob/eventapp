@@ -142,20 +142,6 @@
 
                 </li>
 
-                <!--ADD BUSINESS-->
-                <li class="nav-item" sec:authorize="hasRole('BUSINESS')">
-                    <a class="btn btn-outline-dark navbar-register-btn" href="/business/create">
-                        Adaugă serviciu
-                    </a>
-                </li>
-
-                <!--ADMIN PAGE-->
-                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                    <a class="btn btn-outline-dark navbar-register-btn" href="/admin">
-                        Administrare
-                    </a>
-                </li>
-
                 <!--LOGIN-->
                 <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" href="/login">
@@ -202,27 +188,27 @@
             <span>Favorite</span>
         </a>
 
-        <a class="mobile-nav-item mobile-add-item"
-           href="/business/create"
-           sec:authorize="hasRole('BUSINESS')">
+        <button aria-controls="mobileNotificationsPanel"
+                aria-label="Notificări"
+                class="mobile-nav-item mobile-nav-button mobile-notification-item"
+                data-bs-target="#mobileNotificationsPanel"
+                data-bs-toggle="offcanvas"
+                sec:authorize="isAuthenticated()"
+                type="button">
 
-            <span class="mobile-add-circle">
-                <i class="bi bi-plus-lg"></i>
+            <span class="mobile-icon-badge-wrapper">
+                <i class="bi"
+                   th:classappend="${notificationCount > 0} ? ' bi-bell-fill' : ' bi-bell'"></i>
+
+                <span class="mobile-notification-badge"
+                      th:if="${notificationCount > 0}"
+                      th:text="${notificationCount}">
+                    0
+                </span>
             </span>
 
-            <span>Adaugă serviciu</span>
-        </a>
-
-        <a class="mobile-nav-item mobile-add-item"
-           href="/admin"
-           sec:authorize="hasRole('ADMIN')">
-
-            <span class="mobile-add-circle">
-                <i class="bi bi-person-badge-fill"></i>
-            </span>
-
-            <span>Administrare</span>
-        </a>
+            <span>Alerte</span>
+        </button>
 
         <a class="mobile-nav-item"
            href="/profile"
@@ -260,6 +246,50 @@
             <span>Register</span>
         </a>
 
+    </div>
+
+    <!-- MOBILE NOTIFICATIONS -->
+    <div aria-labelledby="mobileNotificationsPanelTitle"
+         class="offcanvas offcanvas-bottom mobile-notifications-panel"
+         id="mobileNotificationsPanel"
+         sec:authorize="isAuthenticated()"
+         tabindex="-1">
+
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="mobileNotificationsPanelTitle">
+                Notificări
+            </h5>
+
+            <button aria-label="Închide"
+                    class="btn-close"
+                    data-bs-dismiss="offcanvas"
+                    type="button">
+            </button>
+        </div>
+
+        <div class="offcanvas-body p-0">
+            <div class="mobile-notifications-empty"
+                 th:if="${#lists.isEmpty(notifications)}">
+                <i class="bi bi-bell-slash"></i>
+                <p class="mb-0">Nu ai notificări noi.</p>
+            </div>
+
+            <div class="mobile-notification-list"
+                 th:if="${!#lists.isEmpty(notifications)}">
+                <a class="mobile-notification-entry"
+                   th:classappend="${notification.isRead ? '' : ' is-unread'}"
+                   th:each="notification : ${notifications}"
+                   th:href="@{/notifications/{id}(id=${notification.id})}">
+
+                    <i class="bi bi-bell"></i>
+
+                    <span>
+                        <strong th:text="${notification.title}"></strong>
+                        <small th:text="${notification.message}"></small>
+                    </span>
+                </a>
+            </div>
+        </div>
     </div>
 
 </nav>

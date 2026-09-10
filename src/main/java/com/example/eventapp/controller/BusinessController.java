@@ -83,6 +83,7 @@ public class BusinessController {
         model.addAttribute("categories", businessProfileService.getCategories());
         model.addAttribute("breadcrumbs", List.of(
                 new BreadcrumbDTO("Acasă", "/businesses"),
+                new BreadcrumbDTO("Profil", "/profile"),
                 new BreadcrumbDTO("Adăugare serviciu", null)
         ));
         return "business-form";
