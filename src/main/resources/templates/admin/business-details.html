@@ -112,14 +112,17 @@
                                      th:classappend="${iterStat.index >= 5} ? ' gallery-extra-image' : ''"
                                      th:each="img, iterStat : ${business.galleryImages}">
 
-                                    <img alt="Fotografie galerie"
+                                    <img alt="Previzualizează fotografia galeriei"
                                          class="gallery-thumbnail"
+                                         data-bs-target="#galleryImagePreviewModal"
+                                         data-bs-toggle="modal"
+                                         data-gallery-image-preview
                                          loading="lazy"
-                                         onclick="openLightbox(this)"
-                                         th:attr="
-                                         data-image-src=@{${img.imagePath}},
-                                         data-index=${iterStat.index}"
-                                         th:src="@{${img.imagePath}}">
+                                         role="button"
+                                         style="cursor: pointer;"
+                                         th:data-image-src="@{${img.imagePath}}"
+                                         th:src="@{${img.imagePath}}"
+                                         tabindex="0">
 
                                 </div>
 
@@ -155,12 +158,16 @@
                                 <div class="gallery-video-item"
                                      th:each="video : ${business.galleryVideos}">
 
-                                    <div class="video-preview"
-                                         onclick="playGalleryVideo(this)"
-                                         th:attr="data-video-src=${video.videoPath}">
+                                    <div aria-label="Redă videoclipul pe tot ecranul"
+                                         class="video-preview"
+                                         data-fullscreen-video
+                                         role="button"
+                                         tabindex="0">
 
                                         <video class="gallery-video-preview"
                                                muted
+                                               playsinline
+                                               th:poster="${#strings.replace(video.videoPath, '.mp4', '.jpg')}"
                                                preload="metadata">
 
                                             <source th:src="${video.videoPath}"
@@ -398,139 +405,68 @@
 
 </div>
 
-<!--Lightbox imagini-->
-<div class="lightbox"
-     id="lightbox">
+<!-- Gallery image preview -->
+<div aria-hidden="true"
+     aria-labelledby="galleryImagePreviewTitle"
+     class="modal fade"
+     id="galleryImagePreviewModal"
+     tabindex="-1">
 
-    <button class="lightbox-close"
-            onclick="closeLightbox()">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="galleryImagePreviewTitle">
+                    Previzualizare imagine
+                </h5>
 
-        <i class="bi bi-x-lg"></i>
+                <button aria-label="Închide"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        type="button">
+                </button>
+            </div>
 
-    </button>
-
-    <button class="lightbox-arrow lightbox-prev"
-            onclick="previousImage()">
-
-        <i class="bi bi-chevron-left"></i>
-
-    </button>
-
-    <img alt="Imagine galerie"
-         class="lightbox-image"
-         id="lightbox-image"
-         loading="lazy"
-         src="">
-
-    <button class="lightbox-arrow lightbox-next"
-            onclick="nextImage()">
-
-        <i class="bi bi-chevron-right"></i>
-
-    </button>
-
+            <div class="modal-body text-center">
+                <img alt="Imagine galerie mărită"
+                     class="img-fluid rounded"
+                     id="galleryImagePreview"
+                     style="max-height: 75vh; object-fit: contain;">
+            </div>
+        </div>
+    </div>
 </div>
 
-<!--Script lightbox imagini-->
 <script>
-    let galleryImages = [];
-    let currentImageIndex = 0;
+    document.addEventListener("DOMContentLoaded", function () {
 
-    function openLightbox(image) {
+        const modalElement =
+            document.getElementById("galleryImagePreviewModal");
 
-        galleryImages = Array.from(
-            document.querySelectorAll('.gallery-thumbnail')
-        );
+        const previewImage =
+            document.getElementById("galleryImagePreview");
 
-        currentImageIndex =
-            parseInt(image.dataset.index);
+        modalElement.addEventListener("show.bs.modal", function (event) {
+            const trigger = event.relatedTarget;
 
-        updateLightboxImage();
-
-        document
-            .getElementById('lightbox')
-            .classList.add('active');
-
-        document.body.style.overflow = 'hidden';
-    }
-
-    function updateLightboxImage() {
-
-        const lightboxImage =
-            document.getElementById('lightbox-image');
-
-        lightboxImage.src =
-            galleryImages[currentImageIndex]
-                .dataset.imageSrc;
-    }
-
-    function nextImage() {
-
-        currentImageIndex++;
-
-        if (currentImageIndex >= galleryImages.length) {
-            currentImageIndex = 0;
-        }
-
-        updateLightboxImage();
-    }
-
-    function previousImage() {
-
-        currentImageIndex--;
-
-        if (currentImageIndex < 0) {
-            currentImageIndex =
-                galleryImages.length - 1;
-        }
-
-        updateLightboxImage();
-    }
-
-    function closeLightbox() {
-
-        document
-            .getElementById('lightbox')
-            .classList.remove('active');
-
-        document.body.style.overflow = '';
-    }
-</script>
-
-<!--Play galley video-->
-<script>
-    function playGalleryVideo(container) {
-
-        const videoSrc =
-            container.dataset.videoSrc;
-
-        const video =
-            document.createElement('video');
-
-        video.className = 'gallery-video';
-        video.controls = true;
-        video.autoplay = true;
-        video.playsInline = true;
-
-        const source =
-            document.createElement('source');
-
-        source.src = videoSrc;
-        source.type = 'video/mp4';
-
-        video.appendChild(source);
-
-        container.innerHTML = '';
-
-        container.appendChild(video);
-
-        video.play().catch(error => {
-            console.error(
-                'Videoclipul nu a putut fi pornit:',
-                error
-            );
+            previewImage.src = trigger?.dataset.imageSrc || "";
         });
-    }
+
+        modalElement.addEventListener("hidden.bs.modal", function () {
+            previewImage.removeAttribute("src");
+        });
+
+        document.querySelectorAll("[data-gallery-image-preview]").forEach(function (image) {
+            image.addEventListener("keydown", function (event) {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+
+                    bootstrap.Modal
+                        .getOrCreateInstance(modalElement)
+                        .show(image);
+                }
+            });
+        });
+    });
 </script>
 
 <!--Show more images script-->
@@ -554,6 +490,7 @@
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/video-fullscreen.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 </body>

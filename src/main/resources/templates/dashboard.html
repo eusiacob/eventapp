@@ -157,14 +157,6 @@
 
     </header>
 
-    <div class="d-flex justify-content-center mb-3">
-        <a class="btn btn-dark"
-           th:href="@{/business/create}">
-            <i class="bi bi-plus-lg"></i>
-            Adaugă serviciu
-        </a>
-    </div>
-
     <!--STANDARD SUBSCRIPTION WARNING-->
     <div
             class="subscription-notice"
@@ -216,9 +208,17 @@
         Serviciu actualizat și trimis către aprobare!
     </div>
 
-    <div class="mb-2">
-        <strong class="text-muted">Notă:</strong>
-        <span class="text-muted">Serviciile care nu sunt aprobate nu sunt vizibile public.</span>
+    <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+        <div>
+            <strong class="text-muted">Notă:</strong>
+            <span class="text-muted">Serviciile care nu sunt aprobate nu sunt vizibile public.</span>
+        </div>
+
+        <a class="btn btn-sm btn-dark text-nowrap"
+           th:href="@{/business/create}">
+            <i class="bi bi-plus-lg"></i>
+            Adaugă serviciu
+        </a>
     </div>
 
     <!-- CARDS -->

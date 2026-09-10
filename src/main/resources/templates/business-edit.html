@@ -491,8 +491,16 @@
 
                         <div class="gallery-manage-item position-relative">
 
-                            <img class="img-fluid rounded gallery-manage-image"
-                                 th:src="@{${img.imagePath}}" alt="Imagine galerie">
+                            <img alt="Previzualizează imaginea galeriei"
+                                 class="img-fluid rounded gallery-manage-image"
+                                 data-bs-target="#galleryImagePreviewModal"
+                                 data-bs-toggle="modal"
+                                 data-gallery-image-preview
+                                 role="button"
+                                 style="cursor: pointer;"
+                                 th:data-image-src="@{${img.imagePath}}"
+                                 th:src="@{${img.imagePath}}"
+                                 tabindex="0">
 
                             <form class="gallery-delete-form"
                                   data-item-type="imaginea"
@@ -536,9 +544,14 @@
                         <div class="gallery-manage-item position-relative">
 
                             <video class="img-fluid rounded gallery-manage-video"
+                                   aria-label="Redă videoclipul pe tot ecranul"
+                                   data-fullscreen-video
                                    muted
                                    playsinline
+                                   role="button"
+                                   style="cursor: pointer;"
                                    th:poster="${#strings.replace(video.videoPath, '.mp4', '.jpg')}"
+                                   tabindex="0"
                                    preload="metadata">
 
                                 <source th:src="${video.videoPath}"
@@ -616,6 +629,7 @@
 <div th:replace="~{fragments/footer :: footer}"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/video-fullscreen.js}"></script>
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
@@ -1111,6 +1125,70 @@
 
     </div>
 </div>
+
+<!-- Gallery image preview -->
+<div aria-hidden="true"
+     aria-labelledby="galleryImagePreviewTitle"
+     class="modal fade"
+     id="galleryImagePreviewModal"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="galleryImagePreviewTitle">
+                    Previzualizare imagine
+                </h5>
+
+                <button aria-label="Închide"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        type="button">
+                </button>
+            </div>
+
+            <div class="modal-body text-center">
+                <img alt="Imagine galerie mărită"
+                     class="img-fluid rounded"
+                     id="galleryImagePreview"
+                     style="max-height: 75vh; object-fit: contain;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const modalElement =
+            document.getElementById("galleryImagePreviewModal");
+
+        const previewImage =
+            document.getElementById("galleryImagePreview");
+
+        modalElement.addEventListener("show.bs.modal", function (event) {
+            const trigger = event.relatedTarget;
+
+            previewImage.src = trigger?.dataset.imageSrc || "";
+        });
+
+        modalElement.addEventListener("hidden.bs.modal", function () {
+            previewImage.removeAttribute("src");
+        });
+
+        document.querySelectorAll("[data-gallery-image-preview]").forEach(function (image) {
+            image.addEventListener("keydown", function (event) {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+
+                    bootstrap.Modal
+                        .getOrCreateInstance(modalElement)
+                        .show(image);
+                }
+            });
+        });
+    });
+</script>
 
 <!-- Gallery deletion confirmation -->
 <div aria-hidden="true"

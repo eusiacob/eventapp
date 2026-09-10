@@ -213,9 +213,11 @@
                                 <div class="gallery-video-item"
                                      th:each="video : ${profile.galleryVideos}">
 
-                                    <div class="video-preview"
-                                         th:attr="data-video-src=${video.videoPath}"
-                                         onclick="playGalleryVideo(this)">
+                                    <div aria-label="Redă videoclipul pe tot ecranul"
+                                         class="video-preview"
+                                         data-fullscreen-video
+                                         role="button"
+                                         tabindex="0">
 
                                         <video class="gallery-video-preview"
                                                muted
@@ -599,42 +601,6 @@
     }
 </script>
 
-<!--Play galley video-->
-<script>
-    function playGalleryVideo(container) {
-
-        const videoSrc =
-            container.dataset.videoSrc;
-
-        const video =
-            document.createElement('video');
-
-        video.className = 'gallery-video';
-        video.controls = true;
-        video.autoplay = true;
-        video.playsInline = true;
-
-        const source =
-            document.createElement('source');
-
-        source.src = videoSrc;
-        source.type = 'video/mp4';
-
-        video.appendChild(source);
-
-        container.innerHTML = '';
-
-        container.appendChild(video);
-
-        video.play().catch(error => {
-            console.error(
-                'Videoclipul nu a putut fi pornit:',
-                error
-            );
-        });
-    }
-</script>
-
 <!--REVIEW MODAL JAVASCRIPT-->
 <script>
 
@@ -666,6 +632,7 @@
 
 <!--IMPORTS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/video-fullscreen.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <!--ADD/REMOVE FROM FAVORITES-->
