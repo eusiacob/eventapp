@@ -495,6 +495,7 @@
                                  th:src="@{${img.imagePath}}" alt="Imagine galerie">
 
                             <form class="gallery-delete-form"
+                                  data-item-type="imaginea"
                                   method="post"
                                   th:action="@{/business/gallery/delete/{id}(id=${img.id})}">
 
@@ -504,7 +505,6 @@
 
                                 <button aria-label="Șterge imaginea"
                                         class="gallery-delete-btn"
-                                        onclick="return confirm('Ștergi această imagine?');"
                                         title="Șterge imaginea"
                                         type="submit">
 
@@ -537,15 +537,19 @@
 
                             <video class="img-fluid rounded gallery-manage-video"
                                    muted
+                                   playsinline
+                                   th:poster="${#strings.replace(video.videoPath, '.mp4', '.jpg')}"
                                    preload="metadata">
 
-                                <source th:src="${video.videoPath}">
+                                <source th:src="${video.videoPath}"
+                                        type="video/mp4">
 
                                 Browserul nu poate reda acest videoclip.
 
                             </video>
 
                             <form class="gallery-delete-form"
+                                  data-item-type="videoclipul"
                                   method="post"
                                   th:action="@{/business/videos/delete/{id}(id=${video.id})}">
 
@@ -555,7 +559,6 @@
 
                                 <button aria-label="Șterge videoclipul"
                                         class="gallery-delete-btn"
-                                        onclick="return confirm('Ștergi acest videoclip?');"
                                         title="Șterge videoclipul"
                                         type="submit">
 
@@ -1109,48 +1112,143 @@
     </div>
 </div>
 
+<!-- Gallery deletion confirmation -->
+<div aria-hidden="true"
+     aria-labelledby="galleryDeleteConfirmationTitle"
+     class="modal fade"
+     id="galleryDeleteConfirmationModal"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="galleryDeleteConfirmationTitle">
+                    Confirmă ștergerea
+                </h5>
+
+                <button aria-label="Închide"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        type="button">
+                </button>
+            </div>
+
+            <div class="modal-body" id="galleryDeleteConfirmationMessage">
+                Ești sigur că vrei să ștergi acest element?
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal"
+                        type="button">
+                    Anulează
+                </button>
+
+                <button class="btn btn-danger"
+                        id="confirmGalleryDeleteButton"
+                        type="button">
+                    Da, șterge
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Gallery deletion without page redirect -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+
+        const confirmationModalElement =
+            document.getElementById("galleryDeleteConfirmationModal");
+
+        const confirmationMessage =
+            document.getElementById("galleryDeleteConfirmationMessage");
+
+        const confirmDeleteButton =
+            document.getElementById("confirmGalleryDeleteButton");
+
+        const confirmationModal =
+            bootstrap.Modal.getOrCreateInstance(confirmationModalElement);
+
+        let pendingDeleteForm = null;
+        let confirmedDeleteForm = null;
+
+        function deleteGalleryItem(form) {
+
+            const submitButton =
+                form.querySelector('button[type="submit"]');
+
+            submitButton.disabled = true;
+
+            axios.post(
+                form.action,
+                new FormData(form),
+                {headers: getCsrfHeaders()}
+            )
+                .then(function (response) {
+                    const galleryItem =
+                        form.closest("[data-gallery-item]");
+
+                    if (galleryItem) {
+                        galleryItem.remove();
+                    }
+
+                    showAsyncAlert(
+                        "success",
+                        response.data.message
+                    );
+                })
+                .catch(function (error) {
+                    showAsyncAlert(
+                        "danger",
+                        getAsyncErrorMessage(
+                            error,
+                            "Elementul nu a putut fi șters."
+                        )
+                    );
+
+                    submitButton.disabled = false;
+                });
+        }
+
         document.querySelectorAll(".gallery-delete-form").forEach(function (form) {
             form.addEventListener("submit", function (event) {
                 event.preventDefault();
 
-                const submitButton =
-                    form.querySelector('button[type="submit"]');
+                pendingDeleteForm = form;
 
-                submitButton.disabled = true;
+                confirmationMessage.textContent =
+                    "Ești sigur că vrei să ștergi " +
+                    form.dataset.itemType +
+                    "? Acțiunea nu poate fi anulată.";
 
-                axios.post(
-                    form.action,
-                    new FormData(form),
-                    {headers: getCsrfHeaders()}
-                )
-                    .then(function (response) {
-                        const galleryItem =
-                            form.closest("[data-gallery-item]");
-
-                        if (galleryItem) {
-                            galleryItem.remove();
-                        }
-
-                        showAsyncAlert(
-                            "success",
-                            response.data.message
-                        );
-                    })
-                    .catch(function (error) {
-                        showAsyncAlert(
-                            "danger",
-                            getAsyncErrorMessage(
-                                error,
-                                "Elementul nu a putut fi șters."
-                            )
-                        );
-
-                        submitButton.disabled = false;
-                    });
+                confirmationModal.show();
             });
+        });
+
+        confirmDeleteButton.addEventListener("click", function () {
+            if (!pendingDeleteForm) {
+                return;
+            }
+
+            confirmedDeleteForm = pendingDeleteForm;
+            pendingDeleteForm = null;
+
+            confirmationModal.hide();
+        });
+
+        confirmationModalElement.addEventListener("hidden.bs.modal", function () {
+
+            if (confirmedDeleteForm) {
+                const form = confirmedDeleteForm;
+                confirmedDeleteForm = null;
+
+                deleteGalleryItem(form);
+
+                return;
+            }
+
+            pendingDeleteForm = null;
         });
     });
 </script>

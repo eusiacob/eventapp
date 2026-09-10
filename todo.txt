@@ -1,3 +1,7 @@
 - serviciul de email (creare cont, resetare parola, notificari aprobare serviciu si
 recenzii)
 - stergere top apreciate dupa refuzare recenzie
+
+- nu se vad previews la videos pe mobile
+
+- adaugare padding pentru dashboard

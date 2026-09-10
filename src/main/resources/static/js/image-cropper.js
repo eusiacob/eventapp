@@ -16,14 +16,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let cropper = null;
     let cropConfirmed = false;
+    let confirmedCroppedFile = null;
 
     const cropModal =
         bootstrap.Modal.getOrCreateInstance(cropModalElement);
+
+    function setImageInputFile(file) {
+
+        const dataTransfer =
+            new DataTransfer();
+
+        dataTransfer.items.add(file);
+
+        imageInput.files =
+            dataTransfer.files;
+    }
 
     /*
      * SELECTARE IMAGINE
      */
     imageInput.addEventListener("change", function (event) {
+
+        cropConfirmed = false;
 
         const file = event.target.files[0];
 
@@ -179,15 +193,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         );
 
 
-                    const dataTransfer =
-                        new DataTransfer();
+                    setImageInputFile(croppedFile);
 
-                    dataTransfer.items.add(
-                        croppedFile
-                    );
-
-                    imageInput.files =
-                        dataTransfer.files;
+                    confirmedCroppedFile =
+                        croppedFile;
 
 
                     /*
@@ -242,6 +251,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
             cropImage.onload = null;
             cropImage.src = "";
+
+            if (!cropConfirmed) {
+
+                if (confirmedCroppedFile) {
+                    setImageInputFile(confirmedCroppedFile);
+                } else {
+                    imageInput.value = "";
+                }
+            }
 
             cropConfirmed = false;
         }

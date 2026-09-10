@@ -279,7 +279,8 @@ public class BusinessController {
     public String businessDetails(@PathVariable String uuid,
                                   Model model,
                                   @AuthenticationPrincipal UserDetails userDetails,
-                                  RedirectAttributes redirectAttributes) {
+                                  RedirectAttributes redirectAttributes)
+            throws IOException, InterruptedException {
 
         BusinessProfile profile = businessProfileService.findByUuid(uuid);
 
@@ -290,6 +291,8 @@ public class BusinessController {
             return "redirect:/business/edit/" + profile.getUuid();
 
         }
+
+        businessVideoService.generateMissingThumbnails(profile);
 
         model.addAttribute("profile", profile);
 
@@ -416,7 +419,7 @@ public class BusinessController {
             @PathVariable String uuid,
             Model model,
             @AuthenticationPrincipal UserDetails userDetails
-    ) {
+    ) throws IOException, InterruptedException {
 
         User user = userService.findByEmail(
                 userDetails.getUsername()
@@ -427,6 +430,8 @@ public class BusinessController {
                         uuid,
                         user
                 );
+
+        businessVideoService.generateMissingThumbnails(profile);
 
         List<String> unavailableDateStrings =
                 profile.getUnavailableDates()

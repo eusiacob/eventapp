@@ -81,6 +81,9 @@ public class BusinessVideoService {
             Path tempOutput =
                     Files.createTempFile("video_output_", ".mp4");
 
+            Path tempThumbnail =
+                    Files.createTempFile("video_thumbnail_", ".jpg");
+
             try {
 
                 // 3. Copiem fișierul încărcat în fișierul temporar
@@ -107,9 +110,15 @@ public class BusinessVideoService {
                 // 6. Conversie la MP4
                 convertToMp4(tempInput, tempOutput);
 
-                // 7. Fișierul final este ÎNTOTDEAUNA MP4
+                // 7. Generăm o miniatură pentru previzualizarea mobilă
+                createThumbnail(tempOutput, tempThumbnail);
+
+                // 8. Fișierul final este ÎNTOTDEAUNA MP4
                 String fileName =
                         "video_" + UUID.randomUUID() + ".mp4";
+
+                String thumbnailFileName =
+                        fileName.replace(".mp4", ".jpg");
 
                 Path uploadPathAbsolute = uploadPath
                         .toAbsolutePath()
@@ -119,7 +128,12 @@ public class BusinessVideoService {
                         .resolve(fileName)
                         .normalize();
 
-                if (!filePath.startsWith(uploadPathAbsolute)) {
+                Path thumbnailPath = uploadPathAbsolute
+                        .resolve(thumbnailFileName)
+                        .normalize();
+
+                if (!filePath.startsWith(uploadPathAbsolute) ||
+                        !thumbnailPath.startsWith(uploadPathAbsolute)) {
                     throw new IOException(
                             "Calea fișierului nu este permisă."
                     );
@@ -131,7 +145,13 @@ public class BusinessVideoService {
                         StandardCopyOption.REPLACE_EXISTING
                 );
 
-                // 8. Salvăm calea în DB
+                Files.copy(
+                        tempThumbnail,
+                        thumbnailPath,
+                        StandardCopyOption.REPLACE_EXISTING
+                );
+
+                // 9. Salvăm calea în DB
                 BusinessVideo video = new BusinessVideo();
 
                 video.setVideoPath(
@@ -154,6 +174,7 @@ public class BusinessVideoService {
                 // Ștergem întotdeauna fișierele temporare
                 Files.deleteIfExists(tempInput);
                 Files.deleteIfExists(tempOutput);
+                Files.deleteIfExists(tempThumbnail);
             }
         }
 
@@ -445,6 +466,71 @@ public class BusinessVideoService {
         }
     }
 
+    private void createThumbnail(Path input, Path output)
+            throws IOException, InterruptedException {
+
+        ffmpegSemaphore.acquire();
+
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder(
+                    "ffmpeg",
+                    "-y",
+                    "-ss", "0.1",
+                    "-i", input.toString(),
+                    "-frames:v", "1",
+                    "-vf", "scale='min(960,iw)':-2",
+                    "-q:v", "2",
+                    "-update", "1",
+                    output.toString()
+            );
+
+            processBuilder.redirectErrorStream(true);
+
+            Process process = processBuilder.start();
+
+            StringBuilder outputMessage = new StringBuilder();
+
+            Thread outputReader = new Thread(() -> {
+                try (var reader = new java.io.BufferedReader(
+                        new java.io.InputStreamReader(process.getInputStream()))) {
+
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        outputMessage.append(line)
+                                .append(System.lineSeparator());
+                    }
+
+                } catch (IOException ignored) {
+                    // Procesul este gestionat mai jos.
+                }
+            });
+
+            outputReader.start();
+
+            if (!process.waitFor(30, TimeUnit.SECONDS)) {
+                process.destroyForcibly();
+                outputReader.interrupt();
+
+                throw new IOException(
+                        "Generarea miniaturii video a depășit timpul maxim."
+                );
+            }
+
+            outputReader.join(2000);
+
+            if (process.exitValue() != 0) {
+                throw new IOException(
+                        "Nu s-a putut genera miniatura videoclipului: "
+                                + outputMessage
+                );
+            }
+
+        } finally {
+            ffmpegSemaphore.release();
+        }
+    }
+
     public long countVideosByBusinessId(
             Long businessId
     ) {
@@ -454,6 +540,53 @@ public class BusinessVideoService {
 
         return businessVideoRepository
                 .countByBusinessProfile(businessProfile);
+    }
+
+    public void generateMissingThumbnails(BusinessProfile businessProfile)
+            throws IOException, InterruptedException {
+
+        if (businessProfile.getGalleryVideos() == null) {
+            return;
+        }
+
+        Path uploadsRoot = Paths.get("uploads")
+                .toAbsolutePath()
+                .normalize();
+
+        for (BusinessVideo video : businessProfile.getGalleryVideos()) {
+
+            String videoPath = video.getVideoPath();
+
+            if (videoPath == null || videoPath.isBlank()) {
+                continue;
+            }
+
+            String relativePath = videoPath.startsWith("/")
+                    ? videoPath.substring(1)
+                    : videoPath;
+
+            Path filePath = Paths.get(relativePath)
+                    .toAbsolutePath()
+                    .normalize();
+
+            if (!filePath.startsWith(uploadsRoot)) {
+                throw new IOException(
+                        "Calea fișierului nu este permisă."
+                );
+            }
+
+            Path thumbnailPath = filePath.resolveSibling(
+                    filePath.getFileName()
+                            .toString()
+                            .replaceFirst("\\.mp4$", ".jpg")
+            );
+
+            if (Files.isRegularFile(filePath) &&
+                    Files.notExists(thumbnailPath)) {
+
+                createThumbnail(filePath, thumbnailPath);
+            }
+        }
     }
 
     public BusinessProfile deleteVideo(
@@ -505,6 +638,16 @@ public class BusinessVideoService {
 
             if (Files.exists(filePath)) {
                 Files.delete(filePath);
+            }
+
+            Path thumbnailPath = filePath.resolveSibling(
+                    filePath.getFileName()
+                            .toString()
+                            .replaceFirst("\\.mp4$", ".jpg")
+            );
+
+            if (Files.exists(thumbnailPath)) {
+                Files.delete(thumbnailPath);
             }
         }
 
