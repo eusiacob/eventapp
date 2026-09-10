@@ -1675,6 +1675,15 @@ body {
     }
 
     .favorite-heart {
+        width: 30px;
+        height: 30px;
+    }
+
+    .dashboard-row{
+        padding: 1rem !important;
+    }
+
+    .favorite-heart {
         font-size: 1.5rem;
     }
 
@@ -2308,6 +2317,10 @@ body {
     .gallery-photo-grid {
         grid-template-columns: repeat(3, 1fr);
         gap: 0.4rem;
+    }
+
+    .dashboard-row{
+        padding: 1rem !important;
     }
 
     .gallery-video-grid {
