@@ -21,10 +21,13 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class BusinessVideoService {
 
+    private static final int VIDEO_MAX_WIDTH = 1280;
+    private static final int VIDEO_CONVERSION_TIMEOUT_MINUTES = 5;
+
     private final BusinessVideoRepository businessVideoRepository;
     private final BusinessProfileService businessProfileService;
     private final UploadProperties uploadProperties;
-    private final Semaphore ffmpegSemaphore = new Semaphore(2);
+    private final Semaphore ffmpegSemaphore = new Semaphore(1);
 
     public BusinessVideoService(
             BusinessVideoRepository businessVideoRepository,
@@ -407,12 +410,12 @@ public class BusinessVideoService {
                     "ffmpeg",
                     "-y",
                     "-i", input.toString(),
-                    "-vf", "scale='min(1920,iw)':-2",
+                    "-vf", "scale='min(" + VIDEO_MAX_WIDTH + ",iw)':-2",
                     "-c:v", "libx264",
-                    "-preset", "medium",
-                    "-crf", "24",
+                    "-preset", "veryfast",
+                    "-crf", "28",
                     "-c:a", "aac",
-                    "-b:a", "128k",
+                    "-b:a", "96k",
                     "-movflags", "+faststart",
                     output.toString()
             );
@@ -441,14 +444,19 @@ public class BusinessVideoService {
 
             outputReader.start();
 
-            boolean finished = process.waitFor(2, TimeUnit.MINUTES);
+            boolean finished = process.waitFor(
+                    VIDEO_CONVERSION_TIMEOUT_MINUTES,
+                    TimeUnit.MINUTES
+            );
 
             if (!finished) {
                 process.destroyForcibly();
                 outputReader.interrupt();
 
                 throw new IOException(
-                        "Conversia video a depășit timpul maxim de 2 minute."
+                        "Conversia video a depășit timpul maxim de "
+                                + VIDEO_CONVERSION_TIMEOUT_MINUTES
+                                + " minute."
                 );
             }
 
