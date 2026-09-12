@@ -97,6 +97,13 @@ public class BusinessImageController {
                     "Imaginile au fost încărcate cu succes."
             );
 
+        } catch (IllegalArgumentException e) {
+
+            return error(
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage()
+            );
+
         } catch (IOException e) {
 
             return error(

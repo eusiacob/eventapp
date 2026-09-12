@@ -7,6 +7,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class EmailService {
@@ -42,6 +43,15 @@ public class EmailService {
                         "Dacă nu ai solicitat resetarea parolei, " +
                         "poți ignora acest mesaj."
         );
+    }
+
+    public String buildPasswordResetLink(String rawToken) {
+        return UriComponentsBuilder
+                .fromUriString(appBaseUrl)
+                .path("/reset-password")
+                .queryParam("token", rawToken)
+                .build()
+                .toUriString();
     }
 
     public void sendAccountCreatedEmail(String recipient, String firstName) {

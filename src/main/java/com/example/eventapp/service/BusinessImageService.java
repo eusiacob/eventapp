@@ -8,6 +8,8 @@ import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.*;
@@ -63,17 +65,7 @@ public class BusinessImageService {
                 continue;
             }
 
-            String contentType = file.getContentType();
-
-            if (contentType == null ||
-                    !contentType.startsWith("image/")) {
-
-                continue;
-            }
-
-            if (file.getSize() > 10 * 1024 * 1024) {
-                continue;
-            }
+            BufferedImage uploadedImage = validateGalleryImage(file);
 
             if (currentImages >= 15) {
                 break;
@@ -92,7 +84,7 @@ public class BusinessImageService {
             ByteArrayOutputStream outputStream =
                     new ByteArrayOutputStream();
 
-            Thumbnails.of(file.getInputStream())
+            Thumbnails.of(uploadedImage)
                     .size(1920, 1920)
                     .outputFormat("jpg")
                     .outputQuality(0.82)
@@ -132,6 +124,37 @@ public class BusinessImageService {
 
             businessProfileService.save(businessProfile);
         }
+    }
+
+    private BufferedImage validateGalleryImage(MultipartFile file) throws IOException {
+
+        String contentType = file.getContentType();
+
+        if (contentType == null ||
+                !(contentType.equals("image/jpeg")
+                        || contentType.equals("image/png")
+                        || contentType.equals("image/webp"))) {
+
+            throw new IllegalArgumentException(
+                    "Formatul imaginii nu este acceptat. Folosește JPG, PNG sau WebP."
+            );
+        }
+
+        if (file.getSize() > 10 * 1024 * 1024) {
+            throw new IllegalArgumentException(
+                    "Imaginea nu poate depăși 10 MB."
+            );
+        }
+
+        BufferedImage image = ImageIO.read(file.getInputStream());
+
+        if (image == null) {
+            throw new IllegalArgumentException(
+                    "Fișierul selectat nu este o imagine validă."
+            );
+        }
+
+        return image;
     }
 
     public long countImagesByBusinessId(Long businessId) {

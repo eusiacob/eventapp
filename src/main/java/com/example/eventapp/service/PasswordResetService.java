@@ -14,12 +14,15 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Service
 public class PasswordResetService {
 
     private static final int TOKEN_BYTES = 32;
     private static final int TOKEN_EXPIRATION_MINUTES = 15;
+    private static final int RESET_REQUEST_COOLDOWN_MINUTES = 5;
 
     private final UserRepository userRepository;
     private final PasswordResetTokenRepository tokenRepository;
@@ -28,6 +31,8 @@ public class PasswordResetService {
     private final EmailService emailService;
 
     private final SecureRandom secureRandom = new SecureRandom();
+    private final ConcurrentMap<String, LocalDateTime> resetRequestAttempts =
+            new ConcurrentHashMap<>();
 
     public PasswordResetService(
             UserRepository userRepository,
@@ -55,6 +60,11 @@ public class PasswordResetService {
 
         String emailHash =
                 encryptionService.hash(normalizedEmail);
+        LocalDateTime now = LocalDateTime.now();
+
+        if (isRateLimited(emailHash, now)) {
+            return;
+        }
 
         User user = userRepository
                 .findByEmailHash(emailHash)
@@ -71,6 +81,7 @@ public class PasswordResetService {
         /*
          * Invalidăm tokenurile anterioare.
          */
+        tokenRepository.deleteByExpiresAtBefore(now);
         tokenRepository.deleteByUser(user);
 
         /*
@@ -94,9 +105,9 @@ public class PasswordResetService {
 
         resetToken.setTokenHash(tokenHash);
         resetToken.setUser(user);
-        resetToken.setCreatedAt(LocalDateTime.now());
+        resetToken.setCreatedAt(now);
         resetToken.setExpiresAt(
-                LocalDateTime.now()
+                now
                         .plusMinutes(TOKEN_EXPIRATION_MINUTES)
         );
         resetToken.setUsed(false);
@@ -104,8 +115,7 @@ public class PasswordResetService {
         tokenRepository.save(resetToken);
 
         String resetLink =
-                "http://localhost:8080/reset-password?token="
-                        + rawToken;
+                emailService.buildPasswordResetLink(rawToken);
 
         emailService.sendPasswordResetEmail(
                 normalizedEmail,
@@ -211,5 +221,39 @@ public class PasswordResetService {
                     e
             );
         }
+    }
+
+    private boolean isRateLimited(
+            String emailHash,
+            LocalDateTime now
+    ) {
+
+        cleanupOldResetAttempts(now);
+
+        LocalDateTime previousAttempt =
+                resetRequestAttempts.putIfAbsent(emailHash, now);
+
+        if (previousAttempt == null) {
+            return false;
+        }
+
+        if (previousAttempt.isAfter(
+                now.minusMinutes(RESET_REQUEST_COOLDOWN_MINUTES)
+        )) {
+            return true;
+        }
+
+        resetRequestAttempts.replace(emailHash, previousAttempt, now);
+
+        return false;
+    }
+
+    private void cleanupOldResetAttempts(LocalDateTime now) {
+
+        LocalDateTime limit =
+                now.minusMinutes(RESET_REQUEST_COOLDOWN_MINUTES);
+
+        resetRequestAttempts.entrySet()
+                .removeIf(entry -> entry.getValue().isBefore(limit));
     }
 }
