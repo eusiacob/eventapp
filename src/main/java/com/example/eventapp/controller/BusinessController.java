@@ -15,13 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +31,7 @@ public class BusinessController {
     private final UserService userService;
     private final SubscriptionService subscriptionService;
     private final BusinessImageService businessImageService;
+    private final BusinessCoverImageService businessCoverImageService;
     private final UserNotificationService userNotificationService;
     private final BusinessVideoService businessVideoService;
 
@@ -46,11 +41,13 @@ public class BusinessController {
             ReviewService reviewService,
             UserService userService,
             BusinessImageService businessImageService,
+            BusinessCoverImageService businessCoverImageService,
             SubscriptionService subscriptionService,
             UserNotificationService userNotificationService,
             BusinessVideoService businessVideoService) {
         this.businessProfileService = businessProfileService;
         this.businessImageService = businessImageService;
+        this.businessCoverImageService = businessCoverImageService;
         this.userRepository = userRepository;
         this.reviewService = reviewService;
         this.userService = userService;
@@ -110,49 +107,13 @@ public class BusinessController {
 
         if (file != null && !file.isEmpty()) {
 
-            String contentType = file.getContentType();
-
-            if (contentType == null ||
-                    !(contentType.equals("image/jpeg")
-                            || contentType.equals("image/png")
-                            || contentType.equals("image/webp"))) {
+            try {
+                businessCoverImageService.validateCoverImage(file);
+            } catch (IllegalArgumentException ex) {
 
                 model.addAttribute(
                         "imageError",
-                        "Formatul imaginii nu este acceptat. Folosește JPG, PNG sau WebP."
-                );
-
-                model.addAttribute(
-                        "categories",
-                        businessProfileService.getCategories()
-                );
-
-                return "business-form";
-            }
-
-            BufferedImage image = ImageIO.read(file.getInputStream());
-
-            if (image == null) {
-
-                model.addAttribute(
-                        "imageError",
-                        "Fișierul selectat nu este o imagine validă."
-                );
-
-                model.addAttribute(
-                        "categories",
-                        businessProfileService.getCategories()
-                );
-
-                return "business-form";
-            }
-
-            if (image.getWidth() != 1200 ||
-                    image.getHeight() != 900) {
-
-                model.addAttribute(
-                        "imageError",
-                        "Imaginea trebuie să fie decupată înainte de salvare."
+                        ex.getMessage()
                 );
 
                 model.addAttribute(
@@ -200,74 +161,35 @@ public class BusinessController {
 
         if (file != null && !file.isEmpty()) {
 
-            String categoryFolder = profile.getCategory()
-                    .name()
-                    .toLowerCase();
-
-            Path uploadPath = Paths.get(
-                    "uploads",
-                    "businesses",
-                    categoryFolder,
-                    profile.getUuid()
+            profile.setImagePath(
+                    businessCoverImageService.saveCoverImage(
+                            profile,
+                            file
+                    )
             );
 
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
+            businessProfileService.save(profile);
 
-            String originalFileName =
-                    file.getOriginalFilename();
+            List<User> admins =
+                    userRepository.findByRole(Role.ADMIN);
 
-            if (originalFileName != null &&
-                    originalFileName.contains(".")) {
+            for (User admin : admins) {
 
-                String extension =
-                        originalFileName.substring(
-                                originalFileName.lastIndexOf(".")
-                        );
+                userNotificationService.create(
 
-                String fileName = "cover" + extension;
+                        admin,
 
-                Path filePath =
-                        uploadPath.resolve(fileName);
+                        "Serviciu nou în așteptare",
 
-                Files.write(
-                        filePath,
-                        file.getBytes()
-                );
+                        "Serviciul "
+                                + profile.getName()
+                                + " a fost trimis pentru aprobare.",
 
-                profile.setImagePath(
-                        "/uploads/businesses/"
-                                + categoryFolder
-                                + "/"
+                        "/admin/business/"
                                 + profile.getUuid()
-                                + "/"
-                                + fileName
+
                 );
 
-                businessProfileService.save(profile);
-
-                List<User> admins =
-                        userRepository.findByRole(Role.ADMIN);
-
-                for (User admin : admins) {
-
-                    userNotificationService.create(
-
-                            admin,
-
-                            "Serviciu nou în așteptare",
-
-                            "Serviciul "
-                                    + profile.getName()
-                                    + " a fost trimis pentru aprobare.",
-
-                            "/admin/business/"
-                                    + profile.getUuid()
-
-                    );
-
-                }
             }
         }
 
@@ -489,6 +411,7 @@ public class BusinessController {
 
         BusinessProfile existingProfile =
                 businessProfileService.findByUuidAndValidateOwner(uuid, user);
+        String oldImagePath = existingProfile.getImagePath();
 
         if (result.hasErrors()) {
 
@@ -508,50 +431,13 @@ public class BusinessController {
 
         if (imageFile != null && !imageFile.isEmpty()) {
 
-
-            String contentType = imageFile.getContentType();
-
-            if (!"image/jpeg".equals(contentType)
-                    && !"image/png".equals(contentType)
-                    && !"image/webp".equals(contentType)) {
-
-                redirectAttributes.addFlashAttribute(
-                        "imageError",
-                        "Formatul imaginii nu este acceptat. Folosește JPEG, PNG sau WebP."
-                );
-
-                model.addAttribute(
-                        "categories",
-                        businessProfileService.getCategories()
-                );
-
-                return "redirect:/business/edit/" + uuid;
-            }
-
-            BufferedImage image =
-                    ImageIO.read(imageFile.getInputStream());
-
-            if (image == null) {
+            try {
+                businessCoverImageService.validateCoverImage(imageFile);
+            } catch (IllegalArgumentException ex) {
 
                 model.addAttribute(
                         "imageError",
-                        "Fișierul selectat nu este o imagine validă."
-                );
-
-                model.addAttribute(
-                        "categories",
-                        businessProfileService.getCategories()
-                );
-
-                return "business-edit";
-            }
-
-            if (image.getWidth() != 1200 ||
-                    image.getHeight() != 900) {
-
-                model.addAttribute(
-                        "imageError",
-                        "Imaginea trebuie să fie decupată înainte de salvare."
+                        ex.getMessage()
                 );
 
                 model.addAttribute(
@@ -574,29 +460,16 @@ public class BusinessController {
 
         if (imageFile != null && !imageFile.isEmpty()) {
 
-            Path uploadPath = Paths.get(
-                    "uploads",
-                    "businesses",
-                    existingProfile.getUuid()
-            );
-
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-
-            Path filePath =
-                    uploadPath.resolve("cover.jpg");
-
-            Files.write(
-                    filePath,
-                    imageFile.getBytes()
-            );
-
             existingProfile.setImagePath(
-                    "/uploads/businesses/"
-                            + existingProfile.getUuid()
-                            + "/cover.jpg"
+                    businessCoverImageService.saveCoverImage(
+                            existingProfile,
+                            imageFile
+                    )
             );
+
+            if (!existingProfile.getImagePath().equals(oldImagePath)) {
+                businessCoverImageService.deleteCoverImage(oldImagePath);
+            }
         }
 
         businessProfileService.save(existingProfile);

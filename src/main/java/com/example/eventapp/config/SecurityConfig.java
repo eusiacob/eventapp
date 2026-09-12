@@ -3,6 +3,7 @@ package com.example.eventapp.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
@@ -77,6 +78,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/business/{uuid}").permitAll()
 
                         .anyRequest().denyAll()
+                )
+                .headers(headers -> headers
+                        .contentTypeOptions(Customizer.withDefaults())
                 )
                 .formLogin(form -> form
                         .loginPage("/login")

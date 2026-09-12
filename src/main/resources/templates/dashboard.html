@@ -274,12 +274,12 @@
                     </p>
 
                     <span class="badge bg-success-subtle text-success mb-2"
-                          th:if="${p.active == true}">
+                          th:if="${p.active && p.status.name() == 'APPROVED'}">
                             Vizibil public
                         </span>
 
                     <span class="badge bg-danger-subtle text-dark mb-2"
-                          th:if="${p.active == false}">
+                          th:if="${p.active == false || p.status.name() == 'REJECTED' || p.status.name() == 'PENDING'}">
                             Inactiv
                         </span>
 
