@@ -1936,6 +1936,31 @@ body {
     object-fit: cover;
 }
 
+@media (max-width: 575px) {
+
+    .admin-business-image {
+        height: 105px;
+    }
+
+    .admin-business-card-link .card-body {
+        padding: 0.75rem;
+    }
+
+    .admin-business-card-link h5 {
+        font-size: 0.88rem;
+    }
+
+    .admin-business-card-link p,
+    .admin-business-card-link small {
+        font-size: 0.72rem;
+    }
+
+    .admin-status-badge {
+        padding: 3px 6px;
+        font-size: 0.62rem;
+    }
+}
+
 .admin-status-badge {
 
     font-size: .7rem;
