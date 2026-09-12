@@ -15,9 +15,8 @@
 <main class="container py-4" style="min-height: 100vh">
     <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
-    <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${successMessage != null}">
+    <div class="alert alert-success alert-dismissible fade show p-2" role="alert" th:if="${successMessage != null}">
         <span th:text="${successMessage}"></span>
-        <button aria-label="Închide" class="btn-close" data-bs-dismiss="alert" type="button"></button>
     </div>
 
     <div class="card border-0 shadow-sm">
@@ -38,7 +37,7 @@
                                 <h2 class="h5 fw-bold mb-1"
                                     th:text="${document.type.name() == 'PRIVACY_POLICY' ? 'Politica de confidențialitate' : 'Termeni și condiții'}"></h2>
                                 <p class="text-muted small mb-0">
-                                    Versiunea<span th:text="${document.version}"></span> ·
+                                    Versiunea <span th:text="${document.version}"></span> ·
                                     actualizată la <span th:text="${#temporals.format(document.lastUpdated, 'dd.MM.yyyy')}"></span>
                                 </p>
                             </div>
