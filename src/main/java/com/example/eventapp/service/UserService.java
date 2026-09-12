@@ -18,8 +18,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class UserService {
@@ -305,6 +314,26 @@ public class UserService {
 
     }
 
+    @Scheduled(cron = "0 15 3 * * *")
+    @Transactional
+    public void deleteAccountsPastRetentionPeriod() {
+
+        LocalDateTime retentionLimit =
+                LocalDateTime.now().minusYears(2);
+
+        List<User> inactiveUsers =
+                userRepository.findByLastActivityAtBefore(retentionLimit);
+
+        for (User user : inactiveUsers) {
+
+            if (user.getRole() == Role.ADMIN) {
+                continue;
+            }
+
+            deleteUserData(user);
+        }
+    }
+
     //Se sterge serviciul din favorite de la toti userii
     public void removeBusinessFromAllFavorites(Long businessId) {
         List<User> users = userRepository.findUsersWhoFavoriteBusiness(businessId);
@@ -386,9 +415,15 @@ public class UserService {
         User managedUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new IllegalStateException("Contul nu mai există."));
 
+        deleteUserData(managedUser);
+    }
+
+    private void deleteUserData(User managedUser) {
+
         List<BusinessProfile> profiles = businessProfileRepository.findByUser(managedUser);
         for (BusinessProfile profile : profiles) {
             removeBusinessFromAllFavorites(profile.getId());
+            deleteBusinessUploads(profile);
         }
 
         if (managedUser.getFavoriteBusinesses() != null) {
@@ -409,6 +444,67 @@ public class UserService {
         passwordResetTokenRepository.deleteByUser(managedUser);
 
         userRepository.delete(managedUser);
+    }
+
+    private void deleteBusinessUploads(BusinessProfile profile) {
+        if (profile.getUuid() == null) {
+            return;
+        }
+
+        try {
+            UUID.fromString(profile.getUuid());
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalStateException("Identificatorul serviciului este invalid.", exception);
+        }
+
+        Path uploadsRoot = Paths.get("uploads", "businesses")
+                .toAbsolutePath()
+                .normalize();
+
+        if (!Files.exists(uploadsRoot)) {
+            return;
+        }
+
+        try (Stream<Path> paths = Files.walk(uploadsRoot, 2)) {
+            List<Path> profileDirectories = paths
+                    .filter(Files::isDirectory)
+                    .filter(path -> path.startsWith(uploadsRoot))
+                    .filter(path -> profile.getUuid().equals(
+                            path.getFileName().toString()
+                    ))
+                    .collect(Collectors.toList());
+
+            for (Path directory : profileDirectories) {
+                deleteDirectoryIfAllowed(directory, uploadsRoot);
+            }
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                    "Fișierele serviciului nu au putut fi identificate.",
+                    exception
+            );
+        }
+    }
+
+    private void deleteDirectoryIfAllowed(Path directory, Path uploadsRoot) {
+        if (!directory.startsWith(uploadsRoot) || !Files.exists(directory)) {
+            return;
+        }
+
+        try (Stream<Path> paths = Files.walk(directory)) {
+            paths.sorted(Comparator.reverseOrder())
+                    .forEach(path -> {
+                        try {
+                            Files.delete(path);
+                        } catch (IOException exception) {
+                            throw new UncheckedIOException(exception);
+                        }
+                    });
+        } catch (IOException | UncheckedIOException exception) {
+            throw new IllegalStateException(
+                    "Fișierele serviciului nu au putut fi șterse.",
+                    exception
+            );
+        }
     }
 
     private void validateCurrentPassword(User user, String currentPassword) {

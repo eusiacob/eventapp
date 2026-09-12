@@ -27,4 +27,6 @@ public interface UserRepository
     List<User> findByEnabledTrueAndLastActivityAtBefore(
             LocalDateTime date
     );
+
+    List<User> findByLastActivityAtBefore(LocalDateTime date);
 }
