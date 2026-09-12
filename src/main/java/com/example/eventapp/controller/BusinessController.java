@@ -210,7 +210,8 @@ public class BusinessController {
 
         BusinessProfile profile = businessProfileService.findByUuid(uuid);
 
-        if (profile.getStatus() != BusinessProfile.BusinessStatus.APPROVED) {
+        if (profile.getStatus() != BusinessProfile.BusinessStatus.APPROVED ||
+                !profile.isActive()) {
 
             redirectAttributes.addAttribute("businessNotApproved", true);
 
