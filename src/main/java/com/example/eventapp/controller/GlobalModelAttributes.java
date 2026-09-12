@@ -3,6 +3,7 @@ package com.example.eventapp.controller;
 import com.example.eventapp.model.User;
 import com.example.eventapp.service.UserNotificationService;
 import com.example.eventapp.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,7 +28,11 @@ public class GlobalModelAttributes {
     }
 
     @ModelAttribute("favoriteCount")
-    public int favoriteCount(Authentication authentication) {
+    public int favoriteCount(Authentication authentication, HttpServletRequest request) {
+
+        if (isErrorRequest(request)) {
+            return 0;
+        }
 
         if (authentication == null || !authentication.isAuthenticated()) {
             return 0;
@@ -37,27 +42,44 @@ public class GlobalModelAttributes {
             return 0;
         }
 
-        return userService.getVisibleFavoriteCount(authentication.getName());
+        try {
+            return userService.getVisibleFavoriteCount(authentication.getName());
+        } catch (RuntimeException exception) {
+            return 0;
+        }
     }
 
     @ModelAttribute
     public void addNotifications(
             Model model,
-            @AuthenticationPrincipal UserDetails userDetails
+            @AuthenticationPrincipal UserDetails userDetails,
+            HttpServletRequest request
     ) {
+
+        if (isErrorRequest(request)) {
+            return;
+        }
 
         if (userDetails != null) {
 
-            User user =
-                    userService.findByEmail(userDetails.getUsername());
+            try {
+                User user =
+                        userService.findByEmail(userDetails.getUsername());
 
-            model.addAttribute(
-                    "notifications",
-                    userNotificationService.getUserNotifications(user));
+                model.addAttribute(
+                        "notifications",
+                        userNotificationService.getUserNotifications(user));
 
-            model.addAttribute(
-                    "notificationCount",
-                    userNotificationService.getUnreadCount(user));
+                model.addAttribute(
+                        "notificationCount",
+                        userNotificationService.getUnreadCount(user));
+            } catch (RuntimeException exception) {
+                model.addAttribute("notificationCount", 0);
+            }
         }
+    }
+
+    private boolean isErrorRequest(HttpServletRequest request) {
+        return request != null && request.getRequestURI() != null && request.getRequestURI().startsWith("/error");
     }
 }

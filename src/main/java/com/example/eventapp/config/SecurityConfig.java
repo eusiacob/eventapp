@@ -69,6 +69,7 @@ public class SecurityConfig {
                                 "/uploads/businesses/**",
                                 "/privacy",
                                 "/terms",
+                                "/error",
                                 "/forgot",
                                 "/contact",
                                 "/reset-password",
