@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,9 +15,14 @@ public class EmailService {
             LoggerFactory.getLogger(EmailService.class);
 
     private final JavaMailSender mailSender;
+    private final String appBaseUrl;
 
-    public EmailService(JavaMailSender mailSender) {
+    public EmailService(
+            JavaMailSender mailSender,
+            @Value("${app.base-url:http://localhost:8080}") String appBaseUrl
+    ) {
         this.mailSender = mailSender;
+        this.appBaseUrl = appBaseUrl.replaceAll("/+$", "");
     }
 
     public void sendPasswordResetEmail(
@@ -34,8 +40,7 @@ public class EmailService {
                         "\n\n" +
                         "Linkul este valabil timp de 15 minute.\n\n" +
                         "Dacă nu ai solicitat resetarea parolei, " +
-                        "poți ignora acest mesaj.\n\n" +
-                        "Echipa M-Event"
+                        "poți ignora acest mesaj."
         );
     }
 
@@ -45,8 +50,7 @@ public class EmailService {
                 "Cont creat cu succes - M-Event",
                 greeting(firstName) +
                         "Contul tău M-Event a fost creat cu succes. " +
-                        "Te poți autentifica și începe să planifici evenimentul tău.\n\n" +
-                        "Echipa M-Event"
+                        "Te poți autentifica și începe să planifici evenimentul tău."
         );
     }
 
@@ -57,8 +61,7 @@ public class EmailService {
                 greeting(firstName) +
                         "Adresa de email a contului tău a fost schimbată. " +
                         "De acum, autentifică-te folosind această adresă.\n\n" +
-                        "Dacă nu ai făcut tu această modificare, contactează-ne imediat.\n\n" +
-                        "Echipa M-Event"
+                        "Dacă nu ai făcut tu această modificare, contactează-ne imediat."
         );
     }
 
@@ -68,8 +71,7 @@ public class EmailService {
                 "Parolă schimbată - M-Event",
                 greeting(firstName) +
                         "Parola contului tău a fost schimbată cu succes.\n\n" +
-                        "Dacă nu ai făcut tu această modificare, resetează parola și contactează-ne imediat.\n\n" +
-                        "Echipa M-Event"
+                        "Dacă nu ai făcut tu această modificare, resetează parola și contactează-ne imediat."
         );
     }
 
@@ -79,8 +81,7 @@ public class EmailService {
                 "Cont șters - M-Event",
                 greeting(firstName) +
                         "Contul tău M-Event a fost șters la cerere.\n\n" +
-                        "Îți mulțumim că ai folosit M-Event.\n\n" +
-                        "Echipa M-Event"
+                        "Îți mulțumim că ai folosit M-Event."
         );
     }
 
@@ -94,8 +95,7 @@ public class EmailService {
                 "Serviciu aprobat - M-Event",
                 greeting(firstName) +
                         "Serviciul tău \"" + businessName +
-                        "\" a fost aprobat și este acum vizibil pe platformă.\n\n" +
-                        "Echipa M-Event"
+                        "\" a fost aprobat și este acum vizibil pe platformă."
         );
     }
 
@@ -109,8 +109,27 @@ public class EmailService {
                 "Recenzie aprobată - M-Event",
                 greeting(firstName) +
                         "Recenzia ta pentru \"" + businessName +
-                        "\" a fost aprobată și este acum vizibilă public.\n\n" +
-                        "Echipa M-Event"
+                        "\" a fost aprobată și este acum vizibilă public."
+        );
+    }
+
+    public void sendReviewRejectedEmail(
+            String recipient,
+            String firstName,
+            String businessName,
+            String reason
+    ) {
+        String reasonText = reason == null || reason.isBlank()
+                ? ""
+                : "\n\nMotiv: " + reason.trim();
+
+        sendEmail(
+                recipient,
+                "Recenzie respinsă - M-Event",
+                greeting(firstName) +
+                        "Recenzia ta pentru \"" + businessName +
+                        "\" nu a fost aprobată." + reasonText +
+                        "\n\nO poți modifica și trimite din nou spre verificare."
         );
     }
 
@@ -124,8 +143,7 @@ public class EmailService {
                 "Răspuns nou de la Support - M-Event",
                 greeting(firstName) +
                         "Ai primit un răspuns nou pentru solicitarea \"" + subject +
-                        "\". Autentifică-te pentru a-l citi.\n\n" +
-                        "Echipa M-Event"
+                        "\". Autentifică-te pentru a-l citi."
         );
     }
 
@@ -144,7 +162,7 @@ public class EmailService {
 
         message.setTo(recipient);
         message.setSubject(subject);
-        message.setText(content);
+        message.setText(content + applicationFooter());
 
         try {
             mailSender.send(message);
@@ -157,6 +175,19 @@ public class EmailService {
         return "Salut" +
                 (firstName == null || firstName.isBlank() ? "" : " " + firstName.trim()) +
                 ",\n\n";
+    }
+
+    private String applicationFooter() {
+        return "\n\n" +
+                "────────────────────\n" +
+                "M-Event\n" +
+                "Descoperă servicii și experiențe pentru evenimentele tale.\n\n" +
+                "Informații:\n" +
+                "Confidențialitate: " + appBaseUrl + "/privacy\n" +
+                "Termeni și condiții: " + appBaseUrl + "/terms\n" +
+                "Contact: " + appBaseUrl + "/contact\n\n" +
+                "Urmărește-ne: https://www.facebook.com/ | https://www.instagram.com/\n\n" +
+                "© 2026 M-Event. Toate drepturile rezervate.";
     }
 
 }

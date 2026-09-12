@@ -168,6 +168,12 @@ public class ReviewService {
         reviewRepository.save(review);
 
         userNotificationService.notifyReviewRejected(review);
+        emailService.sendReviewRejectedEmail(
+                userService.getEmailAddress(review.getUser()),
+                review.getUser().getFirstName(),
+                review.getBusinessProfile().getName(),
+                review.getRejectionReason()
+        );
 
     }
 }
