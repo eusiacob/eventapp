@@ -392,7 +392,6 @@ body {
     }
 
     .mobile-nav-item span {
-        line-height: 1.1;
         white-space: nowrap;
     }
 
@@ -465,10 +464,6 @@ body {
         text-align: center;
     }
 
-    .mobile-notification-item i {
-        color: #0d6efd;
-    }
-
     .mobile-notifications-panel {
         --bs-offcanvas-height: min(88vh, 720px);
 
@@ -480,68 +475,9 @@ body {
         border-bottom: 1px solid #e9ecef;
     }
 
-    .mobile-notifications-empty {
-        min-height: 180px;
-        padding: 2rem;
-
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 0.65rem;
-
-        color: #6c757d;
-        text-align: center;
-    }
-
-    .mobile-notifications-empty i {
-        font-size: 2rem;
-    }
-
-    .mobile-notification-list {
+    .mobile-notifications-panel .navbar-notification-list {
         max-height: calc(var(--bs-offcanvas-height) - 70px);
         overflow-y: auto;
-    }
-
-    .mobile-notification-entry {
-        display: flex;
-        align-items: flex-start;
-        gap: 0.75rem;
-
-        padding: 1rem 1.25rem;
-
-        color: #212529;
-        text-decoration: none;
-
-        border-bottom: 1px solid #f1f3f5;
-    }
-
-    .mobile-notification-entry > i {
-        margin-top: 0.15rem;
-        color: #6c757d;
-    }
-
-    .mobile-notification-entry > span {
-        min-width: 0;
-    }
-
-    .mobile-notification-entry strong,
-    .mobile-notification-entry small {
-        display: block;
-    }
-
-    .mobile-notification-entry small {
-        margin-top: 0.2rem;
-        color: #6c757d;
-        line-height: 1.35;
-    }
-
-    .mobile-notification-entry.is-unread {
-        background-color: #e7f1ff;
-    }
-
-    .mobile-notification-entry.is-unread > i {
-        color: #0d6efd;
     }
 
     @supports (height: 100dvh) {
@@ -2031,6 +1967,12 @@ body {
 
 }
 
+.notification-navbar-icon {
+
+    color: #0d6efd;
+
+}
+
 .notification-dropdown {
 
     width: 350px;
@@ -2040,6 +1982,102 @@ body {
     max-height: 400px;
 
     overflow-y: auto;
+
+}
+
+.navbar-notifications-empty {
+
+    min-height: 180px;
+    padding: 2rem;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+
+    color: #6c757d;
+    text-align: center;
+
+}
+
+.navbar-notifications-empty i {
+
+    font-size: 2rem;
+
+}
+
+.navbar-notification-list {
+
+    overflow-y: auto;
+
+}
+
+.navbar-notification-entry {
+
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+
+    padding: 1rem 1.25rem;
+
+    color: #212529;
+    text-decoration: none;
+
+    border-bottom: 1px solid #f1f3f5;
+
+}
+
+.navbar-notification-entry:hover {
+
+    background-color: #f8f9fa;
+    color: #212529;
+
+}
+
+.navbar-notification-entry > i {
+
+    margin-top: 0.15rem;
+    color: #6c757d;
+
+}
+
+.navbar-notification-entry > span {
+
+    min-width: 0;
+
+}
+
+.navbar-notification-entry strong,
+.navbar-notification-entry small {
+
+    display: block;
+
+}
+
+.navbar-notification-entry small {
+
+    margin-top: 0.2rem;
+    color: #6c757d;
+    line-height: 1.35;
+
+}
+
+.navbar-notification-entry.is-unread {
+
+    background-color: #e7f1ff;
+
+}
+
+.navbar-notification-entry.is-unread > i {
+
+    color: #0d6efd;
+
+}
+
+.notification-dropdown .navbar-notifications-empty {
+
+    min-height: 150px;
 
 }
 

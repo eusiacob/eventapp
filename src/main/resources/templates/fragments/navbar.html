@@ -56,7 +56,7 @@
                        href="#"
                        role="button">
 
-                        <i class="bi bi-bell fs-5"></i>
+                        <i class="bi bi-bell fs-5 notification-navbar-icon"></i>
 
                         <span class="notification-badge"
                               th:if="${notificationCount > 0}">
@@ -65,30 +65,29 @@
                         </span>
                     </a>
 
-                    <ul class="dropdown-menu dropdown-menu-end notification-dropdown p-2">
+                    <ul class="dropdown-menu dropdown-menu-end notification-dropdown p-0">
 
                         <li th:if="${#lists.isEmpty(notifications)}">
 
-                            <span class="dropdown-item-text text-muted">
-                                Nu ai notificări
-                            </span>
+                            <div class="navbar-notifications-empty">
+                                <i class="bi bi-bell-slash"></i>
+                                <p class="mb-0">Nu ai notificări noi.</p>
+                            </div>
 
                         </li>
 
                         <li th:each="notification : ${notifications}">
 
-                            <a class="dropdown-item rounded notification-item"
-                               th:classappend="${notification.isRead ? '' : 'bg-info-subtle'}"
+                            <a class="navbar-notification-entry"
+                               th:classappend="${notification.isRead ? '' : ' is-unread'}"
                                th:href="@{/notifications/{id}(id=${notification.id})}">
 
-                                <strong th:text="${notification.title}">
-                                </strong>
+                                <i class="bi bi-bell"></i>
 
-                                <br>
-
-                                <small class="text-muted notification-message"
-                                       th:text="${notification.message}">
-                                </small>
+                                <span>
+                                    <strong th:text="${notification.title}"></strong>
+                                    <small th:text="${notification.message}"></small>
+                                </span>
 
                             </a>
 
@@ -197,8 +196,7 @@
                 type="button">
 
             <span class="mobile-icon-badge-wrapper">
-                <i class="bi"
-                   th:classappend="${notificationCount > 0} ? ' bi-bell-fill' : ' bi-bell'"></i>
+                <i class="bi bi-bell notification-navbar-icon"></i>
 
                 <span class="mobile-notification-badge"
                       th:if="${notificationCount > 0}"
@@ -268,15 +266,15 @@
         </div>
 
         <div class="offcanvas-body p-0">
-            <div class="mobile-notifications-empty"
+            <div class="navbar-notifications-empty"
                  th:if="${#lists.isEmpty(notifications)}">
                 <i class="bi bi-bell-slash"></i>
                 <p class="mb-0">Nu ai notificări noi.</p>
             </div>
 
-            <div class="mobile-notification-list"
+            <div class="navbar-notification-list"
                  th:if="${!#lists.isEmpty(notifications)}">
-                <a class="mobile-notification-entry"
+                <a class="navbar-notification-entry"
                    th:classappend="${notification.isRead ? '' : ' is-unread'}"
                    th:each="notification : ${notifications}"
                    th:href="@{/notifications/{id}(id=${notification.id})}">
