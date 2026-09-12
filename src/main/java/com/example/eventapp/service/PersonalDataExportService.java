@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class PersonalDataExportService {
@@ -64,7 +63,7 @@ public class PersonalDataExportService {
                         account.getTermsVersion(),
                         account.getTermsAcceptedAt()
                 ),
-                favoriteData(account.getFavoriteBusinesses()),
+                favoriteData(userService.getVisibleFavoriteBusinesses(account)),
                 businessData(account),
                 reviewData(account),
                 subscriptionData(account),
@@ -73,7 +72,7 @@ public class PersonalDataExportService {
         );
     }
 
-    private List<FavoriteData> favoriteData(Set<BusinessProfile> favorites) {
+    private List<FavoriteData> favoriteData(List<BusinessProfile> favorites) {
         if (favorites == null) {
             return List.of();
         }

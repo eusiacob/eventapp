@@ -148,6 +148,7 @@ public class UserNotificationService {
         notification.setMessage(message);
         notification.setRead(false);
         notification.setCreatedAt(LocalDateTime.now());
+        notification.setLink("/profile/ratings");
         userNotificationRepository.save(notification);
     }
 

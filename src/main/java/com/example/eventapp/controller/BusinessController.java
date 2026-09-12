@@ -684,9 +684,7 @@ public class BusinessController {
                 new BreadcrumbDTO(category.getDisplayName(), null)));
 
         if (userDetails != null) {
-            User user = userService.findByEmail(userDetails.getUsername());
-
-            Set<Long> favoriteIds = user.getFavoriteBusinesses()
+            Set<Long> favoriteIds = userService.getVisibleFavoriteBusinesses(userDetails.getUsername())
                     .stream()
                     .map(BusinessProfile::getId)
                     .collect(Collectors.toSet());

@@ -66,8 +66,7 @@ public class ProfileController {
 
         User userEmail = userService.findById(user.getId());
 
-        int favoriteCount = user.getFavoriteBusinesses() != null
-                ? user.getFavoriteBusinesses().size() : 0;
+        int favoriteCount = userService.getVisibleFavoriteCount(userDetails.getUsername());
 
         int businessCount = businessProfileService.findByUser(user).size();
 
@@ -102,6 +101,7 @@ public class ProfileController {
         model.addAttribute("averageRating", reviewService.getUserAverageRating(user));
         model.addAttribute("breadcrumbs", List.of(
                 new BreadcrumbDTO("Acasă", "/businesses"),
+                new BreadcrumbDTO("Profil", "/profile"),
                 new BreadcrumbDTO("Recenziile mele", null)));
         return "user-ratings";
     }

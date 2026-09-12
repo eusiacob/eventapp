@@ -218,6 +218,39 @@
             color: #777;
         }
 
+        .status-approved {
+
+            background: #eef8f1;
+
+            color: #287a3e;
+        }
+
+
+        .status-rejected {
+
+            background: #fff1f1;
+
+            color: #b42318;
+        }
+
+
+        .review-rejection-reason {
+
+            margin-top: 12px;
+
+            padding: 10px 12px;
+
+            background: #fff7f7;
+
+            border: 1px solid #ffd6d6;
+
+            border-radius: 10px;
+
+            color: #8a1f16;
+
+            line-height: 1.5;
+        }
+
 
         /* EMPTY */
         .empty-reviews {
@@ -331,8 +364,7 @@
 
                 <article
                         class="review-card"
-                        th:each="review : ${reviews}"
-                        th:if="${review.reviewStatus.name() != 'REJECTED'}">
+                        th:each="review : ${reviews}">
 
 
                     <div class="review-top">
@@ -375,6 +407,26 @@
                           th:if="${review.reviewStatus.name() == 'PENDING'}">
                         În așteptare
                     </span>
+
+                    <span class="review-status status-approved"
+                          th:if="${review.reviewStatus.name() == 'APPROVED'}">
+                        Aprobată
+                    </span>
+
+                    <span class="review-status status-rejected"
+                          th:if="${review.reviewStatus.name() == 'REJECTED'}">
+                        Respinsă
+                    </span>
+
+                    <div class="review-rejection-reason"
+                         th:if="${review.reviewStatus.name() == 'REJECTED'
+                         and review.rejectionReason != null
+                         and !#strings.isEmpty(review.rejectionReason)}">
+                        <strong>Motiv:</strong>
+                        <span th:text="${review.rejectionReason}">
+                            Conținutul recenziei nu respectă regulile platformei.
+                        </span>
+                    </div>
 
                 </article>
 

@@ -1,8 +1,6 @@
 package com.example.eventapp.controller;
 
 import com.example.eventapp.dto.BreadcrumbDTO;
-import com.example.eventapp.model.User;
-import com.example.eventapp.repository.UserRepository;
 import com.example.eventapp.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,11 +16,9 @@ import java.util.Map;
 public class FavoritesController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
 
-    public FavoritesController(UserService userService, UserRepository userRepository) {
+    public FavoritesController(UserService userService) {
         this.userService = userService;
-        this.userRepository = userRepository;
     }
 
     @GetMapping("/favorites")
@@ -31,24 +27,16 @@ public class FavoritesController {
             @AuthenticationPrincipal UserDetails userDetails
     ) {
 
-        User user =
-                userService.findByEmail(userDetails.getUsername());
-
-        model.addAttribute("favorites",user.getFavoriteBusinesses());
+        model.addAttribute(
+                "favorites",
+                userService.getVisibleFavoriteBusinesses(userDetails.getUsername())
+        );
 
         model.addAttribute(
                 "breadcrumbs",
-                List.of(
-                        new BreadcrumbDTO(
-                                "Acasă",
-                                "/businesses"
-                        ),
-                        new BreadcrumbDTO(
-                                "Favorite",
-                                null
-                        )
-                )
-        );
+                List.of(new BreadcrumbDTO("Acasă", "/businesses"),
+                        new BreadcrumbDTO("Profil", "/profile"),
+                        new BreadcrumbDTO("Favorite", null)));
 
         return "favorites";
     }
@@ -80,11 +68,12 @@ public class FavoritesController {
 
         boolean isFavorite = userService.toggleFavorite(businessUuid, userDetails.getUsername());
 
-        User user = userService.findByEmail(userDetails.getUsername());
-
         Map<String, Object> response = new HashMap<>();
         response.put("favorite", isFavorite);
-        response.put("favoriteCount", user.getFavoriteBusinesses().size());
+        response.put(
+                "favoriteCount",
+                userService.getVisibleFavoriteCount(userDetails.getUsername())
+        );
 
         return response;
     }

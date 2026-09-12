@@ -26,7 +26,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -184,6 +186,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     public void addFavorite(Long businessId, String email) {
 
         User user = findByEmail(email);
@@ -192,22 +195,59 @@ public class UserService {
                 businessProfileRepository.findById(businessId)
                         .orElseThrow();
 
-        if (!user.getFavoriteBusinesses().contains(profile)) {
+        validateCanBeFavorited(profile);
 
-            user.getFavoriteBusinesses().add(profile);
+        Set<BusinessProfile> favoriteBusinesses = getFavoriteBusinesses(user);
+
+        boolean alreadyFavorite = favoriteBusinesses.stream()
+                .anyMatch(business -> business.getId().equals(profile.getId()));
+
+        if (!alreadyFavorite) {
+
+            favoriteBusinesses.add(profile);
 
             userRepository.save(user);
         }
     }
 
+    @Transactional
     public void removeFavorite(String businessId, String email) {
 
         User user = findByEmail(email);
 
-        user.getFavoriteBusinesses()
+        getFavoriteBusinesses(user)
                 .removeIf(b -> b.getUuid().equals(businessId));
 
         userRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BusinessProfile> getVisibleFavoriteBusinesses(User user) {
+
+        if (user == null || user.getFavoriteBusinesses() == null) {
+            return List.of();
+        }
+
+        return user.getFavoriteBusinesses()
+                .stream()
+                .filter(this::canBeFavorited)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<BusinessProfile> getVisibleFavoriteBusinesses(String email) {
+
+        return getVisibleFavoriteBusinesses(findByEmail(email));
+    }
+
+    public int getVisibleFavoriteCount(User user) {
+
+        return getVisibleFavoriteBusinesses(user).size();
+    }
+
+    public int getVisibleFavoriteCount(String email) {
+
+        return getVisibleFavoriteBusinesses(email).size();
     }
 
     public User findByEmail(String email) {
@@ -291,6 +331,7 @@ public class UserService {
     }
 
     //    Toggle favorite heart
+    @Transactional
     public boolean toggleFavorite(String businessUuid, String email) {
 
         User user = findByEmail(email);
@@ -304,7 +345,7 @@ public class UserService {
                         );
 
         boolean alreadyFavorite =
-                user.getFavoriteBusinesses()
+                getFavoriteBusinesses(user)
                         .stream()
                         .anyMatch(
                                 b -> b.getUuid()
@@ -313,7 +354,7 @@ public class UserService {
 
         if (alreadyFavorite) {
 
-            user.getFavoriteBusinesses()
+            getFavoriteBusinesses(user)
                     .removeIf(
                             b -> b.getUuid()
                                     .equals(businessUuid)
@@ -324,7 +365,9 @@ public class UserService {
             return false;
         }
 
-        user.getFavoriteBusinesses()
+        validateCanBeFavorited(businessProfile);
+
+        getFavoriteBusinesses(user)
                 .add(businessProfile);
 
         userRepository.save(user);
@@ -416,6 +459,29 @@ public class UserService {
         }
 
         userRepository.saveAll(users);
+    }
+
+    private Set<BusinessProfile> getFavoriteBusinesses(User user) {
+
+        if (user.getFavoriteBusinesses() == null) {
+            user.setFavoriteBusinesses(new HashSet<>());
+        }
+
+        return user.getFavoriteBusinesses();
+    }
+
+    private void validateCanBeFavorited(BusinessProfile profile) {
+
+        if (!canBeFavorited(profile)) {
+            throw new IllegalArgumentException("Serviciul nu este disponibil pentru favorite.");
+        }
+    }
+
+    private boolean canBeFavorited(BusinessProfile profile) {
+
+        return profile != null
+                && profile.isActive()
+                && profile.getStatus() == BusinessProfile.BusinessStatus.APPROVED;
     }
 
     public void changeEmail(

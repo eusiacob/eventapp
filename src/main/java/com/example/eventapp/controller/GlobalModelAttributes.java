@@ -37,13 +37,7 @@ public class GlobalModelAttributes {
             return 0;
         }
 
-        User user = userService.findByEmail(authentication.getName());
-
-        if (user.getFavoriteBusinesses() == null) {
-            return 0;
-        }
-
-        return user.getFavoriteBusinesses().size();
+        return userService.getVisibleFavoriteCount(authentication.getName());
     }
 
     @ModelAttribute
