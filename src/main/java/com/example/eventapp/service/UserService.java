@@ -6,10 +6,17 @@ import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.Role;
 import com.example.eventapp.model.User;
 import com.example.eventapp.repository.BusinessProfileRepository;
+import com.example.eventapp.repository.PasswordResetTokenRepository;
+import com.example.eventapp.repository.ReviewRepository;
+import com.example.eventapp.repository.SubscriptionRepository;
+import com.example.eventapp.repository.SupportMessageRepository;
+import com.example.eventapp.repository.SupportTicketRepository;
 import com.example.eventapp.repository.UserRepository;
+import com.example.eventapp.repository.UserNotificationRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,17 +28,35 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final BusinessProfileRepository businessProfileRepository;
     private final EncryptionService encryptionService;
+    private final ReviewRepository reviewRepository;
+    private final SubscriptionRepository subscriptionRepository;
+    private final SupportTicketRepository supportTicketRepository;
+    private final SupportMessageRepository supportMessageRepository;
+    private final UserNotificationRepository userNotificationRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
 
     public UserService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             BusinessProfileRepository businessProfileRepository,
-            EncryptionService encryptionService
+            EncryptionService encryptionService,
+            ReviewRepository reviewRepository,
+            SubscriptionRepository subscriptionRepository,
+            SupportTicketRepository supportTicketRepository,
+            SupportMessageRepository supportMessageRepository,
+            UserNotificationRepository userNotificationRepository,
+            PasswordResetTokenRepository passwordResetTokenRepository
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.businessProfileRepository = businessProfileRepository;
         this.encryptionService = encryptionService;
+        this.reviewRepository = reviewRepository;
+        this.subscriptionRepository = subscriptionRepository;
+        this.supportTicketRepository = supportTicketRepository;
+        this.supportMessageRepository = supportMessageRepository;
+        this.userNotificationRepository = userNotificationRepository;
+        this.passwordResetTokenRepository = passwordResetTokenRepository;
     }
 
     public List<User> findAll() {
@@ -275,5 +300,105 @@ public class UserService {
         }
 
         userRepository.saveAll(users);
+    }
+
+    public void changeEmail(
+            User user,
+            String currentPassword,
+            String newEmail
+    ) {
+        validateCurrentPassword(user, currentPassword);
+
+        if (newEmail == null ||
+                !newEmail.trim().matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
+            throw new IllegalArgumentException("Introdu o adresă de email validă.");
+        }
+
+        String normalizedEmail = newEmail.trim().toLowerCase();
+
+        if (encryptionService.hash(normalizedEmail).equals(user.getEmailHash())) {
+            throw new IllegalArgumentException("Noul email este identic cu cel actual.");
+        }
+
+        if (emailExists(normalizedEmail)) {
+            throw new IllegalArgumentException("Această adresă de email este deja folosită.");
+        }
+
+        user.setEmail(normalizedEmail);
+        user.setEmailHash(encryptionService.hash(normalizedEmail));
+        user.setEmailEncrypted(encryptionService.encrypt(normalizedEmail));
+
+        userRepository.save(user);
+    }
+
+    public void changePassword(
+            User user,
+            String currentPassword,
+            String newPassword,
+            String confirmPassword
+    ) {
+        validateCurrentPassword(user, currentPassword);
+
+        if (newPassword == null || newPassword.length() < 8) {
+            throw new IllegalArgumentException("Parola nouă trebuie să aibă cel puțin 8 caractere.");
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            throw new IllegalArgumentException("Parolele noi nu se potrivesc.");
+        }
+
+        if (passwordEncoder.matches(newPassword, user.getPassword())) {
+            throw new IllegalArgumentException("Alege o parolă diferită de cea actuală.");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteAccount(
+            User user,
+            String currentPassword,
+            String deleteConfirmation
+    ) {
+        validateCurrentPassword(user, currentPassword);
+
+        if (!"ȘTERGE".equals(deleteConfirmation)) {
+            throw new IllegalArgumentException("Scrie ȘTERGE pentru a confirma ștergerea contului.");
+        }
+
+        User managedUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new IllegalStateException("Contul nu mai există."));
+
+        List<BusinessProfile> profiles = businessProfileRepository.findByUser(managedUser);
+        for (BusinessProfile profile : profiles) {
+            removeBusinessFromAllFavorites(profile.getId());
+        }
+
+        if (managedUser.getFavoriteBusinesses() != null) {
+            managedUser.getFavoriteBusinesses().clear();
+            userRepository.saveAndFlush(managedUser);
+        }
+
+        supportMessageRepository.deleteByUser(managedUser);
+        List<com.example.eventapp.model.SupportTicket> tickets =
+                supportTicketRepository.findAllByUserOrderByUpdatedAtDesc(managedUser);
+        if (!tickets.isEmpty()) {
+            supportMessageRepository.deleteByTicketIn(tickets);
+        }
+        supportTicketRepository.deleteByUser(managedUser);
+        reviewRepository.deleteByUser(managedUser);
+        subscriptionRepository.deleteByUser(managedUser);
+        userNotificationRepository.deleteByUser(managedUser);
+        passwordResetTokenRepository.deleteByUser(managedUser);
+
+        userRepository.delete(managedUser);
+    }
+
+    private void validateCurrentPassword(User user, String currentPassword) {
+        if (currentPassword == null ||
+                !passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new IllegalArgumentException("Parola curentă este incorectă.");
+        }
     }
 }

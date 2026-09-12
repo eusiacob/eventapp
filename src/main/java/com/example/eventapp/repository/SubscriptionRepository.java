@@ -25,4 +25,6 @@ public interface SubscriptionRepository
             Subscription.SubscriptionStatus status
     );
 
+    void deleteByUser(User user);
+
 }

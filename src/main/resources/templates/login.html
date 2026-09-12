@@ -90,6 +90,16 @@
                         Te-ai deconectat cu succes!
                     </div>
 
+                    <div class="alert alert-success p-2"
+                         th:if="${param.emailChanged}">
+                        Emailul a fost schimbat. Autentifică-te cu noua adresă.
+                    </div>
+
+                    <div class="alert alert-success p-2"
+                         th:if="${param.accountDeleted}">
+                        Contul a fost șters cu succes.
+                    </div>
+
                     <div class="alert alert-danger p-2"
                          th:if="${param.error}">
                         Email sau parolă incorectă!

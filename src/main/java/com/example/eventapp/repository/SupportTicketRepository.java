@@ -18,4 +18,6 @@ public interface SupportTicketRepository
     List<SupportTicket> findAllByStatusOrderByUpdatedAtDesc(
             SupportTicket.SupportStatus status
     );
+
+    void deleteByUser(User user);
 }

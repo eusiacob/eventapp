@@ -27,6 +27,18 @@
 
     <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
+    <div class="alert alert-success alert-dismissible fade show p-2"
+         role="alert"
+         th:if="${accountSuccess != null}">
+        <span th:text="${accountSuccess}"></span>
+    </div>
+
+    <div class="alert alert-danger alert-dismissible fade show p-2"
+         role="alert"
+         th:if="${accountError != null}">
+        <span th:text="${accountError}"></span>
+    </div>
+
     <div class="row justify-content-center">
 
         <div class="col-12 col-lg-9">
@@ -468,10 +480,177 @@
 
             </div>
 
+            <!-- ACCOUNT SETTINGS -->
+            <div class="card border-0 shadow-sm p-4 mb-4">
+
+                <div class="d-flex align-items-start gap-3 mb-4">
+                    <div class="profile-stat-icon dark flex-shrink-0">
+                        <i class="bi bi-gear-fill"></i>
+                    </div>
+
+                    <div>
+                        <h5 class="fw-bold mb-1">Setări cont</h5>
+                        <p class="text-muted mb-0">
+                            Gestionează datele de autentificare și siguranța contului tău.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <button class="btn btn-outline-dark w-100 text-start p-3"
+                                data-bs-target="#changeEmailModal"
+                                data-bs-toggle="modal"
+                                type="button">
+                            <i class="bi bi-envelope-at-fill me-2"></i>
+                            Schimbă emailul
+                        </button>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <button class="btn btn-outline-dark w-100 text-start p-3"
+                                data-bs-target="#changePasswordModal"
+                                data-bs-toggle="modal"
+                                type="button">
+                            <i class="bi bi-shield-lock-fill me-2"></i>
+                            Schimbă parola
+                        </button>
+                    </div>
+
+                    <div class="col-12">
+                        <button class="btn btn-outline-danger w-100 text-start p-3"
+                                data-bs-target="#deleteAccountModal"
+                                data-bs-toggle="modal"
+                                type="button">
+                            <i class="bi bi-trash3-fill me-2"></i>
+                            Șterge contul
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
 
     </div>
 
+</div>
+
+<!-- CHANGE EMAIL MODAL -->
+<div aria-hidden="true" aria-labelledby="changeEmailModalLabel" class="modal fade" id="changeEmailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <form method="post" th:action="@{/profile/email}">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold text-dark" id="changeEmailModalLabel">Schimbă emailul</h5>
+                    <button aria-label="Închide" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                </div>
+
+                <div class="modal-body pt-0">
+                    <p class="text-muted small">
+                        După salvare, te vei autentifica din nou cu noua adresă de email.
+                    </p>
+
+                    <div class="mb-3">
+                        <label class="form-label text-dark" for="newEmail">Email nou</label>
+                        <input class="form-control" id="newEmail" name="newEmail"
+                               placeholder="nume@exemplu.ro" required type="email">
+                    </div>
+
+                    <div>
+                        <label class="form-label text-dark" for="emailCurrentPassword">Parola curentă</label>
+                        <input autocomplete="current-password" class="form-control" id="emailCurrentPassword"
+                               name="currentPassword" required type="password">
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 pt-0">
+                    <button class="btn btn-light" data-bs-dismiss="modal" type="button">Renunță</button>
+                    <button class="btn btn-dark" type="submit">Salvează emailul</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- CHANGE PASSWORD MODAL -->
+<div aria-hidden="true" aria-labelledby="changePasswordModalLabel" class="modal fade" id="changePasswordModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <form method="post" th:action="@{/profile/password}">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold text-dark" id="changePasswordModalLabel">Schimbă parola</h5>
+                    <button aria-label="Închide" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                </div>
+
+                <div class="modal-body pt-0">
+                    <div class="mb-3">
+                        <label class="form-label text-dark" for="passwordCurrentPassword">Parola curentă</label>
+                        <input autocomplete="current-password" class="form-control" id="passwordCurrentPassword"
+                               name="currentPassword" required type="password">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-dark" for="newPassword">Parolă nouă</label>
+                        <input autocomplete="new-password" class="form-control" id="newPassword"
+                               minlength="8" name="newPassword" required type="password">
+                        <div class="form-text">Folosește cel puțin 8 caractere.</div>
+                    </div>
+
+                    <div>
+                        <label class="form-label text-dark" for="confirmPassword">Confirmă parola nouă</label>
+                        <input autocomplete="new-password" class="form-control" id="confirmPassword"
+                               minlength="8" name="confirmPassword" required type="password">
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 pt-0">
+                    <button class="btn btn-light" data-bs-dismiss="modal" type="button">Renunță</button>
+                    <button class="btn btn-dark" type="submit">Salvează parola</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- DELETE ACCOUNT MODAL -->
+<div aria-hidden="true" aria-labelledby="deleteAccountModalLabel" class="modal fade" id="deleteAccountModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <form method="post" th:action="@{/profile/delete}">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold text-danger" id="deleteAccountModalLabel">Șterge contul</h5>
+                    <button aria-label="Închide" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                </div>
+
+                <div class="modal-body pt-0">
+                    <div class="alert alert-danger small">
+                        Această acțiune este definitivă. Vor fi șterse și serviciile, preferințele,
+                        recenziile, abonamentele, notificările și solicitările de suport asociate contului.
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="deleteCurrentPassword">Parola curentă</label>
+                        <input autocomplete="current-password" class="form-control" id="deleteCurrentPassword"
+                               name="currentPassword" required type="password">
+                    </div>
+
+                    <div>
+                        <label class="form-label" for="deleteConfirmation">
+                            Scrie <strong>ȘTERGE</strong> pentru confirmare
+                        </label>
+                        <input class="form-control" id="deleteConfirmation" name="deleteConfirmation"
+                               pattern="ȘTERGE" required type="text">
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 pt-0">
+                    <button class="btn btn-light" data-bs-dismiss="modal" type="button">Renunță</button>
+                    <button class="btn btn-danger" type="submit">Șterge definitiv contul</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <div th:replace="~{fragments/footer :: footer}"></div>

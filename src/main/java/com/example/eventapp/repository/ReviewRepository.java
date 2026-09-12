@@ -19,6 +19,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     List<Review> findByUserOrderByCreatedAtDesc(User user);
 
+    void deleteByUser(User user);
+
     @Query("""
         SELECT AVG(r.rating)
         FROM Review r

@@ -21,4 +21,6 @@ public interface UserNotificationRepository
             Long id,
             User user
     );
+
+    void deleteByUser(User user);
 }
