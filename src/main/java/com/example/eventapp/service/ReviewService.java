@@ -15,14 +15,18 @@ public class ReviewService {
     private final BusinessProfileService businessProfileService;
     private final UserService userService;
     private final UserNotificationService userNotificationService;
+    private final EmailService emailService;
 
     public ReviewService(ReviewRepository reviewRepository,
                          BusinessProfileService businessProfileService,
-                         UserService userService, UserNotificationService userNotificationService) {
+                         UserService userService,
+                         UserNotificationService userNotificationService,
+                         EmailService emailService) {
         this.reviewRepository = reviewRepository;
         this.businessProfileService = businessProfileService;
         this.userService = userService;
         this.userNotificationService = userNotificationService;
+        this.emailService = emailService;
     }
 
     public List<Review> findAll() {
@@ -140,6 +144,11 @@ public class ReviewService {
         reviewRepository.save(review);
 
         userNotificationService.notifyReviewApproved(review);
+        emailService.sendReviewApprovedEmail(
+                userService.getEmailAddress(review.getUser()),
+                review.getUser().getFirstName(),
+                review.getBusinessProfile().getName()
+        );
     }
 
     public void rejectReview(Long id, String reason) {

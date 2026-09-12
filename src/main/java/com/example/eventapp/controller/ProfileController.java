@@ -4,6 +4,7 @@ import com.example.eventapp.dto.BreadcrumbDTO;
 import com.example.eventapp.model.User;
 import com.example.eventapp.repository.SupportTicketRepository;
 import com.example.eventapp.service.BusinessProfileService;
+import com.example.eventapp.service.EmailService;
 import com.example.eventapp.service.ReviewService;
 import com.example.eventapp.service.SubscriptionService;
 import com.example.eventapp.service.UserService;
@@ -28,16 +29,19 @@ import java.util.List;
 public class ProfileController {
 
     private final UserService userService;
+    private final EmailService emailService;
     private final BusinessProfileService businessProfileService;
     private final ReviewService reviewService;
     private final SubscriptionService subscriptionService;
     private final SupportTicketRepository supportTicketRepository;
 
     public ProfileController(UserService userService,
+                             EmailService emailService,
                              BusinessProfileService businessProfileService,
                              SupportTicketRepository supportTicketRepository,
                              ReviewService reviewService, SubscriptionService subscriptionService) {
         this.userService = userService;
+        this.emailService = emailService;
         this.businessProfileService = businessProfileService;
         this.reviewService = reviewService;
         this.subscriptionService = subscriptionService;
@@ -105,6 +109,7 @@ public class ProfileController {
         try {
             User user = userService.findByEmail(userDetails.getUsername());
             userService.changeEmail(user, currentPassword, newEmail);
+            emailService.sendEmailChangedEmail(user.getEmail(), user.getFirstName());
 
             new SecurityContextLogoutHandler().logout(request, response, authentication);
             return "redirect:/login?emailChanged";
@@ -125,6 +130,10 @@ public class ProfileController {
         try {
             User user = userService.findByEmail(userDetails.getUsername());
             userService.changePassword(user, currentPassword, newPassword, confirmPassword);
+            emailService.sendPasswordChangedEmail(
+                    userDetails.getUsername(),
+                    user.getFirstName()
+            );
             redirectAttributes.addFlashAttribute(
                     "accountSuccess",
                     "Parola a fost schimbată cu succes."
@@ -149,6 +158,10 @@ public class ProfileController {
         try {
             User user = userService.findByEmail(userDetails.getUsername());
             userService.deleteAccount(user, currentPassword, deleteConfirmation);
+            emailService.sendAccountDeletedEmail(
+                    userDetails.getUsername(),
+                    user.getFirstName()
+            );
 
             new SecurityContextLogoutHandler().logout(request, response, authentication);
             return "redirect:/login?accountDeleted";

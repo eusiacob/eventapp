@@ -16,15 +16,21 @@ public class SupportService {
     private final SupportTicketRepository supportTicketRepository;
     private final SupportMessageRepository supportMessageRepository;
     private final UserNotificationService userNotificationService;
+    private final UserService userService;
+    private final EmailService emailService;
 
     public SupportService(
             SupportTicketRepository supportTicketRepository,
             SupportMessageRepository supportMessageRepository,
-            UserNotificationService userNotificationService
+            UserNotificationService userNotificationService,
+            UserService userService,
+            EmailService emailService
     ) {
         this.supportTicketRepository = supportTicketRepository;
         this.supportMessageRepository = supportMessageRepository;
         this.userNotificationService = userNotificationService;
+        this.userService = userService;
+        this.emailService = emailService;
     }
 
 
@@ -296,6 +302,12 @@ public class SupportService {
                         ticket.getSubject() +
                         "\".",
                 "/support/" + ticket.getId()
+        );
+
+        emailService.sendSupportReplyEmail(
+                userService.getEmailAddress(ticket.getUser()),
+                ticket.getUser().getFirstName(),
+                ticket.getSubject()
         );
     }
 

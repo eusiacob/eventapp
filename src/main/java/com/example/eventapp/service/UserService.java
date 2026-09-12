@@ -194,6 +194,22 @@ public class UserService {
         return user;
     }
 
+    public String getEmailAddress(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("Utilizatorul este obligatoriu.");
+        }
+
+        if (user.getEmail() != null && !user.getEmail().isBlank()) {
+            return user.getEmail();
+        }
+
+        if (user.getEmailEncrypted() != null && !user.getEmailEncrypted().isBlank()) {
+            return encryptionService.decrypt(user.getEmailEncrypted());
+        }
+
+        throw new IllegalStateException("Emailul utilizatorului nu este disponibil.");
+    }
+
     //    Toggle favorite heart
     public boolean toggleFavorite(String businessUuid, String email) {
 

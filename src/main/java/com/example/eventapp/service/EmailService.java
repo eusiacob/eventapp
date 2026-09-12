@@ -1,11 +1,17 @@
 package com.example.eventapp.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmailService {
+
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(EmailService.class);
 
     private final JavaMailSender mailSender;
 
@@ -18,16 +24,9 @@ public class EmailService {
             String resetLink
     ) {
 
-        SimpleMailMessage message =
-                new SimpleMailMessage();
-
-        message.setTo(recipient);
-
-        message.setSubject(
-                "Resetarea parolei - M-Event"
-        );
-
-        message.setText(
+        sendEmail(
+                recipient,
+                "Resetarea parolei - M-Event",
                 "Salutare,\n\n" +
                         "Ai solicitat resetarea parolei pentru contul tău M-Event.\n\n" +
                         "Pentru a seta o parolă nouă, accesează următorul link:\n\n" +
@@ -38,9 +37,126 @@ public class EmailService {
                         "poți ignora acest mesaj.\n\n" +
                         "Echipa M-Event"
         );
-
-        mailSender.send(message);
     }
 
+    public void sendAccountCreatedEmail(String recipient, String firstName) {
+        sendEmail(
+                recipient,
+                "Cont creat cu succes - M-Event",
+                greeting(firstName) +
+                        "Contul tău M-Event a fost creat cu succes. " +
+                        "Te poți autentifica și începe să planifici evenimentul tău.\n\n" +
+                        "Echipa M-Event"
+        );
+    }
+
+    public void sendEmailChangedEmail(String recipient, String firstName) {
+        sendEmail(
+                recipient,
+                "Email actualizat - M-Event",
+                greeting(firstName) +
+                        "Adresa de email a contului tău a fost schimbată. " +
+                        "De acum, autentifică-te folosind această adresă.\n\n" +
+                        "Dacă nu ai făcut tu această modificare, contactează-ne imediat.\n\n" +
+                        "Echipa M-Event"
+        );
+    }
+
+    public void sendPasswordChangedEmail(String recipient, String firstName) {
+        sendEmail(
+                recipient,
+                "Parolă schimbată - M-Event",
+                greeting(firstName) +
+                        "Parola contului tău a fost schimbată cu succes.\n\n" +
+                        "Dacă nu ai făcut tu această modificare, resetează parola și contactează-ne imediat.\n\n" +
+                        "Echipa M-Event"
+        );
+    }
+
+    public void sendAccountDeletedEmail(String recipient, String firstName) {
+        sendEmail(
+                recipient,
+                "Cont șters - M-Event",
+                greeting(firstName) +
+                        "Contul tău M-Event a fost șters la cerere.\n\n" +
+                        "Îți mulțumim că ai folosit M-Event.\n\n" +
+                        "Echipa M-Event"
+        );
+    }
+
+    public void sendBusinessApprovedEmail(
+            String recipient,
+            String firstName,
+            String businessName
+    ) {
+        sendEmail(
+                recipient,
+                "Serviciu aprobat - M-Event",
+                greeting(firstName) +
+                        "Serviciul tău \"" + businessName +
+                        "\" a fost aprobat și este acum vizibil pe platformă.\n\n" +
+                        "Echipa M-Event"
+        );
+    }
+
+    public void sendReviewApprovedEmail(
+            String recipient,
+            String firstName,
+            String businessName
+    ) {
+        sendEmail(
+                recipient,
+                "Recenzie aprobată - M-Event",
+                greeting(firstName) +
+                        "Recenzia ta pentru \"" + businessName +
+                        "\" a fost aprobată și este acum vizibilă public.\n\n" +
+                        "Echipa M-Event"
+        );
+    }
+
+    public void sendSupportReplyEmail(
+            String recipient,
+            String firstName,
+            String subject
+    ) {
+        sendEmail(
+                recipient,
+                "Răspuns nou de la Support - M-Event",
+                greeting(firstName) +
+                        "Ai primit un răspuns nou pentru solicitarea \"" + subject +
+                        "\". Autentifică-te pentru a-l citi.\n\n" +
+                        "Echipa M-Event"
+        );
+    }
+
+    private void sendEmail(
+            String recipient,
+            String subject,
+            String content
+    ) {
+        if (recipient == null || recipient.isBlank()) {
+            LOGGER.warn("Emailul de notificare nu a fost trimis deoarece lipsește destinatarul.");
+            return;
+        }
+
+        SimpleMailMessage message =
+                new SimpleMailMessage();
+
+        message.setTo(recipient);
+        message.setSubject(subject);
+        message.setText(content);
+
+        try {
+            mailSender.send(message);
+        } catch (MailException exception) {
+            LOGGER.warn("Emailul de notificare nu a putut fi trimis.", exception);
+        }
+    }
+
+    private String greeting(String firstName) {
+        return "Salut" +
+                (firstName == null || firstName.isBlank() ? "" : " " + firstName.trim()) +
+                ",\n\n";
+    }
 
 }

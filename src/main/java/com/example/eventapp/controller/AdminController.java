@@ -33,6 +33,7 @@ public class AdminController {
     private final UserService userService;
     private final SubscriptionService subscriptionService;
     private final SupportTicketRepository supportTicketRepository;
+    private final EmailService emailService;
 
     @GetMapping
     public String dashboard(Model model) {
@@ -127,6 +128,12 @@ public class AdminController {
         );
 
         businessProfileService.save(business);
+
+        emailService.sendBusinessApprovedEmail(
+                userService.getEmailAddress(business.getUser()),
+                business.getUser().getFirstName(),
+                business.getName()
+        );
 
 
         redirectAttributes.addAttribute(
