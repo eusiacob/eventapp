@@ -1,6 +1,8 @@
 package com.example.eventapp.service;
 
 import com.example.eventapp.dto.RegisterUserDTO;
+import com.example.eventapp.dto.LegalAcceptanceDTO;
+import com.example.eventapp.config.LegalDocumentVersions;
 import com.example.eventapp.model.AccountStatusReason;
 import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.Role;
@@ -27,7 +29,6 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -143,6 +144,10 @@ public class UserService {
         user.setEnabled(true);
         user.setLastActivityAt(LocalDateTime.now());
         user.setAccountStatusReason(AccountStatusReason.NONE);
+        user.setPrivacyPolicyVersion(LegalDocumentVersions.PRIVACY_POLICY);
+        user.setPrivacyPolicyAcceptedAt(LocalDateTime.now());
+        user.setTermsVersion(LegalDocumentVersions.TERMS_AND_CONDITIONS);
+        user.setTermsAcceptedAt(LocalDateTime.now());
 
         userRepository.save(user);
     }
@@ -217,6 +222,44 @@ public class UserService {
         }
 
         throw new IllegalStateException("Emailul utilizatorului nu este disponibil.");
+    }
+
+    public String getPhoneNumber(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("Utilizatorul este obligatoriu.");
+        }
+
+        if (user.getPhone() != null && !user.getPhone().isBlank()) {
+            return user.getPhone();
+        }
+
+        if (user.getPhoneEncrypted() != null && !user.getPhoneEncrypted().isBlank()) {
+            return encryptionService.decrypt(user.getPhoneEncrypted());
+        }
+
+        return null;
+    }
+
+    public boolean hasCurrentLegalAcceptances(User user) {
+        return LegalDocumentVersions.hasCurrentAcceptances(user);
+    }
+
+    public void acceptCurrentLegalDocuments(
+            User user,
+            LegalAcceptanceDTO acceptance
+    ) {
+        if (!acceptance.isPrivacyAccepted() || !acceptance.isTermsAccepted()) {
+            throw new IllegalArgumentException(
+                    "Este necesară acceptarea ambelor documente."
+            );
+        }
+
+        LocalDateTime acceptedAt = LocalDateTime.now();
+        user.setPrivacyPolicyVersion(LegalDocumentVersions.PRIVACY_POLICY);
+        user.setPrivacyPolicyAcceptedAt(acceptedAt);
+        user.setTermsVersion(LegalDocumentVersions.TERMS_AND_CONDITIONS);
+        user.setTermsAcceptedAt(acceptedAt);
+        userRepository.save(user);
     }
 
     //    Toggle favorite heart
@@ -472,7 +515,7 @@ public class UserService {
                     .filter(path -> profile.getUuid().equals(
                             path.getFileName().toString()
                     ))
-                    .collect(Collectors.toList());
+                    .toList();
 
             for (Path directory : profileDirectories) {
                 deleteDirectoryIfAllowed(directory, uploadsRoot);

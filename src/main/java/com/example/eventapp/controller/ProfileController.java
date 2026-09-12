@@ -5,6 +5,7 @@ import com.example.eventapp.model.User;
 import com.example.eventapp.repository.SupportTicketRepository;
 import com.example.eventapp.service.BusinessProfileService;
 import com.example.eventapp.service.EmailService;
+import com.example.eventapp.service.PersonalDataExportService;
 import com.example.eventapp.service.ReviewService;
 import com.example.eventapp.service.SubscriptionService;
 import com.example.eventapp.service.UserService;
@@ -12,6 +13,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,12 +29,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 
 @Controller
 public class ProfileController {
 
     private final UserService userService;
     private final EmailService emailService;
+    private final PersonalDataExportService personalDataExportService;
     private final BusinessProfileService businessProfileService;
     private final ReviewService reviewService;
     private final SubscriptionService subscriptionService;
@@ -37,11 +45,13 @@ public class ProfileController {
 
     public ProfileController(UserService userService,
                              EmailService emailService,
+                             PersonalDataExportService personalDataExportService,
                              BusinessProfileService businessProfileService,
                              SupportTicketRepository supportTicketRepository,
                              ReviewService reviewService, SubscriptionService subscriptionService) {
         this.userService = userService;
         this.emailService = emailService;
+        this.personalDataExportService = personalDataExportService;
         this.businessProfileService = businessProfileService;
         this.reviewService = reviewService;
         this.subscriptionService = subscriptionService;
@@ -94,6 +104,26 @@ public class ProfileController {
                 new BreadcrumbDTO("Acasă", "/businesses"),
                 new BreadcrumbDTO("Recenziile mele", null)));
         return "user-ratings";
+    }
+
+    @GetMapping(value = "/profile/data-export", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PersonalDataExportService.PersonalDataExport> exportPersonalData(
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        User user = userService.findByEmail(userDetails.getUsername());
+        String fileName = "datele-mele-m-event-" + LocalDate.now() + ".json";
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        ContentDisposition.attachment()
+                                .filename(fileName, StandardCharsets.UTF_8)
+                                .build()
+                                .toString()
+                )
+                .header(HttpHeaders.CACHE_CONTROL, "no-store, no-cache, must-revalidate")
+                .body(personalDataExportService.exportFor(user));
     }
 
     @PostMapping("/profile/email")

@@ -170,6 +170,31 @@
 
                             </div>
 
+                            <div class="form-check mb-2">
+
+                                <input class="form-check-input"
+                                       id="termsAccepted"
+                                       th:field="*{termsAccepted}"
+                                       type="checkbox">
+
+                                <label class="form-check-label text-muted fw-normal"
+                                       for="termsAccepted">
+
+                                    Am citit și accept
+                                    <a target="_blank"
+                                       th:href="@{/terms}">
+                                        Termenii și condițiile
+                                    </a>.
+
+                                </label>
+
+                                <div class="text-danger small mt-1"
+                                     th:errors="*{termsAccepted}"
+                                     th:if="${#fields.hasErrors('termsAccepted')}">
+                                </div>
+
+                            </div>
+
                             <div class="col-12">
                                 <button class="btn btn-dark w-100 mt-2"
                                         type="submit">

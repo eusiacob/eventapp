@@ -54,4 +54,9 @@ public class RegisterUserDTO {
             message = "Trebuie să accepți Politica de confidențialitate."
     )
     private boolean privacyAccepted;
+
+    @jakarta.validation.constraints.AssertTrue(
+            message = "Trebuie să accepți Termenii și condițiile."
+    )
+    private boolean termsAccepted;
 }

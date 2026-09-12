@@ -89,8 +89,17 @@ public class User {
     @Column
     private LocalDateTime lastActivityAt;
 
-    @Transient
-    private boolean privacyAccepted;
+    @Column(length = 32)
+    private String privacyPolicyVersion;
+
+    @Column
+    private LocalDateTime privacyPolicyAcceptedAt;
+
+    @Column(length = 32)
+    private String termsVersion;
+
+    @Column
+    private LocalDateTime termsAcceptedAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

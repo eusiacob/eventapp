@@ -30,7 +30,7 @@ public class CustomAuthenticationSuccessHandler
     @Override
     public void onAuthenticationSuccess(
             @NonNull HttpServletRequest request,
-            HttpServletResponse response,
+            @NonNull HttpServletResponse response,
             Authentication authentication
     ) throws IOException {
 
@@ -42,9 +42,9 @@ public class CustomAuthenticationSuccessHandler
         String emailHash =
                 encryptionService.hash(email);
 
-        userRepository
+        boolean needsLegalAcceptance = userRepository
                 .findByEmailHash(emailHash)
-                .ifPresent(user -> {
+                .map(user -> {
 
                     user.setLastActivityAt(
                             LocalDateTime.now()
@@ -54,7 +54,14 @@ public class CustomAuthenticationSuccessHandler
                     user.setLoginBlockedUntil(null);
 
                     userRepository.save(user);
-                });
+                    return !LegalDocumentVersions.hasCurrentAcceptances(user);
+                })
+                .orElse(false);
+
+        if (needsLegalAcceptance) {
+            response.sendRedirect("/profile/legal-acceptance");
+            return;
+        }
 
         response.sendRedirect("/businesses");
     }
