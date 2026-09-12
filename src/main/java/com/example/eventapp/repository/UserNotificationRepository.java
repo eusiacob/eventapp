@@ -15,6 +15,9 @@ public interface UserNotificationRepository
     List<UserNotification>
     findByUserOrderByCreatedAtDesc(User user);
 
+    List<UserNotification>
+    findByUserAndReadFalseOrderByCreatedAtDesc(User user);
+
     long countByUserAndReadFalse(User user);
 
     Optional<UserNotification> findByIdAndUser(

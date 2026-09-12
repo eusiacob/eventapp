@@ -67,11 +67,37 @@
 
                     <ul class="dropdown-menu dropdown-menu-end notification-dropdown p-0">
 
+                        <li class="notification-actions">
+                            <a class="notification-action-link"
+                               th:href="@{/notifications}">
+                                <i class="bi bi-list-ul"></i>
+                                Toate notificările
+                            </a>
+
+                            <a class="notification-action-link"
+                               th:href="@{/notifications(unread=true)}">
+                                <i class="bi bi-bell-fill"></i>
+                                Notificări necitite
+                            </a>
+
+                            <form method="post" th:action="@{/notifications/mark-all-read}">
+                                <input th:name="${_csrf.parameterName}"
+                                       th:value="${_csrf.token}"
+                                       type="hidden">
+                                <button class="notification-action-link notification-action-button"
+                                        th:disabled="${notificationCount == 0}"
+                                        type="submit">
+                                    <i class="bi bi-check2-all"></i>
+                                    Marchează toate ca citite
+                                </button>
+                            </form>
+                        </li>
+
                         <li th:if="${#lists.isEmpty(notifications)}">
 
                             <div class="navbar-notifications-empty">
                                 <i class="bi bi-bell-slash"></i>
-                                <p class="mb-0">Nu ai notificări noi.</p>
+                                <p class="mb-0">Nu ai notificări.</p>
                             </div>
 
                         </li>
@@ -266,10 +292,36 @@
         </div>
 
         <div class="offcanvas-body p-0">
+            <div class="notification-actions">
+                <a class="notification-action-link"
+                   th:href="@{/notifications}">
+                    <i class="bi bi-list-ul"></i>
+                    Toate notificările
+                </a>
+
+                <a class="notification-action-link"
+                   th:href="@{/notifications(unread=true)}">
+                    <i class="bi bi-bell-fill"></i>
+                    Notificări necitite
+                </a>
+
+                <form method="post" th:action="@{/notifications/mark-all-read}">
+                    <input th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}"
+                           type="hidden">
+                    <button class="notification-action-link notification-action-button"
+                            th:disabled="${notificationCount == 0}"
+                            type="submit">
+                        <i class="bi bi-check2-all"></i>
+                        Marchează toate ca citite
+                    </button>
+                </form>
+            </div>
+
             <div class="navbar-notifications-empty"
                  th:if="${#lists.isEmpty(notifications)}">
                 <i class="bi bi-bell-slash"></i>
-                <p class="mb-0">Nu ai notificări noi.</p>
+                <p class="mb-0">Nu ai notificări.</p>
             </div>
 
             <div class="navbar-notification-list"

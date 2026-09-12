@@ -52,6 +52,20 @@ public class UserNotificationService {
                 .countByUserAndReadFalse(user);
     }
 
+    public List<UserNotification> getUnreadNotifications(User user) {
+
+        return userNotificationRepository
+                .findByUserAndReadFalseOrderByCreatedAtDesc(user);
+    }
+
+    public void markAllAsRead(User user) {
+
+        List<UserNotification> unreadNotifications = getUnreadNotifications(user);
+
+        unreadNotifications.forEach(notification -> notification.setRead(true));
+        userNotificationRepository.saveAll(unreadNotifications);
+    }
+
     public String markAsRead(
             Long notificationId,
             User user
