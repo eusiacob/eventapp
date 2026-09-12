@@ -102,11 +102,17 @@ public class SecurityConfig {
     @Configuration
     public static class WebConfig implements WebMvcConfigurer {
 
+        private final UploadProperties uploadProperties;
+
+        public WebConfig(UploadProperties uploadProperties) {
+            this.uploadProperties = uploadProperties;
+        }
+
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
             registry.addResourceHandler("/uploads/**")
-                    .addResourceLocations("file:uploads/");
+                    .addResourceLocations(uploadProperties.resourceLocation());
         }
     }
 }

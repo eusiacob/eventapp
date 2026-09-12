@@ -1,5 +1,6 @@
 package com.example.eventapp.service;
 
+import com.example.eventapp.config.UploadProperties;
 import com.example.eventapp.dto.RegisterUserDTO;
 import com.example.eventapp.dto.LegalAcceptanceDTO;
 import com.example.eventapp.model.AccountStatusReason;
@@ -23,7 +24,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -46,6 +46,7 @@ public class UserService {
     private final UserNotificationRepository userNotificationRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final LegalDocumentService legalDocumentService;
+    private final UploadProperties uploadProperties;
 
     public UserService(
             UserRepository userRepository,
@@ -58,7 +59,8 @@ public class UserService {
             SupportMessageRepository supportMessageRepository,
             UserNotificationRepository userNotificationRepository,
             PasswordResetTokenRepository passwordResetTokenRepository,
-            LegalDocumentService legalDocumentService
+            LegalDocumentService legalDocumentService,
+            UploadProperties uploadProperties
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -71,6 +73,7 @@ public class UserService {
         this.userNotificationRepository = userNotificationRepository;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.legalDocumentService = legalDocumentService;
+        this.uploadProperties = uploadProperties;
     }
 
     public List<User> findAll() {
@@ -594,9 +597,7 @@ public class UserService {
             throw new IllegalStateException("Identificatorul serviciului este invalid.", exception);
         }
 
-        Path uploadsRoot = Paths.get("uploads", "businesses")
-                .toAbsolutePath()
-                .normalize();
+        Path uploadsRoot = uploadProperties.businessesPath();
 
         if (!Files.exists(uploadsRoot)) {
             return;

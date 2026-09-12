@@ -1,5 +1,6 @@
 package com.example.eventapp.service;
 
+import com.example.eventapp.config.UploadProperties;
 import com.example.eventapp.exception.InvalidVideoException;
 import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.BusinessVideo;
@@ -11,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
@@ -23,14 +23,17 @@ public class BusinessVideoService {
 
     private final BusinessVideoRepository businessVideoRepository;
     private final BusinessProfileService businessProfileService;
+    private final UploadProperties uploadProperties;
     private final Semaphore ffmpegSemaphore = new Semaphore(2);
 
     public BusinessVideoService(
             BusinessVideoRepository businessVideoRepository,
-            BusinessProfileService businessProfileService
+            BusinessProfileService businessProfileService,
+            UploadProperties uploadProperties
     ) {
         this.businessVideoRepository = businessVideoRepository;
         this.businessProfileService = businessProfileService;
+        this.uploadProperties = uploadProperties;
     }
 
     public void uploadVideos(Long businessId, List<MultipartFile> files)
@@ -42,9 +45,7 @@ public class BusinessVideoService {
         String category =
                 businessProfile.getCategory().name().toLowerCase();
 
-        Path uploadPath = Paths.get(
-                "uploads",
-                "businesses",
+        Path uploadPath = uploadProperties.businessPath(
                 category,
                 businessProfile.getUuid(),
                 "videos"
@@ -155,11 +156,12 @@ public class BusinessVideoService {
                 BusinessVideo video = new BusinessVideo();
 
                 video.setVideoPath(
-                        "/uploads/businesses/"
-                                + category + "/"
-                                + businessProfile.getUuid()
-                                + "/videos/"
-                                + fileName
+                        uploadProperties.publicBusinessPath(
+                                category,
+                                businessProfile.getUuid(),
+                                "videos",
+                                fileName
+                        )
                 );
 
                 video.setBusinessProfile(businessProfile);
@@ -549,9 +551,7 @@ public class BusinessVideoService {
             return;
         }
 
-        Path uploadsRoot = Paths.get("uploads")
-                .toAbsolutePath()
-                .normalize();
+        Path uploadsRoot = uploadProperties.rootPath();
 
         for (BusinessVideo video : businessProfile.getGalleryVideos()) {
 
@@ -561,13 +561,7 @@ public class BusinessVideoService {
                 continue;
             }
 
-            String relativePath = videoPath.startsWith("/")
-                    ? videoPath.substring(1)
-                    : videoPath;
-
-            Path filePath = Paths.get(relativePath)
-                    .toAbsolutePath()
-                    .normalize();
+            Path filePath = uploadProperties.resolvePublicPath(videoPath);
 
             if (!filePath.startsWith(uploadsRoot)) {
                 throw new IOException(
@@ -618,17 +612,8 @@ public class BusinessVideoService {
 
         if (videoPath != null && !videoPath.isBlank()) {
 
-            String relativePath = videoPath.startsWith("/")
-                    ? videoPath.substring(1)
-                    : videoPath;
-
-            Path uploadsRoot = Paths.get("uploads")
-                    .toAbsolutePath()
-                    .normalize();
-
-            Path filePath = Paths.get(relativePath)
-                    .toAbsolutePath()
-                    .normalize();
+            Path uploadsRoot = uploadProperties.rootPath();
+            Path filePath = uploadProperties.resolvePublicPath(videoPath);
 
             if (!filePath.startsWith(uploadsRoot)) {
                 throw new IOException(

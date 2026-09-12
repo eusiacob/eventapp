@@ -1,5 +1,6 @@
 package com.example.eventapp.service;
 
+import com.example.eventapp.config.UploadProperties;
 import com.example.eventapp.model.BusinessProfile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,7 +12,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 @Service
@@ -20,6 +20,12 @@ public class BusinessCoverImageService {
     private static final int COVER_WIDTH = 1200;
     private static final int COVER_HEIGHT = 900;
     private static final String COVER_FILE_NAME = "cover.jpg";
+
+    private final UploadProperties uploadProperties;
+
+    public BusinessCoverImageService(UploadProperties uploadProperties) {
+        this.uploadProperties = uploadProperties;
+    }
 
     public void validateCoverImage(MultipartFile file) throws IOException {
 
@@ -89,9 +95,7 @@ public class BusinessCoverImageService {
                 .name()
                 .toLowerCase();
 
-        Path uploadPath = Paths.get(
-                "uploads",
-                "businesses",
+        Path uploadPath = uploadProperties.businessPath(
                 categoryFolder,
                 profile.getUuid()
         );
@@ -105,12 +109,11 @@ public class BusinessCoverImageService {
             throw new IOException("Nu s-a putut salva imaginea de copertă.");
         }
 
-        return "/uploads/businesses/"
-                + categoryFolder
-                + "/"
-                + profile.getUuid()
-                + "/"
-                + COVER_FILE_NAME;
+        return uploadProperties.publicBusinessPath(
+                categoryFolder,
+                profile.getUuid(),
+                COVER_FILE_NAME
+        );
     }
 
     public void deleteCoverImage(String imagePath) throws IOException {
@@ -119,16 +122,8 @@ public class BusinessCoverImageService {
             return;
         }
 
-        String relativePath = imagePath.startsWith("/")
-                ? imagePath.substring(1)
-                : imagePath;
-
-        Path uploadsRoot = Paths.get("uploads", "businesses")
-                .toAbsolutePath()
-                .normalize();
-        Path filePath = Paths.get(relativePath)
-                .toAbsolutePath()
-                .normalize();
+        Path uploadsRoot = uploadProperties.businessesPath();
+        Path filePath = uploadProperties.resolvePublicPath(imagePath);
 
         if (!filePath.startsWith(uploadsRoot)) {
             return;

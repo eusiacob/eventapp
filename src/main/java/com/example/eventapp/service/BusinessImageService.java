@@ -1,5 +1,6 @@
 package com.example.eventapp.service;
 
+import com.example.eventapp.config.UploadProperties;
 import com.example.eventapp.model.BusinessImage;
 import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.User;
@@ -21,11 +22,14 @@ public class BusinessImageService {
 
     private final BusinessImageRepository businessImageRepository;
     private final BusinessProfileService businessProfileService;
+    private final UploadProperties uploadProperties;
 
     public BusinessImageService(BusinessImageRepository businessImageRepository,
-                                BusinessProfileService businessProfileService) {
+                                BusinessProfileService businessProfileService,
+                                UploadProperties uploadProperties) {
         this.businessImageRepository = businessImageRepository;
         this.businessProfileService = businessProfileService;
+        this.uploadProperties = uploadProperties;
     }
 
     public void uploadImages(
@@ -42,9 +46,7 @@ public class BusinessImageService {
                         .toLowerCase();
 
         Path uploadPath =
-                Paths.get(
-                        "uploads",
-                        "businesses",
+                uploadProperties.businessPath(
                         category,
                         businessProfile.getUuid()
                 );
@@ -99,12 +101,11 @@ public class BusinessImageService {
                     new BusinessImage();
 
             image.setImagePath(
-                    "/uploads/businesses/"
-                            + category
-                            + "/"
-                            + businessProfile.getUuid()
-                            + "/"
-                            + fileName
+                    uploadProperties.publicBusinessPath(
+                            category,
+                            businessProfile.getUuid(),
+                            fileName
+                    )
             );
 
             image.setBusinessProfile(
@@ -192,17 +193,8 @@ public class BusinessImageService {
 
         if (imagePath != null && !imagePath.isBlank()) {
 
-            String relativePath = imagePath.startsWith("/")
-                    ? imagePath.substring(1)
-                    : imagePath;
-
-            Path uploadsRoot = Paths.get("uploads")
-                    .toAbsolutePath()
-                    .normalize();
-
-            Path filePath = Paths.get(relativePath)
-                    .toAbsolutePath()
-                    .normalize();
+            Path uploadsRoot = uploadProperties.rootPath();
+            Path filePath = uploadProperties.resolvePublicPath(imagePath);
 
             if (!filePath.startsWith(uploadsRoot)) {
                 throw new IOException(
