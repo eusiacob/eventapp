@@ -190,12 +190,6 @@
 
     </div>
 
-    <!-- EMPTY STATE -->
-    <div class="empty-businesses"
-         th:if="${#lists.isEmpty(profiles)}">
-        Nu ai servicii. Adaugă acum unul!
-    </div>
-
     <div class="alert alert-success p-2" th:if="${param.businessCreated}">
         Serviciu adăugat și trimis către aprobare!
     </div>
@@ -219,6 +213,12 @@
             <i class="bi bi-plus-lg"></i>
             Adaugă serviciu
         </a>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div class="empty-businesses"
+         th:if="${#lists.isEmpty(profiles)}">
+        Nu ai servicii. Adaugă acum unul!
     </div>
 
     <!-- CARDS -->
