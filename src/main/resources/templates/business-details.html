@@ -320,6 +320,21 @@
                     Recenzia ta este în curs de aprobare.
                 </div>
 
+                <form class="d-flex align-items-center justify-content-end gap-2 mb-2"
+                      method="get"
+                      th:action="@{/business/{uuid}(uuid=${profile.uuid})}"
+                      th:if="${reviewCount > 0}">
+                    <label class="small text-muted" for="reviewSize">Afișează</label>
+                    <select class="form-select form-select-sm w-auto"
+                            id="reviewSize"
+                            name="reviewSize"
+                            onchange="this.form.submit()">
+                        <option th:selected="${reviewSize == 5}" value="5">5 recenzii</option>
+                        <option th:selected="${reviewSize == 10}" value="10">10 recenzii</option>
+                        <option th:selected="${reviewSize == 20}" value="20">20 recenzii</option>
+                    </select>
+                </form>
+
                 <div class="text-muted" th:if="${#lists.isEmpty(reviews)}">
                     Nici o recenzie.
                 </div>
@@ -357,6 +372,48 @@
                     <p class="mt-3" th:text="${r.comment}"></p>
 
                 </div>
+
+                <nav aria-label="Paginarea recenziilor"
+                     class="d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3 mt-4"
+                     th:if="${reviewPage.totalPages > 1}">
+                    <small class="text-muted"
+                           th:text="|Pagina ${reviewPage.number + 1} din ${reviewPage.totalPages}|">
+                    </small>
+
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item" th:classappend="${reviewPage.first ? ' disabled' : ''}">
+                            <a aria-label="Prima pagină"
+                               class="page-link"
+                               th:href="@{/business/{uuid}(uuid=${profile.uuid}, reviewPage=0, reviewSize=${reviewSize})}">
+                                <i class="bi bi-chevron-bar-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${reviewPage.first ? ' disabled' : ''}">
+                            <a aria-label="Pagina anterioară"
+                               class="page-link"
+                               th:href="@{/business/{uuid}(uuid=${profile.uuid}, reviewPage=${reviewPage.number - 1}, reviewSize=${reviewSize})}">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link" th:text="${reviewPage.number + 1}"></span>
+                        </li>
+                        <li class="page-item" th:classappend="${reviewPage.last ? ' disabled' : ''}">
+                            <a aria-label="Pagina următoare"
+                               class="page-link"
+                               th:href="@{/business/{uuid}(uuid=${profile.uuid}, reviewPage=${reviewPage.number + 1}, reviewSize=${reviewSize})}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${reviewPage.last ? ' disabled' : ''}">
+                            <a aria-label="Ultima pagină"
+                               class="page-link"
+                               th:href="@{/business/{uuid}(uuid=${profile.uuid}, reviewPage=${reviewPage.totalPages - 1}, reviewSize=${reviewSize})}">
+                                <i class="bi bi-chevron-bar-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
 
             </div>
 

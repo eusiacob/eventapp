@@ -162,6 +162,48 @@
 
     </div>
 
+    <nav aria-label="Paginarea serviciilor"
+         class="d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3 mt-4"
+         th:if="${businessPage.totalPages > 1}">
+        <small class="text-muted"
+               th:text="|Pagina ${businessPage.number + 1} din ${businessPage.totalPages}|">
+        </small>
+
+        <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" th:classappend="${businessPage.first ? ' disabled' : ''}">
+                <a aria-label="Prima pagină"
+                   class="page-link"
+                   th:href="@{/businesses/category/{category}(category=${selectedCategory}, keyword=${keyword}, city=${city}, eventDate=${eventDate}, page=0)}">
+                    <i class="bi bi-chevron-bar-left"></i>
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${businessPage.first ? ' disabled' : ''}">
+                <a aria-label="Pagina anterioară"
+                   class="page-link"
+                   th:href="@{/businesses/category/{category}(category=${selectedCategory}, keyword=${keyword}, city=${city}, eventDate=${eventDate}, page=${businessPage.number - 1})}">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link" th:text="${businessPage.number + 1}"></span>
+            </li>
+            <li class="page-item" th:classappend="${businessPage.last ? ' disabled' : ''}">
+                <a aria-label="Pagina următoare"
+                   class="page-link"
+                   th:href="@{/businesses/category/{category}(category=${selectedCategory}, keyword=${keyword}, city=${city}, eventDate=${eventDate}, page=${businessPage.number + 1})}">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${businessPage.last ? ' disabled' : ''}">
+                <a aria-label="Ultima pagină"
+                   class="page-link"
+                   th:href="@{/businesses/category/{category}(category=${selectedCategory}, keyword=${keyword}, city=${city}, eventDate=${eventDate}, page=${businessPage.totalPages - 1})}">
+                    <i class="bi bi-chevron-bar-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
 </div>
 
 

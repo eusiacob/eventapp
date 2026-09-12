@@ -4,6 +4,8 @@ import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.Review;
 import com.example.eventapp.model.User;
 import com.example.eventapp.repository.ReviewRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -95,21 +97,33 @@ public class ReviewService {
         return reviewRepository.findByBusinessProfileAndReviewStatus(businessProfile, Review.ReviewStatus.APPROVED);
     }
 
+    public Page<Review> getReviewsForBusiness(
+            BusinessProfile businessProfile,
+            int page,
+            int size
+    ) {
+        return reviewRepository.findByBusinessProfileAndReviewStatusOrderByCreatedAtDesc(
+                businessProfile,
+                Review.ReviewStatus.APPROVED,
+                PageRequest.of(Math.max(page, 0), size)
+        );
+    }
+
     public double getAverageRating(BusinessProfile businessProfile) {
-        List<Review> reviews = reviewRepository.findByBusinessProfileAndReviewStatus(businessProfile, Review.ReviewStatus.APPROVED);
+        Double average = reviewRepository
+                .getAverageRatingByBusinessProfileAndReviewStatus(
+                        businessProfile,
+                        Review.ReviewStatus.APPROVED
+                );
 
-        if (reviews.isEmpty()) {
-            return 0.0;
-        }
-
-        return reviews.stream()
-                .mapToInt(Review::getRating)
-                .average()
-                .orElse(0.0);
+        return average != null ? average : 0.0;
     }
 
     public long getReviewCount(BusinessProfile businessProfile) {
-        return reviewRepository.findByBusinessProfileAndReviewStatus(businessProfile, Review.ReviewStatus.APPROVED).size();
+        return reviewRepository.countByBusinessProfileAndReviewStatus(
+                businessProfile,
+                Review.ReviewStatus.APPROVED
+        );
     }
 
     public boolean hasUserReviewed(String businessUuid, String userEmail) {

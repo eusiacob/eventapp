@@ -2,6 +2,7 @@ package com.example.eventapp.service;
 
 import com.example.eventapp.model.*;
 import com.example.eventapp.repository.BusinessProfileRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -98,17 +99,20 @@ public class BusinessProfileService {
         return profile;
     }
 
-    public List<BusinessProfile> searchAvailableByCategoryNameCityAndDate(
+    public Page<BusinessProfile> searchAvailableByCategoryNameCityAndDate(
             BusinessCategory category,
             String keyword,
             String city,
-            LocalDate eventDate
+            LocalDate eventDate,
+            int page,
+            int size
     ) {
         return businessProfileRepository.searchAvailableByCategoryNameCityAndDate(
                 category,
                 keyword,
                 city,
-                eventDate
+                eventDate,
+                PageRequest.of(Math.max(page, 0), size)
         );
     }
 

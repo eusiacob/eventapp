@@ -3,6 +3,7 @@ package com.example.eventapp.repository;
 import com.example.eventapp.model.BusinessCategory;
 import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -48,11 +49,12 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
                 AND b.active = true
                 ORDER BY b.name ASC
             """)
-    List<BusinessProfile> searchAvailableByCategoryNameCityAndDate(
+    Page<BusinessProfile> searchAvailableByCategoryNameCityAndDate(
             @Param("category") BusinessCategory category,
             @Param("keyword") String keyword,
             @Param("city") String city,
-            @Param("eventDate") LocalDate eventDate
+            @Param("eventDate") LocalDate eventDate,
+            Pageable pageable
     );
 
     @Query("""

@@ -7,6 +7,7 @@ import com.example.eventapp.service.*;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -278,6 +279,8 @@ public class BusinessController {
 
     @GetMapping("/business/{uuid}")
     public String businessDetails(@PathVariable String uuid,
+                                  @RequestParam(defaultValue = "0") int reviewPage,
+                                  @RequestParam(defaultValue = "5") int reviewSize,
                                   Model model,
                                   @AuthenticationPrincipal UserDetails userDetails,
                                   RedirectAttributes redirectAttributes)
@@ -297,8 +300,18 @@ public class BusinessController {
 
         model.addAttribute("profile", profile);
 
+        int normalizedReviewSize = List.of(5, 10, 20).contains(reviewSize)
+                ? reviewSize : 5;
+        Page<Review> reviews = reviewService.getReviewsForBusiness(
+                profile,
+                reviewPage,
+                normalizedReviewSize
+        );
+
         model.addAttribute("review", new Review());
-        model.addAttribute("reviews", reviewService.getReviewsForBusiness(profile));
+        model.addAttribute("reviews", reviews.getContent());
+        model.addAttribute("reviewPage", reviews);
+        model.addAttribute("reviewSize", normalizedReviewSize);
         model.addAttribute("averageRating", reviewService.getAverageRating(profile));
         model.addAttribute("reviewCount", reviewService.getReviewCount(profile));
         model.addAttribute("breadcrumbs", List.of(
@@ -645,18 +658,22 @@ public class BusinessController {
                                        @RequestParam(required = false) String keyword,
                                        @RequestParam(required = false) String city,
                                        @RequestParam(required = false) LocalDate eventDate,
+                                       @RequestParam(defaultValue = "0") int page,
                                        Model model,
                                        @AuthenticationPrincipal UserDetails userDetails) {
 
-        List<BusinessProfile> profiles =
+        Page<BusinessProfile> businessPage =
                 businessProfileService.searchAvailableByCategoryNameCityAndDate(
                         category,
                         keyword,
                         city,
-                        eventDate
+                        eventDate,
+                        page,
+                        9
                 );
 
-        model.addAttribute("profiles", profiles);
+        model.addAttribute("profiles", businessPage.getContent());
+        model.addAttribute("businessPage", businessPage);
         model.addAttribute("selectedCategory", category);
         model.addAttribute("keyword", keyword);
         model.addAttribute("city", city);
