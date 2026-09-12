@@ -191,12 +191,15 @@
     <!-- MOBILE BOTTOM NAVBAR -->
     <div class="mobile-bottom-nav">
 
-        <a class="mobile-nav-item" href="/businesses">
+        <a class="mobile-nav-item"
+           data-mobile-nav="explore"
+           href="/businesses">
             <i class="bi bi-search"></i>
             <span>Explorează</span>
         </a>
 
         <a class="mobile-nav-item mobile-favorite-item"
+           data-mobile-nav="/favorites"
            href="/favorites"
            sec:authorize="isAuthenticated()">
 
@@ -218,6 +221,7 @@
                 class="mobile-nav-item mobile-nav-button mobile-notification-item"
                 data-bs-target="#mobileNotificationsPanel"
                 data-bs-toggle="offcanvas"
+                data-mobile-nav="/notifications"
                 sec:authorize="isAuthenticated()"
                 type="button">
 
@@ -235,6 +239,7 @@
         </button>
 
         <a class="mobile-nav-item"
+           data-mobile-nav="/profile"
            href="/profile"
            sec:authorize="isAuthenticated()">
 
@@ -271,6 +276,29 @@
         </a>
 
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const currentPath = window.location.pathname;
+
+            document.querySelectorAll("[data-mobile-nav]").forEach(function (item) {
+                const section = item.dataset.mobileNav;
+                const isExplore = section === "explore" && (
+                    currentPath === "/businesses" ||
+                    currentPath.startsWith("/businesses/") ||
+                    /^\/business\/[^/]+$/.test(currentPath)
+                );
+                const isCurrentSection = section !== "explore" && (
+                    currentPath === section || currentPath.startsWith(section + "/")
+                );
+
+                if (isExplore || isCurrentSection) {
+                    item.classList.add("is-active");
+                    item.setAttribute("aria-current", "page");
+                }
+            });
+        });
+    </script>
 
     <!-- MOBILE NOTIFICATIONS -->
     <div aria-labelledby="mobileNotificationsPanelTitle"

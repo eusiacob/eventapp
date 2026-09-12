@@ -400,6 +400,15 @@ body {
         color: #000;
     }
 
+    .mobile-nav-item.is-active {
+        background-color: #e7f1ff;
+        color: #0d6efd;
+    }
+
+    .mobile-nav-item.is-active i {
+        color: #0d6efd;
+    }
+
     .mobile-nav-form {
         flex: 1;
         margin: 0;
