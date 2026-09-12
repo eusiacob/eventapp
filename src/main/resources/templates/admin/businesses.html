@@ -30,32 +30,56 @@
 
         <a class="admin-filter-btn all"
            th:classappend="${selectedStatus == null} ? ' active'"
-           th:href="@{/admin/businesses}">
+           th:href="@{/admin/businesses(search=${search})}">
             Toate
         </a>
 
 
         <a class="admin-filter-btn pending"
            th:classappend="${selectedStatus?.name() == 'PENDING'} ? ' active'"
-           th:href="@{/admin/businesses(status='PENDING')}">
+           th:href="@{/admin/businesses(status='PENDING', search=${search})}">
             În așteptare
         </a>
 
 
         <a class="admin-filter-btn approved"
            th:classappend="${selectedStatus?.name() == 'APPROVED'} ? ' active'"
-           th:href="@{/admin/businesses(status='APPROVED')}">
+           th:href="@{/admin/businesses(status='APPROVED', search=${search})}">
             Aprobate
         </a>
 
 
         <a class="admin-filter-btn rejected"
            th:classappend="${selectedStatus?.name() == 'REJECTED'} ? ' active'"
-           th:href="@{/admin/businesses(status='REJECTED')}">
+           th:href="@{/admin/businesses(status='REJECTED', search=${search})}">
             Refuzate
         </a>
 
     </div>
+
+    <form class="row g-2 align-items-end mb-4"
+          method="get"
+          th:action="@{/admin/businesses}">
+        <input name="status" th:if="${selectedStatus != null}" th:value="${selectedStatus}" type="hidden">
+        <div class="col-12 col-md-7 col-lg-5">
+            <label class="form-label text-dark" for="businessSearch">Caută servicii</label>
+            <input class="form-control"
+                   id="businessSearch"
+                   name="search"
+                   placeholder="Numele serviciului sau utilizatorul"
+                   th:value="${search}"
+                   type="search">
+        </div>
+        <div class="col-12 col-md-auto d-flex gap-2">
+            <button class="btn btn-dark p-2" type="submit">
+                <i class="bi bi-search me-1"></i>Caută
+            </button>
+            <a class="btn btn-outline-secondary p-2"
+               th:href="@{/admin/businesses(status=${selectedStatus})}">
+                Reset
+            </a>
+        </div>
+    </form>
 
     <div class="admin-business-body">
 

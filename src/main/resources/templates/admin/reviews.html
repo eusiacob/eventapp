@@ -34,7 +34,7 @@
 
         <a class="admin-filter-btn all"
            th:classappend="${selectedStatus == null} ? ' active'"
-           th:href="@{/admin/reviews}">
+           th:href="@{/admin/reviews(search=${search})}">
 
             Toate
 
@@ -42,7 +42,7 @@
 
         <a class="admin-filter-btn pending"
            th:classappend="${selectedStatus?.name() == 'PENDING'} ? ' active'"
-           th:href="@{/admin/reviews(status='PENDING')}">
+           th:href="@{/admin/reviews(status='PENDING', search=${search})}">
 
             În așteptare
 
@@ -50,7 +50,7 @@
 
         <a class="admin-filter-btn approved"
            th:classappend="${selectedStatus?.name() == 'APPROVED'} ? ' active'"
-           th:href="@{/admin/reviews(status='APPROVED')}">
+           th:href="@{/admin/reviews(status='APPROVED', search=${search})}">
 
             Aprobate
 
@@ -58,13 +58,37 @@
 
         <a class="admin-filter-btn rejected"
            th:classappend="${selectedStatus?.name() == 'REJECTED'} ? ' active'"
-           th:href="@{/admin/reviews(status='REJECTED')}">
+           th:href="@{/admin/reviews(status='REJECTED', search=${search})}">
 
             Respinse
 
         </a>
 
     </div>
+
+    <form class="row g-2 align-items-end mb-3"
+          method="get"
+          th:action="@{/admin/reviews}">
+        <input name="status" th:if="${selectedStatus != null}" th:value="${selectedStatus}" type="hidden">
+        <div class="col-12 col-md-7 col-lg-5">
+            <label class="form-label text-dark" for="reviewSearch">Caută recenzii</label>
+            <input class="form-control"
+                   id="reviewSearch"
+                   name="search"
+                   placeholder="Numele serviciului sau autorul"
+                   th:value="${search}"
+                   type="search">
+        </div>
+        <div class="col-12 col-md-auto d-flex gap-2">
+            <button class="btn btn-dark p-2" type="submit">
+                <i class="bi bi-search me-1"></i>Caută
+            </button>
+            <a class="btn btn-outline-secondary p-2"
+               th:href="@{/admin/reviews(status=${selectedStatus})}">
+                Reset
+            </a>
+        </div>
+    </form>
 
     <!-- LISTA -->
     <span class="text-muted"

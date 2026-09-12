@@ -34,34 +34,58 @@
 
         <a class="admin-filter-btn all"
            th:classappend="${selectedRole == null} ? ' active'"
-           th:href="@{/admin/users}">
+           th:href="@{/admin/users(search=${search})}">
 
             Toți
         </a>
 
         <a class="admin-filter-btn bg-primary text-white"
            th:classappend="${selectedRole?.name() == 'USER'} ? ' active'"
-           th:href="@{/admin/users(role='USER')}">
+           th:href="@{/admin/users(role='USER', search=${search})}">
 
             USER
         </a>
 
         <a class="admin-filter-btn bg-success text-white"
            th:classappend="${selectedRole?.name() == 'BUSINESS'} ? ' active'"
-           th:href="@{/admin/users(role='BUSINESS')}">
+           th:href="@{/admin/users(role='BUSINESS', search=${search})}">
 
             BUSINESS
         </a>
 
         <a class="admin-filter-btn bg-dark text-white"
            th:classappend="${selectedRole?.name() == 'ADMIN'} ? ' active'"
-           th:href="@{/admin/users(role='ADMIN')}">
+           th:href="@{/admin/users(role='ADMIN', search=${search})}">
 
             ADMIN
 
         </a>
 
     </div>
+
+    <form class="row g-2 align-items-end mb-3"
+          method="get"
+          th:action="@{/admin/users}">
+        <input name="role" th:if="${selectedRole != null}" th:value="${selectedRole}" type="hidden">
+        <div class="col-12 col-md-7 col-lg-5">
+            <label class="form-label text-dark" for="userSearch">Caută utilizatori</label>
+            <input class="form-control"
+                   id="userSearch"
+                   name="search"
+                   placeholder="Numele utilizatorului sau emailul"
+                   th:value="${search}"
+                   type="search">
+        </div>
+        <div class="col-12 col-md-auto d-flex gap-2">
+            <button class="btn btn-dark p-2" type="submit">
+                <i class="bi bi-search me-1"></i>Caută
+            </button>
+            <a class="btn btn-outline-secondary p-2"
+               th:href="@{/admin/users(role=${selectedRole})}">
+                Reset
+            </a>
+        </div>
+    </form>
 
     <!--    LISTA-->
     <span class="text-muted"

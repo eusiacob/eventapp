@@ -122,21 +122,15 @@ public class AdminController {
     @GetMapping("/businesses")
     public String businesses(
             @RequestParam(required = false) BusinessProfile.BusinessStatus status,
+            @RequestParam(required = false) String search,
             Model model
     ) {
 
-        List<BusinessProfile> businesses;
-
-        if (status == null) {
-
-            businesses = businessProfileRepository.findAllByOrderByCreatedAtDesc();
-        } else {
-
-            businesses = businessProfileRepository.findByStatusOrderByCreatedAtDesc(status);
-        }
+        List<BusinessProfile> businesses = businessProfileRepository.searchForAdmin(status, search);
 
         model.addAttribute("businesses", businesses);
         model.addAttribute("selectedStatus", status);
+        model.addAttribute("search", search);
         model.addAttribute("breadcrumbs", List.of(
                 new BreadcrumbDTO("Dashboard", "/admin"),
                 new BreadcrumbDTO("Servicii", null)
@@ -208,16 +202,11 @@ public class AdminController {
     @GetMapping("/users")
     public String adminUsers(
             @RequestParam(required = false) Role role,
+            @RequestParam(required = false) String search,
             Model model
     ) {
 
-        List<User> users;
-
-        if (role != null) {
-            users = userService.findByRole(role);
-        } else {
-            users = userService.findAll();
-        }
+        List<User> users = userService.searchForAdmin(role, search);
 
         List<UserAdminDto> userDtos = users.stream()
                 .map(user -> new UserAdminDto(
@@ -228,6 +217,7 @@ public class AdminController {
 
         model.addAttribute("users", userDtos);
         model.addAttribute("selectedRole", role);
+        model.addAttribute("search", search);
         model.addAttribute("breadcrumbs", List.of(
                 new BreadcrumbDTO("Dashboard", "/admin"),
                 new BreadcrumbDTO("Utilizatori", null)
@@ -293,19 +283,15 @@ public class AdminController {
     @GetMapping("/reviews")
     public String adminReviews(
             @RequestParam(required = false) Review.ReviewStatus status,
+            @RequestParam(required = false) String search,
             Model model
     ) {
 
-        List<Review> reviews;
-
-        if (status != null) {
-            reviews = reviewService.findByStatus(status);
-        } else {
-            reviews = reviewService.findAll();
-        }
+        List<Review> reviews = reviewRepository.searchForAdmin(status, search);
 
         model.addAttribute("reviews", reviews);
         model.addAttribute("selectedStatus", status);
+        model.addAttribute("search", search);
         model.addAttribute("breadcrumbs", List.of(
                 new BreadcrumbDTO("Dashboard", "/admin"),
                 new BreadcrumbDTO("Recenzii", null)

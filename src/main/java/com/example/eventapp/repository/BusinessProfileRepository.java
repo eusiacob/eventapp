@@ -26,6 +26,25 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
     List<BusinessProfile> findAllByOrderByCreatedAtDesc();
 
     @Query("""
+            SELECT b
+            FROM BusinessProfile b
+            JOIN b.user u
+            WHERE (:status IS NULL OR b.status = :status)
+            AND (
+                :search IS NULL OR :search = ''
+                OR LOWER(b.name) LIKE LOWER(CONCAT('%', :search, '%'))
+                OR LOWER(u.firstName) LIKE LOWER(CONCAT('%', :search, '%'))
+                OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :search, '%'))
+                OR LOWER(CONCAT(CONCAT(u.firstName, ' '), u.lastName)) LIKE LOWER(CONCAT('%', :search, '%'))
+            )
+            ORDER BY b.createdAt DESC
+            """)
+    List<BusinessProfile> searchForAdmin(
+            @Param("status") BusinessProfile.BusinessStatus status,
+            @Param("search") String search
+    );
+
+    @Query("""
                 SELECT DISTINCT b.city FROM BusinessProfile b
                 WHERE b.category = :category
                 AND b.status = APPROVED

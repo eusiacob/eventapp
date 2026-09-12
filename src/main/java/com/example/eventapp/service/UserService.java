@@ -73,13 +73,46 @@ public class UserService {
 
     public List<User> findAll() {
 
-        return userRepository.findAll();
+        return populateEmailAddresses(userRepository.findAll());
     }
 
     public List<User> findByRole(Role role) {
 
-        return userRepository.findByRole(role);
+        return populateEmailAddresses(userRepository.findByRole(role));
 
+    }
+
+    public List<User> searchForAdmin(Role role, String search) {
+
+        List<User> users = role == null
+                ? findAll()
+                : findByRole(role);
+
+        if (search == null || search.isBlank()) {
+            return users;
+        }
+
+        String normalizedSearch = search.trim().toLowerCase();
+
+        return users.stream()
+                .filter(user -> (user.getFirstName() + " " + user.getLastName())
+                        .toLowerCase()
+                        .contains(normalizedSearch)
+                        || (user.getEmail() != null
+                        && user.getEmail().toLowerCase().contains(normalizedSearch)))
+                .toList();
+
+    }
+
+    private List<User> populateEmailAddresses(List<User> users) {
+
+        users.forEach(user -> {
+            if (user.getEmailEncrypted() != null && !user.getEmailEncrypted().isBlank()) {
+                user.setEmail(encryptionService.decrypt(user.getEmailEncrypted()));
+            }
+        });
+
+        return users;
     }
 
     public boolean emailExists(String email) {
