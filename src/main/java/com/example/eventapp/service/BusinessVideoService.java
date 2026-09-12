@@ -111,8 +111,17 @@ public class BusinessVideoService {
                     );
                 }
 
-                // 6. Conversie la MP4
-                convertToMp4(tempInput, tempOutput);
+                // 6. Dacă video-ul este deja web-friendly, îl păstrăm fără reconversie.
+                // Altfel îl convertim la MP4 optimizat pentru web.
+                if (isWebOptimizedMp4(tempInput)) {
+                    Files.copy(
+                            tempInput,
+                            tempOutput,
+                            StandardCopyOption.REPLACE_EXISTING
+                    );
+                } else {
+                    convertToMp4(tempInput, tempOutput);
+                }
 
                 // 7. Generăm o miniatură pentru previzualizarea mobilă
                 createThumbnail(tempOutput, tempThumbnail);
@@ -398,6 +407,106 @@ public class BusinessVideoService {
                     e
             );
         }
+    }
+
+    private boolean isWebOptimizedMp4(Path videoFile)
+            throws IOException, InterruptedException {
+
+        String formatName = getFfprobeValue(
+                videoFile,
+                "-show_entries",
+                "format=format_name"
+        );
+
+        if (!formatName.contains("mp4")) {
+            return false;
+        }
+
+        String videoCodec = getFfprobeValue(
+                videoFile,
+                "-select_streams",
+                "v:0",
+                "-show_entries",
+                "stream=codec_name"
+        );
+
+        if (!"h264".equals(videoCodec)) {
+            return false;
+        }
+
+        String audioCodec = getFfprobeValue(
+                videoFile,
+                "-select_streams",
+                "a:0",
+                "-show_entries",
+                "stream=codec_name"
+        );
+
+        return audioCodec.isBlank() || "aac".equals(audioCodec);
+    }
+
+    private String getFfprobeValue(Path videoFile, String... arguments)
+            throws IOException, InterruptedException {
+
+        java.util.ArrayList<String> command = new java.util.ArrayList<>();
+
+        command.add("ffprobe");
+        command.add("-v");
+        command.add("error");
+
+        command.addAll(List.of(arguments));
+
+        command.add("-of");
+        command.add("default=noprint_wrappers=1:nokey=1");
+        command.add(videoFile.toString());
+
+        ProcessBuilder processBuilder =
+                new ProcessBuilder(command);
+
+        processBuilder.redirectErrorStream(true);
+
+        Process process = processBuilder.start();
+
+        StringBuilder output = new StringBuilder();
+
+        Thread outputReader = new Thread(() -> {
+            try (var reader = new java.io.BufferedReader(
+                    new java.io.InputStreamReader(process.getInputStream()))) {
+
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    output.append(line)
+                            .append(System.lineSeparator());
+                }
+
+            } catch (IOException ignored) {
+                // Procesul este gestionat mai jos.
+            }
+        });
+
+        outputReader.start();
+
+        boolean finished = process.waitFor(30, TimeUnit.SECONDS);
+
+        if (!finished) {
+            process.destroyForcibly();
+            outputReader.interrupt();
+
+            throw new IOException(
+                    "FFprobe a depășit timpul maxim de execuție."
+            );
+        }
+
+        outputReader.join(2000);
+
+        if (process.exitValue() != 0) {
+            return "";
+        }
+
+        return output.toString()
+                .trim()
+                .toLowerCase();
     }
 
     private void convertToMp4(Path input, Path output)
