@@ -2,6 +2,7 @@ package com.example.eventapp.config;
 
 import com.example.eventapp.repository.UserRepository;
 import com.example.eventapp.service.EncryptionService;
+import com.example.eventapp.service.LegalDocumentService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NonNull;
@@ -18,13 +19,16 @@ public class CustomAuthenticationSuccessHandler
 
     private final UserRepository userRepository;
     private final EncryptionService encryptionService;
+    private final LegalDocumentService legalDocumentService;
 
     public CustomAuthenticationSuccessHandler(
             UserRepository userRepository,
-            EncryptionService encryptionService
+            EncryptionService encryptionService,
+            LegalDocumentService legalDocumentService
     ) {
         this.userRepository = userRepository;
         this.encryptionService = encryptionService;
+        this.legalDocumentService = legalDocumentService;
     }
 
     @Override
@@ -54,7 +58,7 @@ public class CustomAuthenticationSuccessHandler
                     user.setLoginBlockedUntil(null);
 
                     userRepository.save(user);
-                    return !LegalDocumentVersions.hasCurrentAcceptances(user);
+                    return !legalDocumentService.hasCurrentAcceptances(user);
                 })
                 .orElse(false);
 

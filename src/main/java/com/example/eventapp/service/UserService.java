@@ -2,7 +2,6 @@ package com.example.eventapp.service;
 
 import com.example.eventapp.dto.RegisterUserDTO;
 import com.example.eventapp.dto.LegalAcceptanceDTO;
-import com.example.eventapp.config.LegalDocumentVersions;
 import com.example.eventapp.model.AccountStatusReason;
 import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.Role;
@@ -44,6 +43,7 @@ public class UserService {
     private final SupportMessageRepository supportMessageRepository;
     private final UserNotificationRepository userNotificationRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final LegalDocumentService legalDocumentService;
 
     public UserService(
             UserRepository userRepository,
@@ -55,7 +55,8 @@ public class UserService {
             SupportTicketRepository supportTicketRepository,
             SupportMessageRepository supportMessageRepository,
             UserNotificationRepository userNotificationRepository,
-            PasswordResetTokenRepository passwordResetTokenRepository
+            PasswordResetTokenRepository passwordResetTokenRepository,
+            LegalDocumentService legalDocumentService
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -67,6 +68,7 @@ public class UserService {
         this.supportMessageRepository = supportMessageRepository;
         this.userNotificationRepository = userNotificationRepository;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
+        this.legalDocumentService = legalDocumentService;
     }
 
     public List<User> findAll() {
@@ -144,10 +146,7 @@ public class UserService {
         user.setEnabled(true);
         user.setLastActivityAt(LocalDateTime.now());
         user.setAccountStatusReason(AccountStatusReason.NONE);
-        user.setPrivacyPolicyVersion(LegalDocumentVersions.PRIVACY_POLICY);
-        user.setPrivacyPolicyAcceptedAt(LocalDateTime.now());
-        user.setTermsVersion(LegalDocumentVersions.TERMS_AND_CONDITIONS);
-        user.setTermsAcceptedAt(LocalDateTime.now());
+        legalDocumentService.acceptCurrentDocuments(user);
 
         userRepository.save(user);
     }
@@ -241,7 +240,7 @@ public class UserService {
     }
 
     public boolean hasCurrentLegalAcceptances(User user) {
-        return LegalDocumentVersions.hasCurrentAcceptances(user);
+        return legalDocumentService.hasCurrentAcceptances(user);
     }
 
     public void acceptCurrentLegalDocuments(
@@ -254,11 +253,7 @@ public class UserService {
             );
         }
 
-        LocalDateTime acceptedAt = LocalDateTime.now();
-        user.setPrivacyPolicyVersion(LegalDocumentVersions.PRIVACY_POLICY);
-        user.setPrivacyPolicyAcceptedAt(acceptedAt);
-        user.setTermsVersion(LegalDocumentVersions.TERMS_AND_CONDITIONS);
-        user.setTermsAcceptedAt(acceptedAt);
+        legalDocumentService.acceptCurrentDocuments(user);
         userRepository.save(user);
     }
 

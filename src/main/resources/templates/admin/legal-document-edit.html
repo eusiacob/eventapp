@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Editează documentul legal</title>
+    <link rel="icon" th:href="@{/images/favicon.png}" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="app-bg">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="container py-4" style="min-height: 100vh">
+    <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4 p-md-5">
+            <h1 class="h4 fw-bold mb-2"
+                th:text="${documentType.name() == 'PRIVACY_POLICY' ? 'Editează Politica de confidențialitate' : 'Editează Termenii și condițiile'}"></h1>
+            <p class="text-muted mb-4">Textul este afișat public exact cum îl introduci, păstrând rândurile noi. Nu sunt permise elemente HTML.</p>
+
+            <form method="post" th:action="@{/admin/legal-documents/{type}(type=${documentType})}" th:object="${document}">
+                <div class="row g-3 mb-3">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="version">Versiune</label>
+                        <input class="form-control" id="version" maxlength="32" th:field="*{version}" type="text">
+                        <div class="text-danger small mt-1" th:errors="*{version}"></div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="lastUpdated">Data actualizării</label>
+                        <input class="form-control" id="lastUpdated" th:field="*{lastUpdated}" type="date">
+                        <div class="text-danger small mt-1" th:errors="*{lastUpdated}"></div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label" for="content">Conținut</label>
+                    <textarea class="form-control font-monospace" id="content" rows="24" th:field="*{content}"></textarea>
+                    <div class="form-text">Folosește rânduri noi pentru titluri și paragrafe.</div>
+                    <div class="text-danger small mt-1" th:errors="*{content}"></div>
+                </div>
+
+                <div class="d-flex flex-column flex-sm-row justify-content-end gap-2">
+                    <a class="btn btn-light" th:href="@{/admin/legal-documents}">Renunță</a>
+                    <button class="btn btn-dark" type="submit">Salvează modificările</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

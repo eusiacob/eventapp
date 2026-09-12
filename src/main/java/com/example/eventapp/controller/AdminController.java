@@ -1,6 +1,7 @@
 package com.example.eventapp.controller;
 
 import com.example.eventapp.dto.BreadcrumbDTO;
+import com.example.eventapp.dto.LegalDocumentForm;
 import com.example.eventapp.dto.UserAdminDto;
 import com.example.eventapp.model.*;
 import com.example.eventapp.repository.BusinessProfileRepository;
@@ -8,11 +9,13 @@ import com.example.eventapp.repository.ReviewRepository;
 import com.example.eventapp.repository.SupportTicketRepository;
 import com.example.eventapp.repository.UserRepository;
 import com.example.eventapp.service.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -34,6 +37,7 @@ public class AdminController {
     private final SubscriptionService subscriptionService;
     private final SupportTicketRepository supportTicketRepository;
     private final EmailService emailService;
+    private final LegalDocumentService legalDocumentService;
 
     @GetMapping
     public String dashboard(Model model) {
@@ -56,6 +60,63 @@ public class AdminController {
                 supportTicketRepository.findAll().size());
 
         return "admin/dashboard";
+    }
+
+    @GetMapping("/legal-documents")
+    public String legalDocuments(Model model) {
+        model.addAttribute("documents", legalDocumentService.getAllDocuments());
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Dashboard", "/admin"),
+                new BreadcrumbDTO("Documente legale", null)
+        ));
+        return "admin/legal-documents";
+    }
+
+    @GetMapping("/legal-documents/{type}")
+    public String editLegalDocument(
+            @PathVariable LegalDocumentType type,
+            Model model
+    ) {
+        LegalDocument document = legalDocumentService.getDocument(type);
+        LegalDocumentForm form = new LegalDocumentForm();
+        form.setContent(document.getContent());
+        form.setVersion(document.getVersion());
+        form.setLastUpdated(document.getLastUpdated());
+
+        model.addAttribute("documentType", type);
+        model.addAttribute("document", form);
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Dashboard", "/admin"),
+                new BreadcrumbDTO("Documente legale", "/admin/legal-documents"),
+                new BreadcrumbDTO("Editare document", null)
+        ));
+        return "admin/legal-document-edit";
+    }
+
+    @PostMapping("/legal-documents/{type}")
+    public String updateLegalDocument(
+            @PathVariable LegalDocumentType type,
+            @Valid @ModelAttribute("document") LegalDocumentForm form,
+            BindingResult result,
+            Model model,
+            RedirectAttributes redirectAttributes
+    ) {
+        if (result.hasErrors()) {
+            model.addAttribute("documentType", type);
+            model.addAttribute("breadcrumbs", List.of(
+                    new BreadcrumbDTO("Dashboard", "/admin"),
+                    new BreadcrumbDTO("Documente legale", "/admin/legal-documents"),
+                    new BreadcrumbDTO("Editare document", null)
+            ));
+            return "admin/legal-document-edit";
+        }
+
+        legalDocumentService.updateDocument(type, form);
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                "Documentul a fost actualizat. O versiune nouă va fi confirmată la următoarea autentificare."
+        );
+        return "redirect:/admin/legal-documents";
     }
 
     @GetMapping("/businesses")
