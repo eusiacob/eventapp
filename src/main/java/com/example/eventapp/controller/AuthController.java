@@ -5,6 +5,7 @@ import com.example.eventapp.model.AccountStatusReason;
 import com.example.eventapp.model.Role;
 import com.example.eventapp.model.User;
 import com.example.eventapp.service.EmailService;
+import com.example.eventapp.service.EmailVerificationService;
 import com.example.eventapp.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -20,10 +21,16 @@ import java.time.LocalDateTime;
 public class AuthController {
     private final UserService userService;
     private final EmailService emailService;
+    private final EmailVerificationService emailVerificationService;
 
-    public AuthController(UserService userService, EmailService emailService) {
+    public AuthController(
+            UserService userService,
+            EmailService emailService,
+            EmailVerificationService emailVerificationService
+    ) {
         this.userService = userService;
         this.emailService = emailService;
+        this.emailVerificationService = emailVerificationService;
     }
 
     @GetMapping("/register")
@@ -66,11 +73,12 @@ public class AuthController {
             return "register";
         }
 
-        userService.registerUser(userDTO);
+        User user = userService.registerUser(userDTO);
         emailService.sendAccountCreatedEmail(
                 userDTO.getEmail(),
                 userDTO.getFirstName()
         );
+        emailVerificationService.requestUserEmailVerification(user);
 
         return "redirect:/login?registered";
     }

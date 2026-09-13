@@ -49,6 +49,12 @@ public class User {
     @Column(name = "email_hash", unique = true, length = 64)
     private String emailHash;
 
+    @Column(nullable = false)
+    private boolean emailVerified = false;
+
+    @Column
+    private LocalDateTime emailVerifiedAt;
+
     @NotBlank(message = "Introdu parola!")
     private String password;
 
@@ -56,23 +62,6 @@ public class User {
 
     @Transient
     private String confirmPassword;
-
-
-    @Transient
-    private String phone;
-
-    /**
-     * Telefon criptat AES-GCM.
-     */
-    @Column(name = "phone_encrypted", length = 1000)
-    private String phoneEncrypted;
-
-    /**
-     * Hash determinist al telefonului.
-     * Va fi folosit dacă vom avea nevoie să căutăm/verificăm numărul.
-     */
-    @Column(name = "phone_hash", length = 64)
-    private String phoneHash;
 
     @Enumerated(EnumType.STRING)
     private Role role;

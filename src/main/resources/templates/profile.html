@@ -66,6 +66,18 @@
                            th:text="${user.email}">
                         </p>
 
+                        <span class="badge bg-success-subtle text-success border border-success-subtle mt-2"
+                              th:if="${user.emailVerified}">
+                            <i class="bi bi-patch-check-fill me-1"></i>
+                            Email verificat
+                        </span>
+
+                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle mt-2"
+                              th:if="${!user.emailVerified}">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                            Email neverificat
+                        </span>
+
                     </div>
 
                 </div>
@@ -460,7 +472,26 @@
 
                 <div class="profile-info-row">
                     <span>Email</span>
-                    <strong th:text="${user.email}">email@test.com</strong>
+                    <div class="text-end">
+                        <strong th:text="${user.email}">email@test.com</strong>
+                        <div class="mt-1">
+                            <span class="badge bg-success-subtle text-success border border-success-subtle"
+                                  th:if="${user.emailVerified}">
+                                <i class="bi bi-patch-check-fill me-1"></i>
+                                Verificat
+                            </span>
+
+                            <form class="d-inline"
+                                  method="post"
+                                  th:action="@{/profile/email-verification}"
+                                  th:if="${!user.emailVerified}">
+                                <button class="btn btn-sm btn-outline-warning"
+                                        type="submit">
+                                    Trimite link de verificare
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="profile-info-row">

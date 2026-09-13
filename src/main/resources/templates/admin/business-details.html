@@ -69,7 +69,18 @@
 
                                 <strong>Email</strong>
 
-                                <div th:text="${business.email}"></div>
+                                <div>
+                                    <span th:text="${business.email}"></span>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle ms-1"
+                                          th:if="${business.emailVerified}">
+                                        <i class="bi bi-patch-check-fill me-1"></i>
+                                        Verificat
+                                    </span>
+                                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle ms-1"
+                                          th:if="${!business.emailVerified}">
+                                        Neverificat
+                                    </span>
+                                </div>
 
                             </div>
 

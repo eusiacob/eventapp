@@ -54,6 +54,12 @@ public class BusinessProfile {
     @Email(message = "Introdu un mail valid!")
     private String email;
 
+    @Column(nullable = false)
+    private boolean emailVerified = false;
+
+    @Column
+    private java.time.LocalDateTime emailVerifiedAt;
+
     private String website;
 
     @OneToMany(mappedBy = "businessProfile", cascade = CascadeType.ALL, orphanRemoval = true)

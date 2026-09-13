@@ -137,7 +137,7 @@ public class UserService {
                 .isPresent();
     }
 
-    public void registerUser(RegisterUserDTO userDTO) {
+    public User registerUser(RegisterUserDTO userDTO) {
 
         User user = new User();
 
@@ -149,12 +149,7 @@ public class UserService {
                         .trim()
                         .toLowerCase();
 
-        String phone =
-                userDTO.getPhone()
-                        .trim();
-
         user.setEmail(email);
-        user.setPhone(phone);
 
         user.setEmailHash(
                 encryptionService.hash(email)
@@ -162,14 +157,6 @@ public class UserService {
 
         user.setEmailEncrypted(
                 encryptionService.encrypt(email)
-        );
-
-        user.setPhoneHash(
-                encryptionService.hash(phone)
-        );
-
-        user.setPhoneEncrypted(
-                encryptionService.encrypt(phone)
         );
 
         user.setPassword(
@@ -182,11 +169,13 @@ public class UserService {
 
         user.setRole(Role.USER);
         user.setEnabled(true);
+        user.setEmailVerified(false);
+        user.setEmailVerifiedAt(null);
         user.setLastActivityAt(LocalDateTime.now());
         user.setAccountStatusReason(AccountStatusReason.NONE);
         legalDocumentService.acceptCurrentDocuments(user);
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Transactional
@@ -297,22 +286,6 @@ public class UserService {
         }
 
         throw new IllegalStateException("Emailul utilizatorului nu este disponibil.");
-    }
-
-    public String getPhoneNumber(User user) {
-        if (user == null) {
-            throw new IllegalArgumentException("Utilizatorul este obligatoriu.");
-        }
-
-        if (user.getPhone() != null && !user.getPhone().isBlank()) {
-            return user.getPhone();
-        }
-
-        if (user.getPhoneEncrypted() != null && !user.getPhoneEncrypted().isBlank()) {
-            return encryptionService.decrypt(user.getPhoneEncrypted());
-        }
-
-        return null;
     }
 
     public boolean hasCurrentLegalAcceptances(User user) {
@@ -512,6 +485,8 @@ public class UserService {
         user.setEmail(normalizedEmail);
         user.setEmailHash(encryptionService.hash(normalizedEmail));
         user.setEmailEncrypted(encryptionService.encrypt(normalizedEmail));
+        user.setEmailVerified(false);
+        user.setEmailVerifiedAt(null);
 
         userRepository.save(user);
     }

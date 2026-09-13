@@ -131,18 +131,6 @@
                                 </div>
                             </div>
 
-                            <div class="col-12 mb-2">
-                                <input class="form-control"
-                                       placeholder="07xx xxx xxx"
-                                       th:field="*{phone}"
-                                       type="text">
-
-                                <div class="text-danger small mt-1"
-                                     th:errors="*{phone}"
-                                     th:if="${#fields.hasErrors('phone')}">
-                                </div>
-                            </div>
-
                             <!-- GDPR -->
 
                             <div class="form-check mb-2">
@@ -159,7 +147,7 @@
                                     <a target="_blank"
                                        th:href="@{/privacy}">
                                         Politica de confidențialitate
-                                    </a>.
+                                    </a>
 
                                 </label>
 
@@ -184,7 +172,7 @@
                                     <a target="_blank"
                                        th:href="@{/terms}">
                                         Termenii și condițiile
-                                    </a>.
+                                    </a>
 
                                 </label>
 

@@ -35,13 +35,6 @@ public class RegisterUserDTO {
     )
     private String email;
 
-    @NotBlank(message = "Introdu numărul de telefon!")
-    @Pattern(
-            regexp = "^[0-9+\\- ]{10}$",
-            message = "Număr de telefon invalid! Trebuie să fie de forma 07XXXXXXXX și fără spații!"
-    )
-    private String phone;
-
     @NotBlank(message = "Introdu parola!")
     @Size(min = 8, message = "Parola trebuie să conțină cel puțin 8 caractere.")
     private String password;

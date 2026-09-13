@@ -54,6 +54,52 @@ public class EmailService {
                 .toUriString();
     }
 
+    public String buildEmailVerificationLink(String rawToken) {
+        return UriComponentsBuilder
+                .fromUriString(appBaseUrl)
+                .path("/verify-email")
+                .queryParam("token", rawToken)
+                .build()
+                .toUriString();
+    }
+
+    public void sendUserEmailVerificationEmail(
+            String recipient,
+            String firstName,
+            String verificationLink
+    ) {
+        sendEmail(
+                recipient,
+                "Verifică adresa de email - M-Event",
+                greeting(firstName) +
+                        "Pentru a confirma adresa de email a contului tău, " +
+                        "accesează următorul link:\n\n" +
+                        verificationLink +
+                        "\n\n" +
+                        "Linkul este valabil timp de 24 de ore.\n\n" +
+                        "Dacă nu ai cerut această verificare, poți ignora mesajul."
+        );
+    }
+
+    public void sendBusinessEmailVerificationEmail(
+            String recipient,
+            String businessName,
+            String verificationLink
+    ) {
+        sendEmail(
+                recipient,
+                "Verifică emailul serviciului - M-Event",
+                "Salut,\n\n" +
+                        "Pentru a confirma adresa de email afișată public pentru serviciul \"" +
+                        businessName +
+                        "\", accesează următorul link:\n\n" +
+                        verificationLink +
+                        "\n\n" +
+                        "Linkul este valabil timp de 24 de ore.\n\n" +
+                        "După verificare, emailul va apărea ca verificat în pagina serviciului."
+        );
+    }
+
     public void sendAccountCreatedEmail(String recipient, String firstName) {
         sendEmail(
                 recipient,

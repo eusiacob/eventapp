@@ -34,6 +34,7 @@ public class BusinessController {
     private final BusinessCoverImageService businessCoverImageService;
     private final UserNotificationService userNotificationService;
     private final BusinessVideoService businessVideoService;
+    private final EmailVerificationService emailVerificationService;
 
     public BusinessController(
             BusinessProfileService businessProfileService,
@@ -44,7 +45,8 @@ public class BusinessController {
             BusinessCoverImageService businessCoverImageService,
             SubscriptionService subscriptionService,
             UserNotificationService userNotificationService,
-            BusinessVideoService businessVideoService) {
+            BusinessVideoService businessVideoService,
+            EmailVerificationService emailVerificationService) {
         this.businessProfileService = businessProfileService;
         this.businessImageService = businessImageService;
         this.businessCoverImageService = businessCoverImageService;
@@ -54,6 +56,7 @@ public class BusinessController {
         this.subscriptionService = subscriptionService;
         this.userNotificationService = userNotificationService;
         this.businessVideoService = businessVideoService;
+        this.emailVerificationService = emailVerificationService;
     }
 
     @GetMapping("/businesses")
@@ -156,8 +159,13 @@ public class BusinessController {
         }
 
         profile.setCreatedAt(LocalDate.now());
+        emailVerificationService.applyBusinessEmailVerificationState(
+                profile,
+                user
+        );
 
         businessProfileService.save(profile);
+        emailVerificationService.requestBusinessEmailVerification(profile);
 
         if (file != null && !file.isEmpty()) {
 
@@ -408,6 +416,7 @@ public class BusinessController {
         BusinessProfile existingProfile =
                 businessProfileService.findByUuidAndValidateOwner(uuid, user);
         String oldImagePath = existingProfile.getImagePath();
+        String oldEmail = existingProfile.getEmail();
 
         if (result.hasErrors()) {
 
@@ -451,6 +460,19 @@ public class BusinessController {
         existingProfile.setPhone(profile.getPhone());
         existingProfile.setDescription(profile.getDescription());
         existingProfile.setEmail(profile.getEmail());
+
+        boolean emailChanged =
+                (oldEmail == null && profile.getEmail() != null) ||
+                        (oldEmail != null &&
+                                !oldEmail.equalsIgnoreCase(profile.getEmail()));
+
+        if (emailChanged) {
+            emailVerificationService.applyBusinessEmailVerificationState(
+                    existingProfile,
+                    user
+            );
+        }
+
         existingProfile.setWebsite(profile.getWebsite());
         existingProfile.setStatus(BusinessProfile.BusinessStatus.PENDING);
 
@@ -469,6 +491,11 @@ public class BusinessController {
         }
 
         businessProfileService.save(existingProfile);
+
+        if (emailChanged) {
+            emailVerificationService
+                    .requestBusinessEmailVerification(existingProfile);
+        }
 
         List<User> admins = userRepository.findByRole(Role.ADMIN);
 

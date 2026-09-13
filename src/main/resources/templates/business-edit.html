@@ -93,6 +93,16 @@
                     Serviciu actualizat cu succes!
                 </div>
 
+                <div class="alert alert-success p-2"
+                     th:if="${success}"
+                     th:text="${success}">
+                </div>
+
+                <div class="alert alert-danger p-2"
+                     th:if="${error}"
+                     th:text="${error}">
+                </div>
+
                 <div class="alert alert-danger mb-2"
                      th:if="${imageError}"
                      th:text="${imageError}">
@@ -223,6 +233,44 @@
                     <div class="text-danger small mb-3"
                          th:errors="*{email}"
                          th:if="${#fields.hasErrors('email')}">
+                    </div>
+
+                    <div class="alert mt-3"
+                         th:classappend="${profile.emailVerified} ? ' alert-success' : ' alert-warning'"
+                         th:if="${profile.email != null and !profile.email.isBlank()}">
+
+                        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2">
+
+                            <div>
+                                <div class="fw-semibold">
+                                    <i class="bi me-1"
+                                       th:classappend="${profile.emailVerified} ? ' bi-patch-check-fill' : ' bi-exclamation-triangle-fill'"></i>
+                                    <span th:if="${profile.emailVerified}">
+                                    Email business verificat
+                                </span>
+                                    <span th:if="${!profile.emailVerified}">
+                                    Email business neverificat
+                                </span>
+                                </div>
+
+                                <div class="small"
+                                     th:text="${profile.email}">
+                                </div>
+                            </div>
+
+                            <form method="post"
+                                  th:action="@{/business/{uuid}/email-verification(uuid=${profile.uuid})}"
+                                  th:if="${!profile.emailVerified}">
+
+                                <button class="btn btn-sm btn-outline-dark"
+                                        type="submit">
+                                    Trimite link de verificare
+                                </button>
+
+                            </form>
+
+                        </div>
+
                     </div>
 
                     <div class="mb-3">

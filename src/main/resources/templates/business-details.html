@@ -126,6 +126,12 @@
 
                 </div>
 
+                <span class="badge bg-success-subtle text-success border border-success-subtle align-middle mb-2"
+                      th:if="${profile.emailVerified}">
+                        <i class="bi bi-patch-check-fill me-1"></i>
+                        Email verificat
+                </span>
+
                 <hr style="margin: 0.5rem 0">
 
                 <!-- DESCRIPTION -->
@@ -167,17 +173,17 @@
                             <div class="gallery-photo-grid">
 
                                 <div class="gallery-photo-item"
-                                     th:each="img, iterStat : ${profile.galleryImages}"
-                                     th:classappend="${iterStat.index >= 5} ? ' gallery-extra-image' : ''">
+                                     th:classappend="${iterStat.index >= 5} ? ' gallery-extra-image' : ''"
+                                     th:each="img, iterStat : ${profile.galleryImages}">
 
-                                    <img class="gallery-thumbnail"
+                                    <img alt="Fotografie galerie"
+                                         class="gallery-thumbnail"
                                          loading="lazy"
                                          onclick="openLightbox(this)"
                                          th:attr="
                                          data-image-src=@{${img.imagePath}},
                                          data-index=${iterStat.index}"
-                                         th:src="@{${img.imagePath}}"
-                                         alt="Fotografie galerie">
+                                         th:src="@{${img.imagePath}}">
 
                                 </div>
 
@@ -185,8 +191,8 @@
 
                             <button class="btn btn-sm btn-outline-secondary gallery-more-btn"
                                     id="showMoreImagesBtn"
-                                    th:if="${profile.galleryImages.size() > 5}"
                                     onclick="showMoreImages()"
+                                    th:if="${profile.galleryImages.size() > 5}"
                                     type="button">
 
                                 <i class="bi bi-grid-3x3-gap"></i>
@@ -222,8 +228,8 @@
                                         <video class="gallery-video-preview"
                                                muted
                                                playsinline
-                                               th:poster="${video.thumbnailPath}"
-                                               preload="metadata">
+                                               preload="metadata"
+                                               th:poster="${video.thumbnailPath}">
 
                                             <source th:src="${video.videoPath}"
                                                     th:type="${video.videoContentType}">

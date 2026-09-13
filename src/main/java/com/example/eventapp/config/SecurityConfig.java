@@ -39,6 +39,7 @@ public class SecurityConfig {
                                 "/business/*/availability/block",
                                 "/business/*/gallery/upload",
                                 "/business/*/videos/upload",
+                                "/business/*/email-verification",
                                 "/business/videos/delete/*",
                                 "/business/gallery/delete/**",
                                 "/business/*/availability/toggle"
@@ -72,6 +73,7 @@ public class SecurityConfig {
                                 "/forgot",
                                 "/contact",
                                 "/reset-password",
+                                "/verify-email",
                                 "/images/**"
                         ).permitAll()
 
