@@ -160,10 +160,10 @@
                     <div class="mb-3">
                         <label class="form-label">Telefon</label>
                         <div class="form-text">
-                            Obligatoriu! Trebuie să fie de forma 07X XXX XXX.
+                            Obligatoriu! Trebuie să fie de forma 07XXXXXXXX.
                         </div>
                         <input class="form-control"
-                               placeholder="07xx xxx xxx"
+                               placeholder="07xxxxxxxx"
                                th:field="*{phone}"
                                type="text">
                     </div>
@@ -301,6 +301,13 @@
                             id="zoomInButton"
                             type="button">
                         <i class="bi bi-plus-lg"></i>
+                    </button>
+
+                    <button class="btn btn-outline-secondary"
+                            id="rotateButton"
+                            type="button">
+                        <i class="bi bi-arrow-clockwise"></i>
+                        <span class="d-none d-sm-inline">Rotește</span>
                     </button>
 
                 </div>

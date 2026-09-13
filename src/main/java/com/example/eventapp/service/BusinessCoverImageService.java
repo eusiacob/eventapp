@@ -22,9 +22,14 @@ public class BusinessCoverImageService {
     private static final String COVER_FILE_NAME = "cover.jpg";
 
     private final UploadProperties uploadProperties;
+    private final ImageOrientationService imageOrientationService;
 
-    public BusinessCoverImageService(UploadProperties uploadProperties) {
+    public BusinessCoverImageService(
+            UploadProperties uploadProperties,
+            ImageOrientationService imageOrientationService
+    ) {
         this.uploadProperties = uploadProperties;
+        this.imageOrientationService = imageOrientationService;
     }
 
     public void validateCoverImage(MultipartFile file) throws IOException {
@@ -45,7 +50,8 @@ public class BusinessCoverImageService {
             );
         }
 
-        BufferedImage image = ImageIO.read(file.getInputStream());
+        BufferedImage image =
+                imageOrientationService.readWithCorrectOrientation(file);
 
         if (image == null) {
             throw new IllegalArgumentException(
@@ -69,7 +75,9 @@ public class BusinessCoverImageService {
 
         validateCoverImage(file);
 
-        BufferedImage sourceImage = ImageIO.read(file.getInputStream());
+        BufferedImage sourceImage =
+                imageOrientationService.readWithCorrectOrientation(file);
+
         BufferedImage safeJpegImage = new BufferedImage(
                 sourceImage.getWidth(),
                 sourceImage.getHeight(),

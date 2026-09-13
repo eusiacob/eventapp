@@ -9,7 +9,6 @@ import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,13 +22,16 @@ public class BusinessImageService {
     private final BusinessImageRepository businessImageRepository;
     private final BusinessProfileService businessProfileService;
     private final UploadProperties uploadProperties;
+    private final ImageOrientationService imageOrientationService;
 
     public BusinessImageService(BusinessImageRepository businessImageRepository,
                                 BusinessProfileService businessProfileService,
-                                UploadProperties uploadProperties) {
+                                UploadProperties uploadProperties,
+                                ImageOrientationService imageOrientationService) {
         this.businessImageRepository = businessImageRepository;
         this.businessProfileService = businessProfileService;
         this.uploadProperties = uploadProperties;
+        this.imageOrientationService = imageOrientationService;
     }
 
     public void uploadImages(
@@ -147,7 +149,8 @@ public class BusinessImageService {
             );
         }
 
-        BufferedImage image = ImageIO.read(file.getInputStream());
+        BufferedImage image =
+                imageOrientationService.readWithCorrectOrientation(file);
 
         if (image == null) {
             throw new IllegalArgumentException(

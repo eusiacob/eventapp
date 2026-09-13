@@ -201,8 +201,9 @@
 
                     <!-- PHONE -->
                     <div class="mb-3">
-                        <label class="form-label">Telefon</label>
+                        <label class="form-label">Business phone</label>
                         <input class="form-control"
+                               placeholder="07xxxxxxxx"
                                th:field="*{phone}"
                                type="text">
 
@@ -498,9 +499,9 @@
                                  data-gallery-image-preview
                                  role="button"
                                  style="cursor: pointer;"
+                                 tabindex="0"
                                  th:data-image-src="@{${img.imagePath}}"
-                                 th:src="@{${img.imagePath}}"
-                                 tabindex="0">
+                                 th:src="@{${img.imagePath}}">
 
                             <form class="gallery-delete-form"
                                   data-item-type="imaginea"
@@ -543,16 +544,16 @@
 
                         <div class="gallery-manage-item position-relative">
 
-                            <video class="img-fluid rounded gallery-manage-video"
-                                   aria-label="Redă videoclipul pe tot ecranul"
+                            <video aria-label="Redă videoclipul pe tot ecranul"
+                                   class="img-fluid rounded gallery-manage-video"
                                    data-fullscreen-video
                                    muted
                                    playsinline
+                                   preload="metadata"
                                    role="button"
                                    style="cursor: pointer;"
-                                   th:poster="${#strings.replace(video.videoPath, '.mp4', '.jpg')}"
                                    tabindex="0"
-                                   preload="metadata">
+                                   th:poster="${#strings.replace(video.videoPath, '.mp4', '.jpg')}">
 
                                 <source th:src="${video.videoPath}"
                                         type="video/mp4">
@@ -1388,6 +1389,15 @@
                             type="button">
 
                         <i class="bi bi-plus-lg"></i>
+
+                    </button>
+
+                    <button class="btn btn-outline-secondary"
+                            id="rotateButton"
+                            type="button">
+
+                        <i class="bi bi-arrow-clockwise"></i>
+                        <span class="d-none d-sm-inline">Rotește</span>
 
                     </button>
 

@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const cropConfirmButton = document.getElementById("cropConfirmButton");
     const zoomInButton = document.getElementById("zoomInButton");
     const zoomOutButton = document.getElementById("zoomOutButton");
+    const rotateButton = document.getElementById("rotateButton");
 
     if (!imageInput ||
         !cropImage ||
@@ -101,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     movable: true,
                     scalable: true,
 
-                    rotatable: false
+                    rotatable: true
                 });
             };
 
@@ -146,6 +147,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if (cropper) {
                     cropper.zoom(-0.1);
+                }
+
+            }
+        );
+    }
+
+
+    /*
+     * ROTIRE 90°
+     */
+    if (rotateButton) {
+
+        rotateButton.addEventListener(
+            "click",
+            function () {
+
+                if (cropper) {
+                    cropper.rotate(90);
                 }
 
             }
