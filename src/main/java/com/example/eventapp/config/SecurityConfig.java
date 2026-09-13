@@ -52,7 +52,6 @@ public class SecurityConfig {
                                 "/favorites/**",
                                 "/reviews/**",
                                 "/profile/**",
-                                "/subscriptions/**",
                                 "/business/{id}/reviews",
                                 "/notifications/**",
                                 "/support/**"
