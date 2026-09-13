@@ -436,7 +436,7 @@
 
                             <div class="form-text"
                                  th:if="${currentVideoCount < maxVideoCount}">
-                                Poți încărca maximum 5 videoclipuri de maximum 30 secunde fiecare.
+                                Poți încărca maximum 5 videoclipuri de maximum 15 secunde și 80 MB fiecare.
                             </div>
 
                         </div>
@@ -553,10 +553,10 @@
                                    role="button"
                                    style="cursor: pointer;"
                                    tabindex="0"
-                                   th:poster="${#strings.replace(video.videoPath, '.mp4', '.jpg')}">
+                                   th:poster="${video.thumbnailPath}">
 
                                 <source th:src="${video.videoPath}"
-                                        type="video/mp4">
+                                        th:type="${video.videoContentType}">
 
                                 Browserul nu poate reda acest videoclip.
 

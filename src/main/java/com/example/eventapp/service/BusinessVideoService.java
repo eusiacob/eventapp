@@ -23,6 +23,8 @@ public class BusinessVideoService {
 
     private static final int VIDEO_MAX_WIDTH = 1280;
     private static final int VIDEO_CONVERSION_TIMEOUT_MINUTES = 5;
+    private static final int VIDEO_MAX_DURATION_SECONDS = 15;
+    private static final int VIDEO_MAX_SIZE_MB = 80;
 
     private final BusinessVideoRepository businessVideoRepository;
     private final BusinessProfileService businessProfileService;
@@ -82,8 +84,7 @@ public class BusinessVideoService {
             Path tempInput =
                     Files.createTempFile("video_input_", extension);
 
-            Path tempOutput =
-                    Files.createTempFile("video_output_", ".mp4");
+            Path tempOutput = null;
 
             Path tempThumbnail =
                     Files.createTempFile("video_thumbnail_", ".jpg");
@@ -103,35 +104,53 @@ public class BusinessVideoService {
                 // 5. Verificăm durata
                 double duration = getVideoDuration(tempInput);
 
-                if (duration > 30) {
+                if (duration > VIDEO_MAX_DURATION_SECONDS) {
                     throw new InvalidVideoException(
                             "Videoclipul \"" +
                                     file.getOriginalFilename() +
-                                    "\" depășește limita de 30 de secunde."
+                                    "\" depășește limita de " +
+                                    VIDEO_MAX_DURATION_SECONDS +
+                                    " secunde."
                     );
                 }
 
-                // 6. Dacă video-ul este deja web-friendly, îl păstrăm fără reconversie.
-                // Altfel îl convertim la MP4 optimizat pentru web.
-                if (isWebOptimizedMp4(tempInput)) {
+                // 6. Dacă video-ul este deja compatibil cu browserul,
+                // îl păstrăm fără reconversie. Altfel îl convertim la MP4.
+                String finalExtension = ".mp4";
+
+                if (isUploadExtensionWebOptimized(extension) &&
+                        isWebOptimizedVideo(tempInput)) {
+                    finalExtension =
+                            getWebOptimizedVideoExtension(tempInput);
+
+                    tempOutput = Files.createTempFile(
+                            "video_output_",
+                            finalExtension
+                    );
+
                     Files.copy(
                             tempInput,
                             tempOutput,
                             StandardCopyOption.REPLACE_EXISTING
                     );
                 } else {
+                    tempOutput = Files.createTempFile(
+                            "video_output_",
+                            ".mp4"
+                    );
+
                     convertToMp4(tempInput, tempOutput);
                 }
 
                 // 7. Generăm o miniatură pentru previzualizarea mobilă
                 createThumbnail(tempOutput, tempThumbnail);
 
-                // 8. Fișierul final este ÎNTOTDEAUNA MP4
+                // 8. Salvăm fișierul final cu extensia reală acceptată.
                 String fileName =
-                        "video_" + UUID.randomUUID() + ".mp4";
+                        "video_" + UUID.randomUUID() + finalExtension;
 
                 String thumbnailFileName =
-                        fileName.replace(".mp4", ".jpg");
+                        thumbnailFileName(fileName);
 
                 Path uploadPathAbsolute = uploadPath
                         .toAbsolutePath()
@@ -187,7 +206,9 @@ public class BusinessVideoService {
 
                 // Ștergem întotdeauna fișierele temporare
                 Files.deleteIfExists(tempInput);
-                Files.deleteIfExists(tempOutput);
+                if (tempOutput != null) {
+                    Files.deleteIfExists(tempOutput);
+                }
                 Files.deleteIfExists(tempThumbnail);
             }
         }
@@ -311,12 +332,14 @@ public class BusinessVideoService {
 
     private void validateVideo(MultipartFile file) {
 
-        if (file.getSize() > 500 * 1024 * 1024) {
+        if (file.getSize() > VIDEO_MAX_SIZE_MB * 1024L * 1024L) {
 
             throw new InvalidVideoException(
                     "Videoclipul \"" +
                             file.getOriginalFilename() +
-                            "\" depășește limita de 500 MB."
+                            "\" depășește limita de " +
+                            VIDEO_MAX_SIZE_MB +
+                            " MB."
             );
         }
 
@@ -409,7 +432,7 @@ public class BusinessVideoService {
         }
     }
 
-    private boolean isWebOptimizedMp4(Path videoFile)
+    private boolean isWebOptimizedVideo(Path videoFile)
             throws IOException, InterruptedException {
 
         String formatName = getFfprobeValue(
@@ -417,10 +440,6 @@ public class BusinessVideoService {
                 "-show_entries",
                 "format=format_name"
         );
-
-        if (!formatName.contains("mp4")) {
-            return false;
-        }
 
         String videoCodec = getFfprobeValue(
                 videoFile,
@@ -430,10 +449,6 @@ public class BusinessVideoService {
                 "stream=codec_name"
         );
 
-        if (!"h264".equals(videoCodec)) {
-            return false;
-        }
-
         String audioCodec = getFfprobeValue(
                 videoFile,
                 "-select_streams",
@@ -442,7 +457,44 @@ public class BusinessVideoService {
                 "stream=codec_name"
         );
 
-        return audioCodec.isBlank() || "aac".equals(audioCodec);
+        if (formatName.contains("mp4")) {
+            return "h264".equals(videoCodec) &&
+                    (audioCodec.isBlank() || "aac".equals(audioCodec));
+        }
+
+        if (formatName.contains("webm")) {
+            boolean supportedVideoCodec = "vp8".equals(videoCodec) ||
+                    "vp9".equals(videoCodec) ||
+                    "av1".equals(videoCodec);
+
+            boolean supportedAudioCodec = audioCodec.isBlank() ||
+                    "opus".equals(audioCodec) ||
+                    "vorbis".equals(audioCodec);
+
+            return supportedVideoCodec && supportedAudioCodec;
+        }
+
+        return false;
+    }
+
+    private boolean isUploadExtensionWebOptimized(String extension) {
+        return ".mp4".equals(extension) || ".webm".equals(extension);
+    }
+
+    private String getWebOptimizedVideoExtension(Path videoFile)
+            throws IOException, InterruptedException {
+
+        String formatName = getFfprobeValue(
+                videoFile,
+                "-show_entries",
+                "format=format_name"
+        );
+
+        if (formatName.contains("webm")) {
+            return ".webm";
+        }
+
+        return ".mp4";
     }
 
     private String getFfprobeValue(Path videoFile, String... arguments)
@@ -687,9 +739,7 @@ public class BusinessVideoService {
             }
 
             Path thumbnailPath = filePath.resolveSibling(
-                    filePath.getFileName()
-                            .toString()
-                            .replaceFirst("\\.mp4$", ".jpg")
+                    thumbnailFileName(filePath.getFileName().toString())
             );
 
             if (Files.isRegularFile(filePath) &&
@@ -743,9 +793,7 @@ public class BusinessVideoService {
             }
 
             Path thumbnailPath = filePath.resolveSibling(
-                    filePath.getFileName()
-                            .toString()
-                            .replaceFirst("\\.mp4$", ".jpg")
+                    thumbnailFileName(filePath.getFileName().toString())
             );
 
             if (Files.exists(thumbnailPath)) {
@@ -762,5 +810,16 @@ public class BusinessVideoService {
         businessVideoRepository.delete(video);
 
         return businessProfile;
+    }
+
+    private String thumbnailFileName(String videoFileName) {
+
+        int lastDot = videoFileName.lastIndexOf('.');
+
+        if (lastDot < 0) {
+            return videoFileName + ".jpg";
+        }
+
+        return videoFileName.substring(0, lastDot) + ".jpg";
     }
 }

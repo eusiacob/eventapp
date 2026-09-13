@@ -167,11 +167,11 @@
                                         <video class="gallery-video-preview"
                                                muted
                                                playsinline
-                                               th:poster="${#strings.replace(video.videoPath, '.mp4', '.jpg')}"
+                                               th:poster="${video.thumbnailPath}"
                                                preload="metadata">
 
                                             <source th:src="${video.videoPath}"
-                                                    type="video/mp4">
+                                                    th:type="${video.videoContentType}">
 
                                         </video>
 
