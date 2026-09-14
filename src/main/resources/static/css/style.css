@@ -240,6 +240,14 @@ body {
     }
 }
 
+@media (min-width: 768px) {
+
+    .email-profile-align {
+        text-align: right !important;
+    }
+
+}
+
 /* =========================
    REGISTER BUTTON
 ========================= */
@@ -1310,6 +1318,10 @@ body {
         font-size: 2.4rem;
     }
 
+    .email-profile-align{
+        text-align: left !important;
+    }
+
     .profile-info-row {
         flex-direction: column;
         gap: 4px;
@@ -1940,6 +1952,10 @@ body {
 
     .admin-business-image {
         height: 105px;
+    }
+
+    .email-profile-align {
+        text-align: left !important;
     }
 
     .admin-business-card-link .card-body {

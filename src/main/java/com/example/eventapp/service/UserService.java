@@ -167,7 +167,7 @@ public class UserService {
 
         user.setConfirmPassword(null);
 
-        user.setRole(Role.USER);
+        user.setRole(Role.BUSINESS);
         user.setEnabled(true);
         user.setEmailVerified(false);
         user.setEmailVerifiedAt(null);
