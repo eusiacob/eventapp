@@ -44,7 +44,7 @@
            th:href="@{/businesses/category/{category}(category=${category})}">
 
             <i class="bi"
-               th:classappend="' ' + ${category.icon}"></i>
+               th:classappend="'' + ${category.icon}"></i>
 
             <span th:text="${category.displayName}"></span>
 
