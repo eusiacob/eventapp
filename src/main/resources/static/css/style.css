@@ -238,6 +238,7 @@ body {
     .mobile-bottom-nav {
         display: none;
     }
+
 }
 
 @media (min-width: 768px) {

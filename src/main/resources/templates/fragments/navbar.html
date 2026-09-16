@@ -216,6 +216,18 @@
             <span>Favorite</span>
         </a>
 
+        <a class="mobile-nav-item mobile-add-item"
+           data-mobile-nav="/business/create"
+           href="/business/create"
+           sec:authorize="hasRole('BUSINESS')">
+
+            <span class="mobile-add-circle">
+                <i class="bi bi-plus-lg"></i>
+            </span>
+
+            <span>Adaugă</span>
+        </a>
+
         <button aria-controls="mobileNotificationsPanel"
                 aria-label="Notificări"
                 class="mobile-nav-item mobile-nav-button mobile-notification-item"
@@ -247,18 +259,6 @@
             <span>Profil</span>
         </a>
 
-        <form class="mobile-nav-form"
-              method="post"
-              sec:authorize="isAuthenticated()"
-              th:action="@{/logout}">
-
-            <button class="mobile-nav-item mobile-nav-button" type="submit">
-                <i class="bi bi-box-arrow-right"></i>
-                <span>Ieși</span>
-            </button>
-
-        </form>
-
         <a class="mobile-nav-item"
            href="/login"
            sec:authorize="isAnonymous()">
@@ -286,7 +286,7 @@
                 const isExplore = section === "explore" && (
                     currentPath === "/businesses" ||
                     currentPath.startsWith("/businesses/") ||
-                    /^\/business\/[^/]+$/.test(currentPath)
+                    /^\/business\/(?!create$|edit\/|delete\/)[^/]+$/.test(currentPath)
                 );
                 const isCurrentSection = section !== "explore" && (
                     currentPath === section || currentPath.startsWith(section + "/")
