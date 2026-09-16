@@ -69,11 +69,11 @@
 
                     <!-- NAME -->
                     <div class="mb-3">
-                        <label class="form-label">Nume serviciu</label>
+                        <label for="businessName" class="form-label">Nume serviciu</label>
                         <div class="form-text">
                             Obligatoriu! Lungime: 3 - 10 caractere.
                         </div>
-                        <input class="form-control"
+                        <input id="businessName" class="form-control"
                                placeholder="e.g. Dream Events"
                                th:field="*{name}"
                                type="text">
@@ -86,8 +86,8 @@
 
                     <!-- CATEGORY -->
                     <div class="mb-3">
-                        <label class="form-label">Categorie</label>
-                        <select class="form-select"
+                        <label for="businessCategory" class="form-label">Categorie</label>
+                        <select id="businessCategory" class="form-select"
                                 th:field="*{category}">
 
                             <option th:each="cat : ${categories}"
@@ -100,9 +100,11 @@
 
                     <!-- CITY -->
                     <div class="mb-3">
-                        <label class="form-label">Județ</label>
+                        <label for="businessCity" class="form-label">Județ</label>
 
-                        <select class="form-select"
+                        <div class="form-text">Alege județul unde poți oferi acest serviciu.</div>
+
+                        <select id="businessCity" class="form-select"
                                 th:field="*{city}">
                             <option value="">Selectează județul</option>
 
@@ -158,11 +160,11 @@
 
                     <!-- PHONE -->
                     <div class="mb-3">
-                        <label class="form-label">Telefon</label>
+                        <label for="businessPhone" class="form-label">Telefon</label>
                         <div class="form-text">
                             Obligatoriu! Trebuie să fie de forma 07XXXXXXXX.
                         </div>
-                        <input class="form-control"
+                        <input id="businessPhone" class="form-control"
                                placeholder="07xxxxxxxx"
                                th:field="*{phone}"
                                type="text">
@@ -174,9 +176,9 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Business email</label>
-                        <input class="form-control"
-                               placeholder="myservice@mail.com"
+                        <label for="businessEmail" class="form-label">Business email</label>
+                        <input id="businessEmail" class="form-control"
+                               placeholder="serviciul_meu@email.com"
                                th:field="*{email}"
                                type="email">
                     </div>
@@ -187,9 +189,9 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Website</label>
-                        <input class="form-control"
-                               placeholder="www.serviciul-meu.ro"
+                        <label for="businessWebsite" class="form-label">Website</label>
+                        <input id="businessWebsite" class="form-control"
+                               placeholder="https://www.serviciul-meu.com"
                                th:field="*{website}"
                                type="url">
                     </div>
@@ -219,11 +221,11 @@
 
                     <!-- DESCRIPTION -->
                     <div class="mb-3">
-                        <label class="form-label">Descriere</label>
+                        <label for="businessDescription" class="form-label">Descriere</label>
                         <div class="form-text">
                             Obligatorie! Descrierea trebuie să fie de minim 10 caractere.
                         </div>
-                        <textarea class="form-control"
+                        <textarea id="businessDescription" class="form-control"
                                   placeholder="Descrie serviciul...."
                                   rows="4"
                                   th:field="*{description}"></textarea>

@@ -1384,8 +1384,7 @@ body {
 }
 
 .category-chip {
-    min-width: 120px;
-    max-width: 120px;
+    width: 120px;
     display: flex;
     flex-direction: column;
     align-items: center;
