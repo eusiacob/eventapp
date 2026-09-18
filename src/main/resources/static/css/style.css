@@ -1782,10 +1782,6 @@ body {
     display: block;
 }
 
-.dashboard-card-link:hover .dashboard-card {
-    transform: translateY(-5px);
-}
-
 .dashboard-card h2 {
 
     font-size: 2.2rem;
@@ -1810,18 +1806,6 @@ body {
 
 }
 
-.warning-card {
-
-    border-top: 5px solid #ffc107;
-
-}
-
-.success-card {
-
-    border-top: 5px solid #28a745;
-
-}
-
 .admin-filter-btn.primary {
 
     background-color: #d1e7dd;
@@ -1838,12 +1822,6 @@ body {
     color: #0f5132;
 
     border-color: #badbcc;
-}
-
-.primary-card {
-
-    border-top: 5px solid #0d6efd;
-
 }
 
 .admin-business-card-link h5 {
