@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Home</title>
+    <title>Servicii favorite</title>
 
 <link rel="icon" type="image/png" th:href="@{/images/favicon.png}">
     <link crossorigin="anonymous"
@@ -22,20 +22,6 @@
         .favorite-header {
             text-align: center;
             margin-bottom: 30px;
-        }
-
-        .business-card-link {
-            border-radius: 22px;
-            height: 100%;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .business-card-link:hover {
-            cursor: pointer;
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         }
 
         .favorite-title {
@@ -60,7 +46,7 @@
     </style>
 
 </head>
-<body>
+<body class="app-bg">
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <div class="container py-3" style="min-height: 100vh">
@@ -86,43 +72,63 @@
 
 
     <!--    CARDS-->
-    <div class="row g-4">
+    <div class="row g-4 mt-2">
 
         <div class="col-6 col-md-6 col-lg-4"
              th:each="p : ${favorites}">
 
-            <div class="business-card-link"
-                 th:data-url="@{/business/{uuid}(uuid=${p.uuid})}"
-                 onclick="window.location=this.dataset.url">
+            <div class="card border-0 shadow-lg h-100 business-card position-relative">
 
-                <div class="card shadow border-0 h-100">
+                <div class="favorite-heart-wrapper">
+                    <form method="post"
+                          th:action="@{/favorites/remove/{uuid}(uuid=${p.uuid})}">
+                        <button class="favorite-heart filled-heart"
+                                type="submit"
+                                th:aria-label="|Elimină ${p.name} din favorite|"
+                                title="Elimină din favorite">
+                            <span aria-hidden="true">♥</span>
+                        </button>
+                    </form>
+                </div>
 
+                <div class="position-relative">
                     <img alt="Imagine serviciu"
-                         class="card-img-top"
+                         class="card-img-top business-image"
                          loading="lazy"
+                         th:if="${p.imagePath != null}"
                          th:src="@{${p.imagePath}}">
 
-                    <div class="card-body">
+                    <img alt="Imagine indisponibilă"
+                         class="card-img-top business-image"
+                         loading="lazy"
+                         src="https://i.ibb.co/d4nzt6TB/Image-not-found.png"
+                         th:if="${p.imagePath == null}">
+                </div>
 
-                        <h4 class="fw-bold" th:text="${p.name}"></h4>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="fw-bold mb-2">
+                        <a class="stretched-link text-reset text-decoration-none"
+                           th:href="@{/business/{uuid}(uuid=${p.uuid})}"
+                           th:text="${p.name}"></a>
+                    </h5>
 
-                        <p style="margin: 0" th:text="${p.city}"></p>
+                    <p class="text-muted mb-2">
+                        <span th:text="${p.city}"></span>
+                    </p>
 
-                        <span class="fs-6 text-warning">★</span>
-                        <span class="premium-county" th:text="${#numbers.formatDecimal(p.averageRating, 1, 1)}"></span>
-
-                        <form class="mt-2"
-                              method="post"
-                              th:action="@{/favorites/remove/{uuid}(uuid=${p.uuid})}">
-
-                            <button class="btn btn-outline-danger">
-                                Șterge
-                            </button>
-
-                        </form>
-
+                    <div class="mb-2">
+                        <span class="text-muted" th:if="${p.reviewCount == 0}">
+                            Nici o recenzie.
+                        </span>
+                        <span th:if="${p.reviewCount > 0}">
+                            <span class="text-warning">★</span>
+                            <span th:text="${#numbers.formatDecimal(p.averageRating, 1, 1)}"></span>
+                            <span class="text-muted">
+                                (<span th:text="${p.reviewCount}"></span>
+                                <span th:text="${p.reviewCount == 1 ? 'recenzie' : 'recenzii'}"></span>)
+                            </span>
+                        </span>
                     </div>
-
                 </div>
             </div>
 

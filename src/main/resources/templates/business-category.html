@@ -97,9 +97,9 @@
                      sec:authorize="isAuthenticated()">
 
                     <button class="favorite-heart ajax-favorite-btn"
-                            th:classappend="${favoriteIds.contains(p.uuid)} ? ' filled-heart' : ' empty-heart'"
+                            th:classappend="${favoriteIds.contains(p.id)} ? ' filled-heart' : ' empty-heart'"
                             th:data-business-uuid="${p.uuid}"
-                            th:data-favorite="${favoriteIds.contains(p.uuid)}"
+                            th:data-favorite="${favoriteIds.contains(p.id)}"
                             type="button">
                         <span th:text="${favoriteIds.contains(p.id)} ? '♥' : '♡'"></span>
 
@@ -208,7 +208,7 @@
 
     <div aria-atomic="true"
          aria-live="assertive"
-         class="toast align-items-center bg-success border-0"
+         class="toast align-items-center bg-success text-white border-0"
          id="favoriteToast"
          role="alert">
 
