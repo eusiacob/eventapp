@@ -26,15 +26,40 @@
 
     <!--CATEGORIES-->
     <div class="mb-2">
+        <section class="explore-guide" aria-labelledby="exploreGuideTitle">
+            <h2 id="exploreGuideTitle" class="explore-guide-title">
+                Furnizorul potrivit, în trei pași
+            </h2>
+            <ol class="explore-guide-steps">
+                <li>
+                    <span class="explore-guide-icon" aria-hidden="true"><i class="bi bi-search"></i></span>
+                    <div>
+                        <h3>1. Explorează</h3>
+                        <p>Alege o categorie de mai jos și filtrează serviciile după județ și data evenimentului.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="explore-guide-icon explore-guide-icon-heart" aria-hidden="true"><i class="bi bi-heart"></i></span>
+                    <div>
+                        <h3>2. Alege ce îți place</h3>
+                        <p>Descoperă fotografiile și recenziile. Conectează-te pentru a salva serviciile în favorite.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="explore-guide-icon explore-guide-icon-contact" aria-hidden="true"><i class="bi bi-chat-dots"></i></span>
+                    <div>
+                        <h3>3. Contactează furnizorul</h3>
+                        <p>Folosește datele de contact din pagina serviciului și discută direct disponibilitatea și oferta.</p>
+                    </div>
+                </li>
+            </ol>
+        </section>
 
         <div th:replace="~{fragments/carousel-header :: header(
         'Categorii',
         'categoryCarousel')}">
         </div>
 
-        <p class="text-muted mb-0">
-            Alege o categorie și explorează serviciile disponibile
-        </p>
     </div>
 
     <div class="category-carousel" id="categoryCarousel">

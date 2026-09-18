@@ -2968,3 +2968,82 @@ body .favorite-title,
     background: transparent;
     box-shadow: none;
 }
+
+/* Short introduction to exploring services. */
+.explore-guide {
+    margin: 0.75rem 0 1rem;
+    padding: 1.25rem;
+    background: var(--me-primary-soft, #e7f3f3);
+    border: 1px solid #b6d6d8;
+    border-radius: 18px;
+    color: var(--me-text, #1f2937);
+}
+
+.explore-guide-title {
+    margin: 0 0 1rem;
+    color: var(--me-heading, #534666);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.explore-guide-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.explore-guide-steps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.explore-guide-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--me-primary-hover, #106e73);
+    font-size: 1.1rem;
+}
+
+.explore-guide-icon-heart {
+    background: var(--me-heart-soft, #fcecef);
+    color: var(--me-heart, #800020);
+}
+
+.explore-guide-icon-contact {
+    background: var(--me-amber, #eeb462);
+    color: var(--me-heading, #534666);
+}
+
+.explore-guide-steps h3 {
+    margin: 0 0 0.35rem;
+    color: var(--me-heading, #534666);
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.explore-guide-steps p {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.55;
+}
+
+@media (max-width: 767.98px) {
+    .explore-guide {
+        padding: 1rem;
+    }
+
+    .explore-guide-steps {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1rem;
+    }
+}
