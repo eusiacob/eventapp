@@ -1418,7 +1418,9 @@ body {
     text-overflow: unset;
     border-radius: 16px;
     overflow: hidden;
-    background: #fff;
+    background: var(--me-service-card-bg, #fff);
+    border: 1px solid var(--me-service-card-border, #d4ded6);
+    box-shadow: var(--me-service-card-shadow, 0 4px 16px rgba(40, 60, 48, 0.08));
 
     cursor: pointer;
     flex-shrink: 0;
@@ -2593,6 +2595,9 @@ body {
     --me-primary-hover: #405247;
     --me-primary-soft: #e8eee9;
     --me-background: #faf8f5;
+    --me-service-card-bg: #fff;
+    --me-service-card-border: #d4ded6;
+    --me-service-card-shadow: 0 4px 16px rgba(40, 60, 48, 0.08);
     --me-text: #1f2937;
     --me-muted: #6b7280;
     --me-border: #e5e7eb;
@@ -2825,3 +2830,20 @@ body {
     --bs-btn-disabled-border-color: var(--me-heart);
 }
 /* END TEMPORARY M-EVENT PALETTE */
+
+/* Shared appearance for service cards and details, including Bootstrap utility overrides. */
+.business-card,
+.premium-card,
+.service-details-card,
+.clickable-business-card > .card,
+.admin-business-card-link > .card {
+    background-color: var(--me-service-card-bg, #fff);
+    border: 1px solid var(--me-service-card-border, #d4ded6) !important;
+    box-shadow: var(--me-service-card-shadow, 0 4px 16px rgba(40, 60, 48, 0.08)) !important;
+}
+
+.admin-business-card-link,
+.admin-business-card-link:hover {
+    background: transparent;
+    box-shadow: none;
+}
