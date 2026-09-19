@@ -70,6 +70,12 @@
                     <!-- NAME -->
                     <div class="mb-3">
                         <label for="businessName" class="form-label">Nume serviciu</label>
+
+                        <div class="text-danger small mb-3"
+                             th:errors="*{name}"
+                             th:if="${#fields.hasErrors('name')}">
+                        </div>
+
                         <div class="form-text">
                             Obligatoriu! Lungime: 3 - 10 caractere.
                         </div>
@@ -79,14 +85,15 @@
                                type="text">
                     </div>
 
-                    <div class="text-danger small mb-3"
-                         th:errors="*{name}"
-                         th:if="${#fields.hasErrors('name')}">
-                    </div>
-
                     <!-- CATEGORY -->
                     <div class="mb-3">
                         <label for="businessCategory" class="form-label">Categorie</label>
+
+                        <div class="text-danger small mt-1"
+                             th:errors="*{category}"
+                             th:if="${#fields.hasErrors('category')}">
+                        </div>
+
                         <select id="businessCategory" class="form-select"
                                 th:field="*{category}">
 
@@ -102,7 +109,13 @@
 
                     <!-- PHONE -->
                     <div class="mb-3">
-                        <label for="businessPhone" class="form-label">Telefon</label>
+                        <label for="businessPhone" class="form-label">Business phone</label>
+
+                        <div class="text-danger small mb-3"
+                             th:errors="*{phone}"
+                             th:if="${#fields.hasErrors('phone')}">
+                        </div>
+
                         <div class="form-text">
                             Obligatoriu! Trebuie să fie de forma 07XXXXXXXX.
                         </div>
@@ -112,26 +125,28 @@
                                type="text">
                     </div>
 
-                    <div class="text-danger small mb-3"
-                         th:errors="*{phone}"
-                         th:if="${#fields.hasErrors('phone')}">
-                    </div>
-
                     <div class="mb-3">
                         <label for="businessEmail" class="form-label">Business email</label>
+
+                        <div class="text-danger small"
+                             th:errors="*{email}"
+                             th:if="${#fields.hasErrors('email')}">
+                        </div>
+
                         <input id="businessEmail" class="form-control"
                                placeholder="serviciul_meu@email.com"
                                th:field="*{email}"
                                type="email">
                     </div>
 
-                    <div class="text-danger small mb-3"
-                         th:errors="*{email}"
-                         th:if="${#fields.hasErrors('email')}">
-                    </div>
-
                     <div class="mb-3">
-                        <label for="businessWebsite" class="form-label">Website</label>
+                        <label for="businessWebsite" class="form-label">Business website</label>
+
+                        <div class="text-danger small mt-1"
+                             th:errors="*{website}"
+                             th:if="${#fields.hasErrors('website')}">
+                        </div>
+
                         <input id="businessWebsite" class="form-control"
                                placeholder="https://www.serviciul-meu.com"
                                th:field="*{website}"

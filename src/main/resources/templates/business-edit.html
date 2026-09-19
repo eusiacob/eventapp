@@ -119,21 +119,25 @@
                       th:object="${profile}">
 
                     <!-- NAME -->
+                    <div class="text-danger small mt-1"
+                         th:errors="*{name}"
+                         th:if="${#fields.hasErrors('name')}">
+                    </div>
                     <div class="mb-3">
                         <label class="form-label">Nume</label>
                         <input class="form-control"
                                th:field="*{name}"
                                type="text">
-
-                        <div class="text-danger small mt-1"
-                             th:errors="*{name}"
-                             th:if="${#fields.hasErrors('name')}">
-                        </div>
                     </div>
 
                     <!-- CATEGORY -->
                     <div class="mb-3">
                         <label class="form-label">Categorie</label>
+
+                        <div class="text-danger small mt-1"
+                             th:errors="*{category}"
+                             th:if="${#fields.hasErrors('category')}">
+                        </div>
 
                         <select class="form-select"
                                 th:field="*{category}">
@@ -144,11 +148,6 @@
                             </option>
 
                         </select>
-
-                        <div class="text-danger small mt-1"
-                             th:errors="*{category}"
-                             th:if="${#fields.hasErrors('category')}">
-                        </div>
                     </div>
 
                     <div th:replace="~{fragments/service-area :: picker}"></div>
@@ -156,27 +155,28 @@
                     <!-- PHONE -->
                     <div class="mb-3">
                         <label class="form-label">Business phone</label>
+                        <div class="text-danger small"
+                             th:errors="*{phone}"
+                             th:if="${#fields.hasErrors('phone')}">
+                        </div>
                         <input class="form-control"
                                placeholder="07xxxxxxxx"
                                th:field="*{phone}"
                                type="text">
-
-                        <div class="text-danger small mt-1"
-                             th:errors="*{phone}"
-                             th:if="${#fields.hasErrors('phone')}">
-                        </div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Business email</label>
+
+                        <div class="text-danger small"
+                             th:errors="*{email}"
+                             th:if="${#fields.hasErrors('email')}">
+                        </div>
+
                         <input class="form-control"
+                               placeholder="my_business@mail.com"
                                th:field="*{email}"
                                type="email">
-                    </div>
-
-                    <div class="text-danger small mb-3"
-                         th:errors="*{email}"
-                         th:if="${#fields.hasErrors('email')}">
                     </div>
 
                     <div class="alert mt-3"
@@ -215,8 +215,14 @@
 
                     <div class="mb-3">
                         <label class="form-label">Website</label>
+
+                        <div class="text-danger small mt-1"
+                             th:errors="*{website}"
+                             th:if="${#fields.hasErrors('website')}">
+                        </div>
+
                         <input class="form-control"
-                               placeholder="https://exemplu.com"
+                               placeholder="https://www.exemplu.com"
                                th:field="*{website}"
                                type="url">
                     </div>
@@ -224,14 +230,15 @@
                     <!-- DESCRIPTION -->
                     <div class="mb-3">
                         <label class="form-label">Descriere</label>
-                        <textarea class="form-control"
-                                  rows="4"
-                                  th:field="*{description}"></textarea>
-
-                        <div class="text-danger small mt-1"
+                        <div class="text-danger small"
                              th:errors="*{description}"
                              th:if="${#fields.hasErrors('description')}">
                         </div>
+                        <textarea class="form-control"
+                                  rows="4"
+                                  placeholder="Introdu descrierea..."
+                                  th:field="*{description}"></textarea>
+
                     </div>
 
                     <!-- MAIN IMAGE -->

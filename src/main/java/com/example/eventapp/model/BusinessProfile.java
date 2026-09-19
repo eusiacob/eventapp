@@ -1,15 +1,13 @@
 package com.example.eventapp.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -95,10 +93,14 @@ public class BusinessProfile {
     }
 
     @NotBlank(message = "Introdu numărul de telefon!")
-    @Pattern(regexp = "^[0-9+\\- ]{10}$", message = "Număr de telefon invalid! Trebuie să fie de forma 07X XXX XXX")
+    @Pattern(regexp = "^[0-9+\\- ]{10}$", message = "Număr de telefon invalid! Trebuie să fie de forma 07XXXXXXX")
     private String phone;
 
-    @Email(message = "Introdu un mail valid!")
+    @Email(
+            regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
+            flags = Pattern.Flag.CASE_INSENSITIVE,
+            message = "Format incorect! Trebuie să fie de forma nume@gmail.com"
+    )
     private String email;
 
     @Column(nullable = false)
@@ -107,6 +109,10 @@ public class BusinessProfile {
     @Column
     private java.time.LocalDateTime emailVerifiedAt;
 
+    @URL(
+            regexp = "^(http:\\/\\/|https:\\/\\/)?(www.)?([a-zA-Z0-9]+).[a-zA-Z0-9]*.[a-z]{3}.?([a-z]+)?$",
+            message = "Format URL incorect. Trebuie să înceapă cu http:// sau https://"
+    )
     private String website;
 
     @OneToMany(mappedBy = "businessProfile", cascade = CascadeType.ALL, orphanRemoval = true)
