@@ -1631,6 +1631,10 @@ body {
     margin-bottom: 10px;
 }
 
+h5 {
+    color: var(--me-heading);
+}
+
 .footer-brand p {
     color: #777;
 
@@ -1650,7 +1654,7 @@ body {
 .footer-section h6 {
     margin-bottom: 8px;
 
-    color: black;
+    color: var(--me-heading);
 
     font-weight: 600;
 }
@@ -2950,6 +2954,10 @@ body .favorite-title,
     background-color: var(--me-service-card-bg, #fff);
     border: 1px solid var(--me-service-card-border, #d4ded6) !important;
     box-shadow: var(--me-service-card-shadow, 0 4px 16px rgba(40, 60, 48, 0.08)) !important;
+}
+
+.service-details-card strong {
+    color: var(--me-heading);
 }
 
 .admin-business-card-link,

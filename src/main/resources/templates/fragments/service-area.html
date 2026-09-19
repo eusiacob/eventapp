@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<body>
+<fieldset class="mb-3 service-area-picker" th:fragment="picker">
+    <legend class="form-label fs-6">Unde oferi serviciul?</legend>
+    <p class="form-text mt-0">Selectează între 1 și 10 județe sau alege Toată țara.</p>
+    <div class="form-check mb-2">
+        <input class="form-check-input service-area-nationwide" type="checkbox"
+               th:field="*{nationwide}">
+        <label class="form-check-label fw-semibold" th:for="${#ids.prev('nationwide')}">Toată țara</label>
+    </div>
+    <details class="service-area-options" th:open="${!profile.nationwide}">
+        <summary>Alege județele <span class="service-area-count" aria-live="polite"></span></summary>
+        <!-- One Spring binding marker for the whole group, not one multipart part per county. -->
+        <input type="hidden" name="_serviceCounties" value="on">
+        <div class="service-area-grid">
+            <div class="form-check" th:each="county, state : ${serviceCountyOptions}">
+                <input class="form-check-input service-area-county" type="checkbox"
+                       name="serviceCounties" th:id="|serviceCounty-${state.index}|"
+                       th:checked="${profile.serviceCounties.contains(county)}" th:value="${county}">
+                <label class="form-check-label" th:for="|serviceCounty-${state.index}|"
+                       th:text="${county}"></label>
+            </div>
+        </div>
+    </details>
+    <p class="service-area-hint form-text mb-0" aria-live="polite"></p>
+    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('serviceCounties')}"
+         th:errors="*{serviceCounties}"></div>
+    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('serviceAreaValid')}"
+         th:errors="*{serviceAreaValid}"></div>
+</fieldset>
+
+<div class="service-area-display" th:fragment="display(business)"
+     th:with="counties=${business.serviceCounties}">
+    <span class="service-area-badge" th:if="${business.nationwide}">
+        <i class="bi bi-geo-alt" aria-hidden="true"></i> Toată țara
+    </span>
+    <th:block th:unless="${business.nationwide}">
+        <span class="service-area-badge" th:each="county, state : ${counties}"
+              th:if="${state.index < 5}" th:text="${county}"></span>
+        <details class="service-area-more" th:if="${#lists.size(counties) > 5}">
+            <summary th:aria-label="|Arată sau ascunde celelalte ${#lists.size(counties) - 5} județe|">
+                <span class="service-area-show" th:text="|+${#lists.size(counties) - 5}|"></span>
+                <span class="service-area-hide">− Mai puține</span>
+            </summary>
+            <div class="service-area-extra">
+                <span class="service-area-badge" th:each="county, state : ${counties}"
+                      th:if="${state.index >= 5}" th:text="${county}"></span>
+            </div>
+        </details>
+    </th:block>
+</div>
+</body>
+</html>

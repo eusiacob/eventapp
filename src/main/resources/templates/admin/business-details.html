@@ -59,15 +59,16 @@
 
                             <div class="col-md-6">
 
-                                <strong>Telefon</strong>
+                                <strong>Business phone</strong>
 
                                 <div th:text="${business.phone}"></div>
 
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-6"
+                                 th:if="${business.email != null && business.email != ''}">
 
-                                <strong>Email</strong>
+                                <strong>Business email</strong>
 
                                 <div>
                                     <span th:text="${business.email}"></span>
@@ -84,17 +85,16 @@
 
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-6"
+                                 th:if="${business.website != null && business.website != ''}">
 
-                                <strong>Website</strong>
+                                <strong>Business website</strong>
 
                                 <div>
-
                                     <a target="_blank"
                                        th:href="${business.website}"
                                        th:text="${business.website}">
                                     </a>
-
                                 </div>
 
                             </div>
@@ -131,9 +131,9 @@
                                          loading="lazy"
                                          role="button"
                                          style="cursor: pointer;"
+                                         tabindex="0"
                                          th:data-image-src="@{${img.imagePath}}"
-                                         th:src="@{${img.imagePath}}"
-                                         tabindex="0">
+                                         th:src="@{${img.imagePath}}">
 
                                 </div>
 
@@ -178,8 +178,8 @@
                                         <video class="gallery-video-preview"
                                                muted
                                                playsinline
-                                               th:poster="${video.thumbnailPath}"
-                                               preload="metadata">
+                                               preload="metadata"
+                                               th:poster="${video.thumbnailPath}">
 
                                             <source th:src="${video.videoPath}"
                                                     th:type="${video.videoContentType}">
