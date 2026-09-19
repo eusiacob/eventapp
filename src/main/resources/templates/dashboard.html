@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>Serviciile mele</title>
 
     <link rel="icon" th:href="@{/images/favicon.png}" type="image/png">
@@ -132,6 +134,45 @@
         .subscription-notice-link:hover {
 
             color: #9a7d27;
+        }
+
+        .visibility-control {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 12px;
+            margin-top: 8px;
+            border: 1px solid rgba(19, 128, 134, .22);
+            border-radius: 10px;
+            background: rgba(19, 128, 134, .05);
+        }
+
+        .visibility-control .form-check {
+            min-height: auto;
+            margin: 0;
+        }
+
+        .visibility-control .form-check-input {
+            width: 2.5rem;
+            height: 1.25rem;
+            margin-top: 0;
+            cursor: pointer;
+        }
+
+        .visibility-control .form-check-input:checked {
+            background-color: #138086;
+            border-color: #138086;
+        }
+
+        .visibility-control .form-check-input:disabled {
+            cursor: not-allowed;
+        }
+
+        .visibility-label {
+            font-size: .875rem;
+            font-weight: 700;
+            color: #534666;
         }
     </style>
 </head>
@@ -273,15 +314,26 @@
                         <span th:text="${p.city}"></span>
                     </p>
 
-                    <span class="badge bg-success-subtle text-success mb-2"
-                          th:if="${p.active && p.status.name() == 'APPROVED'}">
-                            Vizibil public
-                        </span>
-
-                    <span class="badge bg-danger-subtle text-dark mb-2"
-                          th:if="${p.active == false || p.status.name() == 'REJECTED' || p.status.name() == 'PENDING'}">
+                    <div class="visibility-control">
+                        <span class="visibility-label"
+                              th:id="'visibility-label-' + ${p.uuid}"
+                              th:text="${p.status.name() == 'APPROVED' && p.active ? 'Public' : (p.status.name() == 'APPROVED' ? 'Inactiv' : 'Disponibil după aprobare')}">
                             Inactiv
                         </span>
+
+                        <div class="form-check form-switch">
+                            <input class="form-check-input business-visibility-toggle"
+                                   role="switch"
+                                   th:aria-labelledby="'visibility-label-' + ${p.uuid}"
+                                   th:checked="${p.status.name() == 'APPROVED' && p.active}"
+                                   th:data-url="@{/business/{uuid}/visibility(uuid=${p.uuid})}"
+                                   th:data-uuid="${p.uuid}"
+                                   th:disabled="${p.status.name() != 'APPROVED'}"
+                                   th:id="'visibility-toggle-' + ${p.uuid}"
+                                   th:title="${p.status.name() == 'APPROVED' ? 'Schimbă vizibilitatea publică' : 'Serviciul trebuie aprobat înainte de publicare'}"
+                                   type="checkbox">
+                        </div>
+                    </div>
 
                     <div class="d-grid gap-2 mt-3">
 
@@ -294,21 +346,6 @@
                            th:href="@{/business/edit/{uuid}(uuid=${p.uuid})}">
                             Modifică
                         </a>
-
-                        <form method="post"
-                              class="d-grid"
-                              th:action="@{/business/{uuid}/activate(uuid=${p.uuid})}"
-                              th:if="${!p.active}">
-
-                            <button
-                                    class="btn btn-outline-dark"
-                                    type="submit">
-
-                                Activează
-
-                            </button>
-
-                        </form>
 
                         <button class="btn btn-outline-danger"
                                 data-bs-toggle="modal"
@@ -329,11 +366,11 @@
 </div>
 
 <th:block th:each="p : ${profiles}">
-    <div class="modal fade"
+    <div aria-hidden="true"
+         class="modal fade"
          tabindex="-1"
-         aria-hidden="true"
-         th:id="'deleteModal-' + ${p.uuid}"
-         th:aria-labelledby="'deleteModalLabel-' + ${p.uuid}">
+         th:aria-labelledby="'deleteModalLabel-' + ${p.uuid}"
+         th:id="'deleteModal-' + ${p.uuid}">
 
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -343,10 +380,10 @@
                         Confirmă ștergerea
                     </h5>
 
-                    <button type="button"
+                    <button aria-label="Închide"
                             class="btn-close"
                             data-bs-dismiss="modal"
-                            aria-label="Închide">
+                            type="button">
                     </button>
                 </div>
 
@@ -356,15 +393,15 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal">
+                    <button class="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                            type="button">
                         Anulează
                     </button>
 
                     <form method="post"
                           th:action="@{/business/delete/{uuid}(uuid=${p.uuid})}">
-                        <button type="submit" class="btn btn-danger">
+                        <button class="btn btn-danger" type="submit">
                             Da, șterge
                         </button>
                     </form>
@@ -374,8 +411,48 @@
     </div>
 </th:block>
 
+<div aria-hidden="true"
+     aria-labelledby="visibilityNotificationTitle"
+     class="modal fade"
+     id="visibilityNotificationModal"
+     tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title" id="visibilityNotificationTitle">
+                    Vizibilitate actualizată
+                </h5>
+                <button aria-label="Închide"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        type="button">
+                </button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i aria-hidden="true"
+                   class="bi bi-check-circle-fill text-success d-block mb-3"
+                   id="visibilityNotificationIcon"
+                   style="font-size: 2.5rem"></i>
+                <p aria-live="polite"
+                   class="mb-0"
+                   id="visibilityNotificationMessage"
+                   role="status">
+                </p>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button class="btn btn-dark"
+                        data-bs-dismiss="modal"
+                        type="button">
+                    Am înțeles
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div th:replace="~{fragments/footer :: footer}"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script defer th:src="@{/js/dashboard-visibility.js}"></script>
 </body>
 </html>

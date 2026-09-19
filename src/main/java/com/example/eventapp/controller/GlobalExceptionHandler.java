@@ -108,6 +108,7 @@ public class GlobalExceptionHandler {
         return ("POST".equalsIgnoreCase(method) && (
                 uri.matches("^/business/[^/]+/gallery/upload$")
                         || uri.matches("^/business/[^/]+/videos/upload$")
+                        || uri.matches("^/business/[^/]+/visibility$")
                         || uri.matches("^/business/videos/delete/[^/]+$")
                         || uri.matches("^/business/gallery/delete/.*$")
                         || uri.contains("/availability/")

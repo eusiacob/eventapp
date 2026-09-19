@@ -9,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -350,8 +351,7 @@ public class BusinessController {
                         userDetails.getUsername()
                 );
 
-        businessProfileService
-                .activateStandardBusiness(uuid, user);
+        businessProfileService.updateVisibility(uuid, user, true);
 
         redirectAttributes.addFlashAttribute(
                 "success",
@@ -359,6 +359,40 @@ public class BusinessController {
         );
 
         return "redirect:/dashboard";
+    }
+
+    @PostMapping("/business/{uuid}/visibility")
+    @ResponseBody
+    public ResponseEntity<VisibilityResponse> updateBusinessVisibility(
+            @PathVariable String uuid,
+            @RequestBody VisibilityRequest request,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        User user = userService.findByEmail(userDetails.getUsername());
+        BusinessProfileService.VisibilityUpdate result =
+                businessProfileService.updateVisibility(uuid, user, request.active());
+
+        String message = result.active()
+                ? "Serviciul este acum vizibil public."
+                : "Serviciul a fost făcut inactiv.";
+
+        return ResponseEntity.ok(new VisibilityResponse(
+                true,
+                result.active(),
+                result.deactivatedUuids(),
+                message
+        ));
+    }
+
+    public record VisibilityRequest(boolean active) {
+    }
+
+    public record VisibilityResponse(
+            boolean success,
+            boolean active,
+            List<String> deactivatedUuids,
+            String message
+    ) {
     }
 
     @GetMapping("/business/edit/{uuid}")

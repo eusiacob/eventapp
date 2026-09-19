@@ -6,9 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -144,27 +147,53 @@ public class BusinessProfileService {
                 .findTopRatedBusinesses(pageable);
     }
 
-    public void activateStandardBusiness(
+    @Transactional
+    public VisibilityUpdate updateVisibility(
             String uuid,
-            User user
+            User user,
+            boolean active
     ) {
+        BusinessProfile selected = findByUuid(uuid);
+        if (!isOwner(selected, user)) {
+            throw new AccessDeniedException("Nu ai permisiunea să modifici acest serviciu.");
+        }
 
-        BusinessProfile selected =
-                findByIdAndValidateOwner(uuid, user);
+        if (!active) {
+            selected.setActive(false);
+            businessProfileRepository.save(selected);
+            return new VisibilityUpdate(false, List.of());
+        }
 
-        List<BusinessProfile> profiles =
-                businessProfileRepository.findByUser(user);
+        if (selected.getStatus() != BusinessProfile.BusinessStatus.APPROVED) {
+            throw new IllegalArgumentException(
+                    "Serviciul poate deveni public numai după aprobare."
+            );
+        }
 
-        for (BusinessProfile profile : profiles) {
-
-            profile.setActive(false);
-            profile.setPremium(false);
+        Subscription subscription = subscriptionService.findActiveSubscription(user);
+        List<String> deactivatedUuids = new ArrayList<>();
+        if (subscription != null
+                && subscription.getPlan().getType()
+                == SubscriptionPlan.SubscriptionType.STANDARD) {
+            List<BusinessProfile> profiles = businessProfileRepository.findByUser(user);
+            for (BusinessProfile profile : profiles) {
+                if (!profile.getId().equals(selected.getId()) && profile.isActive()) {
+                    profile.setActive(false);
+                    deactivatedUuids.add(profile.getUuid());
+                }
+            }
+            businessProfileRepository.saveAll(profiles);
         }
 
         selected.setActive(true);
-        selected.setPremium(false);
+        businessProfileRepository.save(selected);
+        return new VisibilityUpdate(true, List.copyOf(deactivatedUuids));
+    }
 
-        businessProfileRepository.saveAll(profiles);
+    public record VisibilityUpdate(
+            boolean active,
+            List<String> deactivatedUuids
+    ) {
     }
 
     //    Delete business

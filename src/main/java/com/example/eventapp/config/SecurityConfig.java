@@ -36,6 +36,7 @@ public class SecurityConfig {
                                 "/business/delete/**",
                                 "/dashboard",
                                 "/business/*/activate",
+                                "/business/*/visibility",
                                 "/business/*/availability/block",
                                 "/business/*/gallery/upload",
                                 "/business/*/videos/upload",
