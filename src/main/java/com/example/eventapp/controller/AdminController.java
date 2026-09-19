@@ -148,6 +148,7 @@ public class AdminController {
         BusinessProfile business = businessProfileService.findByUuid(uuid);
 
         model.addAttribute("business", business);
+        model.addAttribute("ownerEmail", userService.getEmailAddress(business.getUser()));
         model.addAttribute("breadcrumbs", List.of(
                 new BreadcrumbDTO("Dashboard", "/admin"),
                 new BreadcrumbDTO("Servicii", "/admin/businesses"),
