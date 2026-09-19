@@ -55,7 +55,8 @@
 
                         <hr>
 
-                        <div class="row gy-3 mb-2">
+                        <div class="row gy-3 mb-4"
+                             th:if="${business.phone != null}">
 
                             <div class="col-md-6">
 
@@ -66,7 +67,7 @@
                             </div>
 
                             <div class="col-md-6"
-                                 th:if="${business.email != null && business.email != ''}">
+                                 th:if="${business.email != null}">
 
                                 <strong>Business email</strong>
 
@@ -86,7 +87,7 @@
                             </div>
 
                             <div class="col-md-6"
-                                 th:if="${business.website != null && business.website != ''}">
+                                 th:if="${business.website != null}">
 
                                 <strong>Business website</strong>
 
