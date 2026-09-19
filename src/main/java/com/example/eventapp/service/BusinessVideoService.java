@@ -24,7 +24,7 @@ public class BusinessVideoService {
     private static final int VIDEO_MAX_WIDTH = 1280;
     private static final int VIDEO_CONVERSION_TIMEOUT_MINUTES = 5;
     private static final int VIDEO_MAX_DURATION_SECONDS = 15;
-    private static final int VIDEO_MAX_SIZE_MB = 80;
+    private static final int VIDEO_MAX_SIZE_MB = 100;
 
     private final BusinessVideoRepository businessVideoRepository;
     private final BusinessProfileService businessProfileService;

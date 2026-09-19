@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Verificare email - M-Event</title>
+    <link rel="icon" th:href="@{/images/favicon.png}" type="image/png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-9 col-lg-7">
+            <section class="card border-0 shadow-sm rounded-4 p-4 p-md-5" aria-labelledby="verificationTitle">
+                <h1 id="verificationTitle" class="h3 mb-4"
+                    th:text="${verified} ? 'Email verificat cu succes' : 'Linkul nu mai poate fi folosit'"></h1>
+                <div class="alert mb-4" th:classappend="${verified} ? 'alert-success' : 'alert-warning'" role="status">
+                    <p class="mb-0" th:if="${verified}">
+                        Adresa de email a fost confirmată. Poți închide această pagină sau continua pe M-Event.
+                    </p>
+                    <p class="mb-0" th:unless="${verified}">
+                        Linkul de verificare este invalid, a expirat sau a fost deja folosit.
+                        Dacă adresa apare deja ca verificată, nu mai trebuie să faci nimic.
+                        În caz contrar, solicită un link nou din profilul tău sau din pagina de editare a serviciului.
+                    </p>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <a class="btn btn-dark" th:href="@{/businesses}">Explorează serviciile</a>
+                    <a class="btn btn-outline-dark" style="padding: 10px" th:href="@{/profile}"
+                       sec:authorize="isAuthenticated()">Profilul meu</a>
+                </div>
+            </section>
+        </div>
+    </div>
+</main>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
