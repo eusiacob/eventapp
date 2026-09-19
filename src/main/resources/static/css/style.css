@@ -1635,6 +1635,10 @@ h5 {
     color: var(--me-heading);
 }
 
+h3 {
+    color: var(--me-heading);
+}
+
 .footer-brand p {
     color: #777;
 
