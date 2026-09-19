@@ -56,7 +56,10 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
                 SELECT b FROM BusinessProfile b
                 WHERE b.category = :category
                 AND (:keyword IS NULL OR :keyword = '' OR LOWER(b.name) LIKE LOWER(CONCAT('%', :keyword, '%')))
-                AND (:city IS NULL OR :city = '' OR LOWER(b.city) = LOWER(:city))
+                AND (:city IS NULL OR :city = '' OR b.nationwide = true
+                    OR EXISTS (SELECT c FROM BusinessProfile area JOIN area.serviceCounties c
+                               WHERE area.id = b.id AND LOWER(c) = LOWER(:city))
+                    OR (b.serviceCounties IS EMPTY AND LOWER(b.city) = LOWER(:city)))
                 AND (
                     :eventDate IS NULL OR NOT EXISTS (
                         SELECT d FROM BusinessUnavailableDate d

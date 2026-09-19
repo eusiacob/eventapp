@@ -67,6 +67,6 @@ final class FriendlyErrorAttributes {
             return "/login";
         }
 
-        return "/";
+        return "/businesses";
     }
 }

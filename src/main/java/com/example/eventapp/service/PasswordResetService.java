@@ -6,6 +6,7 @@ import com.example.eventapp.repository.PasswordResetTokenRepository;
 import com.example.eventapp.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
@@ -29,6 +30,7 @@ public class PasswordResetService {
     private final PasswordEncoder passwordEncoder;
     private final EncryptionService encryptionService;
     private final EmailService emailService;
+    private final ApplicationEventPublisher eventPublisher;
 
     private final SecureRandom secureRandom = new SecureRandom();
     private final ConcurrentMap<String, LocalDateTime> resetRequestAttempts =
@@ -39,13 +41,15 @@ public class PasswordResetService {
             PasswordResetTokenRepository tokenRepository,
             PasswordEncoder passwordEncoder,
             EncryptionService encryptionService,
-            EmailService emailService
+            EmailService emailService,
+            ApplicationEventPublisher eventPublisher
     ) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
         this.passwordEncoder = passwordEncoder;
         this.encryptionService = encryptionService;
         this.emailService = emailService;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -181,6 +185,11 @@ public class PasswordResetService {
         resetToken.setUsed(true);
 
         tokenRepository.save(resetToken);
+
+        String recipient = encryptionService.decrypt(user.getEmailEncrypted());
+        eventPublisher.publishEvent(new PasswordResetCompletedEvent(
+                recipient, user.getFirstName()
+        ));
 
         return true;
     }

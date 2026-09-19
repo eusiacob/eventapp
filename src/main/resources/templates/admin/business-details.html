@@ -101,9 +101,9 @@
 
                             <div class="col-md-6">
 
-                                <strong>Oraș</strong>
+                                <strong>Zonă de acoperire</strong>
 
-                                <div th:text="${business.city}"></div>
+                                <div th:replace="~{fragments/service-area :: display(${business})}"></div>
 
                             </div>
 
@@ -305,7 +305,7 @@
 
                         <div th:text="${business.category.displayName}"></div>
 
-                        <div th:text="${business.city}"></div>
+                        <div th:replace="~{fragments/service-area :: display(${business})}"></div>
 
                     </div>
 

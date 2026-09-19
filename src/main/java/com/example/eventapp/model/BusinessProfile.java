@@ -2,6 +2,7 @@ package com.example.eventapp.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -44,8 +45,54 @@ public class BusinessProfile {
     @Size(min = 10, max = 700, message = "Descrierea trebuie să fie de minim 10 caractere.")
     private String description;
 
-    @NotBlank(message = "Județul este obligatoriu")
+    // Retained for compatibility with existing single-county records.
     private String city;
+
+    @Column(nullable = false)
+    private boolean nationwide;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "business_service_counties",
+            joinColumns = @JoinColumn(name = "business_profile_id"))
+    @OrderColumn(name = "county_order")
+    @Column(name = "county", nullable = false, length = 50)
+    @org.hibernate.annotations.BatchSize(size = 50)
+    @Size(max = 10, message = "Poți selecta maximum 10 județe.")
+    private List<String> serviceCounties = new ArrayList<>();
+
+    public List<String> getServiceCounties() {
+        if (nationwide) return List.of();
+        if (serviceCounties != null && !serviceCounties.isEmpty()) return serviceCounties;
+        return city == null || city.isBlank() ? List.of() : List.of(city);
+    }
+
+    @Transient
+    @AssertTrue(message = "Alege între 1 și 10 județe valide sau opțiunea Toată țara.")
+    public boolean isServiceAreaValid() {
+        if (nationwide) return true;
+        List<String> counties = getServiceCounties();
+        return !counties.isEmpty() && counties.size() <= 10
+                && counties.stream().allMatch(county -> county != null && RomanianCounties.ALL.contains(county))
+                && counties.stream().distinct().count() == counties.size();
+    }
+
+    public void normalizeServiceArea() {
+        if (!isServiceAreaValid()) {
+            throw new IllegalArgumentException("Alege între 1 și 10 județe sau Toată țara.");
+        }
+        List<String> selected = new ArrayList<>(getServiceCounties());
+        if (serviceCounties == null) serviceCounties = new ArrayList<>();
+        serviceCounties.clear();
+        serviceCounties.addAll(selected);
+        city = nationwide ? "Toată țara" : selected.get(0);
+    }
+
+    public String getCity() {
+        if (nationwide) return "Toată țara";
+        List<String> counties = getServiceCounties();
+        if (counties.size() <= 2) return String.join(", ", counties);
+        return String.join(", ", counties.subList(0, 2)) + " +" + (counties.size() - 2);
+    }
 
     @NotBlank(message = "Introdu numărul de telefon!")
     @Pattern(regexp = "^[0-9+\\- ]{10}$", message = "Număr de telefon invalid! Trebuie să fie de forma 07X XXX XXX")

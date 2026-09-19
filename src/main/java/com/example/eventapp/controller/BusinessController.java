@@ -78,6 +78,11 @@ public class BusinessController {
         return "businesses";
     }
 
+    @ModelAttribute("serviceCountyOptions")
+    public List<String> serviceCountyOptions() {
+        return RomanianCounties.ALL;
+    }
+
     @GetMapping("/business/create")
     public String showCreateForm(Model model) {
         model.addAttribute("profile", new BusinessProfile());
@@ -418,13 +423,24 @@ public class BusinessController {
         String oldImagePath = existingProfile.getImagePath();
         String oldEmail = existingProfile.getEmail();
 
-        if (result.hasErrors()) {
+        // Keep the edit page complete when a submitted selection is invalid.
+        profile.setId(existingProfile.getId());
+        profile.setUuid(existingProfile.getUuid());
+        profile.setUser(existingProfile.getUser());
+        profile.setImagePath(existingProfile.getImagePath());
+        profile.setGalleryImages(existingProfile.getGalleryImages());
+        profile.setGalleryVideos(existingProfile.getGalleryVideos());
+        profile.setEmailVerified(existingProfile.isEmailVerified());
+        profile.setStatus(existingProfile.getStatus());
+        profile.setActive(existingProfile.isActive());
+        model.addAttribute("currentImageCount", businessImageService.countImagesByBusinessId(existingProfile.getId()));
+        model.addAttribute("maxImageCount", 15);
+        model.addAttribute("currentVideoCount", businessVideoService.countVideosByBusinessId(existingProfile.getId()));
+        model.addAttribute("maxVideoCount", 5);
+        model.addAttribute("unavailableDateStrings", existingProfile.getUnavailableDates().stream()
+                .map(date -> date.getUnavailableDate().toString()).toList());
 
-            profile.setId(existingProfile.getId());
-            profile.setUuid(existingProfile.getUuid());
-            profile.setUser(existingProfile.getUser());
-            profile.setImagePath(existingProfile.getImagePath());
-            profile.setGalleryImages(existingProfile.getGalleryImages());
+        if (result.hasErrors()) {
 
             model.addAttribute(
                     "categories",
@@ -456,7 +472,8 @@ public class BusinessController {
 
         existingProfile.setName(profile.getName());
         existingProfile.setCategory(profile.getCategory());
-        existingProfile.setCity(profile.getCity());
+        existingProfile.setNationwide(profile.isNationwide());
+        existingProfile.setServiceCounties(new java.util.ArrayList<>(profile.getServiceCounties()));
         existingProfile.setPhone(profile.getPhone());
         existingProfile.setDescription(profile.getDescription());
         existingProfile.setEmail(profile.getEmail());

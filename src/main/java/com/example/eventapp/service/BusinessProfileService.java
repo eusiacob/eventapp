@@ -36,11 +36,13 @@ public class BusinessProfileService {
     }
 
     public void save(BusinessProfile businessProfile) {
+        businessProfile.normalizeServiceArea();
         businessProfileRepository.save(businessProfile);
     }
 
     public List<String> getCitiesByCategory(BusinessCategory category) {
-        return businessProfileRepository.findDistinctCitiesByCategory(category);
+        // Nationwide providers must be discoverable for any county.
+        return RomanianCounties.ALL;
     }
 
     public List<BusinessCategory> getCategories() {

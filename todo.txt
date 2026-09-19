@@ -1,5 +1,0 @@
-- notificare mail pentru:
-    schimbare parola,
-    creare cont,
-    aprobare / respingere status serviciu,
-    aprobare/ respingere recenzie,

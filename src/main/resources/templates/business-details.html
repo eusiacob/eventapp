@@ -84,9 +84,9 @@
 
             <div sec:authorize="isAuthenticated()">
 
-                <p class="text-muted">
-                    📍 <span th:text="${profile.city}"></span>
-                </p>
+                <div class="text-muted mb-3">
+                    <div th:replace="~{fragments/service-area :: display(${profile})}"></div>
+                </div>
 
                 <div>
 

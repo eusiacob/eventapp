@@ -7,6 +7,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
@@ -128,6 +130,22 @@ public class EmailService {
                 greeting(firstName) +
                         "Parola contului tău a fost schimbată cu succes.\n\n" +
                         "Dacă nu ai făcut tu această modificare, resetează parola și contactează-ne imediat."
+        );
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void sendPasswordResetConfirmationEmail(PasswordResetCompletedEvent event) {
+        sendEmail(
+                event.recipient(),
+                "Parolă resetată cu succes - M-Event",
+                greeting(event.firstName()) +
+                        "Parola contului tău M-Event a fost resetată cu succes.\n\n" +
+                        "Te poți autentifica folosind noua parolă:\n" +
+                        appBaseUrl + "/login\n\n" +
+                        "Dacă nu ai făcut tu această modificare, solicită imediat o nouă resetare " +
+                        "a parolei și contactează-ne:\n" +
+                        appBaseUrl + "/forgot\n" +
+                        appBaseUrl + "/contact"
         );
     }
 

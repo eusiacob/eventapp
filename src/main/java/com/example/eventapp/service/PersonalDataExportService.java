@@ -83,7 +83,7 @@ public class PersonalDataExportService {
                         business.getUuid(),
                         business.getName(),
                         business.getCategory().name(),
-                        business.getCity()
+                        business.isNationwide() ? "Toată țara" : String.join(", ", business.getServiceCounties())
                 ))
                 .toList();
     }
@@ -95,7 +95,7 @@ public class PersonalDataExportService {
                         business.getName(),
                         business.getCategory().name(),
                         business.getDescription(),
-                        business.getCity(),
+                        business.isNationwide() ? "Toată țara" : String.join(", ", business.getServiceCounties()),
                         business.getPhone(),
                         business.getEmail(),
                         business.isEmailVerified(),

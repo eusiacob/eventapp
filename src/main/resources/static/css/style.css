@@ -2958,6 +2958,75 @@ body .favorite-title,
     box-shadow: none;
 }
 
+/* Service coverage selection and expandable county badges. */
+.service-area-options {
+    border: 1px solid var(--me-service-card-border, #d5e2e2);
+    border-radius: 12px;
+    padding: 0.75rem;
+    background: #fff;
+}
+
+.service-area-options summary {
+    cursor: pointer;
+    color: var(--me-primary-hover, #106e73);
+    font-weight: 600;
+}
+
+.service-area-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem 1rem;
+    margin-top: 0.75rem;
+    max-height: 18rem;
+    overflow-y: auto;
+    padding: 0.25rem;
+}
+
+.service-area-grid .form-check-label {
+    overflow-wrap: anywhere;
+}
+
+.service-area-display, .service-area-extra {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.service-area-badge, .service-area-more summary {
+    display: inline-block;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+    background: var(--me-primary-soft, #e7f3f3);
+    color: var(--me-primary-hover, #106e73);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+    max-width: 100%;
+}
+
+.service-area-more summary {
+    cursor: pointer;
+    font-weight: 700;
+    border: 1px solid var(--me-primary, #138086);
+    list-style: none;
+}
+
+.service-area-more summary::-webkit-details-marker { display: none; }
+.service-area-more .service-area-hide { display: none; }
+.service-area-more[open] .service-area-hide { display: inline; }
+.service-area-more[open] .service-area-show { display: none; }
+.service-area-more[open] { flex-basis: 100%; }
+.service-area-extra { margin-top: 0.4rem; }
+.service-area-more summary:focus-visible {
+    outline: 2px solid var(--me-primary, #138086);
+    outline-offset: 3px;
+}
+
+@media (max-width: 399.98px) {
+    .service-area-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* Short introduction to exploring services. */
 .explore-guide {
     margin: 0.75rem 0 1rem;
