@@ -98,7 +98,7 @@
                         </a>
                     </span>
 
-                    <span>
+                    <span th:if="${profile.phone != null and !profile.phone.isBlank()}">
                         <a aria-label="Chat on WhatsApp"
                            class="btn bi bi-whatsapp"
                            style="color: green; font-size: 1.5em"

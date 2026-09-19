@@ -152,12 +152,24 @@
 
                     <div th:replace="~{fragments/service-area :: picker}"></div>
 
+                    <div class="alert alert-danger py-2"
+                         th:errors="*{contactMethodProvided}"
+                         th:if="${#fields.hasErrors('contactMethodProvided')}">
+                    </div>
+
+                    <div class="form-text mb-3">
+                        Completează cel puțin o metodă de contact: telefon, email sau website.
+                    </div>
+
                     <!-- PHONE -->
                     <div class="mb-3">
                         <label class="form-label">Business phone</label>
                         <div class="text-danger small"
                              th:errors="*{phone}"
                              th:if="${#fields.hasErrors('phone')}">
+                        </div>
+                        <div class="form-text">
+                            Opțional. Dacă îl completezi, folosește formatul 07XXXXXXXX.
                         </div>
                         <input class="form-control"
                                placeholder="07xxxxxxxx"

@@ -1,6 +1,5 @@
 package com.example.eventapp.model;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -92,15 +91,16 @@ public class BusinessProfile {
         return String.join(", ", counties.subList(0, 2)) + " +" + (counties.size() - 2);
     }
 
-    @NotBlank(message = "Introdu numărul de telefon!")
     @Pattern(regexp = "^[0-9+\\- ]{10}$", message = "Număr de telefon invalid! Trebuie să fie de forma 07XXXXXXX")
+    @Column(nullable = true)
     private String phone;
 
     @Email(
-            regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
+            regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,63}",
             flags = Pattern.Flag.CASE_INSENSITIVE,
-            message = "Format incorect! Trebuie să fie de forma nume@gmail.com"
+            message = "Format incorect! Introdu o adresă de email validă."
     )
+    @Column(nullable = true)
     private String email;
 
     @Column(nullable = false)
@@ -113,7 +113,18 @@ public class BusinessProfile {
             regexp = "^(http:\\/\\/|https:\\/\\/)?(www.)?([a-zA-Z0-9]+).[a-zA-Z0-9]*.[a-z]{3}.?([a-z]+)?$",
             message = "Format URL incorect. Trebuie să înceapă cu http:// sau https://"
     )
+    @Column(nullable = true)
     private String website;
+
+    @Transient
+    @AssertTrue(message = "Completează cel puțin o metodă de contact: telefon, email sau website.")
+    public boolean isContactMethodProvided() {
+        return hasText(phone) || hasText(email) || hasText(website);
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.isBlank();
+    }
 
     @OneToMany(mappedBy = "businessProfile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BusinessUnavailableDate> unavailableDates = new ArrayList<>();

@@ -107,6 +107,15 @@
 
                     <div th:replace="~{fragments/service-area :: picker}"></div>
 
+                    <div class="alert alert-danger py-2"
+                         th:errors="*{contactMethodProvided}"
+                         th:if="${#fields.hasErrors('contactMethodProvided')}">
+                    </div>
+
+                    <div class="form-text mb-3">
+                        Completează cel puțin o metodă de contact: telefon, email sau website.
+                    </div>
+
                     <!-- PHONE -->
                     <div class="mb-3">
                         <label for="businessPhone" class="form-label">Business phone</label>
@@ -117,7 +126,7 @@
                         </div>
 
                         <div class="form-text">
-                            Obligatoriu! Trebuie să fie de forma 07XXXXXXXX.
+                            Opțional. Dacă îl completezi, folosește formatul 07XXXXXXXX.
                         </div>
                         <input id="businessPhone" class="form-control"
                                placeholder="07xxxxxxxx"
