@@ -2693,7 +2693,7 @@ body {
     background-color: #fff;
 }
 
-.badge.bg-dark {
+.bg-admin {
     background-color: var(--me-terracotta) !important;
     color: var(--me-text) !important;
 }

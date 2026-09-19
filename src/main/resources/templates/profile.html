@@ -54,7 +54,10 @@
 
                     <div class="text-center text-md-start flex-grow-1">
 
-                        <span class="badge bg-dark mb-2"
+                        <span class="badge mb-2"
+                              th:classappend="
+                            ${user.role.name == 'ADMIN'} ? 'bg-admin' :
+                            (${user.role.name == 'BUSINESS'} ? 'bg-success' : 'bg-primary')"
                               th:text="${user.role}">
                         </span>
 
@@ -77,6 +80,18 @@
                             <i class="bi bi-exclamation-triangle-fill me-1"></i>
                             Email neverificat
                         </span>
+                        <div class="mt-1">
+                            <form class="d-inline"
+                                  method="post"
+                                  th:action="@{/profile/email-verification}"
+                                  th:if="${!user.emailVerified}">
+                                <button class="btn btn-sm btn-outline-warning"
+                                        type="submit">
+                                    Trimite link de verificare
+                                </button>
+                            </form>
+                        </div>
+
 
                         <form class="mt-3 d-lg-none"
                               method="post"
@@ -484,23 +499,6 @@
                     <span>Email</span>
                     <div class="email-profile-align">
                         <strong th:text="${user.email}">email@test.com</strong>
-                        <div class="mt-1">
-                            <span class="badge bg-success-subtle text-success border border-success-subtle"
-                                  th:if="${user.emailVerified}">
-                                <i class="bi bi-patch-check-fill me-1"></i>
-                                Verificat
-                            </span>
-
-                            <form class="d-inline"
-                                  method="post"
-                                  th:action="@{/profile/email-verification}"
-                                  th:if="${!user.emailVerified}">
-                                <button class="btn btn-sm btn-outline-warning"
-                                        type="submit">
-                                    Trimite link de verificare
-                                </button>
-                            </form>
-                        </div>
                     </div>
                 </div>
 

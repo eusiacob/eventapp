@@ -18,11 +18,6 @@
     <link rel="stylesheet"
           th:href="@{/css/style.css}">
 
-    <style>
-        .bg-dark {
-            background-color: var(--me-terracotta) !important;
-        }
-    </style>
 </head>
 
 <body>
@@ -59,7 +54,7 @@
             BUSINESS
         </a>
 
-        <a class="admin-filter-btn bg-dark text-white"
+        <a class="admin-filter-btn bg-admin text-white"
            th:classappend="${selectedRole?.name() == 'ADMIN'} ? ' active'"
            th:href="@{/admin/users(role='ADMIN', search=${search})}">
 
@@ -172,7 +167,7 @@
                 <span class="badge"
 
                       th:classappend="
-                            ${userDto.user.role.name == 'ADMIN'} ? 'bg-dark' :
+                            ${userDto.user.role.name == 'ADMIN'} ? 'bg-admin' :
                             (${userDto.user.role.name == 'BUSINESS'} ? 'bg-success' : 'bg-primary')"
 
                       th:text="${userDto.user.role.name}">
