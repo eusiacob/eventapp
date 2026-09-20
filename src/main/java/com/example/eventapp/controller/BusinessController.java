@@ -599,7 +599,7 @@ public class BusinessController {
         );
 
         businessProfileService.delete(
-                profile.getId()
+                profile
         );
 
         redirectAttributes.addAttribute("businessDeleted", true);

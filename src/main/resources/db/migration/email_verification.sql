@@ -20,7 +20,7 @@ CREATE TABLE email_verification_token (
     KEY idx_email_verification_user (user_id),
     KEY idx_email_verification_business (business_profile_id),
     CONSTRAINT fk_email_verification_user
-        FOREIGN KEY (user_id) REFERENCES `user` (id),
+        FOREIGN KEY (user_id) REFERENCES `user` (id) ON DELETE CASCADE,
     CONSTRAINT fk_email_verification_business
-        FOREIGN KEY (business_profile_id) REFERENCES business_profile (id)
+        FOREIGN KEY (business_profile_id) REFERENCES business_profile (id) ON DELETE CASCADE
 );

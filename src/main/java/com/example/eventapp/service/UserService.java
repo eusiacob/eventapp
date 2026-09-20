@@ -1,6 +1,5 @@
 package com.example.eventapp.service;
 
-import com.example.eventapp.config.UploadProperties;
 import com.example.eventapp.dto.RegisterUserDTO;
 import com.example.eventapp.dto.LegalAcceptanceDTO;
 import com.example.eventapp.model.AccountStatusReason;
@@ -8,6 +7,7 @@ import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.Role;
 import com.example.eventapp.model.User;
 import com.example.eventapp.repository.BusinessProfileRepository;
+import com.example.eventapp.repository.EmailVerificationTokenRepository;
 import com.example.eventapp.repository.PasswordResetTokenRepository;
 import com.example.eventapp.repository.ReviewRepository;
 import com.example.eventapp.repository.SubscriptionRepository;
@@ -20,17 +20,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Stream;
 
 @Service
 public class UserService {
@@ -45,8 +38,9 @@ public class UserService {
     private final SupportMessageRepository supportMessageRepository;
     private final UserNotificationRepository userNotificationRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final EmailVerificationTokenRepository emailVerificationTokenRepository;
     private final LegalDocumentService legalDocumentService;
-    private final UploadProperties uploadProperties;
+    private final BusinessStorageCleanupService businessStorageCleanupService;
 
     public UserService(
             UserRepository userRepository,
@@ -59,8 +53,9 @@ public class UserService {
             SupportMessageRepository supportMessageRepository,
             UserNotificationRepository userNotificationRepository,
             PasswordResetTokenRepository passwordResetTokenRepository,
+            EmailVerificationTokenRepository emailVerificationTokenRepository,
             LegalDocumentService legalDocumentService,
-            UploadProperties uploadProperties
+            BusinessStorageCleanupService businessStorageCleanupService
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -72,8 +67,9 @@ public class UserService {
         this.supportMessageRepository = supportMessageRepository;
         this.userNotificationRepository = userNotificationRepository;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
+        this.emailVerificationTokenRepository = emailVerificationTokenRepository;
         this.legalDocumentService = legalDocumentService;
-        this.uploadProperties = uploadProperties;
+        this.businessStorageCleanupService = businessStorageCleanupService;
     }
 
     public List<User> findAll() {
@@ -538,7 +534,8 @@ public class UserService {
         List<BusinessProfile> profiles = businessProfileRepository.findByUser(managedUser);
         for (BusinessProfile profile : profiles) {
             removeBusinessFromAllFavorites(profile.getId());
-            deleteBusinessUploads(profile);
+            emailVerificationTokenRepository.deleteByBusinessProfile(profile);
+            businessStorageCleanupService.deleteAfterCommit(profile.getUuid());
         }
 
         if (managedUser.getFavoriteBusinesses() != null) {
@@ -557,67 +554,9 @@ public class UserService {
         subscriptionRepository.deleteByUser(managedUser);
         userNotificationRepository.deleteByUser(managedUser);
         passwordResetTokenRepository.deleteByUser(managedUser);
+        emailVerificationTokenRepository.deleteByUser(managedUser);
 
         userRepository.delete(managedUser);
-    }
-
-    private void deleteBusinessUploads(BusinessProfile profile) {
-        if (profile.getUuid() == null) {
-            return;
-        }
-
-        try {
-            UUID.fromString(profile.getUuid());
-        } catch (IllegalArgumentException exception) {
-            throw new IllegalStateException("Identificatorul serviciului este invalid.", exception);
-        }
-
-        Path uploadsRoot = uploadProperties.businessesPath();
-
-        if (!Files.exists(uploadsRoot)) {
-            return;
-        }
-
-        try (Stream<Path> paths = Files.walk(uploadsRoot, 2)) {
-            List<Path> profileDirectories = paths
-                    .filter(Files::isDirectory)
-                    .filter(path -> path.startsWith(uploadsRoot))
-                    .filter(path -> profile.getUuid().equals(
-                            path.getFileName().toString()
-                    ))
-                    .toList();
-
-            for (Path directory : profileDirectories) {
-                deleteDirectoryIfAllowed(directory, uploadsRoot);
-            }
-        } catch (IOException exception) {
-            throw new IllegalStateException(
-                    "Fișierele serviciului nu au putut fi identificate.",
-                    exception
-            );
-        }
-    }
-
-    private void deleteDirectoryIfAllowed(Path directory, Path uploadsRoot) {
-        if (!directory.startsWith(uploadsRoot) || !Files.exists(directory)) {
-            return;
-        }
-
-        try (Stream<Path> paths = Files.walk(directory)) {
-            paths.sorted(Comparator.reverseOrder())
-                    .forEach(path -> {
-                        try {
-                            Files.delete(path);
-                        } catch (IOException exception) {
-                            throw new UncheckedIOException(exception);
-                        }
-                    });
-        } catch (IOException | UncheckedIOException exception) {
-            throw new IllegalStateException(
-                    "Fișierele serviciului nu au putut fi șterse.",
-                    exception
-            );
-        }
     }
 
     private void validateCurrentPassword(User user, String currentPassword) {

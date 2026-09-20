@@ -2,6 +2,7 @@ package com.example.eventapp.service;
 
 import com.example.eventapp.model.*;
 import com.example.eventapp.repository.BusinessProfileRepository;
+import com.example.eventapp.repository.EmailVerificationTokenRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,10 +19,19 @@ import java.util.List;
 public class BusinessProfileService {
 
     private final BusinessProfileRepository businessProfileRepository;
+    private final EmailVerificationTokenRepository emailVerificationTokenRepository;
+    private final BusinessStorageCleanupService businessStorageCleanupService;
     private final SubscriptionService subscriptionService;
 
-    public BusinessProfileService(BusinessProfileRepository businessProfileRepository, SubscriptionService subscriptionService) {
+    public BusinessProfileService(
+            BusinessProfileRepository businessProfileRepository,
+            EmailVerificationTokenRepository emailVerificationTokenRepository,
+            BusinessStorageCleanupService businessStorageCleanupService,
+            SubscriptionService subscriptionService
+    ) {
         this.businessProfileRepository = businessProfileRepository;
+        this.emailVerificationTokenRepository = emailVerificationTokenRepository;
+        this.businessStorageCleanupService = businessStorageCleanupService;
         this.subscriptionService = subscriptionService;
     }
 
@@ -197,8 +207,11 @@ public class BusinessProfileService {
     }
 
     //    Delete business
-    public void delete(Long id) {
-        businessProfileRepository.deleteById(id);
+    @Transactional
+    public void delete(BusinessProfile businessProfile) {
+        emailVerificationTokenRepository.deleteByBusinessProfile(businessProfile);
+        businessProfileRepository.delete(businessProfile);
+        businessStorageCleanupService.deleteAfterCommit(businessProfile.getUuid());
     }
 
 }
