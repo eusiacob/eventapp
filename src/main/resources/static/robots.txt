@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /favorites
+Disallow: /notifications/
+Disallow: /support/
+Disallow: /business/create
+Disallow: /business/edit/
