@@ -75,6 +75,7 @@ public class SecurityConfig {
                                 "/contact",
                                 "/reset-password",
                                 "/verify-email",
+                                "/robots.txt",
                                 "/images/**"
                         ).permitAll()
 
