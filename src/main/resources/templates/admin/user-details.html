@@ -63,9 +63,9 @@
                     <span class="badge"
 
                           th:classappend="
-                          ${user.role.name() == 'ADMIN'} ? ' bg-dark' :
-                          (${user.role.name() == 'BUSINESS'} ? ' bg-success' :
-                          ' bg-primary')"
+                          ${user.role.name() == 'ADMIN'} ? 'bg-admin' :
+                          (${user.role.name() == 'BUSINESS'} ? 'bg-success' :
+                          'bg-primary')"
 
                           th:text="${user.role}">
 
