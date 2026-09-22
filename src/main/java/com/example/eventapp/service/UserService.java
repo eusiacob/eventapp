@@ -351,6 +351,12 @@ public class UserService {
 
         User user = findById(userId);
 
+        if (user.getRole() == Role.ADMIN && user.isEnabled()) {
+            throw new IllegalStateException(
+                    "Conturile de administrator nu pot fi suspendate."
+            );
+        }
+
         User currentAdmin = findByEmail(currentAdminEmail);
 
         if (user.getId().equals(currentAdmin.getId())) {

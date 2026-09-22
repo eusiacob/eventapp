@@ -115,6 +115,7 @@
                 <div class="mt-5">
 
                     <form method="post"
+                          th:if="${user.role.name() != 'ADMIN' or !user.enabled}"
                           th:action="@{/admin/user/{id}/toggle-enabled(id=${user.id})}">
 
                         <button class="btn"
