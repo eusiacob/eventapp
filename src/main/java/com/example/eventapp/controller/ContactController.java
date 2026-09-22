@@ -55,7 +55,7 @@ public class ContactController {
 
             SimpleMailMessage message = new SimpleMailMessage();
 
-            message.setFrom(mailProperties.getFromAddress());
+            message.setFrom(mailProperties.getFormattedFromAddress());
             message.setTo(mailProperties.getContactAddress());
 
             message.setReplyTo(contactForm.getEmail());

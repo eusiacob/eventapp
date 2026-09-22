@@ -238,7 +238,7 @@ public class EmailService {
         SimpleMailMessage message =
                 new SimpleMailMessage();
 
-        message.setFrom(mailProperties.getFromAddress());
+        message.setFrom(mailProperties.getFormattedFromAddress());
         message.setReplyTo(mailProperties.getReplyToAddress());
         message.setTo(recipient);
         message.setSubject(subject);

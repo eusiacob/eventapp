@@ -35,8 +35,8 @@ build/
 #application.properties
 src/main/resources/application.properties
 src/main/resources/application-local.properties
-.env
-.env.*
-!.env.example
+ev.env
+ev.env
+!ev.env
 uploads/
 .DS_Store
