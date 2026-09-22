@@ -146,11 +146,14 @@ public class BusinessImageController {
                         businessProfile.getId()
                 );
 
-        if (existingVideos + videos.size() > 5) {
+        long selectedCount = videos.stream().filter(video -> !video.isEmpty()).count();
+        if (existingVideos + selectedCount > 5) {
 
             return error(
                     HttpStatus.BAD_REQUEST,
-                    "Galeria poate conține maximum 5 videoclipuri."
+                    "Galeria poate conține maximum 5 videoclipuri. Ai deja " + existingVideos +
+                            " și ai selectat " + selectedCount + ". Mai poți adăuga " +
+                            Math.max(0, 5 - existingVideos) + "."
             );
         }
 

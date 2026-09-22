@@ -409,6 +409,7 @@
 
                     <form enctype="multipart/form-data"
                           id="videoUpload"
+                          th:attr="data-current-count=${currentVideoCount},data-max-count=${maxVideoCount}"
                           method="post"
                           th:action="@{/business/{uuid}/videos/upload(uuid=${profile.uuid})}">
 
@@ -803,6 +804,15 @@
     }
 
     function getAsyncErrorMessage(error, fallbackMessage) {
+        if (error.response?.status === 413) {
+            return "Fișierele selectate depășesc limita de încărcare a serverului. Încarcă mai puține fișiere odată sau redu dimensiunea lor.";
+        }
+        if ([502, 503, 504].includes(error.response?.status)) {
+            return "Serverul nu a putut finaliza încărcarea. Reîncarcă pagina pentru a verifica fișierele salvate, apoi încearcă un singur fișier odată.";
+        }
+        if (!error.response) {
+            return "Conexiunea cu serverul a fost întreruptă. Verifică internetul și reîncarcă pagina pentru a vedea ce fișiere s-au salvat.";
+        }
         return error.response?.data?.message || fallbackMessage;
     }
 
@@ -968,9 +978,35 @@
             return;
         }
 
-        form.addEventListener("submit", function (event) {
+        function readDuration(file) {
+            return new Promise(function (resolve) {
+                const video = document.createElement("video");
+                const url = URL.createObjectURL(file);
+                const timer = setTimeout(function () { finish(null); }, 5000);
+                function finish(duration) {
+                    clearTimeout(timer);
+                    video.onloadedmetadata = null;
+                    video.onerror = null;
+                    video.removeAttribute("src");
+                    video.load();
+                    URL.revokeObjectURL(url);
+                    resolve(duration);
+                }
+                video.preload = "metadata";
+                video.onloadedmetadata = function () {
+                    finish(Number.isFinite(video.duration) ? video.duration : null);
+                };
+                // Formatul poate fi acceptat de server chiar dacă browserul nu îi poate citi durata.
+                video.onerror = function () { finish(null); };
+                video.src = url;
+            });
+        }
+
+        let validating = false;
+        form.addEventListener("submit", async function (event) {
 
             event.preventDefault();
+            if (validating) return;
 
             const input =
                 form.querySelector('input[name="videos"]');
@@ -984,8 +1020,31 @@
                 return;
             }
 
-            const formData =
-                new FormData(form);
+            const files = Array.from(input.files);
+            const current = Number(form.dataset.currentCount);
+            const max = Number(form.dataset.maxCount);
+            if (current + files.length > max) {
+                showAsyncAlert("danger", "Galeria poate conține maximum " + max +
+                    " videoclipuri. Ai deja " + current + " și ai selectat " + files.length +
+                    ". Mai poți adăuga " + Math.max(0, max - current) + ".");
+                return;
+            }
+            const oversized = files.filter(file => file.size > 100 * 1024 * 1024);
+            if (oversized.length) {
+                showAsyncAlert("danger", "Fiecare videoclip poate avea maximum 100 MB. Fișiere prea mari: " +
+                    oversized.map(file => file.name).join(", "));
+                return;
+            }
+            validating = true;
+            const formData = new FormData(form);
+            const durations = await Promise.all(files.map(readDuration));
+            validating = false;
+            const tooLong = files.filter((file, index) => durations[index] !== null && durations[index] > 15);
+            if (tooLong.length) {
+                showAsyncAlert("danger", "Fiecare videoclip poate avea maximum 15 secunde. Scurtează următoarele videoclipuri înainte de încărcare: " +
+                    tooLong.map(file => file.name).join(", "));
+                return;
+            }
 
             const progressContainer =
                 document.getElementById(
@@ -1058,6 +1117,7 @@
                     );
 
                     form.reset();
+                    form.dataset.currentCount = String(current + files.length);
                     submitButton.disabled = false;
                     submitButton.textContent = originalButtonText;
 

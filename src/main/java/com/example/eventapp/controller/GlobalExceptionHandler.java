@@ -9,11 +9,36 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 
 import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public Object handleUploadSize(MaxUploadSizeExceededException exception, Model model,
+                                   HttpServletRequest request, HttpServletResponse response) {
+        if (wantsJson(request)) {
+            return ResponseEntity.status(413).body(Map.of("success", false, "message",
+                    "Fișierele selectate depășesc limita de încărcare a serverului. " +
+                    "Încarcă mai puține fișiere odată sau redu dimensiunea lor. " +
+                    "Un videoclip poate avea maximum 100 MB și 15 secunde."));
+        }
+        return renderError(model, request, response, HttpStatus.PAYLOAD_TOO_LARGE);
+    }
+
+    @ExceptionHandler(MultipartException.class)
+    public Object handleMultipart(MultipartException exception, Model model,
+                                  HttpServletRequest request, HttpServletResponse response) {
+        if (wantsJson(request)) {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message",
+                    "Fișierele nu au putut fi preluate. Încearcă să încarci un singur fișier odată " +
+                    "și verifică dimensiunea acestuia și conexiunea la internet."));
+        }
+        return renderError(model, request, response, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(AccessDeniedException.class)
     public Object handleAccessDenied(AccessDeniedException exception, Model model, HttpServletRequest request, HttpServletResponse response) {

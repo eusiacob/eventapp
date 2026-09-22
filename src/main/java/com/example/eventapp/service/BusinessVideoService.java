@@ -65,14 +65,17 @@ public class BusinessVideoService {
 
         boolean uploaded = false;
 
+        long selectedCount = files.stream().filter(file -> file != null && !file.isEmpty()).count();
+        if (currentVideos + selectedCount > 5) {
+            throw new InvalidVideoException("Galeria poate conține maximum 5 videoclipuri. " +
+                    "Ai deja " + currentVideos + " și ai selectat " + selectedCount +
+                    ". Mai poți adăuga " + Math.max(0, 5 - currentVideos) + ".");
+        }
+
         for (MultipartFile file : files) {
 
             if (file == null || file.isEmpty()) {
                 continue;
-            }
-
-            if (currentVideos >= 5) {
-                break;
             }
 
             // 1. Validări de bază
