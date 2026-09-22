@@ -1,5 +1,6 @@
 package com.example.eventapp.service;
 
+import com.example.eventapp.config.ApplicationMailProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailException;
@@ -19,13 +20,16 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
     private final String appBaseUrl;
+    private final ApplicationMailProperties mailProperties;
 
     public EmailService(
             JavaMailSender mailSender,
-            @Value("${app.base-url:http://localhost:8080}") String appBaseUrl
+            @Value("${app.base-url:http://localhost:8080}") String appBaseUrl,
+            ApplicationMailProperties mailProperties
     ) {
         this.mailSender = mailSender;
         this.appBaseUrl = appBaseUrl.replaceAll("/+$", "");
+        this.mailProperties = mailProperties;
     }
 
     public void sendPasswordResetEmail(
@@ -234,6 +238,8 @@ public class EmailService {
         SimpleMailMessage message =
                 new SimpleMailMessage();
 
+        message.setFrom(mailProperties.getFromAddress());
+        message.setReplyTo(mailProperties.getReplyToAddress());
         message.setTo(recipient);
         message.setSubject(subject);
         message.setText(content + applicationFooter());
@@ -256,10 +262,12 @@ public class EmailService {
                 "────────────────────\n" +
                 "M-Event\n" +
                 "Descoperă servicii și experiențe pentru evenimentele tale.\n\n" +
+                "Acesta este un mesaj generat automat. Te rugăm să nu răspunzi la acest email.\n" +
+                "Pentru asistență, scrie-ne la " + mailProperties.getContactAddress() +
+                " sau folosește formularul de contact: " + appBaseUrl + "/contact\n\n" +
                 "Informații:\n" +
                 "Confidențialitate: " + appBaseUrl + "/privacy\n" +
                 "Termeni și condiții: " + appBaseUrl + "/terms\n" +
-                "Contact: " + appBaseUrl + "/contact\n\n" +
                 "Urmărește-ne: https://www.facebook.com/ | https://www.instagram.com/\n\n" +
                 "© 2026 M-Event. Toate drepturile rezervate.";
     }

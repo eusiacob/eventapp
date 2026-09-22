@@ -1,9 +1,9 @@
 package com.example.eventapp.controller;
 
+import com.example.eventapp.config.ApplicationMailProperties;
 import com.example.eventapp.dto.BreadcrumbDTO;
 import com.example.eventapp.dto.ContactForm;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
@@ -19,12 +19,14 @@ import java.util.List;
 public class ContactController {
 
     private final JavaMailSender mailSender;
+    private final ApplicationMailProperties mailProperties;
 
-    @Value("${spring.mail.username}")
-    private String mailUsername;
-
-    public ContactController(JavaMailSender mailSender) {
+    public ContactController(
+            JavaMailSender mailSender,
+            ApplicationMailProperties mailProperties
+    ) {
         this.mailSender = mailSender;
+        this.mailProperties = mailProperties;
     }
 
     @GetMapping("/contact")
@@ -53,7 +55,8 @@ public class ContactController {
 
             SimpleMailMessage message = new SimpleMailMessage();
 
-            message.setTo(mailUsername);
+            message.setFrom(mailProperties.getFromAddress());
+            message.setTo(mailProperties.getContactAddress());
 
             message.setReplyTo(contactForm.getEmail());
 
