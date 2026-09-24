@@ -95,7 +95,8 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
                 WHERE b.status = APPROVED
                 AND b.active = true
                 GROUP BY b
-                ORDER BY COUNT(u) DESC
+                HAVING COUNT(DISTINCT u) >= 3
+                ORDER BY COUNT(DISTINCT u) DESC
             """)
     List<BusinessProfile> findMostFavoriteBusinesses(Pageable pageable);
 
@@ -107,7 +108,7 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
                 AND b.active = true
                 AND r.rating > 0
                 GROUP BY b
-                HAVING COUNT(r) >= 1
+                HAVING COUNT(r) >= 3
                 ORDER BY AVG(r.rating) DESC, COUNT(r) DESC
             """)
     List<BusinessProfile> findTopRatedBusinesses(Pageable pageable);
