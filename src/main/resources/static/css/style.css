@@ -3125,6 +3125,150 @@ body .favorite-title,
     .service-area-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
+/* Compact category search, including the mobile overrides above. */
+.compact-search.search-card {
+    padding: 1rem !important;
+}
+
+.compact-search.search-card .row > div {
+    margin-top: var(--bs-gutter-y) !important;
+}
+
+.compact-search.search-card .form-control,
+.compact-search.search-card .form-select,
+.compact-search.search-card button[type="submit"] {
+    min-height: 2.5rem;
+    height: auto;
+    margin-top: 0;
+    padding: 0.4rem 0.65rem;
+    border-radius: 10px;
+}
+
+.compact-search.search-card .form-select {
+    padding-right: 2rem;
+}
+
+@media (max-width: 767.98px) {
+    .compact-search.search-card .form-control,
+    .compact-search.search-card .form-select,
+    .compact-search.search-card button[type="submit"] {
+        min-height: 44px;
+        font-size: 1rem;
+    }
+}
+
+/* Shared service creation/editing layout. */
+.business-editor-card {
+    padding: clamp(1rem, 2vw, 1.5rem);
+    border-radius: 18px;
+}
+
+.business-editor-page #businessEditForm,
+.business-editor-page #business-media,
+.business-editor-page #business-calendar {
+    scroll-margin-top: 6rem;
+}
+
+.business-form-sections {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.business-form-section {
+    min-width: 0;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--me-service-card-border, #d5e2e2);
+}
+
+.business-section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-weight: 650;
+    color: var(--me-heading, #534666);
+}
+
+.business-section-title > span {
+    display: inline-grid;
+    place-items: center;
+    width: 1.7rem;
+    height: 1.7rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--me-primary-soft, #e7f3f3);
+    color: var(--me-primary-hover, #106e73);
+    font-size: 0.8rem;
+}
+
+.business-editor-form .form-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.35rem;
+}
+
+.business-editor-form .form-text {
+    font-size: 0.8rem;
+}
+
+.business-editor-form .service-area-picker,
+.business-editor-form .business-options-picker > fieldset:last-of-type,
+.business-editor-form .business-options-picker > p:last-child {
+    margin-bottom: 0 !important;
+}
+
+.business-editor-form .service-area-options {
+    padding: 0.65rem 0.75rem;
+}
+
+.business-cover-layout {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.business-editor-form .business-cover-current {
+    width: 120px;
+    height: 90px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.business-cover-controls {
+    min-width: 0;
+    flex: 1;
+}
+
+.business-cover-preview {
+    max-height: 180px;
+}
+
+.business-form-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-top: 1rem;
+}
+
+.business-media-panel {
+    padding: 0.85rem;
+    border: 1px solid var(--me-service-card-border, #d5e2e2);
+    border-radius: 12px;
+}
+
+.business-media-panel > summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--me-primary-hover, #106e73);
+}
+
+@media (max-width: 575.98px) {
+    .business-cover-layout { align-items: flex-start; flex-direction: column; }
+    .business-cover-controls { width: 100%; }
+    .business-form-actions .btn { flex: 1; padding-inline: 0.5rem; }
+}
+
 /* Short introduction to exploring services. */
 .explore-guide {
     margin: 0.75rem 0 1rem;

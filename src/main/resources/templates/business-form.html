@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Create Business</title>
+    <title>Adaugă un serviciu | M-Event</title>
 
 <link rel="icon" type="image/png" th:href="@{/images/favicon.png}">
 
@@ -35,7 +35,7 @@
     </style>
 </head>
 
-<body style="overflow: auto">
+<body class="business-editor-page" style="overflow: auto">
 
 <!-- NAVBAR -->
 <div th:replace="~{fragments/navbar :: navbar}"></div>
@@ -47,9 +47,9 @@
 
     <div class="row justify-content-center">
 
-        <div class="col-lg-6">
+        <div class="col-12 col-lg-10 col-xl-9">
 
-            <div class="card shadow-lg p-4 opacity-75">
+            <div class="card business-editor-card shadow-sm border-0">
 
                 <div class="alert-danger mb-2"
                      style="color: red"
@@ -62,158 +62,18 @@
                      th:text="${imageError}">
                 </div>
 
-                <form enctype="multipart/form-data"
+                <h1 class="h4 mb-2">Adaugă un serviciu</h1>
+                <p class="text-muted small mb-3">Prezintă oferta ta. După salvare poți adăuga fotografii, videoclipuri și disponibilitatea.</p>
+
+                <form class="business-editor-form" enctype="multipart/form-data"
                       method="post"
                       th:action="@{/business/create}"
                       th:object="${profile}">
 
-                    <!-- NAME -->
-                    <div class="mb-3">
-                        <label for="businessName" class="form-label">Nume serviciu</label>
-
-                        <div class="text-danger small mb-3"
-                             th:errors="*{name}"
-                             th:if="${#fields.hasErrors('name')}">
-                        </div>
-
-                        <div class="form-text">
-                            Obligatoriu! Lungime: 3 - 10 caractere.
-                        </div>
-                        <input id="businessName" class="form-control"
-                               placeholder="e.g. Dream Events"
-                               th:field="*{name}"
-                               type="text">
-                    </div>
-
-                    <!-- CATEGORY -->
-                    <div class="mb-3">
-                        <label for="businessCategory" class="form-label">Categorie</label>
-
-                        <div class="text-danger small mt-1"
-                             th:errors="*{category}"
-                             th:if="${#fields.hasErrors('category')}">
-                        </div>
-
-                        <select id="businessCategory" class="form-select"
-                                th:field="*{category}">
-
-                            <option th:each="cat : ${categories}"
-                                    th:text="${cat.displayName}"
-                                    th:value="${cat}">
-                            </option>
-
-                        </select>
-                    </div>
-
-                    <div th:replace="~{fragments/service-area :: picker}"></div>
-
-                    <div class="alert alert-danger py-2"
-                         th:errors="*{contactMethodProvided}"
-                         th:if="${#fields.hasErrors('contactMethodProvided')}">
-                    </div>
-
-                    <div class="form-text mb-3">
-                        Completează cel puțin o metodă de contact: telefon, email sau website.
-                    </div>
-
-                    <!-- PHONE -->
-                    <div class="mb-3">
-                        <label for="businessPhone" class="form-label">Business phone</label>
-
-                        <div class="text-danger small mb-3"
-                             th:errors="*{phone}"
-                             th:if="${#fields.hasErrors('phone')}">
-                        </div>
-
-                        <div class="form-text">
-                            Opțional. Dacă îl completezi, folosește formatul 07XXXXXXXX.
-                        </div>
-                        <input id="businessPhone" class="form-control"
-                               placeholder="07xxxxxxxx"
-                               th:field="*{phone}"
-                               type="text">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="businessEmail" class="form-label">Business email</label>
-
-                        <div class="text-danger small"
-                             th:errors="*{email}"
-                             th:if="${#fields.hasErrors('email')}">
-                        </div>
-
-                        <input id="businessEmail" class="form-control"
-                               placeholder="serviciul_meu@email.com"
-                               th:field="*{email}"
-                               type="email">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="businessWebsite" class="form-label">Business website</label>
-
-                        <div class="text-danger small mt-1"
-                             th:errors="*{website}"
-                             th:if="${#fields.hasErrors('website')}">
-                        </div>
-
-                        <input id="businessWebsite" class="form-control"
-                               placeholder="https://www.serviciul-meu.com"
-                               th:field="*{website}"
-                               type="url">
-                    </div>
-
-                    <!-- IMAGE-->
-                    <div class="mb-3">
-                        <label class="form-label">Imagine de profil</label>
-                        <div class="form-text">
-                            Imaginea trebuie decupată într-un format 4:3 înainte de salvare.
-                        </div>
-                        <input accept="image/jpeg,image/png,image/webp"
-                               class="form-control"
-                               id="imageFile"
-                               name="imageFile"
-                               type="file">
-
-
-
-                        <div class="mt-3 text-center d-none" id="imagePreviewContainer">
-                            <img alt="Previzualizare imagine"
-                                 class="img-fluid rounded"
-                                 id="imagePreview"
-                                 src="#"
-                                 style="max-height: 300px;">
-                        </div>
-                    </div>
-
-                    <!-- DESCRIPTION -->
-                    <div class="mb-3">
-                        <label for="businessDescription" class="form-label">Descriere</label>
-                        <div class="form-text">
-                            Obligatorie! Descrierea trebuie să fie de minim 10 caractere.
-                        </div>
-                        <textarea id="businessDescription" class="form-control"
-                                  placeholder="Descrie serviciul...."
-                                  rows="4"
-                                  th:field="*{description}"></textarea>
-                    </div>
-                    <div class="text-danger small mb-3"
-                         th:errors="*{description}"
-                         th:if="${#fields.hasErrors('description')}">
-                    </div>
-
-                    <!-- BUTTONS -->
-                    <div class="d-flex justify-content-between">
-
-                        <a class="btn btn-outline-secondary"
-                           href="/businesses">
-                            Renunță
-                        </a>
-
-                        <button class="btn btn-success"
-                                type="submit">
-                            Adăugare
-                        </button>
-
+                    <div th:replace="~{fragments/business-form-fields :: fields(false)}"></div>
+                    <div class="business-form-actions">
+                        <a class="btn btn-outline-secondary" href="/businesses">Renunță</a>
+                        <button class="btn btn-primary" type="submit">Adaugă serviciul</button>
                     </div>
 
                 </form>
@@ -310,5 +170,7 @@
 
 
 <script th:src="@{/js/service-area.js}"></script>
+<script th:src="@{/js/business-options.js}"></script>
+<script th:src="@{/js/business-form-errors.js}"></script>
 </body>
 </html>

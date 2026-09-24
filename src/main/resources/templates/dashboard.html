@@ -249,11 +249,6 @@
             <span class="text-muted">Serviciile care nu sunt aprobate nu sunt vizibile public.</span>
         </div>
 
-        <a class="btn btn-sm btn-dark text-nowrap"
-           th:href="@{/business/create}">
-            <i class="bi bi-plus-lg"></i>
-            Adaugă serviciu
-        </a>
     </div>
 
     <!-- EMPTY STATE -->
@@ -297,8 +292,7 @@
                          class="img-fluid rounded mb-2"
                          loading="lazy"
                          style="height:200px; object-fit:cover; width:100%"
-                         th:if="${p.imagePath != null}"
-                         th:src="@{${p.imagePath}}">
+                         th:src="@{${p.coverImagePath}}">
 
                     <h5 class="card-title"
                         th:text="${p.name}">

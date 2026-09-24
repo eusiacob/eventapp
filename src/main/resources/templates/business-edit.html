@@ -64,7 +64,7 @@
 
 </head>
 
-<body style="overflow: auto">
+<body class="business-editor-page" style="overflow: auto">
 
 <!-- NAVBAR -->
 <div th:replace="~{fragments/navbar :: navbar}"></div>
@@ -79,9 +79,9 @@
         <!-- LEFT SIDE: EDIT BUSINESS FORM -->
         <div class="col-12 col-lg-7">
 
-            <div class="card shadow-lg border-0 p-4">
+            <div class="card business-editor-card shadow-sm border-0">
 
-                <h2 class="text-center mb-4" th:text="${profile.name}">
+                <h2 class="h4 mb-2" th:text="${profile.name}">
 
                 </h2>
 
@@ -113,214 +113,23 @@
                     aproba listarea serviciului.
                 </div>
 
-                <form id="businessEditForm" enctype="multipart/form-data"
+                <p class="text-muted small mb-3">Editează datele serviciului, apoi salvează modificările. Galeria și calendarul se actualizează separat.</p>
+                <nav class="d-flex flex-wrap gap-2 mb-3" aria-label="Secțiunile paginii de editare">
+                    <a class="btn btn-sm btn-outline-secondary" href="#businessEditForm">Date serviciu</a>
+                    <a class="btn btn-sm btn-outline-secondary" href="#business-media">Foto și video</a>
+                    <a class="btn btn-sm btn-outline-secondary" href="#business-calendar">Calendar</a>
+                </nav>
+
+                <form class="business-editor-form" id="businessEditForm" enctype="multipart/form-data"
                       method="post"
                       th:action="@{/business/edit/{uuid}(uuid=${profile.uuid})}"
                       th:object="${profile}">
 
-                    <!-- NAME -->
-                    <div class="text-danger small mt-1"
-                         th:errors="*{name}"
-                         th:if="${#fields.hasErrors('name')}">
+                    <div th:replace="~{fragments/business-form-fields :: fields(true)}"></div>
+                    <div class="business-form-actions">
+                        <a class="btn btn-outline-secondary" href="/dashboard">Renunță</a>
+                        <button class="btn btn-primary" type="submit">Salvare modificări</button>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Nume</label>
-                        <input class="form-control"
-                               th:field="*{name}"
-                               type="text">
-                    </div>
-
-                    <!-- CATEGORY -->
-                    <div class="mb-3">
-                        <label class="form-label">Categorie</label>
-
-                        <div class="text-danger small mt-1"
-                             th:errors="*{category}"
-                             th:if="${#fields.hasErrors('category')}">
-                        </div>
-
-                        <select class="form-select"
-                                th:field="*{category}">
-
-                            <option th:each="cat : ${categories}"
-                                    th:text="${cat.displayName}"
-                                    th:value="${cat}">
-                            </option>
-
-                        </select>
-                    </div>
-
-                    <div th:replace="~{fragments/service-area :: picker}"></div>
-
-                    <div class="alert alert-danger py-2"
-                         th:errors="*{contactMethodProvided}"
-                         th:if="${#fields.hasErrors('contactMethodProvided')}">
-                    </div>
-
-                    <div class="form-text mb-3">
-                        Completează cel puțin o metodă de contact: telefon, email sau website.
-                    </div>
-
-                    <!-- PHONE -->
-                    <div class="mb-3">
-                        <label class="form-label">Business phone</label>
-                        <div class="text-danger small"
-                             th:errors="*{phone}"
-                             th:if="${#fields.hasErrors('phone')}">
-                        </div>
-                        <div class="form-text">
-                            Opțional. Dacă îl completezi, folosește formatul 07XXXXXXXX.
-                        </div>
-                        <input class="form-control"
-                               placeholder="07xxxxxxxx"
-                               th:field="*{phone}"
-                               type="text">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Business email</label>
-
-                        <div class="text-danger small"
-                             th:errors="*{email}"
-                             th:if="${#fields.hasErrors('email')}">
-                        </div>
-
-                        <input class="form-control"
-                               placeholder="my_business@mail.com"
-                               th:field="*{email}"
-                               type="email">
-                    </div>
-
-                    <div class="alert mt-3"
-                         th:classappend="${profile.emailVerified} ? ' alert-success' : ' alert-warning'"
-                         th:if="${profile.email != null and !profile.email.isBlank()}">
-
-                        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2">
-
-                            <div>
-                                <div class="fw-semibold">
-                                    <i class="bi me-1"
-                                       th:classappend="${profile.emailVerified} ? ' bi-patch-check-fill' : ' bi-exclamation-triangle-fill'"></i>
-                                    <span th:if="${profile.emailVerified}">
-                                    Email business verificat
-                                </span>
-                                    <span th:if="${!profile.emailVerified}">
-                                    Email business neverificat
-                                </span>
-                                </div>
-
-                                <div class="small"
-                                     th:text="${profile.email}">
-                                </div>
-                            </div>
-
-                            <button class="btn btn-sm btn-outline-dark"
-                                    form="businessEmailVerificationForm"
-                                    th:if="${!profile.emailVerified}"
-                                    type="submit">
-                                Trimite link de verificare
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Website</label>
-
-                        <div class="text-danger small mt-1"
-                             th:errors="*{website}"
-                             th:if="${#fields.hasErrors('website')}">
-                        </div>
-
-                        <input class="form-control"
-                               placeholder="https://www.exemplu.com"
-                               th:field="*{website}"
-                               type="url">
-                    </div>
-
-                    <!-- DESCRIPTION -->
-                    <div class="mb-3">
-                        <label class="form-label">Descriere</label>
-                        <div class="text-danger small"
-                             th:errors="*{description}"
-                             th:if="${#fields.hasErrors('description')}">
-                        </div>
-                        <textarea class="form-control"
-                                  rows="4"
-                                  placeholder="Introdu descrierea..."
-                                  th:field="*{description}"></textarea>
-
-                    </div>
-
-                    <!-- MAIN IMAGE -->
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Schimbă imaginea de profil
-                        </label>
-
-                        <input accept="image/jpeg,image/png,image/webp"
-                               class="form-control"
-                               id="imageFile"
-                               name="imageFile"
-                               type="file">
-
-                        <div class="form-text">
-                            Imaginea va fi decupată automat într-un format 4:3.
-                        </div>
-
-                    </div>
-
-
-                    <!-- CURRENT IMAGE -->
-                    <div class="mb-3"
-                         th:if="${profile.imagePath != null}">
-
-                        <label class="form-label">
-                            Imagine de profil curentă
-                        </label>
-
-                        <div class="text-center">
-                            <img alt="Imagine de profil curentă"
-                                 class="img-fluid rounded edit-main-preview"
-                                 th:src="@{${profile.imagePath}}">
-                        </div>
-
-                    </div>
-
-
-                    <!-- CROPPED IMAGE PREVIEW -->
-                    <div class="mb-3 text-center d-none"
-                         id="imagePreviewContainer">
-
-                        <label class="form-label">
-                            Imagine nouă
-                        </label>
-
-                        <div>
-                            <img alt="Previzualizare imagine nouă"
-                                 class="img-fluid rounded"
-                                 id="imagePreview"
-                                 src="#"
-                                 style="max-height: 300px;">
-                        </div>
-
-                    </div>
-
-                    <!-- BUTTONS -->
-                    <div class="d-flex justify-content-between">
-                        <button class="btn btn-dark p-2"
-                                type="submit">
-                            Salvare modificări
-                        </button>
-
-                        <a class="btn btn-outline-secondary"
-                           href="/dashboard">
-                            Anulare
-                        </a>
-                    </div>
-
 
                 </form>
 
@@ -328,15 +137,16 @@
                       th:action="@{/business/{uuid}/email-verification(uuid=${profile.uuid})}"
                       th:if="${profile.email != null and !profile.email.isBlank() and !profile.emailVerified}"></form>
 
-                <hr class="my-4">
+                <hr class="my-4" id="business-media">
 
-                <h4 class="fw-bold">
-                    Galerie foto
-                </h4>
+                <h3 class="h5 mb-2">Galerie foto și video</h3>
+                <p class="form-text mt-0">Încărcările se salvează separat, fără butonul „Salvare modificări”.</p>
 
-                <p class="text-muted">
-                    Adăugare imagini în galerie
-                </p>
+                <details class="business-media-panel">
+                <summary><i class="bi bi-images" aria-hidden="true"></i> Adaugă fotografii
+                    <span class="small text-muted" th:text="|${currentImageCount}/${maxImageCount}|"></span>
+                </summary>
+                <div class="pt-3">
 
                 <!-- GALLERY UPLOAD FORM - SEPARATE FORM -->
                 <form enctype="multipart/form-data"
@@ -399,13 +209,13 @@
                 </form>
 
                 <!--VIDEOS-->
-                <div class="mt-4">
-
-                    <h4 class="mb-2">Videoclipuri</h4>
-
-                    <p class="text-muted">
-                        Adăugare videoclipuri în galerie
-                    </p>
+                </div>
+                </details>
+                <details class="business-media-panel mt-2">
+                    <summary><i class="bi bi-camera-video" aria-hidden="true"></i> Adaugă videoclipuri
+                        <span class="small text-muted" th:text="|${currentVideoCount}/${maxVideoCount}|"></span>
+                    </summary>
+                <div class="pt-3">
 
                     <form enctype="multipart/form-data"
                           id="videoUpload"
@@ -479,6 +289,8 @@
                     </form>
 
                 </div>
+
+                </details>
 
                 <hr class="my-4">
 
@@ -608,7 +420,7 @@
         <!-- RIGHT SIDE -->
         <div class="col-12 col-lg-5">
 
-            <div class="card shadow-lg border-0 p-4 gallery-panel">
+            <div class="card shadow-sm border-0 p-3 gallery-panel" id="business-calendar">
                 <h4 class="fw-bold mb-3">
                     Calendar
                 </h4>
@@ -1547,5 +1359,7 @@
 </script>
 
 <script th:src="@{/js/service-area.js}"></script>
+<script th:src="@{/js/business-options.js}"></script>
+<script th:src="@{/js/business-form-errors.js}"></script>
 </body>
 </html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="picker" class="business-options-picker">
+    <fieldset class="mb-3">
+        <legend class="form-label fs-6">Ce servicii oferi?</legend>
+        <details class="service-area-options"
+                 th:open="${#fields.hasErrors('serviceTypes') or #fields.hasErrors('serviceTypesValid')}">
+            <summary>Alege tipurile de servicii <span class="service-type-count" aria-live="polite"></span></summary>
+            <input type="hidden" name="_serviceTypes" value="on">
+            <div class="service-area-grid">
+                <div class="form-check service-type-option" th:each="type : ${serviceTypeOptions}"
+                     th:data-category="${type.category.name()}"
+                     th:hidden="${profile.category != null and type.category != profile.category}">
+                    <input class="form-check-input service-type-checkbox" type="checkbox" name="serviceTypes"
+                           th:id="|service-type-${type.name()}|" th:value="${type.name()}"
+                           th:checked="${profile.serviceTypes.contains(type)}"
+                           th:disabled="${profile.category != null and type.category != profile.category}"
+                           th:data-other="${type.other}">
+                    <label class="form-check-label" th:for="|service-type-${type.name()}|" th:text="${type.displayName}"></label>
+                </div>
+            </div>
+        </details>
+        <div class="other-service-details mt-2">
+            <label for="otherServiceDetails" class="form-label">Alt serviciu — descriere scurtă</label>
+            <input id="otherServiceDetails" class="form-control" maxlength="150" th:field="*{otherServiceDetails}">
+        </div>
+        <div class="text-danger small" th:if="${#fields.hasErrors('serviceTypes')}" th:errors="*{serviceTypes}"></div>
+        <div class="text-danger small" th:if="${#fields.hasErrors('serviceTypesValid')}" th:errors="*{serviceTypesValid}"></div>
+        <div class="text-danger small" th:if="${#fields.hasErrors('otherServiceDetails')}" th:errors="*{otherServiceDetails}"></div>
+        <div class="text-danger small" th:if="${#fields.hasErrors('otherServiceDetailsValid')}" th:errors="*{otherServiceDetailsValid}"></div>
+    </fieldset>
+    <fieldset class="mb-3">
+        <legend class="form-label fs-6">Pentru ce evenimente?</legend>
+        <details class="service-area-options" th:open="${#fields.hasErrors('eventTypes')}">
+            <summary>Alege tipurile de eveniment <span class="event-type-count" aria-live="polite"></span></summary>
+            <input type="hidden" name="_eventTypes" value="on">
+            <div class="service-area-grid">
+                <div class="form-check" th:each="type : ${eventTypeOptions}">
+                    <input class="form-check-input event-type-checkbox" type="checkbox" name="eventTypes"
+                           th:id="|event-type-${type.name()}|" th:value="${type.name()}"
+                           th:checked="${profile.eventTypes.contains(type)}">
+                    <label class="form-check-label" th:for="|event-type-${type.name()}|" th:text="${type.displayName}"></label>
+                </div>
+            </div>
+        </details>
+        <div class="text-danger small" th:if="${#fields.hasErrors('eventTypes')}" th:errors="*{eventTypes}"></div>
+    </fieldset>
+    <p class="form-text">Opțional. Poți selecta mai multe opțiuni pentru a fi găsit în căutările filtrate.</p>
+</div>
+
+<div th:fragment="display(business)" class="mt-3">
+    <div th:if="${not #sets.isEmpty(business.serviceTypes)}" class="mb-2">
+        <h6>Servicii oferite</h6>
+        <div class="d-flex flex-wrap gap-2">
+            <span class="service-area-badge" th:each="type : ${business.serviceTypes}" th:text="${type.displayName}"></span>
+        </div>
+        <p class="small mt-2" th:if="${business.otherServiceDetails != null}" th:text="${business.otherServiceDetails}"></p>
+    </div>
+    <div th:if="${not #sets.isEmpty(business.eventTypes)}">
+        <h6>Tipuri de eveniment</h6>
+        <div class="d-flex flex-wrap gap-2">
+            <span class="service-area-badge" th:each="type : ${business.eventTypes}" th:text="${type.displayName}"></span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

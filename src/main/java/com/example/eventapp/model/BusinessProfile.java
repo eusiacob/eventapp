@@ -32,11 +32,41 @@ public class BusinessProfile {
     private String slug;
 
     @NotBlank(message = "Numele este obligatoriu!")
-    @Size(min = 3, max = 50, message = "Lungimea trebuie să fie între 3 și 10 caractere.")
+    @Size(min = 3, max = 50, message = "Lungimea trebuie să fie între 3 și 50 de caractere.")
     private String name;
 
     @Enumerated(EnumType.STRING)
     private BusinessCategory category;
+
+    @ElementCollection
+    @CollectionTable(name = "business_service_types", joinColumns = @JoinColumn(name = "business_profile_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "service_type", nullable = false, length = 100)
+    private Set<BusinessServiceType> serviceTypes = new java.util.LinkedHashSet<>();
+
+    @ElementCollection
+    @CollectionTable(name = "business_event_types", joinColumns = @JoinColumn(name = "business_profile_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "event_type", nullable = false, length = 50)
+    private Set<BusinessEventType> eventTypes = new java.util.LinkedHashSet<>();
+
+    @Size(max = 150, message = "Descrierea altui serviciu poate avea maximum 150 de caractere.")
+    @Column(length = 150)
+    private String otherServiceDetails;
+
+    @Transient
+    @AssertTrue(message = "Selectează doar tipuri de servicii din categoria aleasă.")
+    public boolean isServiceTypesValid() {
+        return serviceTypes != null && serviceTypes.stream()
+                .allMatch(type -> type != null && type.getCategory() == category);
+    }
+
+    @Transient
+    @AssertTrue(message = "Descrie pe scurt serviciul oferit când alegi Alt serviciu.")
+    public boolean isOtherServiceDetailsValid() {
+        return serviceTypes == null || serviceTypes.stream()
+                .noneMatch(type -> type != null && type.isOther()) || hasText(otherServiceDetails);
+    }
 
     @NotBlank(message = "Descrierea este obligatorie!")
     @Size(min = 10, max = 700, message = "Descrierea trebuie să fie de minim 10 caractere.")
@@ -130,6 +160,12 @@ public class BusinessProfile {
     private List<BusinessUnavailableDate> unavailableDates = new ArrayList<>();
 
     private String imagePath;
+
+    @Transient
+    public String getCoverImagePath() {
+        return imagePath == null || imagePath.isBlank()
+                ? "/images/business-default.svg" : imagePath;
+    }
 
     private boolean premium;
 

@@ -49,6 +49,12 @@ public class BusinessProfileService {
     }
 
     public void save(BusinessProfile businessProfile) {
+        if (!businessProfile.isServiceTypesValid() || !businessProfile.isOtherServiceDetailsValid()) {
+            throw new IllegalArgumentException("Verifică tipurile de servicii și detaliile pentru Alt serviciu.");
+        }
+        if (businessProfile.getServiceTypes().stream().noneMatch(BusinessServiceType::isOther)) {
+            businessProfile.setOtherServiceDetails(null);
+        }
         businessProfile.normalizeServiceArea();
         businessProfileRepository.save(businessProfile);
     }
@@ -119,6 +125,8 @@ public class BusinessProfileService {
             String keyword,
             String city,
             LocalDate eventDate,
+            BusinessServiceType serviceType,
+            BusinessEventType eventType,
             int page,
             int size
     ) {
@@ -127,6 +135,8 @@ public class BusinessProfileService {
                 keyword,
                 city,
                 eventDate,
+                serviceType,
+                eventType,
                 PageRequest.of(Math.max(page, 0), size)
         );
     }

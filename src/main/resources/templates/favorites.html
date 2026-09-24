@@ -95,14 +95,8 @@
                     <img alt="Imagine serviciu"
                          class="card-img-top business-image"
                          loading="lazy"
-                         th:if="${p.imagePath != null}"
-                         th:src="@{${p.imagePath}}">
+                         th:src="@{${p.coverImagePath}}">
 
-                    <img alt="Imagine indisponibilă"
-                         class="card-img-top business-image"
-                         loading="lazy"
-                         src="https://i.ibb.co/d4nzt6TB/Image-not-found.png"
-                         th:if="${p.imagePath == null}">
                 </div>
 
                 <div class="card-body d-flex flex-column">

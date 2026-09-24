@@ -1,6 +1,8 @@
 package com.example.eventapp.repository;
 
 import com.example.eventapp.model.BusinessCategory;
+import com.example.eventapp.model.BusinessServiceType;
+import com.example.eventapp.model.BusinessEventType;
 import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.User;
 import org.springframework.data.domain.Page;
@@ -55,6 +57,8 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
     @Query("""
                 SELECT b FROM BusinessProfile b
                 WHERE b.category = :category
+                AND (:serviceType IS NULL OR :serviceType MEMBER OF b.serviceTypes)
+                AND (:eventType IS NULL OR :eventType MEMBER OF b.eventTypes)
                 AND (:keyword IS NULL OR :keyword = '' OR LOWER(b.name) LIKE LOWER(CONCAT('%', :keyword, '%')))
                 AND (:city IS NULL OR :city = '' OR b.nationwide = true
                     OR EXISTS (SELECT c FROM BusinessProfile area JOIN area.serviceCounties c
@@ -76,8 +80,15 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
             @Param("keyword") String keyword,
             @Param("city") String city,
             @Param("eventDate") LocalDate eventDate,
+            @Param("serviceType") BusinessServiceType serviceType,
+            @Param("eventType") BusinessEventType eventType,
             Pageable pageable
     );
+
+    default Page<BusinessProfile> searchAvailableByCategoryNameCityAndDate(
+            BusinessCategory category, String keyword, String city, LocalDate eventDate, Pageable pageable) {
+        return searchAvailableByCategoryNameCityAndDate(category, keyword, city, eventDate, null, null, pageable);
+    }
 
     @Query("""
             SELECT b

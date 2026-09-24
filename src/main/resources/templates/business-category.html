@@ -32,48 +32,60 @@
     <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
     <!-- SEARCH -->
-    <form class="search-card card p-4 mt-4 shadow-sm border-0"
+    <form class="search-card compact-search card p-3 mt-3 shadow-sm border-0"
           method="get"
           th:action="@{/businesses/category/{category}(category=${selectedCategory})}">
-
-        <div class="row g-3 align-items-end customMargin">
-
-            <div class="col-12 col-lg-3">
-                <label class="form-label">Caută după nume</label>
-                <input class="form-control"
-                       name="keyword"
-                       placeholder="Nume serviciu"
-                       th:value="${keyword}"
-                       type="text">
+        <div class="row g-2 align-items-end">
+            <div class="col-12 col-md-5">
+                <label for="searchKeyword" class="form-label small mb-1">Nume serviciu</label>
+                <input id="searchKeyword" class="form-control form-control-sm" name="keyword"
+                       placeholder="Ce cauți?" th:value="${keyword}" type="search">
             </div>
-
-            <div class="col-12 col-lg-3">
-                <label class="form-label">Județ</label>
-                <select class="form-select" name="city">
+            <div class="col-7 col-md-4">
+                <label for="searchCity" class="form-label small mb-1">Județ</label>
+                <select id="searchCity" class="form-select form-select-sm" name="city">
                     <option value="">Toate județele</option>
-                    <option th:each="c : ${cities}"
-                            th:selected="${c == city}"
-                            th:text="${c}"
-                            th:value="${c}">
-                    </option>
+                    <option th:each="c : ${cities}" th:selected="${c == city}"
+                            th:text="${c}" th:value="${c}"></option>
                 </select>
             </div>
-
-            <div class="col-12 col-lg-3">
-                <label class="form-label">Data eveniment</label>
-                <input class="form-control"
-                       name="eventDate"
-                       placeholder="Data de eveniment"
-                       th:value="${eventDate}"
-                       type="date">
+            <div class="col-5 col-md-3 d-grid">
+                <button class="btn btn-dark btn-sm" type="submit"><i class="bi bi-search" aria-hidden="true"></i> Caută</button>
             </div>
-
-            <div class="col-12 col-lg-3 d-grid">
-                <button class="btn btn-dark p-2" type="submit">
-                    Caută
-                </button>
+        </div>
+        <details class="service-area-options mt-3"
+                 th:open="${serviceType != null or eventType != null or eventDate != null}">
+            <summary>Mai multe filtre
+                <span class="badge rounded-pill text-bg-secondary ms-1"
+                      th:with="count=${(serviceType != null ? 1 : 0) + (eventType != null ? 1 : 0) + (eventDate != null ? 1 : 0)}"
+                      th:if="${count > 0}" th:text="${count}"></span>
+            </summary>
+            <div class="row g-2 p-2">
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <label for="searchServiceType" class="form-label small mb-1">Tip serviciu</label>
+                    <select id="searchServiceType" class="form-select form-select-sm" name="serviceType">
+                        <option value="">Toate serviciile</option>
+                        <option th:each="type : ${categoryServiceTypes}" th:value="${type.name()}"
+                                th:selected="${type == serviceType}" th:text="${type.displayName}"></option>
+                    </select>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <label for="searchEventType" class="form-label small mb-1">Tip eveniment</label>
+                    <select id="searchEventType" class="form-select form-select-sm" name="eventType">
+                        <option value="">Toate evenimentele</option>
+                        <option th:each="type : ${eventTypeOptions}" th:value="${type.name()}"
+                                th:selected="${type == eventType}" th:text="${type.displayName}"></option>
+                    </select>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <label for="searchEventDate" class="form-label small mb-1">Disponibil la data</label>
+                    <input id="searchEventDate" class="form-control form-control-sm" name="eventDate"
+                           th:value="${eventDate}" type="date">
+                </div>
             </div>
-
+        </details>
+        <div class="d-flex justify-content-end mt-2">
+            <a class="small" th:href="@{/businesses/category/{category}(category=${selectedCategory})}">Resetează filtrele</a>
         </div>
     </form>
 
@@ -111,13 +123,8 @@
 
                     <img class="card-img-top business-image"
                          loading="lazy"
-                         th:if="${p.imagePath != null}"
-                         th:src="@{${p.imagePath}}" alt="Imagine serviciu">
+                         th:src="@{${p.coverImagePath}}" alt="Imagine serviciu">
 
-                    <img class="card-img-top business-image"
-                         loading="lazy"
-                         src="https://i.ibb.co/d4nzt6TB/Image-not-found.png"
-                         th:if="${p.imagePath == null}" alt="Imagine serviciu">
 
                 </div>
 
@@ -169,14 +176,14 @@
             <li class="page-item" th:classappend="${businessPage.first ? ' disabled' : ''}">
                 <a aria-label="Prima pagină"
                    class="page-link"
-                   th:href="@{/businesses/category/{category}(category=${selectedCategory}, keyword=${keyword}, city=${city}, eventDate=${eventDate}, page=0)}">
+                   th:href="@{/businesses/category/{category}(category=${selectedCategory}, keyword=${keyword}, city=${city}, eventDate=${eventDate}, serviceType=${serviceType}, eventType=${eventType}, page=0)}">
                     <i class="bi bi-chevron-bar-left"></i>
                 </a>
             </li>
             <li class="page-item" th:classappend="${businessPage.first ? ' disabled' : ''}">
                 <a aria-label="Pagina anterioară"
                    class="page-link"
-                   th:href="@{/businesses/category/{category}(category=${selectedCategory}, keyword=${keyword}, city=${city}, eventDate=${eventDate}, page=${businessPage.number - 1})}">
+                   th:href="@{/businesses/category/{category}(category=${selectedCategory}, keyword=${keyword}, city=${city}, eventDate=${eventDate}, serviceType=${serviceType}, eventType=${eventType}, page=${businessPage.number - 1})}">
                     <i class="bi bi-chevron-left"></i>
                 </a>
             </li>
@@ -186,14 +193,14 @@
             <li class="page-item" th:classappend="${businessPage.last ? ' disabled' : ''}">
                 <a aria-label="Pagina următoare"
                    class="page-link"
-                   th:href="@{/businesses/category/{category}(category=${selectedCategory}, keyword=${keyword}, city=${city}, eventDate=${eventDate}, page=${businessPage.number + 1})}">
+                   th:href="@{/businesses/category/{category}(category=${selectedCategory}, keyword=${keyword}, city=${city}, eventDate=${eventDate}, serviceType=${serviceType}, eventType=${eventType}, page=${businessPage.number + 1})}">
                     <i class="bi bi-chevron-right"></i>
                 </a>
             </li>
             <li class="page-item" th:classappend="${businessPage.last ? ' disabled' : ''}">
                 <a aria-label="Ultima pagină"
                    class="page-link"
-                   th:href="@{/businesses/category/{category}(category=${selectedCategory}, keyword=${keyword}, city=${city}, eventDate=${eventDate}, page=${businessPage.totalPages - 1})}">
+                   th:href="@{/businesses/category/{category}(category=${selectedCategory}, keyword=${keyword}, city=${city}, eventDate=${eventDate}, serviceType=${serviceType}, eventType=${eventType}, page=${businessPage.totalPages - 1})}">
                     <i class="bi bi-chevron-bar-right"></i>
                 </a>
             </li>

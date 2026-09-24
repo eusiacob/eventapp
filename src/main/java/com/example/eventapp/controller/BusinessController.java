@@ -93,6 +93,16 @@ public class BusinessController {
         return RomanianCounties.ALL;
     }
 
+    @ModelAttribute("serviceTypeOptions")
+    public BusinessServiceType[] serviceTypeOptions() {
+        return BusinessServiceType.values();
+    }
+
+    @ModelAttribute("eventTypeOptions")
+    public BusinessEventType[] eventTypeOptions() {
+        return BusinessEventType.values();
+    }
+
     @GetMapping("/business/create")
     public String showCreateForm(Model model) {
         model.addAttribute("profile", new BusinessProfile());
@@ -515,6 +525,9 @@ public class BusinessController {
 
         existingProfile.setName(profile.getName());
         existingProfile.setCategory(profile.getCategory());
+        existingProfile.setServiceTypes(new java.util.LinkedHashSet<>(profile.getServiceTypes()));
+        existingProfile.setEventTypes(new java.util.LinkedHashSet<>(profile.getEventTypes()));
+        existingProfile.setOtherServiceDetails(profile.getOtherServiceDetails());
         existingProfile.setNationwide(profile.isNationwide());
         existingProfile.setServiceCounties(new java.util.ArrayList<>(profile.getServiceCounties()));
         existingProfile.setPhone(profile.getPhone());
@@ -614,6 +627,8 @@ public class BusinessController {
                                        @RequestParam(required = false) String keyword,
                                        @RequestParam(required = false) String city,
                                        @RequestParam(required = false) LocalDate eventDate,
+                                       @RequestParam(required = false) BusinessServiceType serviceType,
+                                       @RequestParam(required = false) BusinessEventType eventType,
                                        @RequestParam(defaultValue = "0") int page,
                                        Model model,
                                        @AuthenticationPrincipal UserDetails userDetails) {
@@ -624,6 +639,8 @@ public class BusinessController {
                         keyword,
                         city,
                         eventDate,
+                        serviceType,
+                        eventType,
                         page,
                         9
                 );
@@ -634,6 +651,9 @@ public class BusinessController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("city", city);
         model.addAttribute("eventDate", eventDate);
+        model.addAttribute("serviceType", serviceType);
+        model.addAttribute("eventType", eventType);
+        model.addAttribute("categoryServiceTypes", BusinessServiceType.forCategory(category));
         model.addAttribute("cities", businessProfileService.getCitiesByCategory(category));
         model.addAttribute("breadcrumbs", List.of(
                 new BreadcrumbDTO("Acasă", "/businesses"),

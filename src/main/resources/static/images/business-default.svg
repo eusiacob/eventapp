@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <title>M-Event — imagine implicită pentru serviciu</title>
+  <rect width="1200" height="900" fill="#f6eee8"/>
+  <circle cx="1100" cy="80" r="310" fill="#DC8665" opacity=".14"/>
+  <circle cx="50" cy="850" r="310" fill="#138086" opacity=".12"/>
+  <g transform="translate(600 400)">
+    <rect x="-100" y="-90" width="200" height="180" rx="28" fill="#fff" stroke="#138086" stroke-width="7"/>
+    <path d="M-100-32H100M-52-112V-68M52-112V-68" fill="none" stroke="#138086" stroke-width="9" stroke-linecap="round"/>
+    <path d="M0 59C-65 23-45-18-17-5L0 8 17-5C45-18 65 23 0 59Z" fill="#CD7672"/>
+    <path d="M149-62v30m-15-15h30M-152 40v22m-11-11h22" stroke="#EEB462" stroke-width="7" stroke-linecap="round"/>
+  </g>
+  <text x="600" y="575" text-anchor="middle" font-family="Arial, sans-serif" font-size="62" font-weight="700" fill="#534666">M-Event</text>
+  <text x="600" y="627" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" fill="#138086">Momente speciale, oameni potriviți</text>
+</svg>

@@ -167,6 +167,16 @@
 
                 </li>
 
+                <!--ADD BUSINESS-->
+                <li class="nav-item" sec:authorize="hasRole('BUSINESS')">
+                    <a class="btn btn-primary btn-sm d-inline-flex align-items-center gap-2 text-nowrap"
+                       th:href="@{/business/create}">
+                        <i aria-hidden="true" class="bi bi-plus-lg"></i>
+                        <span>Adaugă serviciu</span>
+                    </a>
+                </li>
+
+
                 <!--LOGIN-->
                 <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" href="/login">

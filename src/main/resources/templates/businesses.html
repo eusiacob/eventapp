@@ -98,7 +98,8 @@
 
                 <!-- imagine -->
                 <div class="premium-image"
-                     th:style="|background-image: url('${b.imagePath}')|">
+                     th:with="coverUrl=@{${b.coverImagePath}}"
+                     th:style="|background-image: url('${coverUrl}')|">
                 </div>
 
                 <!-- text -->
@@ -136,7 +137,8 @@
                 <span class="favorite-badge">NOU</span>
 
                 <div class="premium-image"
-                     th:style="|background-image: url('${b.imagePath}')|">
+                     th:with="coverUrl=@{${b.coverImagePath}}"
+                     th:style="|background-image: url('${coverUrl}')|">
                 </div>
 
                 <div class="premium-info">
@@ -166,7 +168,8 @@
                 <span class="favorite-badge">TOP FAVORITE <span class="favorite-heart-badge">♥</span></span>
 
                 <div class="premium-image"
-                     th:style="|background-image: url('${b.imagePath}')|">
+                     th:with="coverUrl=@{${b.coverImagePath}}"
+                     th:style="|background-image: url('${coverUrl}')|">
                 </div>
 
                 <div class="premium-info">
@@ -203,7 +206,8 @@
                 <span class="favorite-badge">TOP APRECIATE <span class="top-star-badge">★</span></span>
 
                 <div class="premium-image"
-                     th:style="|background-image: url('${b.imagePath}')|">
+                     th:with="coverUrl=@{${b.coverImagePath}}"
+                     th:style="|background-image: url('${coverUrl}')|">
                 </div>
 
                 <div class="premium-info">

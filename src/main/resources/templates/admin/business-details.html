@@ -36,7 +36,7 @@
 
         <img alt="Imagine serviciu"
              class="details-image"
-             th:src="@{${business.imagePath}}">
+             th:src="@{${business.coverImagePath}}">
 
         <div class="row mt-4">
 
@@ -105,6 +105,7 @@
                                 <strong>Zonă de acoperire</strong>
 
                                 <div th:replace="~{fragments/service-area :: display(${business})}"></div>
+                                <div th:replace="~{fragments/business-options :: display(${business})}"></div>
 
                             </div>
 

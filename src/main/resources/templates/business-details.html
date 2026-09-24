@@ -38,13 +38,8 @@
         <!-- IMAGE -->
         <img class="details-image"
              loading="lazy"
-             th:if="${profile.imagePath != null}"
-             th:src="@{${profile.imagePath}}">
+             th:src="@{${profile.coverImagePath}}">
 
-        <img class="details-image"
-             loading="lazy"
-             src="https://i.ibb.co/d4nzt6TB/Image-not-found.png"
-             th:if="${profile.imagePath == null}">
 
         <!-- CONTENT -->
         <div class="p-3">
@@ -85,7 +80,9 @@
             <div sec:authorize="isAuthenticated()">
 
                 <div class="text-muted mb-3">
+                    <h6>Aria de acoperire</h6>
                     <div th:replace="~{fragments/service-area :: display(${profile})}"></div>
+                    <div th:replace="~{fragments/business-options :: display(${profile})}"></div>
                 </div>
 
                 <div>
