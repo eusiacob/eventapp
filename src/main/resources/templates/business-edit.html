@@ -955,6 +955,8 @@
                         )
                     );
 
+                    input.value = "";
+
                     submitButton.disabled = false;
 
                     submitButton.textContent =
@@ -1024,6 +1026,7 @@
             const current = Number(form.dataset.currentCount);
             const max = Number(form.dataset.maxCount);
             if (current + files.length > max) {
+                input.value = "";
                 showAsyncAlert("danger", "Galeria poate conține maximum " + max +
                     " videoclipuri. Ai deja " + current + " și ai selectat " + files.length +
                     ". Mai poți adăuga " + Math.max(0, max - current) + ".");
@@ -1031,6 +1034,7 @@
             }
             const oversized = files.filter(file => file.size > 100 * 1024 * 1024);
             if (oversized.length) {
+                input.value = "";
                 showAsyncAlert("danger", "Fiecare videoclip poate avea maximum 100 MB. Fișiere prea mari: " +
                     oversized.map(file => file.name).join(", "));
                 return;
@@ -1041,6 +1045,7 @@
             validating = false;
             const tooLong = files.filter((file, index) => durations[index] !== null && durations[index] > 15);
             if (tooLong.length) {
+                input.value = "";
                 showAsyncAlert("danger", "Fiecare videoclip poate avea maximum 15 secunde. Scurtează următoarele videoclipuri înainte de încărcare: " +
                     tooLong.map(file => file.name).join(", "));
                 return;
@@ -1144,6 +1149,8 @@
                             "A apărut o eroare la încărcarea videoclipurilor."
                         )
                     );
+
+                    input.value = "";
 
                     submitButton.disabled = false;
 

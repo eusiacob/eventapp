@@ -22,6 +22,22 @@ document.addEventListener("DOMContentLoaded", function () {
     const cropModal =
         bootstrap.Modal.getOrCreateInstance(cropModalElement);
 
+    function resetFailedImage() {
+        imageInput.value = "";
+        confirmedCroppedFile = null;
+        cropConfirmed = false;
+        const preview = document.getElementById("imagePreview");
+        const previewContainer = document.getElementById("imagePreviewContainer");
+        if (preview) {
+            if (preview.src.startsWith("blob:")) URL.revokeObjectURL(preview.src);
+            preview.removeAttribute("src");
+        }
+        if (previewContainer) previewContainer.classList.add("d-none");
+        cropModal.hide();
+    }
+
+    cropImage.addEventListener("error", resetFailedImage);
+
     function setImageInputFile(file) {
 
         const dataTransfer =
@@ -47,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (!file.type.startsWith("image/")) {
-            imageInput.value = "";
+            resetFailedImage();
             return;
         }
 
@@ -110,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
              * Imaginea poate fi deja încărcată.
              * În acest caz declanșăm manual onload.
              */
-            if (cropImage.complete) {
+            if (cropImage.complete && cropImage.naturalWidth > 0) {
                 cropImage.onload();
             }
 
@@ -180,9 +196,11 @@ document.addEventListener("DOMContentLoaded", function () {
         function () {
 
             if (!cropper) {
+                resetFailedImage();
                 return;
             }
 
+            try {
             const canvas =
                 cropper.getCroppedCanvas({
 
@@ -194,10 +212,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
 
 
+            if (!canvas) {
+                resetFailedImage();
+                return;
+            }
+
             canvas.toBlob(
                 function (blob) {
 
                     if (!blob) {
+                        resetFailedImage();
                         return;
                     }
 
@@ -250,6 +274,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 "image/jpeg",
                 0.90
             );
+            } catch (error) {
+                resetFailedImage();
+                console.error("Decuparea imaginii a eșuat.", error);
+            }
         }
     );
 
@@ -269,7 +297,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             cropImage.onload = null;
-            cropImage.src = "";
+            cropImage.removeAttribute("src");
 
             if (!cropConfirmed) {
 
