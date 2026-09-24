@@ -74,6 +74,8 @@ public class BusinessController {
 
         model.addAttribute("premiumBusinesses",
                 businessProfileService.getPremiumBusinesses());
+        model.addAttribute("recentBusinesses",
+                businessProfileService.getRecentBusinesses());
         model.addAttribute(
                 "mostFavoriteBusinesses",
                 businessProfileService.getMostFavoriteBusinesses()

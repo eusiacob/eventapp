@@ -120,6 +120,34 @@
 
     </section>
 
+    <!--Recently added section-->
+    <section class="recent-section mt-4" th:if="${not #lists.isEmpty(recentBusinesses)}">
+
+        <div th:replace="~{fragments/carousel-header :: header(
+        'Servicii adăugate recent',
+        'recentCarousel')}">
+        </div>
+
+        <div class="category-carousel" id="recentCarousel">
+            <a class="premium-card carousel-card text-decoration-none text-reset"
+               th:each="b : ${recentBusinesses}"
+               th:href="@{/business/{uuid}(uuid=${b.uuid})}">
+
+                <span class="favorite-badge">NOU</span>
+
+                <div class="premium-image"
+                     th:style="|background-image: url('${b.imagePath}')|">
+                </div>
+
+                <div class="premium-info">
+                    <h5 class="premium-title" th:text="${b.name}"></h5>
+                    <p class="premium-county" th:text="${b.city}"></p>
+                </div>
+            </a>
+        </div>
+
+    </section>
+
     <!--Top favorite section-->
     <section class="favorite-section mt-4" th:if="${not #lists.isEmpty(mostFavoriteBusinesses)}">
 

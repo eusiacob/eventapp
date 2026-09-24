@@ -139,10 +139,14 @@ public class BusinessProfileService {
         return businessProfileRepository.findTop10ByPremiumTrue();
     }
 
+    public List<BusinessProfile> getRecentBusinesses() {
+        return businessProfileRepository.findRecentBusinesses(PageRequest.of(0, 10));
+    }
+
     //    Top servicii favorite
     public List<BusinessProfile> getMostFavoriteBusinesses() {
 
-        Pageable pageable = PageRequest.of(0, 8);
+        Pageable pageable = PageRequest.of(0, 10);
 
         return businessProfileRepository
                 .findMostFavoriteBusinesses(pageable);
@@ -151,7 +155,7 @@ public class BusinessProfileService {
     //    Top reviews
     public List<BusinessProfile> getTopRatedBusinesses() {
 
-        Pageable pageable = PageRequest.of(0, 8);
+        Pageable pageable = PageRequest.of(0, 10);
 
         return businessProfileRepository
                 .findTopRatedBusinesses(pageable);

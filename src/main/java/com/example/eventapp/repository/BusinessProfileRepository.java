@@ -90,6 +90,15 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
 
     @Query("""
                 SELECT b
+                FROM BusinessProfile b
+                WHERE b.status = APPROVED
+                AND b.active = true
+                ORDER BY b.createdAt DESC, b.id DESC
+            """)
+    List<BusinessProfile> findRecentBusinesses(Pageable pageable);
+
+    @Query("""
+                SELECT b
                 FROM User u
                 JOIN u.favoriteBusinesses b
                 WHERE b.status = APPROVED
