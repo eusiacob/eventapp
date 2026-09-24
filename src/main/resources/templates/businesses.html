@@ -6,7 +6,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Home</title>
 
-<link rel="icon" type="image/png" th:href="@{/images/favicon.png}">
+    <link rel="icon" th:href="@{/images/favicon.png}" type="image/png">
     <link crossorigin="anonymous"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
           integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
@@ -26,30 +26,34 @@
 
     <!--CATEGORIES-->
     <div class="mb-2">
-        <section class="explore-guide" aria-labelledby="exploreGuideTitle">
-            <h2 id="exploreGuideTitle" class="explore-guide-title">
+        <section aria-labelledby="exploreGuideTitle" class="explore-guide">
+            <h2 class="explore-guide-title" id="exploreGuideTitle">
                 Furnizorul potrivit, în trei pași
             </h2>
             <ol class="explore-guide-steps">
                 <li>
-                    <span class="explore-guide-icon" aria-hidden="true"><i class="bi bi-search"></i></span>
+                    <span aria-hidden="true" class="explore-guide-icon"><i class="bi bi-search"></i></span>
                     <div>
                         <h3>1. Explorează</h3>
                         <p>Alege o categorie de mai jos și filtrează serviciile în funcție de nevoile tale.</p>
                     </div>
                 </li>
                 <li>
-                    <span class="explore-guide-icon explore-guide-icon-heart" aria-hidden="true"><i class="bi bi-heart"></i></span>
+                    <span aria-hidden="true" class="explore-guide-icon explore-guide-icon-heart"><i
+                            class="bi bi-heart"></i></span>
                     <div>
                         <h3>2. Alege ce îți place</h3>
-                        <p>Descoperă fotografiile și recenziile. Conectează-te pentru a salva serviciile în favorite.</p>
+                        <p>Descoperă fotografiile și recenziile. Conectează-te pentru a salva serviciile în
+                            favorite.</p>
                     </div>
                 </li>
                 <li>
-                    <span class="explore-guide-icon explore-guide-icon-contact" aria-hidden="true"><i class="bi bi-chat-dots"></i></span>
+                    <span aria-hidden="true" class="explore-guide-icon explore-guide-icon-contact"><i
+                            class="bi bi-chat-dots"></i></span>
                     <div>
                         <h3>3. Contactează furnizorul</h3>
-                        <p>Folosește datele de contact din pagina serviciului și discută direct disponibilitatea și oferta.</p>
+                        <p>Folosește datele de contact din pagina serviciului și discută direct disponibilitatea și
+                            oferta.</p>
                     </div>
                 </li>
             </ol>
@@ -89,17 +93,17 @@
 
 
             <div class="premium-card carousel-card"
-                 th:each="b : ${premiumBusinesses}"
+                 onclick="window.location=this.dataset.url"
                  th:data-url="@{/business/{uuid}(uuid=${b.uuid})}"
-                 onclick="window.location=this.dataset.url">
+                 th:each="b : ${premiumBusinesses}">
 
                 <!-- badge -->
                 <span class="premium-badge">PREMIUM</span>
 
                 <!-- imagine -->
                 <div class="premium-image"
-                     th:with="coverUrl=@{${b.coverImagePath}}"
-                     th:style="|background-image: url('${coverUrl}')|">
+                     th:style="|background-image: url('${coverUrl}')|"
+                     th:with="coverUrl=@{${b.coverImagePath}}">
                 </div>
 
                 <!-- text -->
@@ -137,8 +141,8 @@
                 <span class="favorite-badge">NOU</span>
 
                 <div class="premium-image"
-                     th:with="coverUrl=@{${b.coverImagePath}}"
-                     th:style="|background-image: url('${coverUrl}')|">
+                     th:style="|background-image: url('${coverUrl}')|"
+                     th:with="coverUrl=@{${b.coverImagePath}}">
                 </div>
 
                 <div class="premium-info">
@@ -161,15 +165,15 @@
         <div class="category-carousel" id="favoriteCarousel">
 
             <div class="premium-card carousel-card"
-                 th:each="b : ${mostFavoriteBusinesses}"
+                 onclick="window.location=this.dataset.url"
                  th:data-url="@{/business/{uuid}(uuid=${b.uuid})}"
-                 onclick="window.location=this.dataset.url">
+                 th:each="b : ${mostFavoriteBusinesses}">
 
                 <span class="favorite-badge">TOP FAVORITE <span class="favorite-heart-badge">♥</span></span>
 
                 <div class="premium-image"
-                     th:with="coverUrl=@{${b.coverImagePath}}"
-                     th:style="|background-image: url('${coverUrl}')|">
+                     th:style="|background-image: url('${coverUrl}')|"
+                     th:with="coverUrl=@{${b.coverImagePath}}">
                 </div>
 
                 <div class="premium-info">
@@ -199,15 +203,15 @@
         <div class="category-carousel" id="topRatedCarousel">
 
             <div class="premium-card carousel-card"
-                 th:each="b : ${topRatedBusinesses}"
+                 onclick="window.location=this.dataset.url"
                  th:data-url="@{/business/{uuid}(uuid=${b.uuid})}"
-                 onclick="window.location=this.dataset.url">
+                 th:each="b : ${topRatedBusinesses}">
 
                 <span class="favorite-badge">TOP APRECIATE <span class="top-star-badge">★</span></span>
 
                 <div class="premium-image"
-                     th:with="coverUrl=@{${b.coverImagePath}}"
-                     th:style="|background-image: url('${coverUrl}')|">
+                     th:style="|background-image: url('${coverUrl}')|"
+                     th:with="coverUrl=@{${b.coverImagePath}}">
                 </div>
 
                 <div class="premium-info">
