@@ -37,55 +37,57 @@
           th:action="@{/businesses/category/{category}(category=${selectedCategory})}">
         <div class="row g-2 align-items-end">
             <div class="col-12 col-md-5">
-                <label for="searchKeyword" class="form-label small mb-1">Nume serviciu</label>
-                <input id="searchKeyword" class="form-control form-control-sm" name="keyword"
-                       placeholder="Ce cauți?" th:value="${keyword}" type="search">
+                <label class="form-label small mb-1" for="searchKeyword">Nume serviciu</label>
+                <input class="form-control form-control-sm" id="searchKeyword" name="keyword"
+                       placeholder="Caută după nume" th:value="${keyword}" type="search">
             </div>
             <div class="col-7 col-md-4">
-                <label for="searchCity" class="form-label small mb-1">Județ</label>
-                <select id="searchCity" class="form-select form-select-sm" name="city">
+                <label class="form-label small mb-1" for="searchCity">Județ</label>
+                <select class="form-select form-select-sm" id="searchCity" name="city">
                     <option value="">Toate județele</option>
                     <option th:each="c : ${cities}" th:selected="${c == city}"
                             th:text="${c}" th:value="${c}"></option>
                 </select>
             </div>
             <div class="col-5 col-md-3 d-grid">
-                <button class="btn btn-dark btn-sm" type="submit"><i class="bi bi-search" aria-hidden="true"></i> Caută</button>
+                <button class="btn btn-dark btn-sm" type="submit"><i aria-hidden="true" class="bi bi-search"></i> Caută
+                </button>
             </div>
         </div>
         <details class="service-area-options mt-3"
                  th:open="${serviceType != null or eventType != null or eventDate != null}">
             <summary>Mai multe filtre
                 <span class="badge rounded-pill text-bg-secondary ms-1"
-                      th:with="count=${(serviceType != null ? 1 : 0) + (eventType != null ? 1 : 0) + (eventDate != null ? 1 : 0)}"
-                      th:if="${count > 0}" th:text="${count}"></span>
+                      th:if="${count > 0}"
+                      th:text="${count}" th:with="count=${(serviceType != null ? 1 : 0) + (eventType != null ? 1 : 0) + (eventDate != null ? 1 : 0)}"></span>
             </summary>
             <div class="row g-2 p-2">
                 <div class="col-12 col-sm-6 col-lg-4">
-                    <label for="searchServiceType" class="form-label small mb-1">Tip serviciu</label>
-                    <select id="searchServiceType" class="form-select form-select-sm" name="serviceType">
+                    <label class="form-label small mb-1" for="searchServiceType">Tip serviciu</label>
+                    <select class="form-select form-select-sm" id="searchServiceType" name="serviceType">
                         <option value="">Toate serviciile</option>
-                        <option th:each="type : ${categoryServiceTypes}" th:value="${type.name()}"
-                                th:selected="${type == serviceType}" th:text="${type.displayName}"></option>
+                        <option th:each="type : ${categoryServiceTypes}" th:selected="${type == serviceType}"
+                                th:text="${type.displayName}" th:value="${type.name()}"></option>
                     </select>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4">
-                    <label for="searchEventType" class="form-label small mb-1">Tip eveniment</label>
-                    <select id="searchEventType" class="form-select form-select-sm" name="eventType">
+                    <label class="form-label small mb-1" for="searchEventType">Tip eveniment</label>
+                    <select class="form-select form-select-sm" id="searchEventType" name="eventType">
                         <option value="">Toate evenimentele</option>
-                        <option th:each="type : ${eventTypeOptions}" th:value="${type.name()}"
-                                th:selected="${type == eventType}" th:text="${type.displayName}"></option>
+                        <option th:each="type : ${eventTypeOptions}" th:selected="${type == eventType}"
+                                th:text="${type.displayName}" th:value="${type.name()}"></option>
                     </select>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4">
-                    <label for="searchEventDate" class="form-label small mb-1">Disponibil la data</label>
-                    <input id="searchEventDate" class="form-control form-control-sm" name="eventDate"
+                    <label class="form-label small mb-1" for="searchEventDate">Disponibil la data</label>
+                    <input class="form-control form-control-sm" id="searchEventDate" name="eventDate"
                            th:value="${eventDate}" type="date">
                 </div>
             </div>
         </details>
         <div class="d-flex justify-content-end mt-2">
-            <a class="small" th:href="@{/businesses/category/{category}(category=${selectedCategory})}">Resetează filtrele</a>
+            <a class="small" th:href="@{/businesses/category/{category}(category=${selectedCategory})}">Resetează
+                filtrele</a>
         </div>
     </form>
 
@@ -121,9 +123,9 @@
 
                 <div class="position-relative">
 
-                    <img class="card-img-top business-image"
-                         loading="lazy"
-                         th:src="@{${p.coverImagePath}}" alt="Imagine serviciu">
+                    <img alt="Imagine serviciu"
+                         class="card-img-top business-image"
+                         loading="lazy" th:src="@{${p.coverImagePath}}">
 
 
                 </div>

@@ -1479,7 +1479,7 @@ body {
     border-radius: 10px;
     transition: .25s;
     flex: 0 0 auto;
-    text-wrap: pretty;
+    text-wrap: auto;
     text-align: center;
 }
 
