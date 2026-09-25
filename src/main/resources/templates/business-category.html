@@ -37,9 +37,9 @@
           th:action="@{/businesses/category/{category}(category=${selectedCategory})}">
         <div class="row g-2 align-items-end">
             <div class="col-12 col-md-5">
-                <label class="form-label small mb-1" for="searchKeyword">Nume serviciu</label>
+                <label class="form-label small mb-1" for="searchKeyword">Nume</label>
                 <input class="form-control form-control-sm" id="searchKeyword" name="keyword"
-                       placeholder="Caută după nume" th:value="${keyword}" type="search">
+                       placeholder="Numele serviciului sau furnizorului" th:value="${keyword}" type="search">
             </div>
             <div class="col-7 col-md-4">
                 <label class="form-label small mb-1" for="searchCity">Județ</label>
