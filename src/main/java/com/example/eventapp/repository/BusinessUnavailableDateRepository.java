@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 public interface BusinessUnavailableDateRepository extends JpaRepository<BusinessUnavailableDate, Long> {
+    java.util.List<BusinessUnavailableDate> findByBusinessProfile(BusinessProfile businessProfile);
 
     Optional<BusinessUnavailableDate> findByBusinessProfileAndUnavailableDate(BusinessProfile businessProfile,
                                                                               LocalDate unavailableDate);

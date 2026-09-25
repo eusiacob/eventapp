@@ -421,28 +421,27 @@
         <div class="col-12 col-lg-5">
 
             <div class="card shadow-sm border-0 p-3 gallery-panel" id="business-calendar">
-                <h4 class="fw-bold mb-3">
-                    Calendar
-                </h4>
-
-                <p class="text-muted mb-3">
-                    Selectează datele când serviciul tău este sau nu disponibil, îi ajută foarte mult pe cei care
-                    sunt în căutarea lor!
-                </p>
-
+                <h4 class="fw-bold mb-2">Date indisponibile</h4>
+                <p class="small text-muted">Datele neblocate sunt disponibile pentru solicitări, nu reprezintă o rezervare confirmată.</p>
                 <div class="availability-legend mb-3">
-        <span class="legend-item">
-            <span class="legend-color available-color"></span>
-            Disponibil
-        </span>
-
-                    <span class="legend-item">
-            <span class="legend-color unavailable-color"></span>
-            Indisponibil
-        </span>
+                    <span class="legend-item"><span class="legend-color available-color"></span> Disponibil pentru solicitări</span>
+                    <span class="legend-item"><span class="legend-color unavailable-color"></span> Indisponibil</span>
                 </div>
-
                 <div id="availabilityCalendar"></div>
+                <form id="availabilityForm" class="mt-3"
+                      th:action="@{/business/{uuid}/availability(uuid=${profile.uuid})}" method="post">
+                    <div class="row g-2">
+                        <div class="col-6"><label class="form-label small" for="availabilityStart">Din data</label>
+                            <input id="availabilityStart" type="date" class="form-control" required></div>
+                        <div class="col-6"><label class="form-label small" for="availabilityEnd">Până la (inclusiv)</label>
+                            <input id="availabilityEnd" type="date" class="form-control" required></div>
+                    </div>
+                    <p class="form-text">Selectează o zi în calendar sau completează un interval de maximum 366 de zile.</p>
+                    <button class="btn btn-primary w-100" type="submit">Blochează intervalul</button>
+                </form>
+                <div id="availabilityMessage" class="mt-3" role="status" aria-live="polite"></div>
+                <h5 class="h6 mt-3">Intervale blocate</h5>
+                <div id="blockedDateList" class="blocked-date-list"></div>
             </div>
 
         </div>
@@ -462,127 +461,10 @@
 
 <script th:src="@{/js/image-cropper.js}"></script>
 
-<!--FULL CALENDAR SCRIPT-->
 <script th:inline="javascript">
-    document.addEventListener("DOMContentLoaded", function () {
-
-        const calendarEl = document.getElementById("availabilityCalendar");
-
-        if (!calendarEl) {
-            return;
-        }
-
-        const businessId = [[${profile.uuid}]];
-
-        const unavailableDatesArray = /*[[${unavailableDateStrings}]]*/ [];
-
-        const unavailableSet = new Set(unavailableDatesArray);
-
-        const csrfTokenElement = document.querySelector('meta[name="_csrf"]');
-        const csrfHeaderElement = document.querySelector('meta[name="_csrf_header"]');
-
-        const csrfToken = csrfTokenElement ? csrfTokenElement.getAttribute("content") : null;
-        const csrfHeader = csrfHeaderElement ? csrfHeaderElement.getAttribute("content") : null;
-
-        const calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: "dayGridMonth",
-            height: "auto",
-            firstDay: 1,
-
-            headerToolbar: {
-                left: "prev,next today",
-                center: "title",
-                right: "dayGridMonth"
-            },
-
-            dayCellDidMount: function (info) {
-                const dateStr = formatDateLocal(info.date);
-
-                info.el.classList.remove("available-day", "unavailable-day");
-
-                if (unavailableSet.has(dateStr)) {
-                    info.el.classList.add("unavailable-day");
-                } else {
-                    info.el.classList.add("available-day");
-                }
-            },
-
-            dateClick: function (info) {
-                toggleDateAvailability(info);
-            }
-        });
-
-        calendar.render();
-
-        function toggleDateAvailability(info) {
-            const dateStr = info.dateStr;
-
-            const params = new URLSearchParams();
-            params.append("date", dateStr);
-
-            const headers = {
-                "Content-Type": "application/x-www-form-urlencoded"
-            };
-
-            if (csrfToken && csrfHeader) {
-                headers[csrfHeader] = csrfToken;
-            }
-
-            axios.post(
-                "/business/" + businessId + "/availability/toggle",
-                params,
-                {
-                    headers: headers
-                }
-            )
-                .then(function (response) {
-                    const unavailable = response.data.unavailable;
-
-                    if (unavailable) {
-                        unavailableSet.add(dateStr);
-                        info.dayEl.classList.remove("available-day");
-                        info.dayEl.classList.add("unavailable-day");
-                        showAvailabilityMessage("Data este acum indisponibilă", "danger");
-                    } else {
-                        unavailableSet.delete(dateStr);
-                        info.dayEl.classList.remove("unavailable-day");
-                        info.dayEl.classList.add("available-day");
-                        showAvailabilityMessage("Data este acum disponibilă", "success");
-                    }
-                })
-                .catch(function () {
-                    showAvailabilityMessage("A apărut o eroare", "danger");
-                });
-        }
-
-        function formatDateLocal(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, "0");
-            const day = String(date.getDate()).padStart(2, "0");
-
-            return year + "-" + month + "-" + day;
-        }
-
-        function showAvailabilityMessage(message, type) {
-            const existingAlert = document.getElementById("availabilityAlert");
-
-            if (existingAlert) {
-                existingAlert.remove();
-            }
-
-            const alert = document.createElement("div");
-            alert.id = "availabilityAlert";
-            alert.className = "alert alert-" + type + " mt-3 mb-0";
-            alert.textContent = message;
-
-            calendarEl.parentElement.appendChild(alert);
-
-            setTimeout(function () {
-                alert.remove();
-            }, 1800);
-        }
-    });
+    window.businessUnavailableDates = /*[[${unavailableDateStrings}]]*/ [];
 </script>
+<script th:src="@{/js/business-availability.js}"></script>
 
 <script>
     function showAsyncAlert(type, message) {

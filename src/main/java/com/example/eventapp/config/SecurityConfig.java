@@ -43,7 +43,7 @@ public class SecurityConfig {
                                 "/business/*/email-verification",
                                 "/business/videos/delete/*",
                                 "/business/gallery/delete/**",
-                                "/business/*/availability/toggle"
+                                "/business/*/availability"
                         ).hasRole("BUSINESS")
 
                         .requestMatchers(
