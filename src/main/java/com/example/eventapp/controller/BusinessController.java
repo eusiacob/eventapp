@@ -244,11 +244,8 @@ public class BusinessController {
 
         if (profile.getStatus() != BusinessProfile.BusinessStatus.APPROVED ||
                 !profile.isActive()) {
-
-            redirectAttributes.addAttribute("businessNotApproved", true);
-
-            return "redirect:/business/edit/" + profile.getSlug();
-
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.NOT_FOUND, "Serviciul nu este disponibil public.");
         }
 
         if (!uuid.equals(profile.getSlug())) {
@@ -265,6 +262,10 @@ public class BusinessController {
                 reviewPage,
                 normalizedReviewSize
         );
+
+        if (reviewPage < 0 || (reviewPage > 0 && reviewPage >= reviews.getTotalPages())) {
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND);
+        }
 
         model.addAttribute("review", new Review());
         model.addAttribute("reviews", reviews.getContent());
@@ -654,6 +655,9 @@ public class BusinessController {
                 );
 
         model.addAttribute("profiles", businessPage.getContent());
+        if (page < 0 || (page > 0 && page >= businessPage.getTotalPages())) {
+            throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND);
+        }
         model.addAttribute("businessPage", businessPage);
         model.addAttribute("selectedCategory", category);
         model.addAttribute("keyword", keyword);

@@ -17,6 +17,25 @@ import java.util.Optional;
 
 public interface BusinessProfileRepository extends JpaRepository<BusinessProfile, Long> {
 
+    // Scalar projection avoids loading owners, reviews, galleries and encrypted contact data.
+    @Query("""
+            SELECT b.slug FROM BusinessProfile b
+            WHERE b.status = APPROVED AND b.active = true
+            AND b.slug IS NOT NULL AND b.slug <> ''
+            ORDER BY b.id
+            """)
+    List<String> findPublicSlugsForSitemap(Pageable pageable);
+
+    @Query("""
+            SELECT COUNT(b) FROM BusinessProfile b
+            WHERE b.status = APPROVED AND b.active = true
+            AND b.slug IS NOT NULL AND b.slug <> ''
+            """)
+    long countPublicSlugsForSitemap();
+
+    @Query("SELECT DISTINCT b.category FROM BusinessProfile b WHERE b.status = APPROVED AND b.active = true AND b.category IS NOT NULL")
+    List<BusinessCategory> findPublicCategoriesForSitemap();
+
     List<BusinessProfile> findByUser(User user);
 
     Optional<BusinessProfile> findByUuid(String uuid);

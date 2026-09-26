@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en"
+<html lang="ro"
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Home</title>
+    <th:block th:replace="~{fragments/seo :: head}"></th:block>
 
     <link rel="icon" th:href="@{/images/favicon.png}" type="image/png">
     <link crossorigin="anonymous"
@@ -17,12 +17,16 @@
 
     <link rel="stylesheet"
           th:href="@{/css/style.css}">
+    <title>Servicii pentru nunți, botezuri și evenimente</title>
 </head>
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 
 <div class="container fluid px-3" style="padding-top: 1rem !important; padding-bottom: 6rem !important;">
+
+    <h1 class="h3 fw-bold" style="color: var(--me-heading);">Servicii pentru nunți, botezuri și evenimente</h1>
+    <p class="text-muted">Descoperă furnizori din România și explorează serviciile potrivite pentru evenimentul tău.</p>
 
     <!--CATEGORIES-->
     <div class="mb-2">
@@ -92,19 +96,18 @@
         <div class="category-carousel" id="premiumCarousel">
 
 
-            <div class="premium-card carousel-card"
-                 onclick="window.location=this.dataset.url"
-                 th:data-url="@{/business/{uuid}(uuid=${b.slug})}"
+            <a class="premium-card carousel-card text-decoration-none text-reset"
+                 th:href="@{/business/{uuid}(uuid=${b.slug})}"
                  th:each="b : ${premiumBusinesses}">
 
                 <!-- badge -->
                 <span class="premium-badge">PREMIUM</span>
 
                 <!-- imagine -->
-                <div class="premium-image"
-                     th:style="|background-image: url('${coverUrl}')|"
-                     th:with="coverUrl=@{${b.coverImagePath}}">
-                </div>
+                <img class="premium-image" loading="lazy" decoding="async"
+                     width="200" height="160" style="object-fit:cover;display:block;"
+                     th:alt="|${b.name} – ${b.category.displayName}|"
+                     th:src="@{${b.coverImagePath}}">
 
                 <!-- text -->
                 <div class="premium-info">
@@ -119,7 +122,7 @@
 
                 </div>
 
-            </div>
+            </a>
 
         </div>
 
@@ -140,10 +143,10 @@
 
                 <span class="favorite-badge">NOU</span>
 
-                <div class="premium-image"
-                     th:style="|background-image: url('${coverUrl}')|"
-                     th:with="coverUrl=@{${b.coverImagePath}}">
-                </div>
+                <img class="premium-image" loading="lazy" decoding="async"
+                     width="200" height="160" style="object-fit:cover;display:block;"
+                     th:alt="|${b.name} – ${b.category.displayName}|"
+                     th:src="@{${b.coverImagePath}}">
 
                 <div class="premium-info">
                     <h5 class="premium-title" th:text="${b.name}"></h5>
@@ -164,17 +167,16 @@
 
         <div class="category-carousel" id="favoriteCarousel">
 
-            <div class="premium-card carousel-card"
-                 onclick="window.location=this.dataset.url"
-                 th:data-url="@{/business/{uuid}(uuid=${b.slug})}"
+            <a class="premium-card carousel-card text-decoration-none text-reset"
+                 th:href="@{/business/{uuid}(uuid=${b.slug})}"
                  th:each="b : ${mostFavoriteBusinesses}">
 
                 <span class="favorite-badge">TOP FAVORITE <span class="favorite-heart-badge">♥</span></span>
 
-                <div class="premium-image"
-                     th:style="|background-image: url('${coverUrl}')|"
-                     th:with="coverUrl=@{${b.coverImagePath}}">
-                </div>
+                <img class="premium-image" loading="lazy" decoding="async"
+                     width="200" height="160" style="object-fit:cover;display:block;"
+                     th:alt="|${b.name} – ${b.category.displayName}|"
+                     th:src="@{${b.coverImagePath}}">
 
                 <div class="premium-info">
 
@@ -186,7 +188,7 @@
 
                 </div>
 
-            </div>
+            </a>
 
         </div>
 
@@ -202,17 +204,16 @@
 
         <div class="category-carousel" id="topRatedCarousel">
 
-            <div class="premium-card carousel-card"
-                 onclick="window.location=this.dataset.url"
-                 th:data-url="@{/business/{uuid}(uuid=${b.slug})}"
+            <a class="premium-card carousel-card text-decoration-none text-reset"
+                 th:href="@{/business/{uuid}(uuid=${b.slug})}"
                  th:each="b : ${topRatedBusinesses}">
 
                 <span class="favorite-badge">TOP APRECIATE <span class="top-star-badge">★</span></span>
 
-                <div class="premium-image"
-                     th:style="|background-image: url('${coverUrl}')|"
-                     th:with="coverUrl=@{${b.coverImagePath}}">
-                </div>
+                <img class="premium-image" loading="lazy" decoding="async"
+                     width="200" height="160" style="object-fit:cover;display:block;"
+                     th:alt="|${b.name} – ${b.category.displayName}|"
+                     th:src="@{${b.coverImagePath}}">
 
                 <div class="premium-info">
 
@@ -228,7 +229,7 @@
                 </div>
 
 
-            </div>
+            </a>
 
         </div>
 

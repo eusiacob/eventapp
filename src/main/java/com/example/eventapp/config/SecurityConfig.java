@@ -77,6 +77,8 @@ public class SecurityConfig {
                                 "/reset-password",
                                 "/verify-email",
                                 "/robots.txt",
+                                "/sitemap.xml",
+                                "/sitemaps/**",
                                 "/images/**"
                         ).permitAll()
 
