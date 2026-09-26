@@ -3367,3 +3367,207 @@ body .favorite-title,
         gap: 1rem;
     }
 }
+
+/* Presentation page for prospective venue partners. */
+.presentation-page {
+    color: var(--me-text, #1f2937);
+    padding: 3.5rem 0 6rem;
+}
+
+.presentation-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: clamp(2rem, 5vw, 5rem);
+}
+
+.presentation-eyebrow {
+    display: inline-block;
+    margin-bottom: 0.9rem;
+    color: var(--me-primary-hover, #106e73);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.presentation-intro h1 {
+    max-width: 12ch;
+    margin-bottom: 1.2rem;
+    color: var(--me-heading, #534666);
+    font-size: clamp(2.4rem, 4.2vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.08;
+}
+
+.presentation-lead {
+    max-width: 36rem;
+    font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+    line-height: 1.7;
+}
+
+.presentation-video-prompt {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: var(--me-primary-hover, #106e73);
+    font-weight: 700;
+}
+
+.presentation-video-prompt i {
+    font-size: 1.3rem;
+}
+
+.presentation-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.25rem;
+    margin-top: 1.6rem;
+}
+
+.presentation-primary-button {
+    border: 1px solid var(--me-primary, #138086);
+    border-radius: 12px;
+    background: var(--me-primary, #138086);
+    color: #fff;
+    padding: 0.82rem 1.2rem;
+    font-weight: 700;
+    box-shadow: 0 8px 20px rgba(19, 128, 134, 0.17);
+}
+
+.presentation-primary-button:hover,
+.presentation-primary-button:focus-visible {
+    border-color: var(--me-primary-hover, #106e73);
+    background: var(--me-primary-hover, #106e73);
+    color: #fff;
+}
+
+.presentation-secondary-link,
+.presentation-contact a {
+    color: var(--me-primary-hover, #106e73);
+    font-weight: 700;
+    text-underline-offset: 3px;
+}
+
+.presentation-player-wrap {
+    min-width: 0;
+}
+
+.presentation-player {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--me-service-card-border, #d5e2e2);
+    border-radius: 18px;
+    background: #1f2937;
+    box-shadow: 0 18px 44px rgba(83, 70, 102, 0.16);
+}
+
+.presentation-disclosure {
+    margin: 0.75rem 0 0;
+    color: var(--me-muted, #6b7280);
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.presentation-benefits {
+    padding-top: 5rem;
+}
+
+.presentation-section-heading {
+    text-align: center;
+}
+
+.presentation-section-heading h2,
+.presentation-final h2 {
+    color: var(--me-heading, #534666);
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 800;
+}
+
+.presentation-benefit-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+}
+
+.presentation-benefit {
+    padding: 1.6rem;
+    border: 1px solid var(--me-service-card-border, #d5e2e2);
+    border-radius: 18px;
+    background: var(--me-service-card-bg, #fff);
+    box-shadow: var(--me-service-card-shadow, 0 4px 16px rgba(19, 128, 134, 0.08));
+}
+
+.presentation-benefit-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+    background: var(--me-primary-soft, #e7f3f3);
+    color: var(--me-primary-hover, #106e73);
+    font-size: 1.3rem;
+}
+
+.presentation-benefit h3 {
+    color: var(--me-heading, #534666);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.presentation-benefit p {
+    margin-bottom: 0;
+    line-height: 1.65;
+}
+
+.presentation-final {
+    margin-top: 5rem;
+    padding: 2.5rem;
+    border: 1px solid #b6d6d8;
+    border-radius: 20px;
+    background: var(--me-primary-soft, #e7f3f3);
+    text-align: center;
+}
+
+.presentation-final > p {
+    margin: 0.75rem 0 1.4rem;
+}
+
+.presentation-final .presentation-contact {
+    margin: 1.4rem 0 0;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 991.98px) {
+    .presentation-hero {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .presentation-intro h1 {
+        max-width: 18ch;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .presentation-page {
+        padding: 2rem 0 7rem;
+    }
+
+    .presentation-benefits {
+        padding-top: 3.5rem;
+    }
+
+    .presentation-benefit-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .presentation-final {
+        margin-top: 3.5rem;
+        padding: 2rem 1.2rem;
+    }
+}

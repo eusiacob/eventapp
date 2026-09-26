@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Prezintă-ți locația pentru evenimente | M-Event</title>
+    <meta content="Descoperă cum poți prezenta locația ta pentru evenimente pe M-Event, prin fotografii, videoclipuri și informații utile pentru clienți."
+          name="description">
+    <link href="https://m-event.ro/prezentare" rel="canonical">
+    <meta content="website" property="og:type">
+    <meta content="Prezintă-ți locația pentru evenimente pe M-Event" property="og:title">
+    <meta content="Vezi în mai puțin de un minut cum funcționează M-Event pentru furnizorii de locații."
+          property="og:description">
+    <meta content="https://m-event.ro/prezentare" property="og:url">
+    <meta content="https://m-event.ro/images/prezentare-video-poster.jpg" property="og:image">
+    <link rel="icon" th:href="@{/images/favicon.png}" type="image/png">
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="presentation-page">
+    <section aria-labelledby="presentationTitle" class="presentation-hero container">
+        <div class="presentation-intro">
+            <span class="presentation-eyebrow">Pentru furnizorii de locații</span>
+            <h1 id="presentationTitle">Locația ta merită să fie descoperită.</h1>
+            <p class="presentation-lead">Arată ce face spațiul tău special și ajută organizatorii să găsească
+                informațiile de care au nevoie pentru următorul eveniment.</p>
+            <p class="presentation-video-prompt"><i aria-hidden="true" class="bi bi-play-circle"></i> Vezi prezentarea
+                M-Event în aproximativ un minut.</p>
+            <div class="presentation-actions">
+                <a class="btn presentation-primary-button" sec:authorize="isAnonymous()" th:href="@{/register}">
+                    Creează cont și adaugă locația <i aria-hidden="true" class="bi bi-arrow-right"></i>
+                </a>
+                <a class="btn presentation-primary-button" sec:authorize="hasRole('BUSINESS')"
+                   th:href="@{/business/create}">
+                    Adaugă locația ta <i aria-hidden="true" class="bi bi-arrow-right"></i>
+                </a>
+                <a class="presentation-secondary-link" th:href="@{/businesses}">Explorează serviciile existente</a>
+            </div>
+        </div>
+
+        <div class="presentation-player-wrap">
+            <video aria-label="Prezentare video M-Event" class="presentation-player" controls playsinline
+                   preload="metadata"
+                   th:poster="@{/images/prezentare-video-poster.jpg}">
+                <source th:src="@{/media/prezentare.mp4}" type="video/mp4">
+                Browserul tău nu poate reda acest videoclip.
+                <a href="https://m-event.ro/media/prezentare.mp4">Deschide videoclipul direct</a>.
+            </video>
+            <p class="presentation-disclosure">În video este folosită o locație fictivă, cu imagini generate cu AI,
+                exclusiv pentru demonstrație.</p>
+        </div>
+    </section>
+
+    <section aria-labelledby="presentationBenefitsTitle" class="presentation-benefits container">
+        <div class="presentation-section-heading">
+            <span class="presentation-eyebrow">Cum te ajută M-Event</span>
+            <h2 id="presentationBenefitsTitle">Un profil clar pentru locația ta</h2>
+        </div>
+        <div class="presentation-benefit-grid">
+            <article class="presentation-benefit">
+                <span aria-hidden="true" class="presentation-benefit-icon"><i class="bi bi-images"></i></span>
+                <h3>Prezintă spațiul</h3>
+                <p>Adaugă descriere, fotografii și videoclipuri, astfel încât vizitatorii să-și poată face o idee despre
+                    locație.</p>
+            </article>
+            <article class="presentation-benefit">
+                <span aria-hidden="true" class="presentation-benefit-icon"><i class="bi bi-funnel"></i></span>
+                <h3>Fii mai ușor de găsit</h3>
+                <p>Specifică tipurile de evenimente și zonele în care oferi serviciul; vizitatorii pot folosi filtrele
+                    de căutare.</p>
+            </article>
+            <article class="presentation-benefit">
+                <span aria-hidden="true" class="presentation-benefit-icon"><i class="bi bi-calendar-check"></i></span>
+                <h3>Arată disponibilitatea</h3>
+                <p>Marchează datele indisponibile în calendar și lasă date de contact pentru discuții directe cu cei
+                    interesați.</p>
+            </article>
+        </div>
+    </section>
+
+    <section aria-labelledby="presentationFinalTitle" class="presentation-final container">
+        <h2 id="presentationFinalTitle">Pregătit să-ți prezinți locația?</h2>
+        <p>Creează un profil și completează informațiile în ritmul tău.</p>
+        <a class="btn presentation-primary-button" sec:authorize="isAnonymous()" th:href="@{/register}">Începe acum</a>
+        <a class="btn presentation-primary-button" sec:authorize="hasRole('BUSINESS')" th:href="@{/business/create}">Adaugă
+            serviciul</a>
+        <p class="presentation-contact">Ai întrebări? Scrie-ne la <a href="mailto:parteneri@m-event.ro">parteneri@m-event.ro</a>.
+        </p>
+    </section>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script crossorigin="anonymous"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

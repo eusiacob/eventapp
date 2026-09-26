@@ -23,6 +23,11 @@ public class HomeController {
         return "home";
     }
 
+    @GetMapping("/prezentare")
+    public String presentation() {
+        return "prezentare";
+    }
+
     @GetMapping("/terms")
     public String terms(Model model) {
 

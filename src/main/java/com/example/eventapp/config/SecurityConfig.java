@@ -73,6 +73,7 @@ public class SecurityConfig {
                                 "/error",
                                 "/forgot",
                                 "/contact",
+                                "/prezentare",
                                 "/reset-password",
                                 "/verify-email",
                                 "/robots.txt",
