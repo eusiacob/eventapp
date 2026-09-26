@@ -94,7 +94,7 @@
 
             <div class="premium-card carousel-card"
                  onclick="window.location=this.dataset.url"
-                 th:data-url="@{/business/{uuid}(uuid=${b.uuid})}"
+                 th:data-url="@{/business/{uuid}(uuid=${b.slug})}"
                  th:each="b : ${premiumBusinesses}">
 
                 <!-- badge -->
@@ -136,7 +136,7 @@
         <div class="category-carousel" id="recentCarousel">
             <a class="premium-card carousel-card text-decoration-none text-reset"
                th:each="b : ${recentBusinesses}"
-               th:href="@{/business/{uuid}(uuid=${b.uuid})}">
+               th:href="@{/business/{uuid}(uuid=${b.slug})}">
 
                 <span class="favorite-badge">NOU</span>
 
@@ -166,7 +166,7 @@
 
             <div class="premium-card carousel-card"
                  onclick="window.location=this.dataset.url"
-                 th:data-url="@{/business/{uuid}(uuid=${b.uuid})}"
+                 th:data-url="@{/business/{uuid}(uuid=${b.slug})}"
                  th:each="b : ${mostFavoriteBusinesses}">
 
                 <span class="favorite-badge">TOP FAVORITE <span class="favorite-heart-badge">♥</span></span>
@@ -204,7 +204,7 @@
 
             <div class="premium-card carousel-card"
                  onclick="window.location=this.dataset.url"
-                 th:data-url="@{/business/{uuid}(uuid=${b.uuid})}"
+                 th:data-url="@{/business/{uuid}(uuid=${b.slug})}"
                  th:each="b : ${topRatedBusinesses}">
 
                 <span class="favorite-badge">TOP APRECIATE <span class="top-star-badge">★</span></span>

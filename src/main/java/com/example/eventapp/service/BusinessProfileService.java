@@ -43,6 +43,14 @@ public class BusinessProfileService {
                         new RuntimeException("Serviciul nu există."));
     }
 
+    public BusinessProfile findBySlugOrUuid(String identifier) {
+        // UUID links already exist in notifications and emails.
+        return businessProfileRepository.findByUuid(identifier)
+                .or(() -> businessProfileRepository.findBySlug(identifier))
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Serviciul nu există."));
+    }
+
     public BusinessProfile findById(Long id) {
         return businessProfileRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Serviciul nu există."));

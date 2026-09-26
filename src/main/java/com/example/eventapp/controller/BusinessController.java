@@ -229,28 +229,33 @@ public class BusinessController {
         redirectAttributes.addAttribute("businessCreated", true);
         redirectAttributes.addAttribute("businessNotApproved", true);
 
-        return "redirect:/business/edit/" + profile.getUuid();
+        return "redirect:/business/edit/" + profile.getSlug();
     }
 
     @GetMapping("/business/{uuid}")
-    public String businessDetails(@PathVariable String uuid,
+    public Object businessDetails(@PathVariable String uuid,
                                   @RequestParam(defaultValue = "0") int reviewPage,
                                   @RequestParam(defaultValue = "5") int reviewSize,
                                   Model model,
                                   @AuthenticationPrincipal UserDetails userDetails,
                                   RedirectAttributes redirectAttributes) {
 
-        BusinessProfile profile = businessProfileService.findByUuid(uuid);
+        BusinessProfile profile = businessProfileService.findBySlugOrUuid(uuid);
 
         if (profile.getStatus() != BusinessProfile.BusinessStatus.APPROVED ||
                 !profile.isActive()) {
 
             redirectAttributes.addAttribute("businessNotApproved", true);
 
-            return "redirect:/business/edit/" + profile.getUuid();
+            return "redirect:/business/edit/" + profile.getSlug();
 
         }
 
+        if (!uuid.equals(profile.getSlug())) {
+            return com.example.eventapp.util.BusinessSlugRedirect.to(
+                    "/business/" + profile.getSlug());
+        }
+        uuid = profile.getUuid();
         model.addAttribute("profile", profile);
 
         int normalizedReviewSize = List.of(5, 10, 20).contains(reviewSize)
@@ -415,7 +420,7 @@ public class BusinessController {
     }
 
     @GetMapping("/business/edit/{uuid}")
-    public String editBusinessForm(
+    public Object editBusinessForm(
             @PathVariable String uuid,
             Model model,
             @AuthenticationPrincipal UserDetails userDetails
@@ -425,11 +430,13 @@ public class BusinessController {
                 userDetails.getUsername()
         );
 
-        BusinessProfile profile =
-                businessProfileService.findByUuidAndValidateOwner(
-                        uuid,
-                        user
-                );
+        BusinessProfile profile = businessProfileService.findBySlugOrUuid(uuid);
+        if (!businessProfileService.isOwner(profile, user)) {
+            throw new org.springframework.security.access.AccessDeniedException("Nu ai permisiunea.");
+        }
+        if (!uuid.equals(profile.getSlug())) {
+            return com.example.eventapp.util.BusinessSlugRedirect.to("/business/edit/" + profile.getSlug());
+        }
 
         List<String> unavailableDateStrings =
                 profile.getUnavailableDates()
@@ -479,6 +486,7 @@ public class BusinessController {
         // Keep the edit page complete when a submitted selection is invalid.
         profile.setId(existingProfile.getId());
         profile.setUuid(existingProfile.getUuid());
+        profile.setSlug(existingProfile.getSlug());
         profile.setUser(existingProfile.getUser());
         profile.setImagePath(existingProfile.getImagePath());
         profile.setGalleryImages(existingProfile.getGalleryImages());
@@ -588,7 +596,7 @@ public class BusinessController {
         redirectAttributes.addAttribute("businessUpdated", true);
         redirectAttributes.addAttribute("businessNotApproved", true);
 
-        return "redirect:/business/edit/" + profile.getUuid();
+        return "redirect:/business/edit/" + profile.getSlug();
 
     }
 

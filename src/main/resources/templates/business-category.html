@@ -104,7 +104,7 @@
              th:each="p : ${profiles}">
 
             <div class="card border-0 shadow-lg h-100 business-card position-relative clickable-card"
-                 th:data-url="@{/business/{uuid}(uuid=${p.uuid})}">
+                 th:data-url="@{/business/{uuid}(uuid=${p.slug})}">
 
                 <!-- Favorite heart -->
                 <div class="favorite-heart-wrapper"

@@ -140,12 +140,15 @@ public class AdminController {
     }
 
     @GetMapping("/business/{uuid}")
-    public String businessDetails(
+    public Object businessDetails(
             @PathVariable String uuid,
             Model model
     ) {
 
-        BusinessProfile business = businessProfileService.findByUuid(uuid);
+        BusinessProfile business = businessProfileService.findBySlugOrUuid(uuid);
+        if (!uuid.equals(business.getSlug())) {
+            return com.example.eventapp.util.BusinessSlugRedirect.to("/admin/business/" + business.getSlug());
+        }
 
         model.addAttribute("business", business);
         model.addAttribute("ownerEmail", userService.getEmailAddress(business.getUser()));

@@ -20,6 +20,7 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
     List<BusinessProfile> findByUser(User user);
 
     Optional<BusinessProfile> findByUuid(String uuid);
+    Optional<BusinessProfile> findBySlug(String slug);
 
     @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT b FROM BusinessProfile b WHERE b.uuid = :uuid")

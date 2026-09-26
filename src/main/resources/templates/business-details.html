@@ -325,7 +325,7 @@
 
                 <form class="d-flex align-items-center justify-content-end gap-2 mb-2"
                       method="get"
-                      th:action="@{/business/{uuid}(uuid=${profile.uuid})}"
+                      th:action="@{/business/{uuid}(uuid=${profile.slug})}"
                       th:if="${reviewCount > 0}">
                     <label class="small text-muted" for="reviewSize">Afișează</label>
                     <select class="form-select form-select-sm w-auto"
@@ -387,14 +387,14 @@
                         <li class="page-item" th:classappend="${reviewPage.first ? ' disabled' : ''}">
                             <a aria-label="Prima pagină"
                                class="page-link"
-                               th:href="@{/business/{uuid}(uuid=${profile.uuid}, reviewPage=0, reviewSize=${reviewSize})}">
+                               th:href="@{/business/{uuid}(uuid=${profile.slug}, reviewPage=0, reviewSize=${reviewSize})}">
                                 <i class="bi bi-chevron-bar-left"></i>
                             </a>
                         </li>
                         <li class="page-item" th:classappend="${reviewPage.first ? ' disabled' : ''}">
                             <a aria-label="Pagina anterioară"
                                class="page-link"
-                               th:href="@{/business/{uuid}(uuid=${profile.uuid}, reviewPage=${reviewPage.number - 1}, reviewSize=${reviewSize})}">
+                               th:href="@{/business/{uuid}(uuid=${profile.slug}, reviewPage=${reviewPage.number - 1}, reviewSize=${reviewSize})}">
                                 <i class="bi bi-chevron-left"></i>
                             </a>
                         </li>
@@ -404,14 +404,14 @@
                         <li class="page-item" th:classappend="${reviewPage.last ? ' disabled' : ''}">
                             <a aria-label="Pagina următoare"
                                class="page-link"
-                               th:href="@{/business/{uuid}(uuid=${profile.uuid}, reviewPage=${reviewPage.number + 1}, reviewSize=${reviewSize})}">
+                               th:href="@{/business/{uuid}(uuid=${profile.slug}, reviewPage=${reviewPage.number + 1}, reviewSize=${reviewSize})}">
                                 <i class="bi bi-chevron-right"></i>
                             </a>
                         </li>
                         <li class="page-item" th:classappend="${reviewPage.last ? ' disabled' : ''}">
                             <a aria-label="Ultima pagină"
                                class="page-link"
-                               th:href="@{/business/{uuid}(uuid=${profile.uuid}, reviewPage=${reviewPage.totalPages - 1}, reviewSize=${reviewSize})}">
+                               th:href="@{/business/{uuid}(uuid=${profile.slug}, reviewPage=${reviewPage.totalPages - 1}, reviewSize=${reviewSize})}">
                                 <i class="bi bi-chevron-bar-right"></i>
                             </a>
                         </li>

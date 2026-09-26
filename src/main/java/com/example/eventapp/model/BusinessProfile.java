@@ -250,11 +250,14 @@ public class BusinessProfile {
         }
 
         if (slug == null && name != null) {
-            slug = name
-                    .toLowerCase()
+            slug = java.text.Normalizer.normalize(name, java.text.Normalizer.Form.NFD)
+                    .replaceAll("\\p{M}+", "")
+                    .toLowerCase(java.util.Locale.ROOT)
                     .trim()
                     .replaceAll("[^a-z0-9]+", "-")
                     .replaceAll("^-|-$", "");
+            if (slug.isBlank()) slug = "serviciu";
+            slug = slug + "-" + uuid.substring(0, 8);
         }
     }
 }
