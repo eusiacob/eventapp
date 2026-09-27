@@ -52,7 +52,7 @@ public class SeoService {
             }
             case "businesses" -> {
                 path = "/businesses";
-                title = "Servicii pentru nunți, botezuri și evenimente | M-Event";
+                title = "Servicii pentru nunți, botezuri și alte evenimente speciale | M-Event";
                 description = "Explorează categoriile de servicii pentru evenimente: fotografie, muzică, locații, catering, decor și transport. Găsește furnizorii potriviți pe M-Event.";
             }
             case "business-category" -> {
