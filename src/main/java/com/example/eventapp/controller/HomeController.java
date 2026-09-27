@@ -1,6 +1,7 @@
 package com.example.eventapp.controller;
 
 import com.example.eventapp.dto.BreadcrumbDTO;
+import com.example.eventapp.model.BusinessCategory;
 import com.example.eventapp.model.LegalDocumentType;
 import com.example.eventapp.service.LegalDocumentService;
 import org.springframework.stereotype.Controller;
@@ -26,6 +27,12 @@ public class HomeController {
     @GetMapping("/prezentare")
     public String presentation() {
         return "prezentare";
+    }
+
+    @GetMapping("/prezentare-generala")
+    public String generalPresentation(Model model) {
+        model.addAttribute("categories", BusinessCategory.values());
+        return "prezentare-generala";
     }
 
     @GetMapping("/terms")

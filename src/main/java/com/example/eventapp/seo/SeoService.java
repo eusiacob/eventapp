@@ -121,6 +121,11 @@ public class SeoService {
                 description = "Descoperă cum poți prezenta locația ta pentru evenimente pe M-Event, prin fotografii, videoclipuri și informații utile pentru clienți.";
                 image = absolute("/images/prezentare-video-poster.jpg");
             }
+            case "prezentare-generala" -> {
+                path = "/prezentare-generala";
+                title = "Prezintă-ți serviciile pentru evenimente | M-Event";
+                description = "Ești fotograf, DJ, decorator sau furnizor de servicii pentru evenimente? Descoperă cum îți poți prezenta oferta și portofoliul pe M-Event.";
+            }
             case "contact" -> {
                 path = "/contact";
                 title = "Contact M-Event – Întrebări și parteneriate";

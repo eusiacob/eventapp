@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <th:block th:replace="~{fragments/seo :: head}"></th:block>
+    <link rel="icon" th:href="@{/images/favicon.png}" type="image/png">
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="presentation-page presentation-general">
+    <section aria-labelledby="generalPresentationTitle" class="presentation-hero container">
+        <div class="presentation-intro">
+            <span class="presentation-eyebrow">Pentru furnizorii de servicii pentru evenimente</span>
+            <h1 id="generalPresentationTitle">Fă-ți serviciile cunoscute pe M-Event.</h1>
+            <p class="presentation-lead">De la fotografie și muzică la decor, catering și locații, fiecare serviciu
+                contribuie la un eveniment reușit. Prezintă ce oferi într-un profil dedicat și ajută-i pe cei care
+                organizează un eveniment să te descopere.</p>
+            <div class="presentation-actions">
+                <a class="btn presentation-primary-button" sec:authorize="isAnonymous()" th:href="@{/register}">
+                    Creează cont și adaugă serviciul <i aria-hidden="true" class="bi bi-arrow-right"></i>
+                </a>
+                <a class="btn presentation-primary-button" sec:authorize="hasRole('BUSINESS')"
+                   th:href="@{/business/create}">
+                    Adaugă serviciul tău <i aria-hidden="true" class="bi bi-arrow-right"></i>
+                </a>
+                <a class="presentation-secondary-link" th:href="@{/businesses}">Explorează platforma</a>
+            </div>
+        </div>
+
+        <aside aria-labelledby="presentationCategoriesTitle" class="presentation-categories">
+            <span class="presentation-eyebrow">Găsește-ți categoria</span>
+            <h2 id="presentationCategoriesTitle">Un loc pentru ceea ce oferi</h2>
+            <p>Descoperă categoriile de servicii de pe M-Event.</p>
+            <ul class="presentation-category-grid">
+                <li th:each="category : ${categories}">
+                    <a class="presentation-category-link"
+                       th:href="@{/businesses/category/{category}(category=${category})}">
+                        <i aria-hidden="true" class="bi" th:classappend="${category.icon}"></i>
+                        <span th:text="${category.displayName}"></span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+    </section>
+
+    <section aria-labelledby="generalBenefitsTitle" class="presentation-benefits container">
+        <div class="presentation-section-heading">
+            <span class="presentation-eyebrow">Serviciile tale, într-un singur profil</span>
+            <h2 id="generalBenefitsTitle">Arată ce poți aduce unui eveniment</h2>
+        </div>
+        <div class="presentation-benefit-grid">
+            <article class="presentation-benefit">
+                <span aria-hidden="true" class="presentation-benefit-icon"><i class="bi bi-images"></i></span>
+                <h3>Pune-ți portofoliul în valoare</h3>
+                <p>Descrie serviciul și adaugă fotografii și videoclipuri reprezentative pentru munca ta.
+                    Oferă-le celor interesați detalii care îi ajută să aleagă.</p>
+            </article>
+            <article class="presentation-benefit">
+                <span aria-hidden="true" class="presentation-benefit-icon"><i class="bi bi-geo-alt"></i></span>
+                <h3>Spune unde și pentru ce evenimente lucrezi</h3>
+                <p>Alege tipurile de servicii și de evenimente, până la 10 județe sau toată țara.
+                    Vizitatorii pot folosi aceste criterii pentru a căuta furnizori.</p>
+            </article>
+            <article class="presentation-benefit">
+                <span aria-hidden="true" class="presentation-benefit-icon"><i class="bi bi-calendar-check"></i></span>
+                <h3>Ține informațiile la zi</h3>
+                <p>Actualizează profilul și marchează datele indisponibile în calendar.
+                    Utilizatorii conectați pot consulta datele de contact pentru a discuta direct oferta cu tine.</p>
+            </article>
+        </div>
+    </section>
+
+    <section aria-labelledby="generalStepsTitle" class="presentation-benefits container">
+        <div class="presentation-section-heading">
+            <span class="presentation-eyebrow">Cum începi</span>
+            <h2 id="generalStepsTitle">De la cont la profilul serviciului</h2>
+        </div>
+        <ol class="presentation-onboarding">
+            <li><span aria-hidden="true" class="presentation-step-number">1</span>
+                <div><h3>Creează-ți contul</h3>
+                    <p>Înregistrează-te pe M-Event pentru a putea adăuga și administra serviciile tale.</p></div>
+            </li>
+            <li><span aria-hidden="true" class="presentation-step-number">2</span>
+                <div><h3>Completează profilul</h3>
+                    <p>Alege categoria, descrie oferta, adaugă portofoliul și cel puțin o metodă de contact.</p></div>
+            </li>
+            <li><span aria-hidden="true" class="presentation-step-number">3</span>
+                <div><h3>Pregătește-te să fii descoperit</h3>
+                    <p>După aprobare, serviciul activ apare public. Îi poți actualiza informațiile din contul tău.</p>
+                </div>
+            </li>
+        </ol>
+        <div class="presentation-example">
+            <div><h3>Vrei să vezi un exemplu?</h3>
+                <p>Am pregătit o demonstrație video folosind profilul unei locații fictive.</p></div>
+            <a class="presentation-secondary-link" th:href="@{/prezentare}">Vezi exemplul pentru locații <i
+                    aria-hidden="true" class="bi bi-arrow-right"></i></a>
+        </div>
+    </section>
+
+    <section aria-labelledby="generalFinalTitle" class="presentation-final container">
+        <h2 id="generalFinalTitle">Prezintă ceea ce faci cu pasiune.</h2>
+        <p>Adaugă serviciul tău și ajută organizatorii să afle ce oferi.</p>
+        <a class="btn presentation-primary-button" sec:authorize="isAnonymous()" th:href="@{/register}">Creează-ți
+            contul</a>
+        <a class="btn presentation-primary-button" sec:authorize="hasRole('BUSINESS')" th:href="@{/business/create}">Adaugă
+            un serviciu</a>
+        <p class="presentation-contact">Ai întrebări? Scrie-ne la <a href="mailto:parteneri@m-event.ro">parteneri@m-event.ro</a>.
+        </p>
+    </section>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script crossorigin="anonymous"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

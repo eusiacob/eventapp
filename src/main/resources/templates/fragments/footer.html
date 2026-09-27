@@ -1,72 +1,76 @@
-<footer th:fragment="footer" class="site-footer">
+<footer class="site-footer" th:fragment="footer">
 
-  <div class="footer-container">
+    <div class="footer-container">
 
-    <div class="footer-brand">
+        <div class="footer-brand">
 
-      <a class="navbar-brand mevent-brand mb-2" href="/businesses">
-        <img alt="M-Event"
-             class="mevent-logo"
-             th:src="@{/images/logo_transparent.png}">
-      </a>
+            <a class="navbar-brand mevent-brand mb-2" href="/businesses">
+                <img alt="M-Event"
+                     class="mevent-logo"
+                     th:src="@{/images/logo_transparent.png}">
+            </a>
 
-      <p>
-        Descoperă servicii și experiențe
-        pentru evenimentele tale.
-      </p>
+            <p>
+                Descoperă servicii și experiențe
+                pentru evenimentele tale.
+            </p>
+
+        </div>
+
+        <div class="footer-section">
+
+            <h6>Informații</h6>
+
+            <a th:href="@{/prezentare-generala}">
+                Pentru furnizori
+            </a>
+
+            <a th:href="@{/privacy}">
+                Privacy Policy
+            </a>
+
+            <a th:href="@{/terms}">
+                Terms & Conditions
+            </a>
+
+            <a th:href="@{/contact}">
+                Contact
+            </a>
+
+        </div>
+
+        <div class="footer-section">
+
+            <h6>Urmărește-ne</h6>
+
+            <a href="https://www.facebook.com/"
+               rel="noopener noreferrer"
+               target="_blank">
+
+                <i class="bi bi-facebook"></i>
+                Facebook
+
+            </a>
+
+            <a href="https://www.instagram.com/"
+               rel="noopener noreferrer"
+               target="_blank">
+
+                <i class="bi bi-instagram"></i>
+                Instagram
+
+            </a>
+
+        </div>
 
     </div>
 
-    <div class="footer-section">
-
-      <h6>Informații</h6>
-
-      <a th:href="@{/privacy}">
-        Privacy Policy
-      </a>
-
-      <a th:href="@{/terms}">
-        Terms & Conditions
-      </a>
-
-      <a th:href="@{/contact}">
-        Contact
-      </a>
-
-    </div>
-
-    <div class="footer-section">
-
-      <h6>Urmărește-ne</h6>
-
-      <a href="https://www.facebook.com/"
-         target="_blank"
-         rel="noopener noreferrer">
-
-        <i class="bi bi-facebook"></i>
-        Facebook
-
-      </a>
-
-      <a href="https://www.instagram.com/"
-         target="_blank"
-         rel="noopener noreferrer">
-
-        <i class="bi bi-instagram"></i>
-        Instagram
-
-      </a>
-
-    </div>
-
-  </div>
-
-  <div class="footer-bottom">
+    <div class="footer-bottom">
 
         <span>
             © 2026 M-Event. Toate drepturile rezervate.
         </span>
 
-  </div>
+    </div>
 
 </footer>

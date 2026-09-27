@@ -38,7 +38,7 @@ public class SitemapController {
 
     @GetMapping(value = "/sitemaps/pages.xml", produces = XML)
     public ResponseEntity<String> pages() {
-        List<String> paths = new ArrayList<>(List.of("/", "/businesses", "/prezentare", "/contact", "/terms", "/privacy"));
+        List<String> paths = new ArrayList<>(List.of("/", "/businesses", "/prezentare", "/prezentare-generala", "/contact", "/terms", "/privacy"));
         for (BusinessCategory category : profiles.findPublicCategoriesForSitemap()) {
             paths.add("/businesses/category/" + category.name());
         }

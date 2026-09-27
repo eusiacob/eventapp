@@ -74,6 +74,7 @@ public class SecurityConfig {
                                 "/forgot",
                                 "/contact",
                                 "/prezentare",
+                                "/prezentare-generala",
                                 "/reset-password",
                                 "/verify-email",
                                 "/robots.txt",

@@ -15,8 +15,8 @@ public enum BusinessCategory {
     FLORIST("Aranjamente florale", "bi-flower1"),
     DECOR("Decor", "bi-balloon-fill"),
     DIVERTISMENT("Divertisment", "bi-magic"),
-    LOCATII("Locații evenimente", "bi bi-building-fill"),
-    ORGANIZATOR("Organizator eveniment", "bi-calendar-heart"),
+    LOCATII("Locații", "bi bi-building-fill"),
+    ORGANIZATOR("Organizator", "bi-calendar-heart"),
     TRANSPORT("Transport", "bi-car-front-fill"),
     ARTIFICII("Artificii", "bi-stars"),
     ALTELE("Alte servicii", "bi-grid");
