@@ -112,7 +112,7 @@ public class EmailService {
                 "Cont creat cu succes - M-Event",
                 greeting(firstName) +
                         "Contul tău M-Event a fost creat cu succes. " +
-                        "Te poți autentifica și începe să planifici evenimentul tău."
+                        "Te poți autentifica și începe să planifici evenimentul tău sau să oferi servicii organizatorilor."
         );
     }
 

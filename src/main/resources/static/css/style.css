@@ -3289,6 +3289,33 @@ body .favorite-title,
     .business-form-actions .btn { flex: 1; padding-inline: 0.5rem; }
 }
 
+/* Catalog heading, using the warm accents of the M-Event palette. */
+.businesses-intro {
+    margin: 0.5rem 0 1.25rem;
+    padding: clamp(1.1rem, 3vw, 1.8rem);
+    background: linear-gradient(120deg, #f7ede5 0%, #fbf4e7 100%);
+    border: 1px solid #e5d3c6;
+    border-left: 4px solid var(--me-terracotta, #dc8665);
+    border-radius: 18px;
+    box-shadow: 0 4px 16px rgba(83, 70, 102, 0.05);
+}
+
+.businesses-intro-title {
+    margin: 0 0 0.65rem;
+    color: var(--me-heading, #534666);
+    font-size: clamp(1.35rem, 2.6vw, 1.85rem);
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.businesses-intro-description {
+    max-width: 68ch;
+    margin: 0;
+    color: #595461;
+    font-size: 1rem;
+    line-height: 1.65;
+}
+
 /* Short introduction to exploring services. */
 .explore-guide {
     margin: 0.75rem 0 1rem;
