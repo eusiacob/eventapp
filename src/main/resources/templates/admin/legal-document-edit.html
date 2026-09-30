@@ -22,6 +22,12 @@
             <p class="text-muted mb-4">Textul este afișat public exact cum îl introduci, păstrând rândurile noi. Nu sunt permise elemente HTML.</p>
 
             <form method="post" th:action="@{/admin/legal-documents/{type}(type=${documentType})}" th:object="${document}">
+                <div class="alert alert-info" role="note">
+                    Modificarea textului, versiunii sau datei publică documentul și programează automat
+                    un email individual pentru fiecare utilizator. Trimiterea se face în fundal.
+                    Salvarea fără modificări nu retrimite emailurile.
+                    Schimbă și versiunea dacă dorești o nouă confirmare la autentificare.
+                </div>
                 <div class="row g-3 mb-3">
                     <div class="col-12 col-md-6">
                         <label class="form-label" for="version">Versiune</label>

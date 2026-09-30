@@ -1,6 +1,9 @@
 package com.example.eventapp.service;
 
 import com.example.eventapp.config.ApplicationMailProperties;
+import com.example.eventapp.model.LegalDocumentType;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailException;
@@ -225,6 +228,23 @@ public class EmailService {
         );
     }
 
+    /** Propagates delivery failures so the durable queue can retry them. */
+    public void sendLegalDocumentUpdatedEmail(String recipient, String firstName,
+            LegalDocumentType type, String version, LocalDate lastUpdated) {
+        boolean privacy = type == LegalDocumentType.PRIVACY_POLICY;
+        String title = privacy ? "Politica de confidențialitate" : "Termenii și condițiile";
+        sendEmailOrThrow(recipient, "Actualizare: " + title + " - M-Event",
+                greeting(firstName) +
+                "Am actualizat documentul \"" + title + "\" al platformei M-Event.\n\n" +
+                "Versiune: " + version + "\n" +
+                "Data actualizării: " + lastUpdated.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + "\n\n" +
+                "Te rugăm să consulți documentul publicat aici:\n" +
+                appBaseUrl + (privacy ? "/privacy" : "/terms") + "\n\n" +
+                "Dacă versiunea acceptată în contul tău este diferită, îți vom solicita confirmarea " +
+                "la următoarea autentificare. Acest email este o informare și nu înregistrează acceptarea documentului.\n\n" +
+                "Primești acest mesaj deoarece ai un cont M-Event. Nu este un mesaj promoțional.");
+    }
+
     private void sendEmail(
             String recipient,
             String subject,
@@ -235,6 +255,17 @@ public class EmailService {
             return;
         }
 
+        try {
+            sendEmailOrThrow(recipient, subject, content);
+        } catch (MailException exception) {
+            LOGGER.warn("Emailul de notificare nu a putut fi trimis.", exception);
+        }
+    }
+
+    private void sendEmailOrThrow(String recipient, String subject, String content) {
+        if (recipient == null || recipient.isBlank()) {
+            throw new IllegalArgumentException("Lipsește destinatarul emailului.");
+        }
         SimpleMailMessage message =
                 new SimpleMailMessage();
 
@@ -244,11 +275,7 @@ public class EmailService {
         message.setSubject(subject);
         message.setText(content + applicationFooter());
 
-        try {
-            mailSender.send(message);
-        } catch (MailException exception) {
-            LOGGER.warn("Emailul de notificare nu a putut fi trimis.", exception);
-        }
+        mailSender.send(message);
     }
 
     private String greeting(String firstName) {

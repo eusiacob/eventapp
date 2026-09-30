@@ -111,10 +111,12 @@ public class AdminController {
             return "admin/legal-document-edit";
         }
 
-        legalDocumentService.updateDocument(type, form);
+        boolean changed = legalDocumentService.updateDocument(type, form);
         redirectAttributes.addFlashAttribute(
                 "successMessage",
-                "Documentul a fost actualizat. O versiune nouă va fi confirmată la următoarea autentificare."
+                changed
+                        ? "Documentul a fost actualizat. Notificările email pentru toți utilizatorii au fost puse în coada de trimitere. O versiune nouă va fi confirmată la următoarea autentificare."
+                        : "Nu există modificări. Nu au fost programate notificări email."
         );
         return "redirect:/admin/legal-documents";
     }

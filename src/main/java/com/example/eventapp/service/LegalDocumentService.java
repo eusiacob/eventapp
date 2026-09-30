@@ -5,6 +5,7 @@ import com.example.eventapp.model.LegalDocument;
 import com.example.eventapp.model.LegalDocumentType;
 import com.example.eventapp.model.User;
 import com.example.eventapp.repository.LegalDocumentRepository;
+import com.example.eventapp.repository.LegalDocumentEmailRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.time.LocalDateTime;
 
 @Service
 public class LegalDocumentService {
@@ -19,9 +22,12 @@ public class LegalDocumentService {
     private static final String INITIAL_VERSION = "2026-09-13";
 
     private final LegalDocumentRepository legalDocumentRepository;
+    private final LegalDocumentEmailRepository legalDocumentEmailRepository;
 
-    public LegalDocumentService(LegalDocumentRepository legalDocumentRepository) {
+    public LegalDocumentService(LegalDocumentRepository legalDocumentRepository,
+                                LegalDocumentEmailRepository legalDocumentEmailRepository) {
         this.legalDocumentRepository = legalDocumentRepository;
+        this.legalDocumentEmailRepository = legalDocumentEmailRepository;
     }
 
     @PostConstruct
@@ -64,13 +70,25 @@ public class LegalDocumentService {
     }
 
     @Transactional
-    public void updateDocument(LegalDocumentType type, LegalDocumentForm form) {
-        LegalDocument document = getDocument(type);
-        document.setContent(form.getContent().trim());
-        document.setVersion(form.getVersion().trim());
+    public boolean updateDocument(LegalDocumentType type, LegalDocumentForm form) {
+        LegalDocument document = legalDocumentRepository.findByTypeForUpdate(type)
+                .orElseThrow(() -> new IllegalStateException("Documentul legal nu este configurat."));
+        String content = form.getContent().trim();
+        String version = form.getVersion().trim();
+        if (Objects.equals(document.getContent(), content)
+                && Objects.equals(document.getVersion(), version)
+                && Objects.equals(document.getLastUpdated(), form.getLastUpdated())) {
+            return false;
+        }
+        document.setContent(content);
+        document.setVersion(version);
         document.setLastUpdated(form.getLastUpdated());
 
         legalDocumentRepository.save(document);
+        // Snapshot all current accounts in the same transaction as publication.
+        legalDocumentEmailRepository.enqueueForAllUsers(type.name(), version,
+                form.getLastUpdated(), LocalDateTime.now());
+        return true;
     }
 
     private boolean hasAcceptedCurrentVersion(
