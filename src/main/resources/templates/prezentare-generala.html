@@ -26,7 +26,7 @@
                 <a class="btn presentation-primary-button" sec:authorize="isAnonymous()" th:href="@{/register}">
                     Creează cont și adaugă serviciul <i aria-hidden="true" class="bi bi-arrow-right"></i>
                 </a>
-                <a class="btn presentation-primary-button" sec:authorize="hasRole('BUSINESS')"
+                <a class="btn presentation-primary-button" sec:authorize="hasRole('BUSINESS')" th:if="${showAddService == true}"
                    th:href="@{/business/create}">
                     Adaugă serviciul tău <i aria-hidden="true" class="bi bi-arrow-right"></i>
                 </a>
@@ -110,7 +110,7 @@
         <p>Adaugă serviciul tău și ajută organizatorii să afle ce oferi.</p>
         <a class="btn presentation-primary-button" sec:authorize="isAnonymous()" th:href="@{/register}">Creează-ți
             contul</a>
-        <a class="btn presentation-primary-button" sec:authorize="hasRole('BUSINESS')" th:href="@{/business/create}">Adaugă
+        <a class="btn presentation-primary-button" sec:authorize="hasRole('BUSINESS')" th:if="${showAddService == true}" th:href="@{/business/create}">Adaugă
             un serviciu</a>
         <p class="presentation-contact">Ai întrebări? Scrie-ne la <a href="mailto:parteneri@m-event.ro">parteneri@m-event.ro</a>.
         </p>

@@ -66,6 +66,42 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 32)
+    private AccountPurpose accountPurpose = AccountPurpose.UNSPECIFIED;
+
+    private LocalDateTime promotionStartedAt;
+    private LocalDateTime nextPromotionReminderAt;
+
+    @Column(nullable = false)
+    private int promotionRemindersSent = 0;
+
+    @Column(nullable = false)
+    private int promotionReminderAttempts = 0;
+
+    public boolean isShowAddService() {
+        return accountPurpose != AccountPurpose.SEARCH_SERVICES;
+    }
+
+    public void changeAccountPurpose(AccountPurpose purpose) {
+        if (purpose == null || purpose == AccountPurpose.UNSPECIFIED) {
+            throw new IllegalArgumentException("Alege cum dorești să folosești M-Event.");
+        }
+        if (purpose == accountPurpose) {
+            return;
+        }
+        boolean wasPromoting = accountPurpose != null && accountPurpose.includesPromotion();
+        accountPurpose = purpose;
+        if (!purpose.includesPromotion()) {
+            nextPromotionReminderAt = null;
+        } else if (!wasPromoting && promotionRemindersSent < 3) {
+            promotionStartedAt = LocalDateTime.now();
+            nextPromotionReminderAt = promotionStartedAt.plusDays(
+                    promotionRemindersSent == 0 ? 3 : promotionRemindersSent == 1 ? 10 : 30);
+            promotionReminderAttempts = 0;
+        }
+    }
+
     @Column(nullable = false)
     private boolean enabled = true;
 

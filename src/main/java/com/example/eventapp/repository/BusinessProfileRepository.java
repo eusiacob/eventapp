@@ -37,6 +37,7 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
     List<BusinessCategory> findPublicCategoriesForSitemap();
 
     List<BusinessProfile> findByUser(User user);
+    boolean existsByUser(User user);
 
     Optional<BusinessProfile> findByUuid(String uuid);
     Optional<BusinessProfile> findBySlug(String slug);

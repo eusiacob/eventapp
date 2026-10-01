@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<body>
+<fieldset th:fragment="choices(selectedPurpose)" class="border rounded-3 p-3">
+    <legend class="float-none w-auto px-2 fs-6 fw-semibold">Cum vrei să folosești M-Event?</legend>
+    <div class="form-check mb-2">
+        <input class="form-check-input" type="radio" name="accountPurpose" id="purposeSearch" value="SEARCH_SERVICES"
+               th:checked="${selectedPurpose != null and selectedPurpose.name() == 'SEARCH_SERVICES'}" required>
+        <label class="form-check-label" for="purposeSearch">Caut servicii pentru un eveniment.</label>
+    </div>
+    <div class="form-check mb-2">
+        <input class="form-check-input" type="radio" name="accountPurpose" id="purposePromote" value="PROMOTE_SERVICES"
+               th:checked="${selectedPurpose != null and selectedPurpose.name() == 'PROMOTE_SERVICES'}" required>
+        <label class="form-check-label" for="purposePromote">Vreau să îmi promovez serviciile.</label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="accountPurpose" id="purposeBoth" value="BOTH"
+               th:checked="${selectedPurpose != null and selectedPurpose.name() == 'BOTH'}" required>
+        <label class="form-check-label" for="purposeBoth">Ambele.</label>
+    </div>
+    <p class="small text-muted mt-3 mb-0">Poți schimba alegerea. Dacă alegi doar căutarea,
+        serviciile tale devin inactive și nu mai sunt vizibile public.</p>
+</fieldset>
+</body>
+</html>

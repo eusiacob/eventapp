@@ -228,6 +228,28 @@ public class EmailService {
         );
     }
 
+    public void sendPromotionReminderEmail(String recipient, String firstName, int stage) {
+        String subject = switch (stage) {
+            case 0 -> "Prezintă-ți serviciile pe M-Event";
+            case 1 -> "Ai nevoie de ajutor pentru primul tău serviciu?";
+            default -> "Profilul tău de furnizor te așteaptă pe M-Event";
+        };
+        String intro = switch (stage) {
+            case 0 -> "Ai ales să îți promovezi serviciile pe M-Event, dar încă nu ai adăugat primul serviciu. " +
+                    "Prezintă ce oferi și ajută persoanele care organizează un eveniment să te descopere.";
+            case 1 -> "Pentru a începe, adaugă numele serviciului, o descriere, categoria, zona în care lucrezi " +
+                    "și cel puțin o modalitate de contact. Poți completa prezentarea cu fotografii și videoclipuri scurte. " +
+                    "Dacă ai nevoie de ajutor, scrie-ne la " + mailProperties.getContactAddress() + ".";
+            default -> "Dacă dorești în continuare să îți promovezi activitatea, poți adăuga primul serviciu " +
+                    "atunci când ești pregătit. Acesta este ultimul mesaj din seria noastră de reamintiri.";
+        };
+        sendEmailOrThrow(recipient, subject + " - M-Event", greeting(firstName) + intro +
+                "\n\nAdaugă primul serviciu:\n" + appBaseUrl + "/business/create\n\n" +
+                "Primești această reamintire deoarece ai ales promovarea serviciilor. " +
+                "Dacă folosești platforma doar pentru a căuta servicii, poți schimba preferința din profil:\n" +
+                appBaseUrl + "/profile");
+    }
+
     /** Propagates delivery failures so the durable queue can retry them. */
     public void sendLegalDocumentUpdatedEmail(String recipient, String firstName,
             LegalDocumentType type, String version, LocalDate lastUpdated) {

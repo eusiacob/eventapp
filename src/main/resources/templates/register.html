@@ -132,6 +132,11 @@
                             </div>
 
                             <!-- GDPR -->
+                            <div class="col-12">
+                                <div th:replace="~{fragments/account-purpose :: choices(${user.accountPurpose})}"></div>
+                                <div class="text-danger small mt-1" th:errors="*{accountPurpose}"></div>
+                                <div class="text-danger small mt-1" th:errors="*{accountPurposeValid}"></div>
+                            </div>
 
                             <div class="form-check mb-2">
 
@@ -140,7 +145,7 @@
                                        th:field="*{privacyAccepted}"
                                        type="checkbox">
 
-                                <label class="form-check-label text-muted fw-normal"
+                                <label class="form-check-label fw-normal"
                                        for="privacyAccepted">
 
                                     Sunt de acord cu
@@ -165,7 +170,7 @@
                                        th:field="*{termsAccepted}"
                                        type="checkbox">
 
-                                <label class="form-check-label text-muted fw-normal"
+                                <label class="form-check-label fw-normal"
                                        for="termsAccepted">
 
                                     Am citit și accept

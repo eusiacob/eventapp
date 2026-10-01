@@ -1,5 +1,7 @@
 package com.example.eventapp.dto;
 
+import com.example.eventapp.model.AccountPurpose;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -10,6 +12,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RegisterUserDTO {
+
+    @jakarta.validation.constraints.NotNull(message = "Alege cum dorești să folosești M-Event.")
+    private AccountPurpose accountPurpose;
+
+    @jakarta.validation.constraints.AssertTrue(message = "Alege una dintre cele trei opțiuni de utilizare.")
+    public boolean isAccountPurposeValid() {
+        return accountPurpose == null || accountPurpose != AccountPurpose.UNSPECIFIED;
+    }
 
     @NotBlank(message = "Introdu prenumele!")
     @Size(

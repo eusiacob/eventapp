@@ -2,6 +2,8 @@ package com.example.eventapp.controller;
 
 import com.example.eventapp.dto.BreadcrumbDTO;
 import com.example.eventapp.model.User;
+import com.example.eventapp.model.AccountPurpose;
+import com.example.eventapp.service.AccountPurposeService;
 import com.example.eventapp.repository.SupportTicketRepository;
 import com.example.eventapp.service.BusinessProfileService;
 import com.example.eventapp.service.EmailService;
@@ -36,6 +38,7 @@ import java.time.LocalDate;
 public class ProfileController {
 
     private final UserService userService;
+    private final AccountPurposeService accountPurposeService;
     private final EmailService emailService;
     private final PersonalDataExportService personalDataExportService;
     private final BusinessProfileService businessProfileService;
@@ -44,12 +47,14 @@ public class ProfileController {
     private final SupportTicketRepository supportTicketRepository;
 
     public ProfileController(UserService userService,
+                             AccountPurposeService accountPurposeService,
                              EmailService emailService,
                              PersonalDataExportService personalDataExportService,
                              BusinessProfileService businessProfileService,
                              SupportTicketRepository supportTicketRepository,
                              ReviewService reviewService, SubscriptionService subscriptionService) {
         this.userService = userService;
+        this.accountPurposeService = accountPurposeService;
         this.emailService = emailService;
         this.personalDataExportService = personalDataExportService;
         this.businessProfileService = businessProfileService;
@@ -88,6 +93,22 @@ public class ProfileController {
                 new BreadcrumbDTO("Acasă", "/businesses"),
                 new BreadcrumbDTO("Profil", null)));
         return "profile";
+    }
+
+    @PostMapping("/profile/account-purpose")
+    public String updateAccountPurpose(@AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam AccountPurpose accountPurpose,
+            RedirectAttributes redirectAttributes) {
+        User user = userService.findByEmail(userDetails.getUsername());
+        try {
+            accountPurposeService.update(user.getId(), accountPurpose);
+            redirectAttributes.addFlashAttribute("accountSuccess", accountPurpose == AccountPurpose.SEARCH_SERVICES
+                    ? "Preferința a fost actualizată. Serviciile tale au fost făcute inactive și nu mai sunt vizibile public."
+                    : "Preferința de utilizare a fost actualizată. Poți activa serviciile aprobate din dashboard.");
+        } catch (IllegalArgumentException exception) {
+            redirectAttributes.addFlashAttribute("accountError", exception.getMessage());
+        }
+        return "redirect:/profile";
     }
 
     @GetMapping("/profile/ratings")

@@ -3,6 +3,7 @@ package com.example.eventapp.service;
 import com.example.eventapp.model.*;
 import com.example.eventapp.repository.BusinessProfileRepository;
 import com.example.eventapp.repository.EmailVerificationTokenRepository;
+import com.example.eventapp.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,17 +23,20 @@ public class BusinessProfileService {
     private final EmailVerificationTokenRepository emailVerificationTokenRepository;
     private final BusinessStorageCleanupService businessStorageCleanupService;
     private final SubscriptionService subscriptionService;
+    private final UserRepository userRepository;
 
     public BusinessProfileService(
             BusinessProfileRepository businessProfileRepository,
             EmailVerificationTokenRepository emailVerificationTokenRepository,
             BusinessStorageCleanupService businessStorageCleanupService,
-            SubscriptionService subscriptionService
+            SubscriptionService subscriptionService,
+            UserRepository userRepository
     ) {
         this.businessProfileRepository = businessProfileRepository;
         this.emailVerificationTokenRepository = emailVerificationTokenRepository;
         this.businessStorageCleanupService = businessStorageCleanupService;
         this.subscriptionService = subscriptionService;
+        this.userRepository = userRepository;
     }
 
     public BusinessProfile findByUuid(String uuid){
@@ -56,7 +60,17 @@ public class BusinessProfileService {
                 .orElseThrow(() -> new RuntimeException("Serviciul nu există."));
     }
 
+    @Transactional
     public void save(BusinessProfile businessProfile) {
+        if (businessProfile.getUser() != null && businessProfile.getUser().getId() != null) {
+            User owner = userRepository.findForPurposeUpdate(businessProfile.getUser().getId()).orElseThrow();
+            if (owner.getAccountPurpose() == AccountPurpose.SEARCH_SERVICES) {
+                if (businessProfile.getId() == null) {
+                    throw new AccessDeniedException("Alege promovarea serviciilor din profil pentru a adăuga un serviciu.");
+                }
+                businessProfile.setActive(false);
+            }
+        }
         if (!businessProfile.isServiceTypesValid() || !businessProfile.isOtherServiceDetailsValid()) {
             throw new IllegalArgumentException("Verifică tipurile de servicii și detaliile pentru Alt serviciu.");
         }
@@ -185,6 +199,7 @@ public class BusinessProfileService {
             User user,
             boolean active
     ) {
+        user = userRepository.findForPurposeUpdate(user.getId()).orElseThrow();
         BusinessProfile selected = findByUuid(uuid);
         if (!isOwner(selected, user)) {
             throw new AccessDeniedException("Nu ai permisiunea să modifici acest serviciu.");
@@ -194,6 +209,10 @@ public class BusinessProfileService {
             selected.setActive(false);
             businessProfileRepository.save(selected);
             return new VisibilityUpdate(false, List.of());
+        }
+
+        if (user.getAccountPurpose() == AccountPurpose.SEARCH_SERVICES) {
+            throw new AccessDeniedException("Alege promovarea serviciilor din profil pentru a face serviciul public.");
         }
 
         if (selected.getStatus() != BusinessProfile.BusinessStatus.APPROVED) {

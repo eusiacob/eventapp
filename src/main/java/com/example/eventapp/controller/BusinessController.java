@@ -104,7 +104,8 @@ public class BusinessController {
     }
 
     @GetMapping("/business/create")
-    public String showCreateForm(Model model) {
+    public String showCreateForm(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        requireServicePromotion(userService.findByEmail(userDetails.getUsername()));
         model.addAttribute("profile", new BusinessProfile());
         model.addAttribute("categories", businessProfileService.getCategories());
         model.addAttribute("breadcrumbs", List.of(
@@ -113,6 +114,13 @@ public class BusinessController {
                 new BreadcrumbDTO("Adăugare serviciu", null)
         ));
         return "business-form";
+    }
+
+    private void requireServicePromotion(User user) {
+        if (user.getAccountPurpose() == AccountPurpose.SEARCH_SERVICES) {
+            throw new org.springframework.security.access.AccessDeniedException(
+                    "Pentru a adăuga un serviciu, alege promovarea serviciilor din profil.");
+        }
     }
 
     @PostMapping("/business/create")
@@ -124,6 +132,9 @@ public class BusinessController {
             @AuthenticationPrincipal UserDetails userDetails,
             RedirectAttributes redirectAttributes
     ) throws IOException {
+
+        User user = userService.findByEmail(userDetails.getUsername());
+        requireServicePromotion(user);
 
         if (result.hasErrors()) {
             model.addAttribute(
@@ -152,11 +163,6 @@ public class BusinessController {
                 return "business-form";
             }
         }
-
-        User user =
-                userService.findByEmail(
-                        userDetails.getUsername()
-                );
 
         profile.setUser(user);
 

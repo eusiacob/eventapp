@@ -168,7 +168,7 @@
                 </li>
 
                 <!--ADD BUSINESS-->
-                <li class="nav-item" sec:authorize="hasRole('BUSINESS')">
+                <li class="nav-item" sec:authorize="hasRole('BUSINESS')" th:if="${showAddService == true}">
                     <a class="btn btn-primary btn-sm d-inline-flex align-items-center gap-2 text-nowrap"
                        th:href="@{/business/create}">
                         <i aria-hidden="true" class="bi bi-plus-lg"></i>
@@ -227,6 +227,7 @@
         </a>
 
         <a class="mobile-nav-item mobile-add-item"
+           th:if="${showAddService == true}"
            data-mobile-nav="/business/create"
            href="/business/create"
            sec:authorize="hasRole('BUSINESS')">

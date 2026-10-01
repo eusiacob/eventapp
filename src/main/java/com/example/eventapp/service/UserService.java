@@ -164,6 +164,7 @@ public class UserService {
         user.setConfirmPassword(null);
 
         user.setRole(Role.BUSINESS);
+        user.changeAccountPurpose(userDTO.getAccountPurpose());
         user.setEnabled(true);
         user.setEmailVerified(false);
         user.setEmailVerifiedAt(null);

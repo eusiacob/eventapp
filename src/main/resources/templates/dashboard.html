@@ -254,7 +254,9 @@
     <!-- EMPTY STATE -->
     <div class="empty-businesses"
          th:if="${#lists.isEmpty(profiles)}">
-        Nu ai servicii. Adaugă acum unul!
+        <span th:if="${showAddService == true}">Nu ai servicii. Adaugă acum unul!</span>
+        <span th:if="${showAddService != true}">Nu ai servicii adăugate. Dacă dorești să îți promovezi activitatea,
+            schimbă preferința din <a th:href="@{/profile}">profil</a>.</span>
     </div>
 
     <!-- CARDS -->
@@ -322,9 +324,9 @@
                                    th:checked="${p.status.name() == 'APPROVED' && p.active}"
                                    th:data-url="@{/business/{uuid}/visibility(uuid=${p.uuid})}"
                                    th:data-uuid="${p.uuid}"
-                                   th:disabled="${p.status.name() != 'APPROVED'}"
+                                   th:disabled="${p.status.name() != 'APPROVED' or showAddService != true}"
                                    th:id="'visibility-toggle-' + ${p.uuid}"
-                                   th:title="${p.status.name() == 'APPROVED' ? 'Schimbă vizibilitatea publică' : 'Serviciul trebuie aprobat înainte de publicare'}"
+                                   th:title="${showAddService != true ? 'Alege promovarea serviciilor din profil pentru a publica' : (p.status.name() == 'APPROVED' ? 'Schimbă vizibilitatea publică' : 'Serviciul trebuie aprobat înainte de publicare')}"
                                    type="checkbox">
                         </div>
                     </div>

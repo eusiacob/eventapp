@@ -90,7 +90,7 @@ public class SubscriptionService {
             for (BusinessProfile profile : profiles) {
 
                 profile.setPremium(true);
-                profile.setActive(true);
+                profile.setActive(user.getAccountPurpose() != AccountPurpose.SEARCH_SERVICES);
             }
 
             businessProfileRepository.saveAll(profiles);

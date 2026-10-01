@@ -65,6 +65,7 @@ public class GlobalModelAttributes {
             try {
                 User user =
                         userService.findByEmail(userDetails.getUsername());
+                model.addAttribute("showAddService", user.isShowAddService());
 
                 model.addAttribute(
                         "notifications",

@@ -110,6 +110,16 @@
             </div>
 
             <!--REVIEWS, FAVS AND SERVICES CARD-->
+            <div class="card border-0 shadow-sm mb-4" th:if="${user.role.name() != 'ADMIN'}">
+                <div class="card-body p-4">
+                    <form method="post" th:action="@{/profile/account-purpose}">
+                        <div th:replace="~{fragments/account-purpose :: choices(${user.accountPurpose})}"></div>
+                        <div class="text-end mt-3">
+                            <button class="btn btn-primary btn-sm" type="submit">Salvează preferința</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
             <div class="row g-4 mb-4">
 
                 <div class="col-12 col-md-4 clickable-card"
@@ -510,11 +520,6 @@
                 <div class="profile-info-row">
                     <span>Nume</span>
                     <strong th:text="${user.lastName}">lastName</strong>
-                </div>
-
-                <div class="profile-info-row">
-                    <span>Cont</span>
-                    <strong th:text="${user.role}">ROLE_USER</strong>
                 </div>
 
             </div>
