@@ -1,8 +1,6 @@
 package com.example.eventapp.controller;
 
 import com.example.eventapp.dto.RegisterUserDTO;
-import com.example.eventapp.model.AccountStatusReason;
-import com.example.eventapp.model.Role;
 import com.example.eventapp.model.User;
 import com.example.eventapp.service.EmailService;
 import com.example.eventapp.service.EmailVerificationService;
@@ -14,8 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.time.LocalDateTime;
 
 @Controller
 public class AuthController {
@@ -55,7 +51,7 @@ public class AuthController {
             result.rejectValue(
                     "email",
                     "error.user",
-                    "Email already exists"
+                    "Adresa de email a mai fost folosită."
             );
         }
 
