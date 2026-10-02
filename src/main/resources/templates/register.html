@@ -70,6 +70,10 @@
                                 <input autofocus
                                        class="form-control"
                                        placeholder="Prenume"
+                                       pattern="(?:\p{L}\p{M}*)+(?: +(?:\p{L}\p{M}*)+)*"
+                                       title="Doar litere, inclusiv diacritice, și spații între nume."
+                                       autocomplete="given-name"
+                                       required minlength="3" maxlength="10"
                                        th:field="*{firstName}"
                                        type="text">
 
@@ -82,6 +86,10 @@
                             <div class="col-12 col-md-6">
                                 <input class="form-control"
                                        placeholder="Nume"
+                                       pattern="(?:\p{L}\p{M}*)+(?: +(?:\p{L}\p{M}*)+)*"
+                                       title="Doar litere, inclusiv diacritice, și spații între nume."
+                                       autocomplete="family-name"
+                                       required minlength="3" maxlength="10"
                                        th:field="*{lastName}"
                                        type="text">
 

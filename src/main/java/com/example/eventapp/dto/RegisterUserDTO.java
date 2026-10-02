@@ -22,6 +22,8 @@ public class RegisterUserDTO {
     }
 
     @NotBlank(message = "Introdu prenumele!")
+    @Pattern(regexp = "(?:\\p{L}\\p{M}*)+(?: +(?:\\p{L}\\p{M}*)+)*",
+            message = "Prenumele poate conține doar litere și spații între nume.")
     @Size(
             min = 3,
             max = 10,
@@ -30,6 +32,8 @@ public class RegisterUserDTO {
     private String firstName;
 
     @NotBlank(message = "Introdu numele!")
+    @Pattern(regexp = "(?:\\p{L}\\p{M}*)+(?: +(?:\\p{L}\\p{M}*)+)*",
+            message = "Numele poate conține doar litere și spații între nume.")
     @Size(
             min = 3,
             max = 10,
