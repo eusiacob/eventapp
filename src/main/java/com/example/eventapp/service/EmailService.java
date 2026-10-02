@@ -24,15 +24,18 @@ public class EmailService {
     private final JavaMailSender mailSender;
     private final String appBaseUrl;
     private final ApplicationMailProperties mailProperties;
+    private final SentMailArchiveService sentMailArchiveService;
 
     public EmailService(
             JavaMailSender mailSender,
             @Value("${app.base-url:http://localhost:8080}") String appBaseUrl,
-            ApplicationMailProperties mailProperties
+            ApplicationMailProperties mailProperties,
+            SentMailArchiveService sentMailArchiveService
     ) {
         this.mailSender = mailSender;
         this.appBaseUrl = appBaseUrl.replaceAll("/+$", "");
         this.mailProperties = mailProperties;
+        this.sentMailArchiveService = sentMailArchiveService;
     }
 
     public void sendPasswordResetEmail(
@@ -296,8 +299,15 @@ public class EmailService {
         message.setTo(recipient);
         message.setSubject(subject);
         message.setText(content + applicationFooter());
+        message.setSentDate(new java.util.Date());
 
         mailSender.send(message);
+        try {
+            sentMailArchiveService.archive(message);
+        } catch (RuntimeException exception) {
+            LOGGER.warn("SMTP a reușit, dar arhivarea copiei email a eșuat ({}).",
+                    exception.getClass().getSimpleName());
+        }
     }
 
     private String greeting(String firstName) {

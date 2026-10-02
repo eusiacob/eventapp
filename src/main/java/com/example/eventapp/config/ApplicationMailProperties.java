@@ -17,6 +17,19 @@ public class ApplicationMailProperties {
     private String replyToAddress = "contact@m-event.ro";
     private String contactAddress = "contact@m-event.ro";
     private String partnersAddress = "parteneri@m-event.ro";
+    private SentCopy sentCopy = new SentCopy();
+
+    @Getter
+    @Setter
+    public static class SentCopy {
+        private boolean enabled = false;
+        private String host = "";
+        private int port = 993;
+        private String username = "";
+        private String password = "";
+        private String folder = "";
+        private int timeoutMs = 5000;
+    }
 
     public String getFormattedFromAddress() {
         try {
