@@ -790,7 +790,7 @@ body {
 .details-image {
     width: 100%;
     height: 500px;
-    object-fit: cover;
+    object-fit: fill;
 }
 
 .card {
@@ -1123,7 +1123,7 @@ body {
 
     .details-image {
         width: 100%;
-        object-fit: cover;
+        object-fit: fill;
     }
 
     .business-card .btn {
