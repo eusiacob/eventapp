@@ -35,10 +35,10 @@
 
     <div class="card service-details-card overflow-hidden">
 
-        <div class="business-details-overview p-3">
+        <div class="business-details-overview px-3 pt-3">
 
             <!-- Keep the uploaded cover fully visible in its original 4:3 frame. -->
-            <div class="business-details-cover-frame">
+            <div class="business-details-cover-frame mb-2">
                 <img class="details-image business-details-cover"
                      fetchpriority="high"
                      th:alt="|${profile.name} ${profile.category.displayName}|"
@@ -56,19 +56,37 @@
                           th:text="${profile.category.displayName}"></span>
 
                     <!--ADD/REMOVE FROM FAVORITES BUTTON-->
-                    <div sec:authorize="isAuthenticated()">
+                    <div class="d-flex align-items-center gap-2" sec:authorize="isAuthenticated()">
 
-                        <button class="btn favorite-details-btn"
+                        <button aria-controls="businessContactModal"
+                                aria-haspopup="dialog"
+                                aria-label="Vezi metodele de contact"
+                                class="btn btn-outline-primary rounded-4 d-lg-none"
+                                data-bs-target="#businessContactModal"
+                                data-bs-toggle="modal"
+                                style="min-width: 44px; min-height: 44px;"
+                                th:if="${(profile.phone != null and !profile.phone.isBlank())
+                                    or (profile.email != null and !profile.email.isBlank())
+                                    or (profile.website != null and !profile.website.isBlank())}"
+                                title="Contact"
+                                type="button">
+                            <i aria-hidden="true" class="bi bi-person-lines-fill fs-5"></i>
+                            <span>Contact</span>
+                        </button>
+
+                        <button aria-labelledby="detailsFavoriteText"
+                                class="btn favorite-details-btn"
                                 id="detailsFavoriteBtn"
+                                style="min-width: 44px; min-height: 44px;"
                                 th:classappend="${isFavorite} ? ' btn-danger' : ' btn-outline-danger'"
                                 th:data-business-uuid="${profile.uuid}"
                                 type="button">
 
-                        <span id="detailsFavoriteIcon"
+                        <span aria-hidden="true" id="detailsFavoriteIcon"
                               th:text="${isFavorite} ? '♥' : '♡'">
                         </span>
 
-                            <span id="detailsFavoriteText"
+                            <span class="d-none d-lg-inline" id="detailsFavoriteText"
                                   th:text="${isFavorite} ? 'Șterge de la favorite' : 'Adaugă la favorite'">
                         </span>
                         </button>
@@ -83,12 +101,12 @@
                     th:text="${profile.name}">
                 </h1>
 
-                <section class="text-muted mb-3">
+                <section class="text-muted mb-1">
                     <h6>Aria de acoperire</h6>
                     <div th:replace="~{fragments/service-area :: display(${profile})}"></div>
                 </section>
 
-                <div sec:authorize="isAuthenticated()">
+                <div class="d-none d-lg-block pt-3" sec:authorize="isAuthenticated()">
                     <h6 class="text-muted">Contact</h6>
                     <div>
 
@@ -430,6 +448,68 @@
 
     </div>
 
+</div>
+
+<!-- Mobile contact methods: keep private contact data restricted to signed-in users. -->
+<div aria-hidden="true"
+     aria-labelledby="businessContactModalTitle"
+     class="modal fade"
+     id="businessContactModal"
+     sec:authorize="isAuthenticated()"
+     tabindex="-1"
+     th:if="${(profile.phone != null and !profile.phone.isBlank())
+         or (profile.email != null and !profile.email.isBlank())
+         or (profile.website != null and !profile.website.isBlank())}">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="businessContactModalTitle">Contact furnizor</h2>
+                <button aria-label="Închide"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        type="button"></button>
+            </div>
+            <div class="modal-body">
+                <p class="fw-semibold text-break" th:text="${profile.name}"></p>
+                <div class="d-grid gap-3">
+                    <th:block th:if="${profile.phone != null and !profile.phone.isBlank()}">
+                        <a class="btn btn-outline-primary d-flex align-items-center gap-3 text-start"
+                           th:href="'tel:' + ${profile.phone}">
+                            <i aria-hidden="true" class="bi bi-telephone fs-4"></i>
+                            <span class="text-break">Sună<br><small th:text="${profile.phone}"></small></span>
+                        </a>
+                        <a class="btn btn-outline-success d-flex align-items-center gap-3 text-start"
+                           rel="noopener noreferrer"
+                           target="_blank"
+                           th:href="'https://wa.me/4' + ${profile.phone}">
+                            <i aria-hidden="true" class="bi bi-whatsapp fs-4"></i>
+                            <span>Trimite mesaj pe WhatsApp</span>
+                        </a>
+                    </th:block>
+                    <div th:if="${profile.email != null and !profile.email.isBlank()}">
+                        <a class="btn btn-outline-primary d-flex align-items-center gap-3 text-start w-100"
+                           th:href="'mailto:' + ${profile.email}">
+                            <i aria-hidden="true" class="bi bi-envelope-at fs-4"></i>
+                            <span class="text-break">Trimite email<br><small th:text="${profile.email}"></small></span>
+                        </a>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle mt-2"
+                              th:if="${profile.emailVerified}">
+                            <i aria-hidden="true" class="bi bi-patch-check-fill me-1"></i>
+                            Email verificat
+                        </span>
+                    </div>
+                    <a class="btn btn-outline-primary d-flex align-items-center gap-3 text-start"
+                       rel="noopener noreferrer"
+                       target="_blank"
+                       th:href="${profile.website}"
+                       th:if="${profile.website != null and !profile.website.isBlank()}">
+                        <i aria-hidden="true" class="bi bi-globe fs-4"></i>
+                        <span class="text-break">Vizitează website-ul<br><small th:text="${profile.website}"></small></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!--ADD/REMOVE FAVORITES MESSAGE-->
