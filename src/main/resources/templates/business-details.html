@@ -35,115 +35,123 @@
 
     <div class="card service-details-card overflow-hidden">
 
-        <!-- IMAGE -->
-        <img class="details-image"
-             fetchpriority="high"
-             th:alt="|${profile.name} – ${profile.category.displayName}|"
-             th:src="@{${profile.coverImagePath}}">
+        <div class="business-details-overview p-3">
+
+            <!-- Keep the uploaded cover fully visible in its original 4:3 frame. -->
+            <div class="business-details-cover-frame">
+                <img class="details-image business-details-cover"
+                     fetchpriority="high"
+                     th:alt="|${profile.name} ${profile.category.displayName}|"
+                     th:src="@{${profile.coverImagePath}}">
+            </div>
 
 
-        <!-- CONTENT -->
-        <div class="p-3">
+            <!-- CONTENT -->
+            <div class="business-details-summary">
 
-            <div class="d-flex justify-content-between">
+                <div class="d-flex flex-wrap align-items-start justify-content-between gap-2">
 
-                <!-- CATEGORY -->
-                <span class="badge bg-admin px-3 py-2 mb-3"
-                      th:text="${profile.category.displayName}"></span>
+                    <!-- CATEGORY -->
+                    <span class="badge bg-admin px-3 py-2 mb-3"
+                          th:text="${profile.category.displayName}"></span>
 
-                <!--ADD/REMOVE FROM FAVORITES BUTTON-->
+                    <!--ADD/REMOVE FROM FAVORITES BUTTON-->
+                    <div sec:authorize="isAuthenticated()">
+
+                        <button class="btn favorite-details-btn"
+                                id="detailsFavoriteBtn"
+                                th:classappend="${isFavorite} ? ' btn-danger' : ' btn-outline-danger'"
+                                th:data-business-uuid="${profile.uuid}"
+                                type="button">
+
+                        <span id="detailsFavoriteIcon"
+                              th:text="${isFavorite} ? '♥' : '♡'">
+                        </span>
+
+                            <span id="detailsFavoriteText"
+                                  th:text="${isFavorite} ? 'Șterge de la favorite' : 'Adaugă la favorite'">
+                        </span>
+                        </button>
+
+                    </div>
+                </div>
+
+                <!-- NAME -->
+
+                <h1 class="h4 fw-bold mb-2"
+                    style="color: var(--me-heading);"
+                    th:text="${profile.name}">
+                </h1>
+
+                <section class="text-muted mb-3">
+                    <h6>Aria de acoperire</h6>
+                    <div th:replace="~{fragments/service-area :: display(${profile})}"></div>
+                </section>
+
                 <div sec:authorize="isAuthenticated()">
+                    <h6 class="text-muted">Contact</h6>
+                    <div>
 
-                    <button class="btn favorite-details-btn"
-                            id="detailsFavoriteBtn"
-                            th:classappend="${isFavorite} ? ' btn-danger' : ' btn-outline-danger'"
-                            th:data-business-uuid="${profile.uuid}"
-                            type="button">
+                        <span th:if="${profile.phone != null and !profile.phone.isBlank()}">
+                            <a class="btn bi bi-telephone"
+                               style="color: green; font-size: 1.5em"
+                               th:href="'tel:' + ${profile.phone}"
+                               title="Sună!">
+                            </a>
+                        </span>
 
-                    <span id="detailsFavoriteIcon"
-                          th:text="${isFavorite} ? '♥' : '♡'">
-                    </span>
+                        <span th:if="${profile.phone != null and !profile.phone.isBlank()}">
+                            <a aria-label="Chat on WhatsApp"
+                               class="btn bi bi-whatsapp"
+                               style="color: green; font-size: 1.5em"
+                               th:href="'https://wa.me/4' + ${profile.phone}"
+                               title="Trimite mesaj!">
+                            </a>
+                        </span>
 
-                        <span id="detailsFavoriteText"
-                              th:text="${isFavorite} ? 'Șterge de la favorite' : 'Adaugă la favorite'">
-                    </span>
-                    </button>
+                        <span th:if="${profile.email != null and !profile.email.isBlank()}">
+                            <a class="btn bi bi-envelope-at"
+                               style="font-size: 1.5em"
+                               th:href="'mailto:' + ${profile.email}"
+                               title="Trimite email!">
+                            </a>
+                        </span>
 
-                </div>
-            </div>
+                        <span th:if="${profile.website != null and !profile.website.isBlank()}">
+                            <a class="btn"
+                               style="font-size: 1em;"
+                               target="_blank"
+                               th:href="${profile.website}"
+                               title="Vizitează website!"> Website
+                            </a>
+                        </span>
 
-            <!-- NAME -->
+                    </div>
 
-            <h1 class="h4 fw-bold mb-2"
-                th:text="${profile.name}"
-                style="color: var(--me-heading);">
-            </h1>
-
-            <div class="text-muted mb-3">
-                <h2 class="h6">Aria de acoperire</h2>
-                <div th:replace="~{fragments/service-area :: display(${profile})}"></div>
-            </div>
-
-            <h2 class="h5 fw-bold mb-3">Despre</h2>
-            <p th:text="${profile.description}"></p>
-
-            <div sec:authorize="isAuthenticated()">
-
-                <div class="text-muted mb-3">
-                    <div th:replace="~{fragments/business-options :: display(${profile})}"></div>
-                </div>
-
-                <div>
-
-                    <span th:if="${profile.phone != null and !profile.phone.isBlank()}">
-                        <a class="btn bi bi-telephone"
-                           style="color: green; font-size: 1.5em"
-                           th:href="'tel:' + ${profile.phone}"
-                           title="Sună!">
-                        </a>
-                    </span>
-
-                    <span th:if="${profile.phone != null and !profile.phone.isBlank()}">
-                        <a aria-label="Chat on WhatsApp"
-                           class="btn bi bi-whatsapp"
-                           style="color: green; font-size: 1.5em"
-                           th:href="'https://wa.me/4' + ${profile.phone}"
-                           title="Trimite mesaj!">
-                        </a>
-                    </span>
-
-                    <span th:if="${profile.email != null and !profile.email.isBlank()}">
-                        <a class="btn bi bi-envelope-at"
-                           style="font-size: 1.5em"
-                           th:href="'mailto:' + ${profile.email}"
-                           title="Trimite email!">
-                        </a>
-                    </span>
-
-                    <span th:if="${profile.website != null and !profile.website.isBlank()}">
-                        <a class="btn"
-                           style="font-size: 1em;"
-                           target="_blank"
-                           th:href="${profile.website}"
-                           title="Vizitează website!"> Website
-                        </a>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle align-middle mb-2"
+                          th:if="${profile.emailVerified}">
+                            <i class="bi bi-patch-check-fill me-1"></i>
+                            Email verificat
                     </span>
 
                 </div>
 
-                <span class="badge bg-success-subtle text-success border border-success-subtle align-middle mb-2"
-                      th:if="${profile.emailVerified}">
-                        <i class="bi bi-patch-check-fill me-1"></i>
-                        Email verificat
-                </span>
-
-                <hr style="margin: 0.5rem 0">
+                <div class="alert alert-info mb-2 p-1" sec:authorize="isAnonymous()">
+                    <span>Conectează-te pentru a vedea datele de contact și toate detaliile serviciului.</span>
+                </div>
 
             </div>
+        </div>
 
-            <div class="alert alert-info mb-2 p-1" sec:authorize="isAnonymous()">
-                <span>Conectează-te pentru a vedea datele de contact și toate detaliile serviciului.</span>
+        <div class="p-3 pt-0">
+            <div class="text-muted mb-4 business-details-options" sec:authorize="isAuthenticated()">
+                <div th:replace="~{fragments/business-options :: display(${profile})}"></div>
             </div>
+
+            <section class="mb-4">
+                <h2 class="h5 fw-bold mb-3">Despre</h2>
+                <p class="text-break mb-0" th:text="${profile.description}"></p>
+            </section>
 
             <div>
 

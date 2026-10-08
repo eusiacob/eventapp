@@ -34,82 +34,81 @@
 
     <div class="card service-details-card rounded-4">
 
-        <img alt="Imagine serviciu"
-             class="details-image"
-             th:src="@{${business.coverImagePath}}">
+        <div class="business-details-overview p-3">
+            <div class="business-details-cover-frame">
+                <img alt="Imagine serviciu"
+                     class="details-image business-details-cover"
+                     th:src="@{${business.coverImagePath}}">
+            </div>
 
-        <div class="row mt-4">
+            <div class="business-details-summary">
+                <div class="d-flex flex-wrap align-items-start justify-content-between gap-2 mb-3">
+                    <span class="badge bg-admin px-3 py-2"
+                          th:text="${business.category.displayName}"></span>
+                    <span class="badge"
+                          th:classappend="
+                                ${business.status.name() == 'PENDING'} ? ' bg-warning text-dark' :
+                                (${business.status.name() == 'APPROVED'} ? ' bg-success' : ' bg-danger')"
+                          th:text="${business.status.statusDisplayName}"></span>
+                </div>
 
-            <div class="col-lg-8">
+                <h1 class="h4 fw-bold mb-3"
+                    style="color: var(--me-heading);"
+                    th:text="${business.name}"></h1>
 
-                <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <section class="text-muted mb-3">
+                    <h2 class="h6">Aria de acoperire</h2>
+                    <div th:replace="~{fragments/service-area :: display(${business})}"></div>
+                </section>
 
-                    <div class="card-body">
-
-                        <h4 class="mb-3">
-                            Descriere
-                        </h4>
-
-                        <p th:text="${business.description}">
-                        </p>
-
-                        <hr>
-
-                        <div class="row gy-3 mb-4"
-                             th:if="${business.phone != null}">
-
-                            <div class="col-md-6">
-
-                                <strong>Business phone</strong>
-
-                                <div th:text="${business.phone}"></div>
-
-                            </div>
-
-                            <div class="col-md-6"
-                                 th:if="${business.email != null}">
-
-                                <strong>Business email</strong>
-
-                                <div>
-                                    <span th:text="${business.email}"></span>
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle ms-1"
-                                          th:if="${business.emailVerified}">
-                                        <i class="bi bi-patch-check-fill me-1"></i>
-                                        Verificat
-                                    </span>
-                                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle ms-1"
-                                          th:if="${!business.emailVerified}">
-                                        Neverificat
-                                    </span>
-                                </div>
-
-                            </div>
-
-                            <div class="col-md-6"
-                                 th:if="${business.website != null}">
-
-                                <strong>Business website</strong>
-
-                                <div>
-                                    <a target="_blank"
-                                       th:href="${business.website}"
-                                       th:text="${business.website}">
-                                    </a>
-                                </div>
-
-                            </div>
-
-                            <div class="col-md-6">
-
-                                <strong>Zonă de acoperire</strong>
-
-                                <div th:replace="~{fragments/service-area :: display(${business})}"></div>
-                                <div th:replace="~{fragments/business-options :: display(${business})}"></div>
-
-                            </div>
-
+                <section>
+                    <h2 class="h6 text-muted">Contact</h2>
+                    <div class="mb-2" th:if="${business.phone != null and !business.phone.isBlank()}">
+                        <strong>Telefon</strong>
+                        <div th:text="${business.phone}"></div>
+                    </div>
+                    <div class="mb-2" th:if="${business.email != null and !business.email.isBlank()}">
+                        <strong>Email</strong>
+                        <div>
+                            <span th:text="${business.email}"></span>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle ms-1"
+                                  th:if="${business.emailVerified}">
+                                <i class="bi bi-patch-check-fill me-1"></i>
+                                Verificat
+                            </span>
+                            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle ms-1"
+                                  th:if="${!business.emailVerified}">
+                                Neverificat
+                            </span>
                         </div>
+                    </div>
+                    <div th:if="${business.website != null and !business.website.isBlank()}">
+                        <strong>Website</strong>
+                        <div>
+                            <a rel="noopener noreferrer"
+                               target="_blank"
+                               th:href="${business.website}"
+                               th:text="${business.website}"></a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <div class="p-3 pt-0">
+            <div class="text-muted mb-4">
+                <div th:replace="~{fragments/business-options :: display(${business})}"></div>
+            </div>
+
+            <section class="mb-4">
+                <h2 class="h5 fw-bold mb-3">Descriere</h2>
+                <p class="text-break mb-0" th:text="${business.description}"></p>
+            </section>
+
+            <div class="row gy-4">
+                <div class="col-lg-8">
+                    <div class="card shadow-sm border-0 rounded-4 mb-4">
+                        <div class="card-body">
 
                         <!-- FOTOGRAFII -->
                         <div th:if="${business.galleryImages != null and !#lists.isEmpty(business.galleryImages)}">
@@ -259,7 +258,7 @@
 
                         <hr>
 
-                        <div class="d-flex gap-2">
+                        <div class="d-flex flex-wrap gap-2">
 
                             <form method="post"
                                   th:action="@{/admin/business/{uuid}/approve(uuid=${business.uuid})}"
@@ -292,46 +291,6 @@
             </div>
 
         </div>
-
-        <div class="card-body p-4">
-
-            <div class="d-flex justify-content-between align-items-start">
-
-                <div>
-
-                    <h2 class="fw-bold"
-                        th:text="${business.name}">
-                    </h2>
-
-                    <div class="text-muted mb-0">
-
-                        <div th:text="${business.category.displayName}"></div>
-
-                    </div>
-
-
-                </div>
-
-                <span class="badge fs-6"
-                      th:classappend="
-                            ${business.status.name() == 'PENDING'} ? ' bg-warning text-dark' :
-                            (${business.status.name() == 'APPROVED'} ? ' bg-success' : ' bg-danger')"
-                      th:text="${business.status.statusDisplayName}">
-                </span>
-
-            </div>
-
-            <hr>
-
-            <p class="text-muted">
-
-                Trimis pe
-
-                <strong
-                        th:text="${#temporals.format(business.createdAt,'dd.MM.yyyy')}">
-                </strong>
-
-            </p>
 
         </div>
 
