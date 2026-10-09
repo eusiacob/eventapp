@@ -37,18 +37,9 @@
         <i aria-hidden="true" class="bi bi-geo-alt"></i> Toată țara
     </span>
     <th:block th:unless="${business.nationwide}">
-        <span class="service-area-badge" th:each="county, state : ${counties}"
-              th:if="${state.index < 5}" th:text="${county}"></span>
-        <details class="service-area-more" th:if="${#lists.size(counties) > 5}">
-            <summary th:aria-label="|Arată sau ascunde celelalte ${#lists.size(counties) - 5} județe|">
-                <span class="service-area-show" th:text="|+${#lists.size(counties) - 5}|"></span>
-                <span class="service-area-hide">− Mai puține</span>
-            </summary>
-            <div class="service-area-extra">
-                <span class="service-area-badge" th:each="county, state : ${counties}"
-                      th:if="${state.index >= 5}" th:text="${county}"></span>
-            </div>
-        </details>
+        <span class="service-area-badge"
+              th:each="county, state : ${counties}"
+              th:text="${county}"></span>
     </th:block>
 </div>
 </body>
