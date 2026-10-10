@@ -3377,7 +3377,6 @@ body .favorite-title,
 }
 
 .businesses-intro-description {
-    max-width: 68ch;
     margin: 0;
     color: #595461;
     font-size: 1rem;
@@ -3472,7 +3471,6 @@ body .favorite-title,
 .presentation-categories {
     min-width: 0;
     padding: clamp(1.1rem, 2.5vw, 1.8rem);
-    background: linear-gradient(135deg, #f7ede5, #fbf4e7);
     border: 1px solid #e5d3c6;
     border-radius: 22px;
 }

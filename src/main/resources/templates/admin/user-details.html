@@ -155,9 +155,9 @@
 
                     </h6>
 
-                    <p class="text-muted m-0"
+                    <span class="text-muted m-0"
                        th:text="${user.email}">
-                    </p>
+                    </span>
 
                 </div>
 
@@ -199,7 +199,7 @@
 
             <hr>
 
-            <h6 class="fw-bold mb-2">
+            <h6 class="fw-bold">
 
                 Abonament
 
@@ -277,7 +277,7 @@
 
             <hr>
 
-            <h6 class="fw-bold mb-4">
+            <h6 class="fw-bold">
 
                 Serviciile utilizatorului
 
@@ -331,7 +331,7 @@
 
             <hr>
 
-            <h6 class="fw-bold mb-4">
+            <h6 class="fw-bold">
 
                 Ultimele recenzii
 
@@ -391,7 +391,7 @@
                     (${review.reviewStatus.name() == 'PENDING'} ? 'bg-warning text-dark' :
                     'bg-danger')"
 
-                          th:text="${review.reviewStatus}">
+                          th:text="${review.reviewStatus.reviewStatusName}">
 
                     </span>
 

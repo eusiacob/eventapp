@@ -2,18 +2,19 @@ package com.example.eventapp.service;
 
 import com.example.eventapp.config.ApplicationMailProperties;
 import com.example.eventapp.model.LegalDocumentType;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class EmailService {
@@ -253,21 +254,23 @@ public class EmailService {
                 appBaseUrl + "/profile");
     }
 
-    /** Propagates delivery failures so the durable queue can retry them. */
+    /**
+     * Propagates delivery failures so the durable queue can retry them.
+     */
     public void sendLegalDocumentUpdatedEmail(String recipient, String firstName,
-            LegalDocumentType type, String version, LocalDate lastUpdated) {
+                                              LegalDocumentType type, String version, LocalDate lastUpdated) {
         boolean privacy = type == LegalDocumentType.PRIVACY_POLICY;
         String title = privacy ? "Politica de confidențialitate" : "Termenii și condițiile";
         sendEmailOrThrow(recipient, "Actualizare: " + title + " - M-Event",
                 greeting(firstName) +
-                "Am actualizat documentul \"" + title + "\" al platformei M-Event.\n\n" +
-                "Versiune: " + version + "\n" +
-                "Data actualizării: " + lastUpdated.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + "\n\n" +
-                "Te rugăm să consulți documentul publicat aici:\n" +
-                appBaseUrl + (privacy ? "/privacy" : "/terms") + "\n\n" +
-                "Dacă versiunea acceptată în contul tău este diferită, îți vom solicita confirmarea " +
-                "la următoarea autentificare. Acest email este o informare și nu înregistrează acceptarea documentului.\n\n" +
-                "Primești acest mesaj deoarece ai un cont M-Event. Nu este un mesaj promoțional.");
+                        "Am actualizat documentul \"" + title + "\" al platformei M-Event.\n\n" +
+                        "Versiune: " + version + "\n" +
+                        "Data actualizării: " + lastUpdated.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + "\n\n" +
+                        "Te rugăm să consulți documentul publicat aici:\n" +
+                        appBaseUrl + (privacy ? "/privacy" : "/terms") + "\n\n" +
+                        "Dacă versiunea acceptată în contul tău este diferită, îți vom solicita confirmarea " +
+                        "la următoarea autentificare. Acest email este o informare și nu înregistrează acceptarea documentului.\n\n" +
+                        "Primești acest mesaj deoarece ai un cont M-Event. Nu este un mesaj promoțional.");
     }
 
     private void sendEmail(
@@ -327,7 +330,7 @@ public class EmailService {
                 "Informații:\n" +
                 "Confidențialitate: " + appBaseUrl + "/privacy\n" +
                 "Termeni și condiții: " + appBaseUrl + "/terms\n" +
-                "Facebook: https://www.facebook.com/people/M-Event/61595055602839/\n" +
+                "Facebook: https://www.facebook.com/m.eventtt\n" +
                 "Instagram: https://www.instagram.com/\n\n" +
                 "© 2026 M-Event. Toate drepturile rezervate.";
     }
