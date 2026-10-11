@@ -37,6 +37,11 @@
             letter-spacing: -.025em;
         }
 
+        a.disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
         .empty-businesses {
 
             padding: 45px 20px;
@@ -334,7 +339,9 @@
                     <div class="d-grid gap-2 mt-3">
 
                         <a class="btn btn-outline-dark"
-                           th:href="@{/business/{uuid}(uuid=${p.slug})}">
+                           th:attr="data-id=${p.uuid}, aria-disabled=${p.status.name() != 'APPROVED'},tabindex=${p.status.name() != 'APPROVED'} ? '-1' : '0'"
+                           th:classappend="${p.status.name() != 'APPROVED'} ? 'disabled' : ''"
+                           th:href="${p.status.name() == 'APPROVED'}? @{/business/{uuid}(uuid=${p.slug})}: null">
                             Vizualizează
                         </a>
 

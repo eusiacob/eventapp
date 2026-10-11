@@ -3336,7 +3336,6 @@ body .favorite-title,
 
 .business-media-panel > summary {
     cursor: pointer;
-    font-weight: 600;
     color: var(--me-primary-hover, #106e73);
 }
 
