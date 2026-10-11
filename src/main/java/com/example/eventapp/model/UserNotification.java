@@ -27,6 +27,9 @@ public class UserNotification {
     @Column(name = "is_read")
     private boolean read = false;
 
+    @Column(name = "admin_sent", nullable = false)
+    private boolean adminSent = false;
+
     private String link;
 
     private LocalDateTime createdAt = LocalDateTime.now();

@@ -70,7 +70,8 @@
             <a class="navbar-notification-entry"
                th:classappend="${notification.isRead ? '' : ' is-unread'}"
                th:each="notification : ${notificationPageItems}"
-               th:href="@{/notifications/{id}(id=${notification.id})}">
+               th:href="@{/notifications/{id}(id=${notification.id})}"
+               th:if="${notification.link != null and !notification.link.isBlank()}">
                 <i class="bi bi-bell"></i>
 
                 <span class="flex-grow-1">
@@ -84,6 +85,21 @@
                     Nouă
                 </span>
             </a>
+            <div class="navbar-notification-entry"
+                 th:classappend="${notification.isRead ? '' : ' is-unread'}"
+                 th:each="notification : ${notificationPageItems}"
+                 th:if="${notification.link == null or notification.link.isBlank()}">
+                <i class="bi bi-bell"></i>
+                <span class="flex-grow-1">
+                    <strong th:text="${notification.title}"></strong>
+                    <small th:text="${notification.message}"></small>
+                    <small class="mt-2 text-secondary"
+                           th:text="${#temporals.format(notification.createdAt, 'dd.MM.yyyy, HH:mm')}"></small>
+                </span>
+                <span class="badge text-bg-primary align-self-center" th:if="${!notification.isRead}">
+                    Nouă
+                </span>
+            </div>
         </div>
     </section>
 </main>

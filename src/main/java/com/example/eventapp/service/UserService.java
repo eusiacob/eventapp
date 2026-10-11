@@ -105,6 +105,21 @@ public class UserService {
 
     }
 
+    @Transactional(readOnly = true)
+    public List<User> searchForNotificationRecipients(String search) {
+        String normalizedSearch = search == null ? "" : search.trim().toLowerCase();
+
+        return findAll().stream()
+                .filter(user -> user.isEnabled() && user.getRole() != Role.ADMIN)
+                .filter(user -> normalizedSearch.isBlank()
+                        || (user.getFirstName() + " " + user.getLastName()).toLowerCase().contains(normalizedSearch)
+                        || (user.getEmail() != null && user.getEmail().toLowerCase().contains(normalizedSearch))
+                        || user.getBusinessProfiles().stream().anyMatch(profile ->
+                        profile.getPhone() != null
+                                && profile.getPhone().toLowerCase().contains(normalizedSearch)))
+                .toList();
+    }
+
     private List<User> populateEmailAddresses(List<User> users) {
 
         users.forEach(user -> {

@@ -25,5 +25,8 @@ public interface UserNotificationRepository
             User user
     );
 
+    @org.springframework.data.jpa.repository.EntityGraph(attributePaths = "user")
+    List<UserNotification> findTop100ByAdminSentTrueOrderByCreatedAtDesc();
+
     void deleteByUser(User user);
 }

@@ -79,6 +79,8 @@ public class UserNotificationController {
         String link =
                 userNotificationService.markAsRead(id, user);
 
-        return "redirect:" + link;
+        return (link == null || link.isBlank())
+                ? "redirect:/notifications"
+                : "redirect:" + link;
     }
 }

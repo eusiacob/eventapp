@@ -20,7 +20,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/admin")
@@ -60,6 +64,82 @@ public class AdminController {
                 supportTicketRepository.findAll().size());
 
         return "admin/dashboard";
+    }
+
+    @GetMapping("/notifications")
+    public String notifications(@RequestParam(required = false) String search, Model model) {
+        model.addAttribute("recipients", userService.searchForNotificationRecipients(search));
+        model.addAttribute("notificationHistory", userNotificationService.getAdminNotificationHistory());
+        model.addAttribute("search", search == null ? "" : search);
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Dashboard", "/admin"),
+                new BreadcrumbDTO("Trimite notificări", null)
+        ));
+        return "admin/notifications";
+    }
+
+    @GetMapping("/notifications/recipients")
+    @ResponseBody
+    public List<NotificationRecipientResponse> notificationRecipients(@RequestParam(required = false) String search) {
+        return userService.searchForNotificationRecipients(search).stream()
+                .map(user -> new NotificationRecipientResponse(
+                        user.getId(), user.getFirstName(), user.getLastName(), user.getEmail()))
+                .toList();
+    }
+
+    public record NotificationRecipientResponse(Long id, String firstName, String lastName, String email) {
+    }
+
+    @PostMapping("/notifications")
+    public String sendNotification(
+            @RequestParam String title,
+            @RequestParam String message,
+            @RequestParam(defaultValue = "ALL") String audience,
+            @RequestParam(required = false) List<Long> userIds,
+            RedirectAttributes redirectAttributes
+    ) {
+        String cleanTitle = title == null ? "" : title.trim();
+        String cleanMessage = message == null ? "" : message.trim();
+        if (cleanTitle.isBlank() || cleanMessage.isBlank()
+                || cleanTitle.length() > 255 || cleanMessage.length() > 1000) {
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    "Titlul este obligatoriu și poate avea maximum 255 de caractere, iar mesajul maximum 1000."
+            );
+            return "redirect:/admin/notifications";
+        }
+
+        List<User> recipients = resolveNotificationRecipients(audience, userIds);
+        int notified = userNotificationService.sendAdminNotification(cleanTitle, cleanMessage, recipients);
+        redirectAttributes.addFlashAttribute(
+                "successMessage", "Notificarea a fost trimisă către " + notified + " utilizatori."
+        );
+        return "redirect:/admin/notifications";
+    }
+
+    private List<User> resolveNotificationRecipients(String audience, List<Long> userIds) {
+        Set<User> recipients = new LinkedHashSet<>();
+        String normalizedAudience = audience == null ? "ALL" : audience.trim().toUpperCase();
+
+        if ("LIST".equals(normalizedAudience)) {
+            if (userIds == null || userIds.isEmpty()) return List.of();
+            userIds.stream()
+                    .map(userRepository::findById)
+                    .flatMap(Optional::stream)
+                    .forEach(recipients::add);
+        } else {
+            userRepository.findAll().stream()
+                    .filter(user -> user.isEnabled() && user.getRole() != Role.ADMIN)
+                    .filter(user -> switch (normalizedAudience) {
+                        case "PROMOTE_SERVICES" -> user.getAccountPurpose() != null
+                                && user.getAccountPurpose().includesPromotion();
+                        case "SEARCH_SERVICES" -> user.getAccountPurpose() == AccountPurpose.SEARCH_SERVICES;
+                        case "BOTH" -> user.getAccountPurpose() == AccountPurpose.BOTH;
+                        default -> true;
+                    })
+                    .forEach(recipients::add);
+        }
+        return new ArrayList<>(recipients);
     }
 
     @GetMapping("/legal-documents")

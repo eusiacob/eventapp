@@ -1,0 +1,2 @@
+ALTER TABLE user_notifications
+    ADD COLUMN admin_sent BOOLEAN NOT NULL DEFAULT FALSE;

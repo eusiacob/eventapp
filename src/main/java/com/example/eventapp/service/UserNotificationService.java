@@ -66,6 +66,29 @@ public class UserNotificationService {
         userNotificationRepository.saveAll(unreadNotifications);
     }
 
+    public int sendAdminNotification(String title, String message, List<User> recipients) {
+        int created = 0;
+        for (User recipient : recipients) {
+            if (recipient == null || !recipient.isEnabled() || recipient.getRole() == Role.ADMIN) {
+                continue;
+            }
+            UserNotification notification = new UserNotification();
+            notification.setUser(recipient);
+            notification.setTitle(title);
+            notification.setMessage(message);
+            notification.setLink(null);
+            notification.setAdminSent(true);
+            notification.setRead(false);
+            userNotificationRepository.save(notification);
+            created++;
+        }
+        return created;
+    }
+
+    public List<UserNotification> getAdminNotificationHistory() {
+        return userNotificationRepository.findTop100ByAdminSentTrueOrderByCreatedAtDesc();
+    }
+
     public String markAsRead(
             Long notificationId,
             User user

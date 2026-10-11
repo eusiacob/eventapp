@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Notificări | Admin</title>
+    <link rel="icon" type="image/png" th:href="@{/images/favicon.png}">
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main class="container py-4">
+    <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
+    <h1 class="h4 fw-bold mb-4">Trimite notificări</h1>
+
+    <div class="alert alert-success p-1" th:if="${successMessage}" th:text="${successMessage}"></div>
+    <div class="alert alert-danger p-1" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+    <form class="card border-0 shadow-sm rounded-4 p-3 p-md-4" method="post" th:action="@{/admin/notifications}">
+        <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden">
+        <div class="row g-3">
+            <div class="col-12">
+                <label class="form-label" for="title">Titlu</label>
+                <input class="form-control" id="title" maxlength="255" name="title" required type="text">
+            </div>
+            <div class="col-12">
+                <label class="form-label" for="message">Mesaj</label>
+                <textarea class="form-control" id="message" maxlength="1000" name="message" required rows="4"></textarea>
+            </div>
+            <div class="col-12 col-md-5">
+                <label class="form-label" for="audience">Destinatari</label>
+                <select class="form-select" id="audience" name="audience">
+                    <option value="ALL">Toți utilizatorii activi</option>
+                    <option value="PROMOTE_SERVICES">Cei care promovează servicii</option>
+                    <option value="SEARCH_SERVICES">Cei care caută servicii</option>
+                    <option value="BOTH">Cei care au ales ambele opțiuni</option>
+                    <option value="LIST">Listă selectată</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mt-4" id="recipientListSection">
+            <label class="form-label" for="recipientSearch">Caută utilizatori pentru lista selectată</label>
+            <div class="mb-3" id="selectedRecipientsSection" hidden>
+                <div class="small fw-semibold mb-2">Destinatari selectați</div>
+                <div class="d-flex flex-wrap gap-2" id="selectedRecipients"></div>
+                <div id="selectedRecipientInputs"></div>
+            </div>
+            <div class="d-flex gap-2 mb-3">
+                <input class="form-control" id="recipientSearch" name="search" placeholder="Nume, email sau telefon" th:value="${search}" type="search">
+                <button class="btn btn-outline-secondary" id="recipientSearchButton" type="button">Caută</button>
+            </div>
+            <div class="border rounded-3 p-2" id="recipientOptions" style="max-height: 320px; overflow-y: auto;">
+                <div class="form-check" th:each="recipient : ${recipients}">
+                    <input class="form-check-input recipient-checkbox"
+                           th:data-email="${recipient.email}"
+                           th:data-name="|${recipient.firstName} ${recipient.lastName}|"
+                           th:id="|recipient-${recipient.id}|"
+                           th:value="${recipient.id}" type="checkbox">
+                    <label class="form-check-label w-100" th:for="|recipient-${recipient.id}|">
+                        <span th:text="|${recipient.firstName} ${recipient.lastName}|"></span>
+                        <small class="text-muted ms-1" th:text="${recipient.email}"></small>
+                    </label>
+                </div>
+                <p class="text-muted mb-0" th:if="${#lists.isEmpty(recipients)}">Nu au fost găsiți utilizatori.</p>
+            </div>
+            <div class="form-text">Bifează utilizatorii doar când este selectată opțiunea „Listă selectată”.</div>
+        </div>
+
+        <div class="mt-4">
+            <button class="btn btn-primary" type="submit"><i class="bi bi-send me-1"></i>Trimite notificarea</button>
+        </div>
+    </form>
+
+    <section class="card border-0 shadow-sm rounded-4 mt-4">
+        <div class="card-body">
+            <h2 class="h5 fw-bold mb-3">Istoric notificări trimise</h2>
+            <div class="table-responsive" th:if="${!#lists.isEmpty(notificationHistory)}">
+                <table class="table align-middle mb-0">
+                    <thead>
+                    <tr><th>Data</th><th>Destinatar</th><th>Titlu</th><th>Mesaj</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="notification : ${notificationHistory}">
+                        <td class="text-nowrap" th:text="${#temporals.format(notification.createdAt, 'dd.MM.yyyy HH:mm')}"></td>
+                        <td class="text-nowrap" th:text="|${notification.user.firstName} ${notification.user.lastName}|"></td>
+                        <td th:text="${notification.title}"></td>
+                        <td class="text-break" th:text="${notification.message}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-muted mb-0" th:if="${#lists.isEmpty(notificationHistory)}">Nu există notificări trimise din panoul admin.</p>
+        </div>
+    </section>
+</main>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const audience = document.getElementById('audience');
+    const section = document.getElementById('recipientListSection');
+    const recipientSearch = document.getElementById('recipientSearch');
+    const recipientSearchButton = document.getElementById('recipientSearchButton');
+    const recipientOptions = document.getElementById('recipientOptions');
+    const selectedRecipientsSection = document.getElementById('selectedRecipientsSection');
+    const selectedRecipients = document.getElementById('selectedRecipients');
+    const selectedRecipientInputs = document.getElementById('selectedRecipientInputs');
+    const selected = new Map();
+    function updateRecipientSection() { section.hidden = audience.value !== 'LIST'; }
+    audience.addEventListener('change', updateRecipientSection);
+    document.querySelectorAll('.recipient-checkbox:checked').forEach(input => {
+        selected.set(String(input.value), {
+            id: String(input.value), name: input.dataset.name, email: input.dataset.email || ''
+        });
+    });
+    function renderSelectedRecipients() {
+        selectedRecipients.replaceChildren();
+        selectedRecipientInputs.replaceChildren();
+        selectedRecipientsSection.hidden = selected.size === 0;
+        selected.forEach(recipient => {
+            const chip = document.createElement('span');
+            chip.className = 'badge rounded-pill text-bg-primary d-inline-flex align-items-center gap-1';
+            chip.textContent = recipient.email ? `${recipient.name} (${recipient.email})` : recipient.name;
+            const remove = document.createElement('button');
+            remove.className = 'btn-close btn-close-white';
+            remove.type = 'button';
+            remove.setAttribute('aria-label', 'Elimină destinatarul');
+            remove.addEventListener('click', () => {
+                selected.delete(recipient.id);
+                const visible = document.querySelector('#recipient-' + recipient.id);
+                if (visible) visible.checked = false;
+                renderSelectedRecipients();
+            });
+            chip.appendChild(remove);
+            selectedRecipients.appendChild(chip);
+
+            const hidden = document.createElement('input');
+            hidden.type = 'hidden';
+            hidden.name = 'userIds';
+            hidden.value = recipient.id;
+            selectedRecipientInputs.appendChild(hidden);
+        });
+    }
+    function bindRecipientCheckboxes() {
+        document.querySelectorAll('.recipient-checkbox').forEach(input => {
+            input.addEventListener('change', () => {
+                const id = String(input.value);
+                if (input.checked) {
+                    selected.set(id, {id, name: input.dataset.name, email: input.dataset.email || ''});
+                } else {
+                    selected.delete(id);
+                }
+                renderSelectedRecipients();
+            });
+        });
+    }
+    function renderRecipients(recipients) {
+        recipientOptions.replaceChildren();
+        if (!recipients.length) {
+            const empty = document.createElement('p');
+            empty.className = 'text-muted mb-0';
+            empty.textContent = 'Nu au fost găsiți utilizatori.';
+            recipientOptions.appendChild(empty);
+            return;
+        }
+        recipients.forEach(recipient => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'form-check';
+            const input = document.createElement('input');
+            input.className = 'form-check-input recipient-checkbox';
+            input.type = 'checkbox';
+            input.value = recipient.id;
+            input.id = 'recipient-' + recipient.id;
+            input.dataset.name = `${recipient.firstName} ${recipient.lastName}`;
+            input.dataset.email = recipient.email || '';
+            input.checked = selected.has(String(recipient.id));
+            const label = document.createElement('label');
+            label.className = 'form-check-label w-100';
+            label.htmlFor = input.id;
+            label.textContent = `${recipient.firstName} ${recipient.lastName}`;
+            if (recipient.email) {
+                const email = document.createElement('small');
+                email.className = 'text-muted ms-1';
+                email.textContent = recipient.email;
+                label.appendChild(email);
+            }
+            wrapper.append(input, label);
+            recipientOptions.appendChild(wrapper);
+        });
+        bindRecipientCheckboxes();
+    }
+    async function searchRecipients() {
+        const query = new URLSearchParams();
+        const value = recipientSearch.value.trim();
+        if (value) query.set('search', value);
+        recipientSearchButton.disabled = true;
+        try {
+            const response = await fetch('/admin/notifications/recipients?' + query.toString(), {
+                headers: {'Accept': 'application/json'}
+            });
+            if (!response.ok) throw new Error('Recipient search failed');
+            renderRecipients(await response.json());
+        } finally {
+            recipientSearchButton.disabled = false;
+        }
+    }
+    recipientSearchButton.addEventListener('click', searchRecipients);
+    recipientSearch.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            searchRecipients();
+        }
+    });
+    bindRecipientCheckboxes();
+    renderSelectedRecipients();
+    updateRecipientSection();
+</script>
+</body>
+</html>
