@@ -3125,7 +3125,6 @@ body .favorite-title,
 .service-area-options summary {
     cursor: pointer;
     color: var(--me-primary-hover, #106e73);
-    font-weight: 600;
 }
 
 .service-area-grid {
