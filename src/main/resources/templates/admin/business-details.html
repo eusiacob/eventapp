@@ -34,7 +34,7 @@
 
     <div class="card service-details-card rounded-4">
 
-        <div class="business-details-overview p-3">
+        <div class="business-details-overview p-3 pb-0">
             <div class="business-details-cover-frame">
                 <img alt="Imagine serviciu"
                      class="details-image business-details-cover"
@@ -83,27 +83,6 @@
                         </div>
                     </div>
                 </section>
-
-                <section class="mt-3"
-                         th:if="${(business.website != null and !business.website.isBlank())
-                             or (business.facebookUrl != null and !business.facebookUrl.isBlank())
-                             or (business.instagramUrl != null and !business.instagramUrl.isBlank())
-                             or (business.tiktokUrl != null and !business.tiktokUrl.isBlank())
-                             or (business.youtubeUrl != null and !business.youtubeUrl.isBlank())}">
-                    <h2 class="h6 text-muted">Social și website</h2>
-                    <div class="d-flex flex-column gap-1">
-                        <a rel="noopener noreferrer" target="_blank" th:href="${business.website}"
-                           th:if="${business.website != null and !business.website.isBlank()}">Website</a>
-                        <a rel="noopener noreferrer" target="_blank" th:href="${business.facebookUrl}"
-                           th:if="${business.facebookUrl != null and !business.facebookUrl.isBlank()}">Facebook</a>
-                        <a rel="noopener noreferrer" target="_blank" th:href="${business.instagramUrl}"
-                           th:if="${business.instagramUrl != null and !business.instagramUrl.isBlank()}">Instagram</a>
-                        <a rel="noopener noreferrer" target="_blank" th:href="${business.tiktokUrl}"
-                           th:if="${business.tiktokUrl != null and !business.tiktokUrl.isBlank()}">TikTok</a>
-                        <a rel="noopener noreferrer" target="_blank" th:href="${business.youtubeUrl}"
-                           th:if="${business.youtubeUrl != null and !business.youtubeUrl.isBlank()}">YouTube</a>
-                    </div>
-                </section>
             </div>
         </div>
 
@@ -115,6 +94,61 @@
             <section class="mb-4">
                 <h2 class="h5 fw-bold mb-3">Descriere</h2>
                 <p class="text-break mb-0" th:text="${business.description}"></p>
+            </section>
+
+            <section class="card border-0 bg-light-subtle rounded-4 mt-3"
+                     th:if="${(business.website != null and !business.website.isBlank())
+                             or (business.facebookUrl != null and !business.facebookUrl.isBlank())
+                             or (business.instagramUrl != null and !business.instagramUrl.isBlank())
+                             or (business.tiktokUrl != null and !business.tiktokUrl.isBlank())
+                             or (business.youtubeUrl != null and !business.youtubeUrl.isBlank())}">
+                <h2 class="h6 fw-bold mb-3"><i class="bi bi-share-fill me-1"></i>Social și website</h2>
+                <div class="row g-2">
+                    <div class="col-12" th:if="${business.website != null and !business.website.isBlank()}">
+                        <a class="btn btn-light border w-100 d-flex align-items-center gap-3 text-start"
+                           rel="noopener noreferrer" target="_blank" th:href="${business.website}">
+                            <i class="bi bi-globe fs-4 text-secondary"></i>
+                            <span class="text-break"><strong>Website</strong><br><small
+                                    th:text="${business.website}"></small></span>
+                        </a>
+                    </div>
+                    <div class="col-12 col-sm-6"
+                         th:if="${business.facebookUrl != null and !business.facebookUrl.isBlank()}">
+                        <a class="btn btn-light border w-100 d-flex align-items-center gap-3 text-start"
+                           rel="noopener noreferrer" target="_blank" th:href="${business.facebookUrl}">
+                            <i class="bi bi-facebook fs-4 text-primary"></i>
+                            <span class="text-break"><strong>Facebook</strong><br><small
+                                    th:text="${business.facebookUrl}"></small></span>
+                        </a>
+                    </div>
+                    <div class="col-12 col-sm-6"
+                         th:if="${business.instagramUrl != null and !business.instagramUrl.isBlank()}">
+                        <a class="btn btn-light border w-100 d-flex align-items-center gap-3 text-start"
+                           rel="noopener noreferrer" target="_blank" th:href="${business.instagramUrl}">
+                            <i class="bi bi-instagram fs-4 text-danger"></i>
+                            <span class="text-break"><strong>Instagram</strong><br><small
+                                    th:text="${business.instagramUrl}"></small></span>
+                        </a>
+                    </div>
+                    <div class="col-12 col-sm-6"
+                         th:if="${business.tiktokUrl != null and !business.tiktokUrl.isBlank()}">
+                        <a class="btn btn-light border w-100 d-flex align-items-center gap-3 text-start"
+                           rel="noopener noreferrer" target="_blank" th:href="${business.tiktokUrl}">
+                            <i class="bi bi-tiktok fs-4 text-dark"></i>
+                            <span class="text-break"><strong>TikTok</strong><br><small
+                                    th:text="${business.tiktokUrl}"></small></span>
+                        </a>
+                    </div>
+                    <div class="col-12 col-sm-6"
+                         th:if="${business.youtubeUrl != null and !business.youtubeUrl.isBlank()}">
+                        <a class="btn btn-light border w-100 d-flex align-items-center gap-3 text-start"
+                           rel="noopener noreferrer" target="_blank" th:href="${business.youtubeUrl}">
+                            <i class="bi bi-youtube fs-4 text-danger"></i>
+                            <span class="text-break"><strong>YouTube</strong><br><small
+                                    th:text="${business.youtubeUrl}"></small></span>
+                        </a>
+                    </div>
+                </div>
             </section>
 
             <div class="row gy-4">
