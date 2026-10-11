@@ -108,87 +108,93 @@
             <div class="row gy-4">
                 <div class="col-lg-8">
                     <div class="card shadow-sm border-0 rounded-4 mb-4">
+
                         <div class="card-body">
 
-                        <!-- FOTOGRAFII -->
-                        <div th:if="${business.galleryImages != null and !#lists.isEmpty(business.galleryImages)}">
+                            <!-- FOTOGRAFII -->
+                            <div th:if="${business.galleryImages != null and !#lists.isEmpty(business.galleryImages)}">
 
-                            <div class="gallery-section-title">
-                                <i class="bi bi-images"></i>
-                                Fotografii
-                            </div>
+                                <div class="gallery-section-title">
+                                    <i class="bi bi-images"></i>
+                                    Fotografii
+                                </div>
 
-                            <div class="gallery-photo-grid">
+                                <div class="gallery-photo-grid">
 
-                                <div class="gallery-photo-item"
-                                     th:classappend="${iterStat.index >= 5} ? ' gallery-extra-image' : ''"
-                                     th:each="img, iterStat : ${business.galleryImages}">
+                                    <div class="gallery-photo-item"
+                                         th:classappend="${iterStat.index >= 5} ? ' gallery-extra-image' : ''"
+                                         th:each="img, iterStat : ${business.galleryImages}">
 
-                                    <img alt="Previzualizează fotografia galeriei"
-                                         class="gallery-thumbnail"
-                                         data-bs-target="#galleryImagePreviewModal"
-                                         data-bs-toggle="modal"
-                                         data-gallery-image-preview
-                                         loading="lazy"
-                                         role="button"
-                                         style="cursor: pointer;"
-                                         tabindex="0"
-                                         th:data-image-src="@{${img.imagePath}}"
-                                         th:src="@{${img.imagePath}}">
+                                        <img alt="Previzualizează fotografia galeriei"
+                                             class="gallery-thumbnail"
+                                             data-bs-target="#galleryImagePreviewModal"
+                                             data-bs-toggle="modal"
+                                             data-gallery-image-preview
+                                             loading="lazy"
+                                             role="button"
+                                             style="cursor: pointer;"
+                                             tabindex="0"
+                                             th:data-image-src="@{${img.imagePath}}"
+                                             th:src="@{${img.imagePath}}">
+
+                                    </div>
 
                                 </div>
 
+                                <button class="btn btn-sm btn-outline-secondary gallery-more-btn"
+                                        id="showMoreImagesBtn"
+                                        onclick="showMoreImages()"
+                                        th:if="${business.galleryImages.size() > 5}"
+                                        type="button">
+
+                                    <i class="bi bi-grid-3x3-gap"></i>
+
+                                    Vezi toate fotografiile
+                                    (<span th:text="${business.galleryImages.size()}"></span>)
+
+                                </button>
+
                             </div>
 
-                            <button class="btn btn-sm btn-outline-secondary gallery-more-btn"
-                                    id="showMoreImagesBtn"
-                                    onclick="showMoreImages()"
-                                    th:if="${business.galleryImages.size() > 5}"
-                                    type="button">
-
-                                <i class="bi bi-grid-3x3-gap"></i>
-
-                                Vezi toate fotografiile
-                                (<span th:text="${business.galleryImages.size()}"></span>)
-
-                            </button>
-
-                        </div>
-
-
-                        <!-- VIDEOCLIPURI -->
-                        <div class="gallery-videos-section"
-                             th:if="${business.galleryVideos != null and !business.galleryVideos.isEmpty()}">
-
-                            <div class="gallery-section-title">
-                                <i class="bi bi-play-circle"></i>
-                                Videoclipuri
+                            <div th:if="${#lists.isEmpty(business.galleryImages)}">
+                                > Utilizatorul nu are imagini în galerie.
                             </div>
 
-                            <div class="gallery-video-grid">
+                            <!-- VIDEOCLIPURI -->
+                            <div class="gallery-videos-section"
+                                 th:if="${business.galleryVideos != null and !business.galleryVideos.isEmpty()}">
 
-                                <div class="gallery-video-item"
-                                     th:each="video : ${business.galleryVideos}">
+                                <div class="gallery-section-title">
+                                    <i class="bi bi-play-circle"></i>
+                                    Videoclipuri
+                                </div>
 
-                                    <div aria-label="Redă videoclipul pe tot ecranul"
-                                         class="video-preview"
-                                         data-fullscreen-video
-                                         role="button"
-                                         tabindex="0">
+                                <div class="gallery-video-grid">
 
-                                        <video class="gallery-video-preview"
-                                               muted
-                                               playsinline
-                                               preload="metadata"
-                                               th:poster="${video.thumbnailPath}">
+                                    <div class="gallery-video-item"
+                                         th:each="video : ${business.galleryVideos}">
 
-                                            <source th:src="${video.videoPath}"
-                                                    th:type="${video.videoContentType}">
+                                        <div aria-label="Redă videoclipul pe tot ecranul"
+                                             class="video-preview"
+                                             data-fullscreen-video
+                                             role="button"
+                                             tabindex="0">
 
-                                        </video>
+                                            <video class="gallery-video-preview"
+                                                   muted
+                                                   playsinline
+                                                   preload="metadata"
+                                                   th:poster="${video.thumbnailPath}">
 
-                                        <div class="video-play-button">
-                                            <i class="bi bi-play-fill"></i>
+                                                <source th:src="${video.videoPath}"
+                                                        th:type="${video.videoContentType}">
+
+                                            </video>
+
+                                            <div class="video-play-button">
+                                                <i class="bi bi-play-fill"></i>
+                                            </div>
+
                                         </div>
 
                                     </div>
@@ -197,90 +203,90 @@
 
                             </div>
 
+                            <div class="mt-3" th:if="${business.galleryVideos.isEmpty()}">
+                                > Utilizatorul nu are videoclipuri în galerie.
+                            </div>
+
                         </div>
 
                     </div>
 
                 </div>
 
-                <div class="m-3" th:if="${#lists.isEmpty(business.galleryImages)}">
-                    Utilizatorul nu are imagini în galerie.
-                </div>
+                <div class="col-lg-4">
 
-            </div>
+                    <div class="card shadow-sm border-0 rounded-4 sticky-top"
+                         style="top:90px;">
 
-            <div class="col-lg-4">
+                        <div class="card-body">
 
-                <div class="card shadow-sm border-0 rounded-4 sticky-top"
-                     style="top:90px;">
+                            <h5 class="mb-4">
+                                Moderare
+                            </h5>
 
-                    <div class="card-body">
+                            <div class="mb-3">
 
-                        <h5 class="mb-4">
-                            Moderare
-                        </h5>
+                                <strong>Status</strong>
 
-                        <div class="mb-3">
+                                <div th:text="${business.status}">
+                                </div>
 
-                            <strong>Status</strong>
-
-                            <div th:text="${business.status}">
                             </div>
 
-                        </div>
+                            <div class="mb-3">
 
-                        <div class="mb-3">
+                                <strong>Owner</strong>
 
-                            <strong>Owner</strong>
+                                <div th:text="${business.user.firstName + ' ' + business.user.lastName}">
+                                </div>
 
-                            <div th:text="${business.user.firstName + ' ' + business.user.lastName}">
                             </div>
 
-                        </div>
+                            <div class="mb-3">
 
-                        <div class="mb-3">
+                                <strong>Email owner</strong>
 
-                            <strong>Email owner</strong>
+                                <div th:text="${ownerEmail}">
+                                </div>
 
-                            <div th:text="${ownerEmail}">
                             </div>
 
-                        </div>
+                            <div class="mb-3">
 
-                        <div class="mb-3">
+                                <strong>Creat la</strong>
 
-                            <strong>Creat la</strong>
+                                <div th:text="${#temporals.format(business.createdAt,'dd.MM.yyyy')}">
+                                </div>
 
-                            <div th:text="${#temporals.format(business.createdAt,'dd.MM.yyyy')}">
                             </div>
 
-                        </div>
+                            <hr>
 
-                        <hr>
+                            <div class="d-flex flex-wrap gap-2">
 
-                        <div class="d-flex flex-wrap gap-2">
+                                <form method="post"
+                                      th:action="@{/admin/business/{uuid}/approve(uuid=${business.uuid})}"
+                                      th:if="${business.status.name() != 'APPROVED'}">
 
-                            <form method="post"
-                                  th:action="@{/admin/business/{uuid}/approve(uuid=${business.uuid})}"
-                                  th:if="${business.status.name() != 'APPROVED'}">
+                                    <button class="btn btn-success">
+                                        <i class="bi bi-check-circle"></i>
+                                        Aprobă serviciul
+                                    </button>
 
-                                <button class="btn btn-success">
-                                    <i class="bi bi-check-circle"></i>
-                                    Aprobă serviciul
+                                </form>
+
+
+                                <button class="btn btn-danger"
+                                        data-bs-target="#rejectModal"
+                                        data-bs-toggle="modal"
+                                        th:if="${business.status.name() != 'REJECTED'}">
+
+                                    <i class="bi bi-x-circle"></i>
+                                    Respinge serviciul
+
                                 </button>
 
-                            </form>
-
-
-                            <button class="btn btn-danger"
-                                    data-bs-target="#rejectModal"
-                                    data-bs-toggle="modal"
-                                    th:if="${business.status.name() != 'REJECTED'}">
-
-                                <i class="bi bi-x-circle"></i>
-                                Respinge serviciul
-
-                            </button>
+                            </div>
 
                         </div>
 
@@ -289,8 +295,6 @@
                 </div>
 
             </div>
-
-        </div>
 
         </div>
 
