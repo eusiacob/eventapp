@@ -129,6 +129,29 @@ public class UserNotificationService {
         userNotificationRepository.save(notification);
     }
 
+    public void notifyBusinessOwnerReviewApproved(Review review) {
+
+        BusinessProfile business = review.getBusinessProfile();
+        User owner = business != null ? business.getUser() : null;
+
+        if (owner == null || owner.getId() == null
+                || (review.getUser() != null && owner.getId().equals(review.getUser().getId()))) {
+            return;
+        }
+
+        UserNotification notification = new UserNotification();
+        notification.setUser(owner);
+        notification.setTitle("Recenzie nouă pentru serviciul tău");
+        notification.setMessage(
+                "Serviciul \"" + business.getName()
+                        + "\" a primit o recenzie nouă. Recenzia a fost aprobată și este vizibilă public."
+        );
+        notification.setRead(false);
+        notification.setCreatedAt(LocalDateTime.now());
+        notification.setLink("/business/" + business.getSlug());
+        userNotificationRepository.save(notification);
+    }
+
     public void notifyReviewRejected(Review review) {
 
         UserNotification notification = new UserNotification();

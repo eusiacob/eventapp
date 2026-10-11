@@ -150,6 +150,7 @@ public class ReviewService {
     public void approveReview(Long id) {
 
         Review review = findById(id);
+        boolean newlyApproved = review.getReviewStatus() != Review.ReviewStatus.APPROVED;
 
         review.setReviewStatus(Review.ReviewStatus.APPROVED);
 
@@ -157,7 +158,10 @@ public class ReviewService {
 
         reviewRepository.save(review);
 
-        userNotificationService.notifyReviewApproved(review);
+        if (newlyApproved) {
+            userNotificationService.notifyReviewApproved(review);
+            userNotificationService.notifyBusinessOwnerReviewApproved(review);
+        }
         emailService.sendReviewApprovedEmail(
                 userService.getEmailAddress(review.getUser()),
                 review.getUser().getFirstName(),

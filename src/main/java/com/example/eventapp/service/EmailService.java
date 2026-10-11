@@ -331,7 +331,7 @@ public class EmailService {
                 "Confidențialitate: " + appBaseUrl + "/privacy\n" +
                 "Termeni și condiții: " + appBaseUrl + "/terms\n" +
                 "Facebook: https://www.facebook.com/m.eventtt\n" +
-                "Instagram: https://www.instagram.com/\n\n" +
+                "Instagram: https://www.instagram.com/m.eventtt\n\n" +
                 "© 2026 M-Event. Toate drepturile rezervate.";
     }
 

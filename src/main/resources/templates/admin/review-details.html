@@ -27,11 +27,11 @@
 
     <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
-    <div class="alert alert-success" style="padding: 0.5em" th:if="${param.reviewApproved}">
+    <div class="alert alert-success p-1"th:if="${param.reviewApproved}">
         Recenzia a fost aprobată!
     </div>
 
-    <div class="alert alert-danger" style="padding: 0.5em" th:if="${param.reviewRejected}">
+    <div class="alert alert-danger p-1"th:if="${param.reviewRejected}">
         Recenzia a fost respinsă!
     </div>
 
@@ -139,7 +139,7 @@
 
                 </h5>
 
-                <div class="alert alert-danger mt-3 mb-0 p-2">
+                <div class="alert alert-danger mt-3 mb-0 p-1">
 
                     <i class="bi bi-exclamation-circle-fill me-2"></i>
 
