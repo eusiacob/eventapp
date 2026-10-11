@@ -146,10 +146,26 @@ public class BusinessProfile {
     @Column(nullable = true)
     private String website;
 
+    @URL(message = "Format URL Facebook incorect.")
+    @Column(nullable = true, length = 2048)
+    private String facebookUrl;
+
+    @URL(message = "Format URL Instagram incorect.")
+    @Column(nullable = true, length = 2048)
+    private String instagramUrl;
+
+    @URL(message = "Format URL TikTok incorect.")
+    @Column(nullable = true, length = 2048)
+    private String tiktokUrl;
+
+    @URL(message = "Format URL YouTube incorect.")
+    @Column(nullable = true, length = 2048)
+    private String youtubeUrl;
+
     @Transient
-    @AssertTrue(message = "Completează cel puțin o metodă de contact: telefon, email sau website.")
+    @AssertTrue(message = "Completează cel puțin o metodă de contact: telefon sau email.")
     public boolean isContactMethodProvided() {
-        return hasText(phone) || hasText(email) || hasText(website);
+        return hasText(phone) || hasText(email);
     }
 
     private boolean hasText(String value) {

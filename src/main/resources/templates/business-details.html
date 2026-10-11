@@ -67,7 +67,7 @@
                                 style="min-width: 44px; min-height: 44px;"
                                 th:if="${(profile.phone != null and !profile.phone.isBlank())
                                     or (profile.email != null and !profile.email.isBlank())
-                                    or (profile.website != null and !profile.website.isBlank())}"
+                                    }"
                                 title="Contact"
                                 type="button">
                             <i aria-hidden="true" class="bi bi-person-lines-fill fs-5"></i>
@@ -135,15 +135,6 @@
                             </a>
                         </span>
 
-                        <span th:if="${profile.website != null and !profile.website.isBlank()}">
-                            <a class="btn"
-                               style="font-size: 1em;"
-                               target="_blank"
-                               th:href="${profile.website}"
-                               title="Vizitează website!"> Website
-                            </a>
-                        </span>
-
                     </div>
 
                     <span class="badge bg-success-subtle text-success border border-success-subtle align-middle mb-2"
@@ -169,6 +160,36 @@
             <section class="mb-4">
                 <h2 class="h5 fw-bold mb-3">Despre</h2>
                 <p class="text-break mb-0" th:text="${profile.description}"></p>
+            </section>
+
+            <section class="mb-4" th:if="${(profile.website != null and !profile.website.isBlank())
+                or (profile.facebookUrl != null and !profile.facebookUrl.isBlank())
+                or (profile.instagramUrl != null and !profile.instagramUrl.isBlank())
+                or (profile.tiktokUrl != null and !profile.tiktokUrl.isBlank())
+                or (profile.youtubeUrl != null and !profile.youtubeUrl.isBlank())}">
+                <h2 class="h5 fw-bold mb-3"><i class="bi bi-share me-1"></i>Social și website</h2>
+                <div class="d-flex flex-wrap gap-2">
+                    <a class="btn btn-outline-secondary" rel="noopener noreferrer" target="_blank"
+                       th:href="${profile.website}" th:if="${profile.website != null and !profile.website.isBlank()}">
+                        <i class="bi bi-globe me-1"></i>Website
+                    </a>
+                    <a class="btn btn-outline-primary" rel="noopener noreferrer" target="_blank"
+                       th:href="${profile.facebookUrl}" th:if="${profile.facebookUrl != null and !profile.facebookUrl.isBlank()}">
+                        <i class="bi bi-facebook me-1"></i>Facebook
+                    </a>
+                    <a class="btn btn-outline-danger" rel="noopener noreferrer" target="_blank"
+                       th:href="${profile.instagramUrl}" th:if="${profile.instagramUrl != null and !profile.instagramUrl.isBlank()}">
+                        <i class="bi bi-instagram me-1"></i>Instagram
+                    </a>
+                    <a class="btn btn-outline-dark" rel="noopener noreferrer" target="_blank"
+                       th:href="${profile.tiktokUrl}" th:if="${profile.tiktokUrl != null and !profile.tiktokUrl.isBlank()}">
+                        <i class="bi bi-tiktok me-1"></i>TikTok
+                    </a>
+                    <a class="btn btn-outline-danger" rel="noopener noreferrer" target="_blank"
+                       th:href="${profile.youtubeUrl}" th:if="${profile.youtubeUrl != null and !profile.youtubeUrl.isBlank()}">
+                        <i class="bi bi-youtube me-1"></i>YouTube
+                    </a>
+                </div>
             </section>
 
             <div>
@@ -458,7 +479,7 @@
      tabindex="-1"
      th:if="${(profile.phone != null and !profile.phone.isBlank())
          or (profile.email != null and !profile.email.isBlank())
-         or (profile.website != null and !profile.website.isBlank())}">
+         }">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
@@ -497,14 +518,6 @@
                             Email verificat
                         </span>
                     </div>
-                    <a class="btn btn-outline-primary d-flex align-items-center gap-3 text-start"
-                       rel="noopener noreferrer"
-                       target="_blank"
-                       th:href="${profile.website}"
-                       th:if="${profile.website != null and !profile.website.isBlank()}">
-                        <i aria-hidden="true" class="bi bi-globe fs-4"></i>
-                        <span class="text-break">Vizitează website-ul<br><small th:text="${profile.website}"></small></span>
-                    </a>
                 </div>
             </div>
         </div>

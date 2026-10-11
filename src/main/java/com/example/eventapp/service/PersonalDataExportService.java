@@ -108,6 +108,10 @@ public class PersonalDataExportService {
                         business.isEmailVerified(),
                         business.getEmailVerifiedAt(),
                         business.getWebsite(),
+                        business.getFacebookUrl(),
+                        business.getInstagramUrl(),
+                        business.getTiktokUrl(),
+                        business.getYoutubeUrl(),
                         business.getImagePath(),
                         business.getGalleryImages().stream()
                                 .map(BusinessImage::getImagePath)
@@ -243,6 +247,10 @@ public class PersonalDataExportService {
             boolean emailVerified,
             LocalDateTime emailVerifiedAt,
             String website,
+            String facebookUrl,
+            String instagramUrl,
+            String tiktokUrl,
+            String youtubeUrl,
             String coverImage,
             List<String> galleryImages,
             List<String> galleryVideos,

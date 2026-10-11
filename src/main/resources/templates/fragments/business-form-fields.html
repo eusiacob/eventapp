@@ -6,7 +6,7 @@
         <h3 class="business-section-title" id="businessBasicsTitle"><span>1</span> Informații de bază</h3>
         <div class="row g-3">
             <div class="col-12 col-md-6">
-                <label class="form-label" for="businessName">Numele serviciului</label>
+                <label class="form-label" for="businessName">Numele serviciului sau firmei</label>
                 <input class="form-control" id="businessName" placeholder="Ex.: Dream Events" th:field="*{name}"
                        type="text">
                 <div class="form-text">Între 3 și 50 de caractere.</div>
@@ -42,7 +42,7 @@
 
     <section aria-labelledby="businessContactTitle" class="business-form-section">
         <h3 class="business-section-title" id="businessContactTitle"><span>4</span> Date de contact</h3>
-        <p class="form-text mt-0 mb-3">Completează cel puțin una: telefon, email sau website. Aceste date vor fi
+        <p class="form-text mt-0 mb-3">Completează cel puțin una: telefon sau email. Aceste date vor fi
             publice.</p>
         <div class="alert alert-danger p-1" th:errors="*{contactMethodProvided}"
              th:if="${#fields.hasErrors('contactMethodProvided')}"></div>
@@ -57,12 +57,6 @@
                 <input class="form-control" id="businessEmail" placeholder="contact@exemplu.ro" th:field="*{email}"
                        type="email">
                 <div class="text-danger small" th:errors="*{email}" th:if="${#fields.hasErrors('email')}"></div>
-            </div>
-            <div class="col-12">
-                <label class="form-label" for="businessWebsite">Website</label>
-                <input class="form-control" id="businessWebsite" placeholder="https://www.exemplu.ro" th:field="*{website}"
-                       type="url">
-                <div class="text-danger small" th:errors="*{website}" th:if="${#fields.hasErrors('website')}"></div>
             </div>
         </div>
         <th:block th:if="${editing}">
@@ -104,8 +98,40 @@
         </th:block>
     </section>
 
+    <section aria-labelledby="businessSocialTitle" class="business-form-section">
+        <h3 class="business-section-title" id="businessSocialTitle"><span>5</span> Social și website</h3>
+        <p class="form-text mt-0 mb-3">Adaugă linkurile pe care vrei să le vadă clienții. Toate câmpurile sunt opționale.</p>
+        <div class="row g-3">
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="businessWebsite"><i class="bi bi-globe me-1"></i>Website</label>
+                <input class="form-control" id="businessWebsite" placeholder="https://www.exemplu.ro" th:field="*{website}" type="url">
+                <div class="text-danger small" th:errors="*{website}" th:if="${#fields.hasErrors('website')}"></div>
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="businessFacebook"><i class="bi bi-facebook me-1"></i>Facebook</label>
+                <input class="form-control" id="businessFacebook" placeholder="https://facebook.com/pagina" th:field="*{facebookUrl}" type="url">
+                <div class="text-danger small" th:errors="*{facebookUrl}" th:if="${#fields.hasErrors('facebookUrl')}"></div>
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="businessInstagram"><i class="bi bi-instagram me-1"></i>Instagram</label>
+                <input class="form-control" id="businessInstagram" placeholder="https://instagram.com/profil" th:field="*{instagramUrl}" type="url">
+                <div class="text-danger small" th:errors="*{instagramUrl}" th:if="${#fields.hasErrors('instagramUrl')}"></div>
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="businessTiktok"><i class="bi bi-tiktok me-1"></i>TikTok</label>
+                <input class="form-control" id="businessTiktok" placeholder="https://tiktok.com/@profil" th:field="*{tiktokUrl}" type="url">
+                <div class="text-danger small" th:errors="*{tiktokUrl}" th:if="${#fields.hasErrors('tiktokUrl')}"></div>
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="businessYoutube"><i class="bi bi-youtube me-1"></i>YouTube</label>
+                <input class="form-control" id="businessYoutube" placeholder="https://youtube.com/@canal" th:field="*{youtubeUrl}" type="url">
+                <div class="text-danger small" th:errors="*{youtubeUrl}" th:if="${#fields.hasErrors('youtubeUrl')}"></div>
+            </div>
+        </div>
+    </section>
+
     <section aria-labelledby="businessCoverTitle" class="business-form-section">
-        <h3 class="business-section-title" id="businessCoverTitle"><span>5</span> Imagine de copertă</h3>
+        <h3 class="business-section-title" id="businessCoverTitle"><span>6</span> Imagine de copertă</h3>
         <div class="business-cover-layout">
             <img alt="Imagine de profil curentă" class="rounded edit-main-preview business-cover-current"
                  th:src="@{${profile.coverImagePath}}">

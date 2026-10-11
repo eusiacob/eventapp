@@ -548,6 +548,11 @@ public class BusinessController {
         existingProfile.setPhone(profile.getPhone());
         existingProfile.setDescription(profile.getDescription());
         existingProfile.setEmail(profile.getEmail());
+        existingProfile.setWebsite(profile.getWebsite());
+        existingProfile.setFacebookUrl(profile.getFacebookUrl());
+        existingProfile.setInstagramUrl(profile.getInstagramUrl());
+        existingProfile.setTiktokUrl(profile.getTiktokUrl());
+        existingProfile.setYoutubeUrl(profile.getYoutubeUrl());
 
         boolean emailChanged =
                 (oldEmail == null && profile.getEmail() != null) ||
@@ -561,7 +566,6 @@ public class BusinessController {
             );
         }
 
-        existingProfile.setWebsite(profile.getWebsite());
         existingProfile.setStatus(BusinessProfile.BusinessStatus.PENDING);
 
         if (imageFile != null && !imageFile.isEmpty()) {
