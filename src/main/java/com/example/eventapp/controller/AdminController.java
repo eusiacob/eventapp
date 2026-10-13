@@ -15,6 +15,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -67,9 +69,15 @@ public class AdminController {
     }
 
     @GetMapping("/notifications")
-    public String notifications(@RequestParam(required = false) String search, Model model) {
+    public String notifications(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "0") int page,
+            Model model
+    ) {
+        int pageNumber = Math.max(page, 0);
         model.addAttribute("recipients", userService.searchForNotificationRecipients(search));
-        model.addAttribute("notificationHistory", userNotificationService.getAdminNotificationHistory());
+        model.addAttribute("notificationPage", userNotificationService.getAdminNotificationHistory(
+                PageRequest.of(pageNumber, 20, Sort.by(Sort.Direction.DESC, "createdAt"))));
         model.addAttribute("search", search == null ? "" : search);
         model.addAttribute("breadcrumbs", List.of(
                 new BreadcrumbDTO("Dashboard", "/admin"),

@@ -4,6 +4,8 @@ import com.example.eventapp.model.*;
 import com.example.eventapp.repository.UserNotificationRepository;
 import com.example.eventapp.repository.UserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -85,8 +87,8 @@ public class UserNotificationService {
         return created;
     }
 
-    public List<UserNotification> getAdminNotificationHistory() {
-        return userNotificationRepository.findTop100ByAdminSentTrueOrderByCreatedAtDesc();
+    public Page<UserNotification> getAdminNotificationHistory(Pageable pageable) {
+        return userNotificationRepository.findByAdminSentTrue(pageable);
     }
 
     public String markAsRead(
