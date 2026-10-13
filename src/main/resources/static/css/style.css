@@ -2308,9 +2308,7 @@ h3 {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 120px;
-    height: 40px;
-    padding: 0 20px;
+    padding: 0 10px;
     border-radius: 25px;
     text-decoration: none;
     font-weight: 500;
@@ -3050,6 +3048,7 @@ body .favorite-title,
     --bs-alert-border-color: #f1d4ac;
     --bs-alert-link-color: #59380d;
     --me-alert-accent: var(--me-amber, #eeb462);
+    padding: 0.5rem;
 }
 
 .alert-danger {
