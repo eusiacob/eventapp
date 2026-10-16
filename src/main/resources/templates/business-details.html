@@ -52,7 +52,7 @@
                 <div class="d-flex flex-wrap align-items-start justify-content-between gap-2">
 
                     <!-- CATEGORY -->
-                    <span class="badge bg-admin px-3 py-2 mb-3"
+                    <span class="badge bg-admin px-3 py-2 mt-1"
                           th:text="${profile.category.displayName}"></span>
 
                     <!--ADD/REMOVE FROM FAVORITES BUTTON-->
@@ -64,7 +64,7 @@
                                 class="btn btn-outline-primary rounded-4 d-lg-none"
                                 data-bs-target="#businessContactModal"
                                 data-bs-toggle="modal"
-                                style="min-width: 44px; min-height: 44px;"
+                                style="min-width: 44px; min-height: 44px; padding-left: 0.3em; padding-right: 0.3em;">"
                                 th:if="${(profile.phone != null and !profile.phone.isBlank())
                                     or (profile.email != null and !profile.email.isBlank())
                                     }"
