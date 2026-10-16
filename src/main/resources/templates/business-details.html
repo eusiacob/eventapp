@@ -64,10 +64,9 @@
                                 class="btn btn-outline-primary rounded-4 d-lg-none"
                                 data-bs-target="#businessContactModal"
                                 data-bs-toggle="modal"
-                                style="min-width: 44px; min-height: 44px; padding-left: 0.3em; padding-right: 0.3em;">"
+                                style="min-width: 44px; min-height: 44px; padding-left: 0.3em; padding-right: 0.3em;"
                                 th:if="${(profile.phone != null and !profile.phone.isBlank())
-                                    or (profile.email != null and !profile.email.isBlank())
-                                    }"
+                                    or (profile.email != null and !profile.email.isBlank())}"
                                 title="Contact"
                                 type="button">
                             <i aria-hidden="true" class="bi bi-person-lines-fill"></i>
@@ -174,19 +173,23 @@
                         <i class="bi bi-globe me-1"></i>Website
                     </a>
                     <a class="btn btn-outline-primary" rel="noopener noreferrer" target="_blank"
-                       th:href="${profile.facebookUrl}" th:if="${profile.facebookUrl != null and !profile.facebookUrl.isBlank()}">
+                       th:href="${profile.facebookUrl}"
+                       th:if="${profile.facebookUrl != null and !profile.facebookUrl.isBlank()}">
                         <i class="bi bi-facebook me-1"></i>Facebook
                     </a>
                     <a class="btn btn-outline-danger" rel="noopener noreferrer" target="_blank"
-                       th:href="${profile.instagramUrl}" th:if="${profile.instagramUrl != null and !profile.instagramUrl.isBlank()}">
+                       th:href="${profile.instagramUrl}"
+                       th:if="${profile.instagramUrl != null and !profile.instagramUrl.isBlank()}">
                         <i class="bi bi-instagram me-1"></i>Instagram
                     </a>
                     <a class="btn btn-outline-dark" rel="noopener noreferrer" target="_blank"
-                       th:href="${profile.tiktokUrl}" th:if="${profile.tiktokUrl != null and !profile.tiktokUrl.isBlank()}">
+                       th:href="${profile.tiktokUrl}"
+                       th:if="${profile.tiktokUrl != null and !profile.tiktokUrl.isBlank()}">
                         <i class="bi bi-tiktok me-1"></i>TikTok
                     </a>
                     <a class="btn btn-outline-danger" rel="noopener noreferrer" target="_blank"
-                       th:href="${profile.youtubeUrl}" th:if="${profile.youtubeUrl != null and !profile.youtubeUrl.isBlank()}">
+                       th:href="${profile.youtubeUrl}"
+                       th:if="${profile.youtubeUrl != null and !profile.youtubeUrl.isBlank()}">
                         <i class="bi bi-youtube me-1"></i>YouTube
                     </a>
                 </div>
@@ -364,7 +367,7 @@
                 <div class="mb-3"></div>
 
                 <span class="alert alert-warning p-1 mt-3"
-                     th:if="${hasPendingReview}">
+                      th:if="${hasPendingReview}">
                     Recenzia ta este în curs de aprobare.
                 </span>
 
