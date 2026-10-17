@@ -25,10 +25,12 @@ public class SitemapController {
     private static final String XML = "application/xml;charset=UTF-8";
     private final BusinessProfileRepository profiles;
     private final SeoService seo;
+    private final GuideArticleCatalog guides;
 
-    public SitemapController(BusinessProfileRepository profiles, SeoService seo) {
+    public SitemapController(BusinessProfileRepository profiles, SeoService seo, GuideArticleCatalog guides) {
         this.profiles = profiles;
         this.seo = seo;
+        this.guides = guides;
     }
 
     @GetMapping(value = "/sitemap.xml", produces = XML)
@@ -41,7 +43,10 @@ public class SitemapController {
 
     @GetMapping(value = "/sitemaps/pages.xml", produces = XML)
     public ResponseEntity<String> pages() {
-        Set<String> uniquePaths = new LinkedHashSet<>(List.of("/", "/businesses", "/prezentare", "/prezentare-generala", "/contact", "/terms", "/privacy"));
+        Set<String> uniquePaths = new LinkedHashSet<>(List.of("/", "/businesses", "/ghid", "/prezentare", "/prezentare-generala", "/contact", "/terms", "/privacy"));
+        for (GuideArticle article : guides.all()) {
+            uniquePaths.add("/ghid/" + article.slug());
+        }
         for (BusinessCategory category : profiles.findPublicCategoriesForSitemap()) {
             uniquePaths.add("/businesses/category/" + category.name());
         }

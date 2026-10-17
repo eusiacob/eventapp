@@ -65,6 +65,7 @@ public class SecurityConfig {
                                 "/register",
                                 "/businesses",
                                 "/businesses/**",
+                                "/ghid/**",
                                 "/css/**",
                                 "/js/**",
                                 "/uploads/businesses/**",

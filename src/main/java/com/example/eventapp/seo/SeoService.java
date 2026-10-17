@@ -56,6 +56,31 @@ public class SeoService {
                 description = "Explorează categoriile de servicii pentru evenimente: fotografie, muzică, locații, catering, decor și transport. Găsește furnizorii potriviți pe M-Event.";
                 graph.add(breadcrumbs(List.of("Acasă", "Servicii"), List.of("/", "/businesses")));
             }
+            case "guides" -> {
+                path = "/ghid";
+                title = "Ghid pentru organizarea evenimentelor | M-Event";
+                description = "Idei și recomandări practice pentru alegerea furnizorilor și organizarea nunților, botezurilor și altor evenimente.";
+                graph.add(breadcrumbs(List.of("Acasă", "Ghid"), List.of("/", "/ghid")));
+            }
+            case "guide-article" -> {
+                GuideArticle article = (GuideArticle) model.get("article");
+                path = "/ghid/" + article.slug();
+                title = article.title() + " | M-Event";
+                description = article.description();
+                Map<String, Object> articleData = new LinkedHashMap<>();
+                articleData.put("@type", "Article");
+                articleData.put("@id", absolute(path) + "#article");
+                articleData.put("headline", article.title());
+                articleData.put("description", article.description());
+                articleData.put("url", absolute(path));
+                articleData.put("inLanguage", "ro-RO");
+                articleData.put("author", Map.of("@type", "Organization", "name", "M-Event", "url", absolute("/")));
+                articleData.put("publisher", Map.of("@type", "Organization", "name", "M-Event", "url", absolute("/"), "logo", image));
+                articleData.put("image", image);
+                graph.add(articleData);
+                graph.add(breadcrumbs(List.of("Acasă", "Ghid", article.title()),
+                        List.of("/", "/ghid", path)));
+            }
             case "business-category" -> {
                 BusinessCategory category = (BusinessCategory) model.get("selectedCategory");
                 Page<?> page = (Page<?>) model.get("businessPage");

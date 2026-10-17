@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:replace="~{fragments/seo :: head}"></th:block>
+    <link rel="icon" th:href="@{/images/favicon.png}" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="app-bg">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="container py-3 guide-page">
+    <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
+
+    <header class="guide-hero mb-4">
+        <span class="guide-eyebrow">INSPIRAȚIE ȘI IDEI</span>
+        <h1>Ghidul M-Event pentru evenimente</h1>
+        <p>Idei practice pentru alegerea furnizorilor și organizarea unui eveniment care se potrivește stilului tău.</p>
+    </header>
+
+    <section aria-labelledby="guideListTitle">
+        <h2 class="h4 fw-bold mb-3" id="guideListTitle">Articole utile</h2>
+        <div class="row g-3">
+            <article class="col-12 col-md-6" th:each="article : ${articles}">
+                <div class="guide-card h-100">
+                    <span class="guide-card-icon" aria-hidden="true"><i class="bi bi-lightbulb"></i></span>
+                    <h3 class="h5"><a th:href="@{/ghid/{slug}(slug=${article.slug})}"
+                                       th:text="${article.title}">Titlu ghid</a></h3>
+                    <p th:text="${article.description}">Descriere ghid</p>
+                    <a class="guide-read-link" th:href="@{/ghid/{slug}(slug=${article.slug})}">Citește ghidul <span aria-hidden="true">→</span></a>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
