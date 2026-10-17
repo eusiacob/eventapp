@@ -1751,18 +1751,49 @@ body {
 }
 
 .footer-container {
-    max-width: 1200px;
+    width: 100%;
+    max-width: 1320px;
+    box-sizing: border-box;
 
     margin: 0 auto;
 
-    padding: 0 20px;
+    padding: 0 12px;
 
     display: grid;
 
-    grid-template-columns:
-        2fr 1fr 1fr;
+    grid-template-columns: 1.6fr repeat(4, minmax(0, 1fr));
 
-    gap: 40px;
+    gap: 28px;
+}
+
+@media (min-width: 576px) {
+    .footer-container {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    .footer-container {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    .footer-container {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .footer-container {
+        max-width: 1140px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .footer-container {
+        max-width: 1320px;
+    }
 }
 
 .footer-brand h5 {
