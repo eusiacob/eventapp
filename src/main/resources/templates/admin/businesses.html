@@ -99,7 +99,11 @@
                         <!-- Cover -->
 
                         <img class="admin-business-image rounded-top-4"
-                             th:src="@{${business.coverImagePath}}">
+                             decoding="async"
+                             height="480"
+                             loading="lazy"
+                             th:src="@{${business.coverImagePath}}"
+                             width="640">
 
 
                         <div class="card-body">

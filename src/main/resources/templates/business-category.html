@@ -137,7 +137,11 @@
 
                     <img th:alt="|${p.name} – ${selectedCategory.displayName}|"
                          class="card-img-top business-image"
-                         loading="lazy" th:src="@{${p.coverImagePath}}">
+                         decoding="async"
+                         height="480"
+                         loading="lazy"
+                         th:src="@{${p.coverImagePath}}"
+                         width="640">
 
 
                 </div>

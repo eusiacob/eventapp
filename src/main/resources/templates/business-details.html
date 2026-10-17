@@ -41,8 +41,10 @@
             <div class="business-details-cover-frame mb-2">
                 <img class="details-image business-details-cover"
                      fetchpriority="high"
+                     height="900"
                      th:alt="|${profile.name} ${profile.category.displayName}|"
-                     th:src="@{${profile.coverImagePath}}">
+                     th:src="@{${profile.coverImagePath}}"
+                     width="1200">
             </div>
 
 
@@ -223,12 +225,15 @@
 
                                     <img alt="Fotografie galerie"
                                          class="gallery-thumbnail"
+                                         decoding="async"
+                                         height="400"
                                          loading="lazy"
                                          onclick="openLightbox(this)"
                                          th:attr="
                                          data-image-src=@{${img.imagePath}},
                                          data-index=${iterStat.index}"
-                                         th:src="@{${img.imagePath}}">
+                                         th:src="@{${img.imagePath}}"
+                                         width="400">
 
                                 </div>
 

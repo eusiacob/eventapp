@@ -297,9 +297,12 @@
 
                     <img alt="business profile picture"
                          class="img-fluid rounded mb-2"
+                         decoding="async"
+                         height="480"
                          loading="lazy"
                          style="height:200px; object-fit:cover; width:100%"
-                         th:src="@{${p.coverImagePath}}">
+                         th:src="@{${p.coverImagePath}}"
+                         width="640">
 
                     <h5 class="card-title"
                         th:text="${p.name}">
