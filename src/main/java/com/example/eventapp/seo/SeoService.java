@@ -98,7 +98,7 @@ public class SeoService {
                 description = publicDescription.length() > 165 ? publicDescription.substring(0, 162) + "…" : publicDescription;
                 if (description.isBlank()) description = profile.getName() + " – " + profile.getCategory().getDisplayName() + " pe M-Event.";
                 String cover = profile.getCoverImagePath();
-                if (cover.startsWith("/uploads/businesses/")) image = absolute(cover);
+                if (isPublicImagePath(cover)) image = absolute(cover);
                 Map<String, Object> service = new LinkedHashMap<>();
                 service.put("@type", "Service");
                 service.put("@id", serviceUrl + "#service");
@@ -106,10 +106,17 @@ public class SeoService {
                 service.put("serviceType", profile.getCategory().getDisplayName());
                 service.put("url", serviceUrl);
                 service.put("description", publicDescription);
+                service.put("provider", Map.of(
+                        "@type", "Organization",
+                        "name", profile.getName(),
+                        "url", serviceUrl
+                ));
                 service.put("areaServed", profile.isNationwide()
                         ? List.of(Map.of("@type", "Country", "name", "România"))
                         : profile.getServiceCounties().stream().map(county -> Map.of("@type", "AdministrativeArea", "name", county)).toList());
-                if (cover.startsWith("/uploads/businesses/")) service.put("image", image);
+                if (isPublicImagePath(cover)) service.put("image", image);
+                addSameAs(service, profile);
+                addAggregateRating(service, model);
                 graph.add(service);
                 graph.add(breadcrumbs(List.of("Servicii", profile.getCategory().getDisplayName(), profile.getName()),
                         List.of("/businesses", "/businesses/category/" + profile.getCategory().name(),
@@ -148,6 +155,41 @@ public class SeoService {
             items.add(Map.of("@type", "ListItem", "position", i + 1, "name", names.get(i), "item", absolute(paths.get(i))));
         }
         return Map.of("@type", "BreadcrumbList", "itemListElement", items);
+    }
+
+    private boolean isPublicImagePath(String path) {
+        return path != null && (path.startsWith("/uploads/businesses/") || path.startsWith("/images/"));
+    }
+
+    private void addSameAs(Map<String, Object> service, BusinessProfile profile) {
+        List<String> socialLinks = new ArrayList<>();
+        addSocialLink(socialLinks, profile.getFacebookUrl());
+        addSocialLink(socialLinks, profile.getInstagramUrl());
+        addSocialLink(socialLinks, profile.getTiktokUrl());
+        addSocialLink(socialLinks, profile.getYoutubeUrl());
+        if (!socialLinks.isEmpty()) service.put("sameAs", socialLinks);
+    }
+
+    private void addSocialLink(List<String> socialLinks, String link) {
+        if (link != null && (link.startsWith("https://") || link.startsWith("http://"))) {
+            socialLinks.add(link);
+        }
+    }
+
+    private void addAggregateRating(Map<String, Object> service, Map<String, Object> model) {
+        Object countValue = model.get("reviewCount");
+        Object averageValue = model.get("averageRating");
+        if (!(countValue instanceof Number count) || count.longValue() < 1
+                || !(averageValue instanceof Number average) || average.doubleValue() <= 0) {
+            return;
+        }
+        service.put("aggregateRating", Map.of(
+                "@type", "AggregateRating",
+                "ratingValue", average.doubleValue(),
+                "bestRating", 5,
+                "worstRating", 1,
+                "ratingCount", count.longValue()
+        ));
     }
 
     String scriptSafeJson(Object value) {
