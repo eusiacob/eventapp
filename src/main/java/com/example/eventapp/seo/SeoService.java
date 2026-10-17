@@ -151,11 +151,20 @@ public class SeoService {
                 service.put("serviceType", profile.getCategory().getDisplayName());
                 service.put("url", serviceUrl);
                 service.put("description", publicDescription);
-                service.put("provider", Map.of(
-                        "@type", "Organization",
-                        "name", profile.getName(),
-                        "url", serviceUrl
-                ));
+                Map<String, Object> provider = new LinkedHashMap<>();
+                provider.put("@type", "LocalBusiness");
+                provider.put("@id", serviceUrl + "#business");
+                provider.put("name", profile.getName());
+                provider.put("url", serviceUrl);
+                if (isPublicImagePath(cover)) provider.put("image", image);
+                provider.put("areaServed", profile.isNationwide()
+                        ? List.of(Map.of("@type", "Country", "name", "România"))
+                        : profile.getServiceCounties().stream()
+                        .map(county -> Map.of("@type", "AdministrativeArea", "name", county)).toList());
+                addSameAs(provider, profile);
+                addAggregateRating(provider, model);
+                service.put("provider", Map.of("@id", serviceUrl + "#business"));
+                graph.add(provider);
                 service.put("areaServed", profile.isNationwide()
                         ? List.of(Map.of("@type", "Country", "name", "România"))
                         : profile.getServiceCounties().stream().map(county -> Map.of("@type", "AdministrativeArea", "name", county)).toList());

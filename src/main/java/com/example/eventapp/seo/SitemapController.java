@@ -14,6 +14,8 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.HtmlUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -75,9 +77,13 @@ public class SitemapController {
         if (page < 0 || (long) page * PAGE_SIZE >= profiles.countPublicSlugsForSitemap()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        List<String> paths = profiles.findPublicSlugsForSitemap(PageRequest.of(page, PAGE_SIZE)).stream()
-                .map(slug -> "/business/" + UriUtils.encodePathSegment(slug, StandardCharsets.UTF_8)).toList();
-        return xml("urlset", "url", paths);
+        List<SitemapEntry> entries = profiles.findPublicSlugDatesForSitemap(PageRequest.of(page, PAGE_SIZE)).stream()
+                .filter(row -> row.length >= 1 && row[0] instanceof String)
+                .map(row -> new SitemapEntry(
+                        "/business/" + UriUtils.encodePathSegment((String) row[0], StandardCharsets.UTF_8),
+                        sitemapDate(row)))
+                .toList();
+        return xmlEntries("urlset", "url", entries);
     }
 
     private ResponseEntity<String> xml(String root, String item, List<String> paths) {
@@ -91,5 +97,34 @@ public class SitemapController {
         xml.append("</").append(root).append('>');
         // No cache: deactivated or rejected services disappear on the next request.
         return ResponseEntity.ok().header("Cache-Control", "no-cache").body(xml.toString());
+    }
+
+    private ResponseEntity<String> xmlEntries(String root, String item, List<SitemapEntry> entries) {
+        StringBuilder xml = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<")
+                .append(root).append(" xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n");
+        for (SitemapEntry entry : entries) {
+            xml.append('<').append(item).append("><loc>")
+                    .append(HtmlUtils.htmlEscape(seo.absolute(entry.path()), "UTF-8"))
+                    .append("</loc>");
+            if (entry.lastmod() != null) {
+                xml.append("<lastmod>").append(entry.lastmod()).append("</lastmod>");
+            }
+            xml.append("</").append(item).append(">\n");
+        }
+        xml.append("</").append(root).append('>');
+        return ResponseEntity.ok().header("Cache-Control", "no-cache").body(xml.toString());
+    }
+
+    private LocalDate sitemapDate(Object[] row) {
+        if (row.length > 1 && row[1] instanceof LocalDateTime updatedAt) {
+            return updatedAt.toLocalDate();
+        }
+        if (row.length > 2 && row[2] instanceof LocalDate createdAt) {
+            return createdAt;
+        }
+        return null;
+    }
+
+    private record SitemapEntry(String path, LocalDate lastmod) {
     }
 }

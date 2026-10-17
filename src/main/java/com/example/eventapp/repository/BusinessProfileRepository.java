@@ -27,6 +27,15 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
     List<String> findPublicSlugsForSitemap(Pageable pageable);
 
     @Query("""
+            SELECT b.slug, b.updatedAt, b.createdAt
+            FROM BusinessProfile b
+            WHERE b.status = APPROVED AND b.active = true
+            AND b.slug IS NOT NULL AND b.slug <> ''
+            ORDER BY b.id
+            """)
+    List<Object[]> findPublicSlugDatesForSitemap(Pageable pageable);
+
+    @Query("""
             SELECT COUNT(b) FROM BusinessProfile b
             WHERE b.status = APPROVED AND b.active = true
             AND b.slug IS NOT NULL AND b.slug <> ''

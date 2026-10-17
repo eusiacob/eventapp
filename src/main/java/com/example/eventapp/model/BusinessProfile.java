@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -209,6 +210,13 @@ public class BusinessProfile {
 
     private LocalDate createdAt;
 
+    /**
+     * Used for sitemap freshness and structured-data maintenance signals.
+     * It is updated automatically whenever an existing profile changes.
+     */
+    @Column
+    private LocalDateTime updatedAt;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -260,6 +268,13 @@ public class BusinessProfile {
     @PrePersist
     public void generateIdentifiers() {
 
+        if (createdAt == null) {
+            createdAt = LocalDate.now();
+        }
+        if (updatedAt == null) {
+            updatedAt = LocalDateTime.now();
+        }
+
         if (uuid == null) {
             uuid = UUID.randomUUID()
                     .toString();
@@ -275,5 +290,10 @@ public class BusinessProfile {
             if (slug.isBlank()) slug = "serviciu";
             slug = slug + "-" + uuid.substring(0, 8);
         }
+    }
+
+    @PreUpdate
+    public void touchUpdatedAt() {
+        updatedAt = LocalDateTime.now();
     }
 }
