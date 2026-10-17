@@ -58,24 +58,43 @@ public class SeoService {
             case "business-category" -> {
                 BusinessCategory category = (BusinessCategory) model.get("selectedCategory");
                 Page<?> page = (Page<?>) model.get("businessPage");
-                path = "/businesses/category/" + category.name();
-                title = category.getDisplayName() + " pentru evenimente în România"
-                        + (page.getNumber() > 0 ? " – pagina " + (page.getNumber() + 1) : "") + " | M-Event";
-                description = categoryDescription(category);
-                UriComponentsBuilder canonical = UriComponentsBuilder.fromPath(path);
-                boolean filtered = false;
-                for (String key : List.of("keyword", "city", "eventDate", "serviceType", "eventType")) {
-                    Object value = model.get(key);
-                    if (value != null && !value.toString().isBlank()) {
-                        filtered = true;
-                        canonical.queryParam(key, value.toString().strip());
+                boolean landingPage = Boolean.TRUE.equals(model.get("seoLandingPage"));
+                if (landingPage) {
+                    String county = (String) model.get("seoCounty");
+                    path = "/businesses/" + SeoSlug.slugify(category.getDisplayName()) + "/" + SeoSlug.slugify(county);
+                    String landingPath = path;
+                    title = category.getDisplayName() + " în " + county + " – furnizori pentru evenimente | M-Event";
+                    description = category.getDisplayName() + " în " + county
+                            + ". Descoperă furnizori verificați pentru nunți, botezuri și alte evenimente pe M-Event.";
+                    if (page.getNumber() > 0) {
+                        path = UriComponentsBuilder.fromPath(path)
+                                .queryParam("page", page.getNumber()).build().encode().toUriString();
+                        robots = "noindex, follow";
+                    } else if (page.isEmpty()) {
+                        robots = "noindex, follow";
                     }
+                    graph.add(breadcrumbs(List.of("Acasă", "Servicii", category.getDisplayName(), county),
+                            List.of("/", "/businesses", "/businesses/category/" + category.name(), landingPath)));
+                } else {
+                    path = "/businesses/category/" + category.name();
+                    title = category.getDisplayName() + " pentru evenimente în România"
+                            + (page.getNumber() > 0 ? " – pagina " + (page.getNumber() + 1) : "") + " | M-Event";
+                    description = categoryDescription(category);
+                    UriComponentsBuilder canonical = UriComponentsBuilder.fromPath(path);
+                    boolean filtered = false;
+                    for (String key : List.of("keyword", "city", "eventDate", "serviceType", "eventType")) {
+                        Object value = model.get(key);
+                        if (value != null && !value.toString().isBlank()) {
+                            filtered = true;
+                            canonical.queryParam(key, value.toString().strip());
+                        }
+                    }
+                    if (page.getNumber() > 0) canonical.queryParam("page", page.getNumber());
+                    path = canonical.build().encode().toUriString();
+                    if (filtered || page.isEmpty()) robots = "noindex, follow";
+                    graph.add(breadcrumbs(List.of("Acasă", "Servicii", category.getDisplayName()),
+                            List.of("/", "/businesses", "/businesses/category/" + category.name())));
                 }
-                if (page.getNumber() > 0) canonical.queryParam("page", page.getNumber());
-                path = canonical.build().encode().toUriString();
-                if (filtered || page.isEmpty()) robots = "noindex, follow";
-                graph.add(breadcrumbs(List.of("Acasă", "Servicii", category.getDisplayName()),
-                        List.of("/", "/businesses", "/businesses/category/" + category.name())));
             }
             case "business-details" -> {
                 BusinessProfile profile = (BusinessProfile) model.get("profile");

@@ -1,6 +1,7 @@
 package com.example.eventapp.seo;
 
 import com.example.eventapp.model.BusinessCategory;
+import com.example.eventapp.model.RomanianCounties;
 import com.example.eventapp.repository.BusinessProfileRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,9 @@ import org.springframework.web.util.HtmlUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 public class SitemapController {
@@ -38,11 +41,28 @@ public class SitemapController {
 
     @GetMapping(value = "/sitemaps/pages.xml", produces = XML)
     public ResponseEntity<String> pages() {
-        List<String> paths = new ArrayList<>(List.of("/", "/businesses", "/prezentare", "/prezentare-generala", "/contact", "/terms", "/privacy"));
+        Set<String> uniquePaths = new LinkedHashSet<>(List.of("/", "/businesses", "/prezentare", "/prezentare-generala", "/contact", "/terms", "/privacy"));
         for (BusinessCategory category : profiles.findPublicCategoriesForSitemap()) {
-            paths.add("/businesses/category/" + category.name());
+            uniquePaths.add("/businesses/category/" + category.name());
         }
-        return xml("urlset", "url", paths);
+        for (Object[] pair : profiles.findPublicCategoryCountyPairsForSitemap()) {
+            addCategoryCountyPath(uniquePaths, pair);
+        }
+        for (Object[] pair : profiles.findPublicLegacyCategoryCountyPairsForSitemap()) {
+            addCategoryCountyPath(uniquePaths, pair);
+        }
+        for (BusinessCategory category : profiles.findPublicNationwideCategoriesForSitemap()) {
+            for (String county : RomanianCounties.ALL) {
+                uniquePaths.add("/businesses/" + SeoSlug.slugify(category.getDisplayName()) + "/" + SeoSlug.slugify(county));
+            }
+        }
+        return xml("urlset", "url", new ArrayList<>(uniquePaths));
+    }
+
+    private void addCategoryCountyPath(Set<String> paths, Object[] pair) {
+        if (pair.length < 2 || !(pair[0] instanceof BusinessCategory category)
+                || !(pair[1] instanceof String county) || county.isBlank()) return;
+        paths.add("/businesses/" + SeoSlug.slugify(category.getDisplayName()) + "/" + SeoSlug.slugify(county));
     }
 
     @GetMapping(value = "/sitemaps/businesses-{page}.xml", produces = XML)

@@ -36,6 +36,30 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
     @Query("SELECT DISTINCT b.category FROM BusinessProfile b WHERE b.status = APPROVED AND b.active = true AND b.category IS NOT NULL")
     List<BusinessCategory> findPublicCategoriesForSitemap();
 
+    @Query("""
+            SELECT DISTINCT b.category, c
+            FROM BusinessProfile b JOIN b.serviceCounties c
+            WHERE b.status = APPROVED AND b.active = true AND b.category IS NOT NULL
+            """)
+    List<Object[]> findPublicCategoryCountyPairsForSitemap();
+
+    @Query("""
+            SELECT DISTINCT b.category, b.city
+            FROM BusinessProfile b
+            WHERE b.status = APPROVED AND b.active = true AND b.category IS NOT NULL
+            AND b.nationwide = false AND b.serviceCounties IS EMPTY
+            AND b.city IS NOT NULL AND b.city <> ''
+            """)
+    List<Object[]> findPublicLegacyCategoryCountyPairsForSitemap();
+
+    @Query("""
+            SELECT DISTINCT b.category
+            FROM BusinessProfile b
+            WHERE b.status = APPROVED AND b.active = true
+            AND b.nationwide = true AND b.category IS NOT NULL
+            """)
+    List<BusinessCategory> findPublicNationwideCategoriesForSitemap();
+
     List<BusinessProfile> findByUser(User user);
     boolean existsByUser(User user);
 

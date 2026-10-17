@@ -3,6 +3,7 @@ package com.example.eventapp.controller;
 import com.example.eventapp.dto.BreadcrumbDTO;
 import com.example.eventapp.model.*;
 import com.example.eventapp.repository.UserRepository;
+import com.example.eventapp.seo.SeoSlug;
 import com.example.eventapp.service.*;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -675,6 +676,7 @@ public class BusinessController {
         model.addAttribute("eventDate", eventDate);
         model.addAttribute("serviceType", serviceType);
         model.addAttribute("eventType", eventType);
+        model.addAttribute("seoLandingPage", false);
         model.addAttribute("categoryServiceTypes", BusinessServiceType.forCategory(category));
         model.addAttribute("cities", businessProfileService.getCitiesByCategory(category));
         model.addAttribute("breadcrumbs", List.of(
@@ -693,6 +695,33 @@ public class BusinessController {
         }
 
         return "business-category";
+    }
+
+    @GetMapping("/businesses/{categorySlug}/{countySlug}")
+    public String businessesByCategoryAndCounty(@PathVariable String categorySlug,
+                                                 @PathVariable String countySlug,
+                                                 @RequestParam(defaultValue = "0") int page,
+                                                 Model model,
+                                                 @AuthenticationPrincipal UserDetails userDetails) {
+        BusinessCategory category = SeoSlug.category(categorySlug)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND));
+        String county = SeoSlug.county(countySlug)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND));
+
+        String view = businessesByCategory(category, null, county, null, null, null,
+                page, model, userDetails);
+        model.addAttribute("seoLandingPage", true);
+        model.addAttribute("seoCounty", county);
+        List<String> cities = new java.util.ArrayList<>(businessProfileService.getCitiesByCategory(category));
+        if (!cities.contains(county)) cities.add(county);
+        model.addAttribute("cities", cities);
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Acasă", "/businesses"),
+                new BreadcrumbDTO(category.getDisplayName(), "/businesses/category/" + category.name()),
+                new BreadcrumbDTO(county, null)));
+        return view;
     }
 
 }
