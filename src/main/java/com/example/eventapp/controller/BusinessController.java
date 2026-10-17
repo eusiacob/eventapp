@@ -72,6 +72,9 @@ public class BusinessController {
     public String businesses(Model model) {
 
         model.addAttribute("categories", BusinessCategory.values());
+        model.addAttribute("breadcrumbs", List.of(
+                new BreadcrumbDTO("Acasă", "/"),
+                new BreadcrumbDTO("Servicii", null)));
 
         model.addAttribute("premiumBusinesses",
                 businessProfileService.getPremiumBusinesses());
@@ -281,7 +284,8 @@ public class BusinessController {
         model.addAttribute("averageRating", reviewService.getAverageRating(profile));
         model.addAttribute("reviewCount", reviewService.getReviewCount(profile));
         model.addAttribute("breadcrumbs", List.of(
-                new BreadcrumbDTO("Acasă", "/businesses"),
+                new BreadcrumbDTO("Acasă", "/"),
+                new BreadcrumbDTO("Servicii", "/businesses"),
                 new BreadcrumbDTO(profile.getCategory().getDisplayName(), "/businesses/category/" + profile.getCategory().name()),
                 new BreadcrumbDTO(profile.getName(), null)));
 
@@ -680,7 +684,8 @@ public class BusinessController {
         model.addAttribute("categoryServiceTypes", BusinessServiceType.forCategory(category));
         model.addAttribute("cities", businessProfileService.getCitiesByCategory(category));
         model.addAttribute("breadcrumbs", List.of(
-                new BreadcrumbDTO("Acasă", "/businesses"),
+                new BreadcrumbDTO("Acasă", "/"),
+                new BreadcrumbDTO("Servicii", "/businesses"),
                 new BreadcrumbDTO(category.getDisplayName(), null)));
 
         if (userDetails != null) {
@@ -718,7 +723,8 @@ public class BusinessController {
         if (!cities.contains(county)) cities.add(county);
         model.addAttribute("cities", cities);
         model.addAttribute("breadcrumbs", List.of(
-                new BreadcrumbDTO("Acasă", "/businesses"),
+                new BreadcrumbDTO("Acasă", "/"),
+                new BreadcrumbDTO("Servicii", "/businesses"),
                 new BreadcrumbDTO(category.getDisplayName(), "/businesses/category/" + category.name()),
                 new BreadcrumbDTO(county, null)));
         return view;

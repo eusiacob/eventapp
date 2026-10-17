@@ -54,6 +54,7 @@ public class SeoService {
                 path = "/businesses";
                 title = "Servicii pentru nunți, botezuri și alte evenimente speciale | M-Event";
                 description = "Explorează categoriile de servicii pentru evenimente: fotografie, muzică, locații, catering, decor și transport. Găsește furnizorii potriviți pe M-Event.";
+                graph.add(breadcrumbs(List.of("Acasă", "Servicii"), List.of("/", "/businesses")));
             }
             case "business-category" -> {
                 BusinessCategory category = (BusinessCategory) model.get("selectedCategory");
@@ -137,8 +138,8 @@ public class SeoService {
                 addSameAs(service, profile);
                 addAggregateRating(service, model);
                 graph.add(service);
-                graph.add(breadcrumbs(List.of("Servicii", profile.getCategory().getDisplayName(), profile.getName()),
-                        List.of("/businesses", "/businesses/category/" + profile.getCategory().name(),
+                graph.add(breadcrumbs(List.of("Acasă", "Servicii", profile.getCategory().getDisplayName(), profile.getName()),
+                        List.of("/", "/businesses", "/businesses/category/" + profile.getCategory().name(),
                                 "/business/" + profile.getSlug())));
             }
             case "prezentare" -> {

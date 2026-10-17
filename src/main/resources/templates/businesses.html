@@ -25,6 +25,8 @@
 
 <div class="container fluid px-3" style="padding-top: 1rem !important; padding-bottom: 6rem !important;">
 
+    <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
+
     <section class="businesses-intro" aria-labelledby="businessesIntroTitle">
         <h1 class="businesses-intro-title" id="businessesIntroTitle">Servicii pentru nunți, botezuri și alte evenimente speciale</h1>
         <p class="businesses-intro-description">Descoperă furnizori din România și explorează serviciile potrivite pentru evenimentul tău.</p>
