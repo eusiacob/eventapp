@@ -674,8 +674,9 @@ body {
 }
 
 .business-card-title {
-    height: 2.4em;
-    line-height: 1.2;
+    height: 2.3em;
+    margin-bottom: 0.35rem !important;
+    line-height: 1.15;
     overflow: hidden;
 }
 
@@ -688,10 +689,11 @@ body {
 
 .business-card-location {
     position: relative;
-    height: 2.5em;
-    min-height: 2.5em;
-    line-height: 1.25;
-    overflow: visible;
+    height: 2.2em;
+    min-height: 2.2em;
+    margin-bottom: 0.35rem !important;
+    line-height: 1.1;
+    overflow: hidden;
 }
 
 .business-card-location-text {
@@ -700,6 +702,7 @@ body {
     -webkit-line-clamp: 2;
     overflow: hidden;
     padding-left: 16px;
+    line-height: inherit;
 }
 
 .business-card-location-icon {
@@ -716,11 +719,12 @@ body {
 .business-card-reviews {
     display: flex;
     align-items: center;
-    height: 1.5rem;
-    min-height: 1.5rem;
+    height: 1.25rem;
+    min-height: 1.25rem;
+    margin-bottom: 0 !important;
     overflow: hidden;
     white-space: nowrap;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
 .business-card-reviews > span {
@@ -1239,6 +1243,18 @@ body {
         font-size: 1rem;
     }
 
+    .business-card .business-card-title {
+        font-size: 1.05rem;
+    }
+
+    .business-card .business-card-location {
+        font-size: 0.82rem;
+    }
+
+    .business-card .business-card-reviews {
+        font-size: 0.78rem;
+    }
+
     .home-hero {
         text-align: center;
         padding: 2rem 0;
@@ -1694,10 +1710,10 @@ body {
 
 /* zona text jos */
 .premium-info {
-    padding: 12px;
+    padding: 10px;
     display: grid;
-    grid-template-rows: 2.4em 2.5em;
-    row-gap: 0.25rem;
+    grid-template-rows: 2.25em 2.15em;
+    row-gap: 0.1rem;
 }
 
 .premium-title {
@@ -1705,8 +1721,8 @@ body {
     font-weight: 700;
     margin: 0;
     color: #111;
-    height: 2.4em;
-    line-height: 1.2;
+    height: 2.25em;
+    line-height: 1.125;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
@@ -1716,10 +1732,10 @@ body {
 .premium-county {
     position: relative;
     margin: 0;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: #6c757d;
-    height: 2.5em;
-    line-height: 1.25;
+    height: 2.15em;
+    line-height: 1.075;
     display: block;
     overflow: visible;
 }
@@ -1759,6 +1775,31 @@ body {
 .premium-rating {
     flex: 0 0 auto;
     white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+    .premium-info {
+        padding: 8px;
+        grid-template-rows: 2.2em 2em;
+        row-gap: 0.05rem;
+    }
+
+    .premium-title {
+        font-size: 0.9rem;
+        height: 2.2em;
+        line-height: 1.1;
+    }
+
+    .premium-county {
+        height: 2em;
+        line-height: 1;
+        font-size: 0.75rem;
+        overflow: hidden;
+    }
+
+    .premium-county-text {
+        line-height: inherit;
+    }
 }
 
 .category-carousel.dragging,
@@ -4173,5 +4214,33 @@ body .favorite-title,
     .presentation-final {
         margin-top: 3.5rem;
         padding: 2rem 1.2rem;
+    }
+}
+
+/* Compact five-column service grids on desktop; retain the two-column mobile layout. */
+@media (min-width: 992px) {
+    .service-card-grid > .service-card-column {
+        flex: 0 0 20%;
+        width: 20%;
+    }
+
+    .service-card-grid .business-image {
+        height: clamp(130px, 12vw, 175px);
+    }
+
+    .service-card-grid .business-card .card-body {
+        padding: 0.75rem;
+    }
+
+    .service-card-grid .business-card-title {
+        font-size: 1.05rem;
+    }
+
+    .service-card-grid .business-card-location {
+        font-size: 0.85rem;
+    }
+
+    .service-card-grid .business-card-reviews {
+        font-size: 0.8rem;
     }
 }
