@@ -94,6 +94,8 @@
                                    id="name"
                                    maxlength="100"
                                    placeholder="Numele tău"
+                                   pattern="[\p{L}\p{M}]+(?:[ '\u2019-][\p{L}\p{M}]+)*"
+                                   title="Folosește doar litere, spații, cratimă și apostrof."
                                    th:field="*{name}"
                                    type="text">
 
@@ -142,6 +144,8 @@
                                    id="subject"
                                    maxlength="150"
                                    placeholder="Subiectul mesajului"
+                                   pattern="[\p{L}\p{M}\p{N}][\p{L}\p{M}\p{N} .,!?;:'\&quot;()–—-]*"
+                                   title="Folosește litere, cifre, spații și punctuație obișnuită. Slash-urile și caracterele speciale nu sunt permise."
                                    th:field="*{subject}"
                                    type="text">
 
@@ -232,6 +236,19 @@
 </div>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
+
+<script>
+    const nameInput = document.getElementById('name');
+    const subjectInput = document.getElementById('subject');
+
+    nameInput?.addEventListener('input', () => {
+        nameInput.value = nameInput.value.replace(/[^\p{L}\p{M} '\u2019-]/gu, '');
+    });
+
+    subjectInput?.addEventListener('input', () => {
+        subjectInput.value = subjectInput.value.replace(/[^\p{L}\p{M}\p{N} .,!?;:'\"()–—-]/gu, '');
+    });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
 </script>
