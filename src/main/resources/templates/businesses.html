@@ -27,9 +27,11 @@
 
     <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
-    <section class="businesses-intro" aria-labelledby="businessesIntroTitle">
-        <h1 class="businesses-intro-title" id="businessesIntroTitle">Servicii pentru nunți, botezuri și alte evenimente speciale</h1>
-        <p class="businesses-intro-description">Descoperă furnizori din România și explorează serviciile potrivite pentru evenimentul tău.</p>
+    <section aria-labelledby="businessesIntroTitle" class="businesses-intro">
+        <h1 class="businesses-intro-title" id="businessesIntroTitle">Servicii pentru nunți, botezuri și alte evenimente
+            speciale</h1>
+        <p class="businesses-intro-description">Descoperă furnizori din România și explorează serviciile potrivite
+            pentru evenimentul tău.</p>
     </section>
 
     <!--CATEGORIES-->
@@ -67,11 +69,7 @@
             </ol>
         </section>
 
-        <div th:replace="~{fragments/carousel-header :: header(
-        'Categorii',
-        'categoryCarousel')}">
-        </div>
-
+        <div th:replace="~{fragments/carousel-header :: header('Categorii','categoryCarousel')}"></div>
     </div>
 
     <div class="category-carousel" id="categoryCarousel">
@@ -101,17 +99,17 @@
 
 
             <a class="premium-card carousel-card text-decoration-none text-reset"
-                 th:href="@{/business/{uuid}(uuid=${b.slug})}"
-                 th:each="b : ${premiumBusinesses}">
+               th:each="b : ${premiumBusinesses}"
+               th:href="@{/business/{uuid}(uuid=${b.slug})}">
 
                 <!-- badge -->
                 <span class="premium-badge">PREMIUM</span>
 
                 <!-- imagine -->
-                <img class="premium-image" loading="lazy" decoding="async"
-                     width="200" height="160" style="object-fit:cover;display:block;"
-                     th:alt="|${b.name} – ${b.category.displayName}|"
-                     th:src="@{${b.coverImagePath}}">
+                <img class="premium-image" decoding="async" height="160"
+                     loading="lazy" style="object-fit:cover;display:block;" th:alt="|${b.name} – ${b.category.displayName}|"
+                     th:src="@{${b.coverImagePath}}"
+                     width="200">
 
                 <!-- text -->
                 <div class="premium-info">
@@ -147,10 +145,10 @@
 
                 <span class="favorite-badge">NOU</span>
 
-                <img class="premium-image" loading="lazy" decoding="async"
-                     width="200" height="160" style="object-fit:cover;display:block;"
-                     th:alt="|${b.name} – ${b.category.displayName}|"
-                     th:src="@{${b.coverImagePath}}">
+                <img class="premium-image" decoding="async" height="160"
+                     loading="lazy" style="object-fit:cover;display:block;" th:alt="|${b.name} – ${b.category.displayName}|"
+                     th:src="@{${b.coverImagePath}}"
+                     width="200">
 
                 <div class="premium-info">
                     <h5 class="premium-title" th:text="${b.name}"></h5>
@@ -172,15 +170,15 @@
         <div class="category-carousel" id="favoriteCarousel">
 
             <a class="premium-card carousel-card text-decoration-none text-reset"
-                 th:href="@{/business/{uuid}(uuid=${b.slug})}"
-                 th:each="b : ${mostFavoriteBusinesses}">
+               th:each="b : ${mostFavoriteBusinesses}"
+               th:href="@{/business/{uuid}(uuid=${b.slug})}">
 
                 <span class="favorite-badge">TOP FAVORITE <span class="favorite-heart-badge">♥</span></span>
 
-                <img class="premium-image" loading="lazy" decoding="async"
-                     width="200" height="160" style="object-fit:cover;display:block;"
-                     th:alt="|${b.name} – ${b.category.displayName}|"
-                     th:src="@{${b.coverImagePath}}">
+                <img class="premium-image" decoding="async" height="160"
+                     loading="lazy" style="object-fit:cover;display:block;" th:alt="|${b.name} – ${b.category.displayName}|"
+                     th:src="@{${b.coverImagePath}}"
+                     width="200">
 
                 <div class="premium-info">
 
@@ -209,15 +207,15 @@
         <div class="category-carousel" id="topRatedCarousel">
 
             <a class="premium-card carousel-card text-decoration-none text-reset"
-                 th:href="@{/business/{uuid}(uuid=${b.slug})}"
-                 th:each="b : ${topRatedBusinesses}">
+               th:each="b : ${topRatedBusinesses}"
+               th:href="@{/business/{uuid}(uuid=${b.slug})}">
 
                 <span class="favorite-badge">TOP APRECIATE <span class="top-star-badge">★</span></span>
 
-                <img class="premium-image" loading="lazy" decoding="async"
-                     width="200" height="160" style="object-fit:cover;display:block;"
-                     th:alt="|${b.name} – ${b.category.displayName}|"
-                     th:src="@{${b.coverImagePath}}">
+                <img class="premium-image" decoding="async" height="160"
+                     loading="lazy" style="object-fit:cover;display:block;" th:alt="|${b.name} – ${b.category.displayName}|"
+                     th:src="@{${b.coverImagePath}}"
+                     width="200">
 
                 <div class="premium-info">
 

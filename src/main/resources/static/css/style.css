@@ -3480,7 +3480,13 @@ body .favorite-title,
     }
 
     .businesses-intro-title {
-        font-size: clamp(1.55rem, 8vw, 2rem);
+        font-size: clamp(1.35rem, 6vw, 1.6rem);
+        line-height: 1.2;
+    }
+
+    .explore-guide-title {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
     }
 }
 
