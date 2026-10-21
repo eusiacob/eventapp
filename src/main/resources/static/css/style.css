@@ -673,6 +673,60 @@ body {
     flex-direction: column;
 }
 
+.business-card-title {
+    height: 2.4em;
+    line-height: 1.2;
+    overflow: hidden;
+}
+
+.business-card-title a {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.business-card-location {
+    position: relative;
+    height: 2.5em;
+    min-height: 2.5em;
+    line-height: 1.25;
+    overflow: visible;
+}
+
+.business-card-location-text {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    padding-left: 16px;
+}
+
+.business-card-location-icon {
+    position: absolute;
+    top: 0.15em;
+    left: 0;
+    width: 12px;
+    color: var(--me-primary, #138086);
+    font-size: 0.85em;
+    line-height: 1;
+    text-align: center;
+}
+
+.business-card-reviews {
+    display: flex;
+    align-items: center;
+    height: 1.5rem;
+    min-height: 1.5rem;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 0.9rem;
+}
+
+.business-card-reviews > span {
+    white-space: nowrap;
+}
+
 .business-image {
     height: 250px;
     object-fit: cover;
