@@ -1,6 +1,7 @@
 package com.example.eventapp.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +23,7 @@ public class SupportTicket {
 
 
     @Column(nullable = false)
+    @Size(max = 150, message = "Subiectul nu poate depăși 150 de caractere.")
     private String subject;
 
 

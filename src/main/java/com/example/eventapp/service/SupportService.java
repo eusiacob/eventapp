@@ -13,6 +13,9 @@ import java.util.List;
 @Service
 public class SupportService {
 
+    public static final int MAX_SUBJECT_LENGTH = 150;
+    public static final int MAX_MESSAGE_LENGTH = 5_000;
+
     private final SupportTicketRepository supportTicketRepository;
     private final SupportMessageRepository supportMessageRepository;
     private final UserNotificationService userNotificationService;
@@ -51,22 +54,25 @@ public class SupportService {
             );
         }
 
+        String normalizedSubject = subject.trim();
+        if (normalizedSubject.length() > MAX_SUBJECT_LENGTH) {
+            throw new IllegalArgumentException(
+                    "Subiectul nu poate depăși 150 de caractere."
+            );
+        }
+
         if (category == null) {
             throw new IllegalArgumentException(
                     "Selectează o categorie."
             );
         }
 
-        if (message == null || message.isBlank()) {
-            throw new IllegalArgumentException(
-                    "Mesajul nu poate fi gol."
-            );
-        }
+        String normalizedMessage = normalizeMessage(message);
 
         SupportTicket ticket = new SupportTicket();
 
         ticket.setUser(user);
-        ticket.setSubject(subject.trim());
+        ticket.setSubject(normalizedSubject);
         ticket.setCategory(category);
         ticket.setStatus(
                 SupportTicket.SupportStatus.OPEN
@@ -82,7 +88,7 @@ public class SupportService {
 
         supportMessage.setTicket(savedTicket);
         supportMessage.setUser(user);
-        supportMessage.setMessage(message.trim());
+        supportMessage.setMessage(normalizedMessage);
 
         supportMessageRepository.save(
                 supportMessage
@@ -164,13 +170,7 @@ public class SupportService {
             String message
     ) {
 
-        if (message == null ||
-                message.isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "Mesajul nu poate fi gol."
-            );
-        }
+        String normalizedMessage = normalizeMessage(message);
 
         SupportTicket ticket =
                 getUserTicket(
@@ -193,9 +193,7 @@ public class SupportService {
 
         supportMessage.setTicket(ticket);
         supportMessage.setUser(user);
-        supportMessage.setMessage(
-                message.trim()
-        );
+        supportMessage.setMessage(normalizedMessage);
 
 
         SupportMessage savedMessage = supportMessageRepository.save(supportMessage);
@@ -257,13 +255,7 @@ public class SupportService {
             String message
     ) {
 
-        if (message == null ||
-                message.isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "Mesajul nu poate fi gol."
-            );
-        }
+        String normalizedMessage = normalizeMessage(message);
 
         SupportTicket ticket =
                 getAdminTicket(ticketId);
@@ -283,9 +275,7 @@ public class SupportService {
 
         supportMessage.setTicket(ticket);
         supportMessage.setUser(admin);
-        supportMessage.setMessage(
-                message.trim()
-        );
+        supportMessage.setMessage(normalizedMessage);
 
         SupportMessage savedMessage = supportMessageRepository.save(supportMessage);
 
@@ -365,5 +355,20 @@ public class SupportService {
                 statusMessage,
                 "/support/" + ticket.getId()
         );
+    }
+
+    private String normalizeMessage(String message) {
+        if (message == null || message.isBlank()) {
+            throw new IllegalArgumentException("Mesajul nu poate fi gol.");
+        }
+
+        String normalizedMessage = message.trim();
+        if (normalizedMessage.length() > MAX_MESSAGE_LENGTH) {
+            throw new IllegalArgumentException(
+                    "Mesajul nu poate depăși 5000 de caractere."
+            );
+        }
+
+        return normalizedMessage;
     }
 }
