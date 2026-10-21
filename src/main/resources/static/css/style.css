@@ -1618,6 +1618,9 @@ body {
 /* zona text jos */
 .premium-info {
     padding: 12px;
+    display: grid;
+    grid-template-rows: 2.4em 2.5em;
+    row-gap: 0.25rem;
 }
 
 .premium-title {
@@ -1625,12 +1628,60 @@ body {
     font-weight: 700;
     margin: 0;
     color: #111;
+    height: 2.4em;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
 }
 
 .premium-county {
+    position: relative;
     margin: 0;
     font-size: 0.85rem;
     color: #6c757d;
+    height: 2.5em;
+    line-height: 1.25;
+    display: block;
+    overflow: visible;
+}
+
+.premium-county-text {
+    min-width: 0;
+    padding-left: 16px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.premium-location-icon {
+    position: absolute;
+    left: 0;
+    top: 0.15em;
+    width: 12px;
+    color: var(--me-primary, #138086);
+    font-size: 0.75rem;
+    line-height: 1;
+    text-align: center;
+}
+
+.premium-meta {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.35rem;
+    min-width: 0;
+}
+
+.premium-meta .premium-county {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.premium-rating {
+    flex: 0 0 auto;
+    white-space: nowrap;
 }
 
 .category-carousel.dragging,
@@ -3187,7 +3238,7 @@ body .favorite-title,
 .service-area-options {
     border: 1px solid var(--me-service-card-border, #d5e2e2);
     border-radius: 12px;
-    padding: 0.75rem;
+    padding: 0.4rem;
     background: #fff;
 }
 
@@ -3286,7 +3337,7 @@ body .favorite-title,
     min-height: 2.5rem;
     height: auto;
     margin-top: 0;
-    padding: 0.4rem 0.65rem;
+    padding: 0.4rem;
     border-radius: 10px;
 }
 
@@ -3298,7 +3349,6 @@ body .favorite-title,
     .compact-search.search-card .form-control,
     .compact-search.search-card .form-select,
     .compact-search.search-card button[type="submit"] {
-        min-height: 44px;
         font-size: 1rem;
     }
 }
