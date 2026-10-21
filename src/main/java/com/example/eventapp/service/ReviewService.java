@@ -7,8 +7,10 @@ import com.example.eventapp.repository.ReviewRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.time.LocalDateTime;
 
 @Service
 public class ReviewService {
@@ -67,6 +69,7 @@ public class ReviewService {
 
     }
 
+    @Transactional
     public void addReview(String businessId, String userEmail, Review review) {
         BusinessProfile business = businessProfileService.findByUuid(businessId);
         User user = userService.findByEmail(userEmail);
@@ -76,12 +79,16 @@ public class ReviewService {
                 .isPresent();
 
         if (alreadyReviewed) {
-            throw new RuntimeException("You already reviewed this business");
+            throw new IllegalStateException("Ai trimis deja o recenzie pentru acest serviciu.");
         }
 
         review.setId(null);
         review.setBusinessProfile(business);
         review.setUser(user);
+        // Moderation state and metadata are server-controlled; ignore client values.
+        review.setReviewStatus(Review.ReviewStatus.PENDING);
+        review.setRejectionReason(null);
+        review.setCreatedAt(LocalDateTime.now());
 
         reviewRepository.save(review);
 
@@ -171,17 +178,24 @@ public class ReviewService {
 
     public void rejectReview(Long id, String reason) {
 
-        Review review = findById(id);
-
-        review.setReviewStatus(Review.ReviewStatus.REJECTED);
-
         if (reason == null || reason.isBlank()) {
             throw new IllegalArgumentException(
                     "Motivul respingerii este obligatoriu."
             );
         }
 
-        review.setRejectionReason(reason.trim());
+        String normalizedReason = reason.trim();
+        if (normalizedReason.length() > 500) {
+            throw new IllegalArgumentException(
+                    "Motivul respingerii nu poate depăși 500 de caractere."
+            );
+        }
+
+        Review review = findById(id);
+
+        review.setReviewStatus(Review.ReviewStatus.REJECTED);
+
+        review.setRejectionReason(normalizedReason);
 
         reviewRepository.save(review);
 

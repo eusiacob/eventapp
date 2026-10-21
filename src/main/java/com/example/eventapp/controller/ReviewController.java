@@ -36,7 +36,7 @@ public class ReviewController {
 
         try {
             reviewService.addReview(businessUuid, userDetails.getUsername(), review);
-        } catch (RuntimeException e) {
+        } catch (IllegalStateException e) {
             redirectAttributes.addAttribute("alreadyReviewed", true);
             return "redirect:/business/" + businessUuid;
         }

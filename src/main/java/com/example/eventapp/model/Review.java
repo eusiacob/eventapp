@@ -13,6 +13,10 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(
+        name = "uk_review_business_user",
+        columnNames = {"business_id", "user_id"}
+))
 public class Review {
 
     @Id
@@ -43,6 +47,7 @@ public class Review {
         }
     }
 
+    @Size(max = 500, message = "Motivul respingerii nu poate depăși 500 de caractere.")
     @Column(length = 500)
     private String rejectionReason;
 
