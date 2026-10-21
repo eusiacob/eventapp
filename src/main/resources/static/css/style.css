@@ -1606,6 +1606,29 @@ body {
     z-index: 2;
 }
 
+.recent-section .favorite-badge {
+    background: rgba(255, 255, 255, 0.84);
+}
+
+.recent-category-badge {
+    position: absolute;
+    top: 38px;
+    right: 10px;
+    z-index: 2;
+    max-width: calc(100% - 20px);
+    overflow: hidden;
+    padding: 4px 8px;
+    border: 0;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.84);
+    color: #000;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: normal;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 /* imagine sus */
 .premium-image {
     width: 100%;

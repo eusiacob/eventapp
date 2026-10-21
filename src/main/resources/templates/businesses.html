@@ -145,6 +145,7 @@
                th:href="@{/business/{uuid}(uuid=${b.slug})}">
 
                 <span class="favorite-badge">NOU</span>
+                <span class="recent-category-badge" th:text="${b.category.displayName}"></span>
 
                 <img class="premium-image" decoding="async" height="160"
                      loading="lazy" style="object-fit:cover;display:block;" th:alt="|${b.name} – ${b.category.displayName}|"
