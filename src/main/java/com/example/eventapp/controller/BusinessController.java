@@ -66,6 +66,23 @@ public class BusinessController {
     @InitBinder("profile")
     public void trimBusinessProfileFields(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+        binder.setAllowedFields(
+                "name",
+                "category",
+                "serviceTypes",
+                "eventTypes",
+                "otherServiceDetails",
+                "description",
+                "nationwide",
+                "serviceCounties",
+                "phone",
+                "email",
+                "website",
+                "facebookUrl",
+                "instagramUrl",
+                "tiktokUrl",
+                "youtubeUrl"
+        );
     }
 
     @GetMapping("/businesses")
@@ -169,6 +186,8 @@ public class BusinessController {
         }
 
         profile.setUser(user);
+        // Approval is an administrative decision; never trust a submitted entity state.
+        profile.setStatus(BusinessProfile.BusinessStatus.PENDING);
 
 //        if (!businessProfileService.canCreateBusinessProfile(user)) {
 //

@@ -19,6 +19,7 @@ public class BusinessCoverImageService {
 
     private static final int COVER_WIDTH = 1200;
     private static final int COVER_HEIGHT = 900;
+    private static final long MAX_COVER_BYTES = 10L * 1024 * 1024;
     private static final String COVER_FILE_NAME = "cover.jpg";
 
     private final UploadProperties uploadProperties;
@@ -36,6 +37,12 @@ public class BusinessCoverImageService {
 
         if (file == null || file.isEmpty()) {
             return;
+        }
+
+        if (file.getSize() > MAX_COVER_BYTES) {
+            throw new IllegalArgumentException(
+                    "Imaginea de copertă nu poate depăși 10 MB."
+            );
         }
 
         String contentType = file.getContentType();

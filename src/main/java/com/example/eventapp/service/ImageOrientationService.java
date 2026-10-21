@@ -8,14 +8,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Iterator;
 
 @Service
 public class ImageOrientationService {
+
+    private static final int MAX_IMAGE_DIMENSION = 20_000;
+    private static final long MAX_IMAGE_PIXELS = 40_000_000L;
+
+    static void validateDimensions(int width, int height) {
+        if (width <= 0 || height <= 0
+                || width > MAX_IMAGE_DIMENSION
+                || height > MAX_IMAGE_DIMENSION
+                || (long) width * height > MAX_IMAGE_PIXELS) {
+            throw new IllegalArgumentException(
+                    "Imaginea are dimensiuni prea mari. Folosește o imagine de maximum 40 de megapixeli."
+            );
+        }
+    }
 
     public BufferedImage readWithCorrectOrientation(MultipartFile file)
             throws IOException {
@@ -23,8 +40,29 @@ public class ImageOrientationService {
         byte[] imageBytes =
                 file.getBytes();
 
-        BufferedImage image =
-                ImageIO.read(new ByteArrayInputStream(imageBytes));
+        BufferedImage image;
+        try (ImageInputStream input = ImageIO.createImageInputStream(
+                new ByteArrayInputStream(imageBytes))) {
+            if (input == null) {
+                return null;
+            }
+
+            Iterator<ImageReader> readers = ImageIO.getImageReaders(input);
+            if (!readers.hasNext()) {
+                return null;
+            }
+
+            ImageReader reader = readers.next();
+            try {
+                reader.setInput(input, true, false);
+                int width = reader.getWidth(0);
+                int height = reader.getHeight(0);
+                validateDimensions(width, height);
+                image = reader.read(0);
+            } finally {
+                reader.dispose();
+            }
+        }
 
         if (image == null) {
             return null;
