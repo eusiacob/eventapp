@@ -97,145 +97,59 @@
           th:text="${users.size()} == 1 ? ' utilizator' : ' utilizatori'">
         </span>
 
-    <div class="card border-0 shadow-sm rounded-4 mt-2">
-
-        <div class="card-body">
-
-            <div class="table-responsive">
-
-                <table class="table align-middle table-hover">
-
-                    <thead>
-
-                    <tr>
-
-                        <th>Utilizator</th>
-
-                        <th>Email</th>
-
-                        <th>Rol</th>
-
-                        <th>Servicii</th>
-
-                        <th>Favorite</th>
-
-                        <th>Recenzii</th>
-
-                        <th>Data înregistrării</th>
-
-                        <th>Status cont</th>
-
-                    </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                    <tr class="clickable-row"
-
-                        th:data-href="@{/admin/user/{id}(id=${userDto.user.id})}"
-
-                        th:each="userDto : ${users}">
-
-                        <td class="fw-semibold"
-                            th:text="${userDto.user.firstName} + ' ' + ${userDto.user.lastName}">
-                        </td>
-
-                        <td>
-                            <div class="d-flex flex-column gap-1">
-
-                                <span th:text="${userDto.user.email}">
-                                </span>
-
-                                <span class="badge bg-success-subtle text-success border border-success-subtle align-self-start"
-                                      th:if="${userDto.user.emailVerified}">
-                                    <i class="bi bi-patch-check-fill me-1"></i>
-                                    Verificat
-                                </span>
-
-                                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle align-self-start"
-                                      th:if="${!userDto.user.emailVerified}">
-                                    <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                                    Neverificat
-                                </span>
-
-                            </div>
-                        </td>
-
-                        <td>
-
-                <span class="badge"
-
-                      th:classappend="
-                            ${userDto.user.role.name == 'ADMIN'} ? 'bg-admin' :
-                            (${userDto.user.role.name == 'BUSINESS'} ? 'bg-success' : 'bg-primary')"
-
-                      th:text="${userDto.user.role.name}">
-
-                </span>
-
-                        </td>
-
-                        <td
-                                th:text="${userDto.user.businessProfiles.size()}">
-                        </td>
-
-                        <td
-                                th:text="${userDto.user.favoriteBusinesses.size()}">
-
-                        </td>
-
-                        <td
-                                th:text="${userDto.reviewCount}">
-
-                        </td>
-
-                        <td
-                                th:text="${#temporals.format(userDto.user.createdAt,'dd.MM.yyyy')}">
-                        </td>
-
-                        <td>
-                            <!-- Cont activ -->
-                            <span class="badge rounded-pill bg-success-subtle text-success-emphasis"
-                                  th:if="${userDto.user.enabled}">
-
-                                <i class="bi bi-check-circle me-1"></i>
-                                Activ
-
-                            </span>
-
-                            <!-- Suspendat manual -->
-                            <span class="badge rounded-pill bg-danger-subtle text-danger-emphasis"
-                                  th:if="${!userDto.user.enabled and userDto.user.accountStatusReason.name() == 'MANUAL'}"
-                                  title="Suspendat de administrator">
-
-                                <i class="bi bi-person-x me-1"></i>
-                                Suspendat
-
-                            </span>
-
-                            <!-- Dezactivat pentru inactivitate -->
-                            <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis"
-                                  th:if="${!userDto.user.enabled and userDto.user.accountStatusReason.name() == 'INACTIVITY'}"
-                                  title="Dezactivat automat după 6 luni fără activitate">
-
-                                <i class="bi bi-clock-history me-1"></i>
-                                Inactiv
-
-                            </span>
-
-                        </td>
-
-                    </tr>
-
-                    </tbody>
-
-                </table>
-
+    <div class="admin-entity-list admin-user-list" th:if="${not users.isEmpty()}">
+        <a class="admin-entity-row admin-user-row"
+           th:each="userDto : ${users}"
+           th:href="@{/admin/user/{id}(id=${userDto.user.id})}">
+            <div class="admin-entity-main admin-user-main">
+                <h2 class="admin-entity-title"
+                    th:text="${userDto.user.firstName + ' ' + userDto.user.lastName}"></h2>
+                <div class="admin-user-email-line">
+                    <span class="admin-user-email" th:text="${userDto.user.email}"></span>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle"
+                          th:if="${userDto.user.emailVerified}">
+                        <i aria-hidden="true" class="bi bi-patch-check-fill me-1"></i>Verificat
+                    </span>
+                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle"
+                          th:if="${!userDto.user.emailVerified}">
+                        <i aria-hidden="true" class="bi bi-exclamation-triangle-fill me-1"></i>Neverificat
+                    </span>
+                </div>
             </div>
 
-        </div>
+            <div aria-label="Activitatea utilizatorului" class="admin-user-metrics">
+                <span><strong th:text="${userDto.user.businessProfiles.size()}"></strong><small>servicii</small></span>
+                <span><strong th:text="${userDto.user.favoriteBusinesses.size()}"></strong><small>favorite</small></span>
+                <span><strong th:text="${userDto.reviewCount}"></strong><small>recenzii</small></span>
+            </div>
 
+            <div class="admin-entity-footer admin-user-footer">
+                <span class="badge admin-user-role"
+                      th:classappend="${userDto.user.role.name == 'ADMIN'} ? 'bg-admin' : (${userDto.user.role.name == 'BUSINESS'} ? 'bg-success' : 'bg-primary')"
+                      th:text="${userDto.user.role.name}"></span>
+
+                <span class="badge rounded-pill bg-success-subtle text-success-emphasis"
+                      th:if="${userDto.user.enabled}">
+                    <i aria-hidden="true" class="bi bi-check-circle me-1"></i>Activ
+                </span>
+                <span class="badge rounded-pill bg-danger-subtle text-danger-emphasis"
+                      th:if="${!userDto.user.enabled and userDto.user.accountStatusReason.name() == 'MANUAL'}"
+                      title="Suspendat de administrator">
+                    <i aria-hidden="true" class="bi bi-person-x me-1"></i>Suspendat
+                </span>
+                <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis"
+                      th:if="${!userDto.user.enabled and userDto.user.accountStatusReason.name() == 'INACTIVITY'}"
+                      title="Dezactivat automat după 6 luni fără activitate">
+                    <i aria-hidden="true" class="bi bi-clock-history me-1"></i>Inactiv
+                </span>
+
+                <time class="admin-entity-date"
+                      th:datetime="${#temporals.format(userDto.user.createdAt, 'yyyy-MM-dd')}"
+                      th:text="${#temporals.format(userDto.user.createdAt, 'dd.MM.yyyy')}"></time>
+            </div>
+
+            <i aria-hidden="true" class="bi bi-chevron-right admin-entity-chevron"></i>
+        </a>
     </div>
 
     <!-- NU EXISTA UTILIZATORI -->
@@ -257,23 +171,6 @@
 <div th:replace="~{fragments/footer :: footer}"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!--CLICKABLE USER ROW-->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-
-        document.querySelectorAll(".clickable-row").forEach(function (row) {
-
-            row.addEventListener("click", function () {
-
-                window.location.href = this.dataset.href;
-
-            });
-
-        });
-
-    });
-</script>
 
 </body>
 </html>

@@ -81,95 +81,46 @@
         </div>
     </form>
 
-    <div class="admin-business-body">
+    <div class="admin-business-list" th:if="${not businesses.isEmpty()}">
+        <a class="admin-business-row"
+           th:each="business : ${businesses}"
+           th:href="@{/admin/business/{uuid}(uuid=${business.slug})}">
+            <img class="admin-business-row-image"
+                 decoding="async"
+                 height="480"
+                 loading="lazy"
+                 th:alt="|Imagine pentru ${business.name}|"
+                 th:src="@{${business.coverImagePath}}"
+                 width="640">
 
-        <div class="row g-4">
-
-            <div class="col-6 col-lg-4 col-xl-3"
-                 th:each="business : ${businesses}">
-
-
-                <a class="admin-business-card-link"
-                   th:href="@{/admin/business/{uuid}(uuid=${business.slug})}">
-
-
-                    <div class="card shadow-sm border-0 rounded-4 h-100">
-
-
-                        <!-- Cover -->
-
-                        <img class="admin-business-image rounded-top-4"
-                             decoding="async"
-                             height="480"
-                             loading="lazy"
-                             th:src="@{${business.coverImagePath}}"
-                             width="640">
-
-
-                        <div class="card-body">
-
-
-                            <div class="d-flex justify-content-between align-items-start">
-
-
-                                <h5 class="fw-bold mb-2"
-                                    th:text="${business.name}">
-                                </h5>
-
-
-                                <span class="admin-status-badge"
-                                      style="white-space: nowrap;"
-                                      th:classappend="
-                              ${business.status.name() == 'PENDING'} ? ' bg-warning text-dark' :
-                              (${business.status.name() == 'APPROVED'} ? ' bg-success' :
-                              ' bg-danger')"
-                                      th:text="${business.status.statusDisplayName}">
-
-                                </span>
-
-
-                            </div>
-
-
-                            <p class="text-muted mb-1">
-
-                                <i class="bi bi-tag"></i>
-
-                                <span th:text="${business.category}">
-                        </span>
-
-                            </p>
-
-
-                            <p class="text-muted mb-1">
-
-                                <i class="bi bi-geo-alt"></i>
-
-                                <span th:text="${business.city}">
-                        </span>
-
-                            </p>
-
-
-                            <small class="text-secondary">
-
-                                Creat:
-
-                                <span th:text="${#temporals.format(business.createdAt,'dd.MM.yyyy')}">
-                        </span>
-
-                            </small>
-
-                        </div>
-
-                    </div>
-
-                </a>
-
+            <div class="admin-business-row-main">
+                <h2 class="admin-business-row-title" th:text="${business.name}"></h2>
+                <div class="admin-business-row-meta">
+                    <span>
+                        <i aria-hidden="true" class="bi bi-tag"></i>
+                        <span th:text="${business.category}"></span>
+                    </span>
+                    <span>
+                        <i aria-hidden="true" class="bi bi-geo-alt"></i>
+                        <span th:text="${business.city}"></span>
+                    </span>
+                </div>
             </div>
 
-        </div>
+            <div class="admin-business-row-footer">
+                <span class="admin-status-badge admin-business-row-status"
+                      th:classappend="${business.status.name() == 'PENDING'} ? ' bg-warning text-dark' : (${business.status.name() == 'APPROVED'} ? ' bg-success' : ' bg-danger')"
+                      th:text="${business.status.statusDisplayName}"></span>
 
+                <small class="admin-business-row-created">
+                    <span>Creat:</span>
+                    <time th:datetime="${#temporals.format(business.createdAt, 'yyyy-MM-dd')}"
+                          th:text="${#temporals.format(business.createdAt, 'dd.MM.yyyy')}"></time>
+                </small>
+            </div>
+
+            <i aria-hidden="true" class="bi bi-chevron-right admin-business-row-chevron"></i>
+        </a>
     </div>
 
     <!-- NU EXISTA SERVICII -->
