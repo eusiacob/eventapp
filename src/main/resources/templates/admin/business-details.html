@@ -24,11 +24,11 @@
 
     <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
-    <div class="alert alert-success" style="padding: 0.5em" th:if="${param.success}">
+    <div class="alert alert-success p-1" th:if="${param.success}">
         Serviciul a fost aprobat!
     </div>
 
-    <div class="alert alert-danger" style="padding: 0.5em" th:if="${param.rejected}">
+    <div class="alert alert-danger p-1" th:if="${param.rejected}">
         Serviciul a fost respins!
     </div>
 
