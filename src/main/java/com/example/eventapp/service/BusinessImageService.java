@@ -167,7 +167,7 @@ public class BusinessImageService {
                 .countByBusinessProfileId(businessId);
     }
 
-    public BusinessProfile deleteImage(
+    public BusinessModerationUpdate deleteImage(
             Long imageId,
             User user
     ) throws IOException {
@@ -181,6 +181,9 @@ public class BusinessImageService {
 
         BusinessProfile businessProfile =
                 image.getBusinessProfile();
+        boolean alreadyPendingModeration =
+                businessProfile != null
+                        && businessProfile.getStatus() == BusinessProfile.BusinessStatus.PENDING;
 
         if (businessProfile == null ||
                 businessProfile.getUser() == null ||
@@ -218,7 +221,10 @@ public class BusinessImageService {
 
         businessImageRepository.delete(image);
 
-        return businessProfile;
+        return new BusinessModerationUpdate(
+                businessProfile,
+                alreadyPendingModeration
+        );
 
 
     }

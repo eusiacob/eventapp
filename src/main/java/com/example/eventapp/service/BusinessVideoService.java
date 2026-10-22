@@ -753,7 +753,7 @@ public class BusinessVideoService {
         }
     }
 
-    public BusinessProfile deleteVideo(
+    public BusinessModerationUpdate deleteVideo(
             Long videoId,
             User user
     ) throws IOException {
@@ -767,6 +767,9 @@ public class BusinessVideoService {
 
         BusinessProfile businessProfile =
                 video.getBusinessProfile();
+        boolean alreadyPendingModeration =
+                businessProfile != null
+                        && businessProfile.getStatus() == BusinessProfile.BusinessStatus.PENDING;
 
         if (businessProfile == null ||
                 businessProfile.getUser() == null ||
@@ -812,7 +815,10 @@ public class BusinessVideoService {
 
         businessVideoRepository.delete(video);
 
-        return businessProfile;
+        return new BusinessModerationUpdate(
+                businessProfile,
+                alreadyPendingModeration
+        );
     }
 
     private String thumbnailFileName(String videoFileName) {

@@ -144,6 +144,18 @@ public class BusinessController {
         }
     }
 
+    private void notifyAdminsNewBusiness(BusinessProfile profile) {
+        List<User> admins = userRepository.findByRole(Role.ADMIN);
+        for (User admin : admins) {
+            userNotificationService.create(
+                    admin,
+                    "Serviciu nou în așteptare",
+                    "Serviciul " + profile.getName() + " a fost trimis pentru aprobare.",
+                    "/admin/business/" + profile.getUuid()
+            );
+        }
+    }
+
     @PostMapping("/business/create")
     public String createProfile(
             @Valid @ModelAttribute("profile") BusinessProfile profile,
@@ -232,28 +244,9 @@ public class BusinessController {
 
             businessProfileService.save(profile);
 
-            List<User> admins =
-                    userRepository.findByRole(Role.ADMIN);
-
-            for (User admin : admins) {
-
-                userNotificationService.create(
-
-                        admin,
-
-                        "Serviciu nou în așteptare",
-
-                        "Serviciul "
-                                + profile.getName()
-                                + " a fost trimis pentru aprobare.",
-
-                        "/admin/business/"
-                                + profile.getUuid()
-
-                );
-
-            }
         }
+
+        notifyAdminsNewBusiness(profile);
 
         redirectAttributes.addAttribute("businessCreated", true);
         redirectAttributes.addAttribute("businessNotApproved", true);
@@ -511,6 +504,8 @@ public class BusinessController {
 
         BusinessProfile existingProfile =
                 businessProfileService.findByUuidAndValidateOwner(uuid, user);
+        boolean alreadyPendingModeration =
+                existingProfile.getStatus() == BusinessProfile.BusinessStatus.PENDING;
         String oldImagePath = existingProfile.getImagePath();
         String oldEmail = existingProfile.getEmail();
 
@@ -613,19 +608,8 @@ public class BusinessController {
                     .requestBusinessEmailVerification(existingProfile);
         }
 
-        List<User> admins = userRepository.findByRole(Role.ADMIN);
-
-        for (User admin : admins) {
-
-            userNotificationService.create(
-
-                    admin,
-                    "Serviciu actualizat",
-                    profile.getName()
-                            + " a fost editat și trimis pentru aprobare.",
-                    "/admin/business/"
-                            + profile.getUuid()
-            );
+        if (!alreadyPendingModeration) {
+            notifyAdminsBusinessUpdated(existingProfile);
         }
 
         redirectAttributes.addAttribute("businessUpdated", true);
@@ -633,6 +617,18 @@ public class BusinessController {
 
         return "redirect:/business/edit/" + profile.getSlug();
 
+    }
+
+    private void notifyAdminsBusinessUpdated(BusinessProfile profile) {
+        List<User> admins = userRepository.findByRole(Role.ADMIN);
+        for (User admin : admins) {
+            userNotificationService.create(
+                    admin,
+                    "Serviciu actualizat",
+                    profile.getName() + " a fost editat și trimis pentru aprobare.",
+                    "/admin/business/" + profile.getUuid()
+            );
+        }
     }
 
     @PostMapping("/business/delete/{uuid}")

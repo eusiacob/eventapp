@@ -68,6 +68,8 @@ public class BusinessImageController {
                         uuid,
                         user
                 );
+        boolean alreadyPendingModeration =
+                businessProfile.getStatus() == BusinessProfile.BusinessStatus.PENDING;
 
         long existingImages =
                 businessImageService.countImagesByBusinessId(
@@ -89,9 +91,9 @@ public class BusinessImageController {
                     images
             );
 
-            notifyAdminsAboutBusinessUpdate(
-                    businessProfile
-            );
+            if (!alreadyPendingModeration) {
+                notifyAdminsAboutBusinessUpdate(businessProfile);
+            }
 
             return success(
                     "Imaginile au fost încărcate cu succes."
@@ -140,6 +142,8 @@ public class BusinessImageController {
                         uuid,
                         user
                 );
+        boolean alreadyPendingModeration =
+                businessProfile.getStatus() == BusinessProfile.BusinessStatus.PENDING;
 
         long existingVideos =
                 businessVideoService.countVideosByBusinessId(
@@ -164,9 +168,9 @@ public class BusinessImageController {
                     videos
             );
 
-            notifyAdminsAboutBusinessUpdate(
-                    businessProfile
-            );
+            if (!alreadyPendingModeration) {
+                notifyAdminsAboutBusinessUpdate(businessProfile);
+            }
 
             return success(
                     "Videoclipurile au fost încărcate cu succes."
@@ -250,15 +254,15 @@ public class BusinessImageController {
 
         try {
 
-            BusinessProfile businessProfile =
+            BusinessModerationUpdate moderationUpdate =
                     businessImageService.deleteImage(
                             id,
                             user
                     );
 
-            notifyAdminsAboutBusinessUpdate(
-                    businessProfile
-            );
+            if (!moderationUpdate.alreadyPendingModeration()) {
+                notifyAdminsAboutBusinessUpdate(moderationUpdate.profile());
+            }
 
 
             return success(
@@ -295,15 +299,15 @@ public class BusinessImageController {
 
         try {
 
-            BusinessProfile businessProfile =
+            BusinessModerationUpdate moderationUpdate =
                     businessVideoService.deleteVideo(
                             id,
                             user
                     );
 
-            notifyAdminsAboutBusinessUpdate(
-                    businessProfile
-            );
+            if (!moderationUpdate.alreadyPendingModeration()) {
+                notifyAdminsAboutBusinessUpdate(moderationUpdate.profile());
+            }
 
             return success(
                     "Videoclipul a fost șters cu succes."
