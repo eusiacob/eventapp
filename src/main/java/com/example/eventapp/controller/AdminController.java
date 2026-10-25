@@ -448,7 +448,7 @@ public class AdminController {
 
     private int validPageSize(int size) {
         return switch (size) {
-            case 5, 20 -> size;
+            case 5, 10, 20 -> size;
             default -> 5;
         };
     }
