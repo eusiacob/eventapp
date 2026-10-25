@@ -109,7 +109,8 @@ public class UserService {
     }
 
     public Page<User> searchForAdmin(Role role, String search, Pageable pageable) {
-        List<User> users = searchForAdmin(role, search);
+        // Search results may be an immutable stream result; sorting requires a mutable copy.
+        List<User> users = new java.util.ArrayList<>(searchForAdmin(role, search));
         String property = pageable.getSort().stream().findFirst().map(org.springframework.data.domain.Sort.Order::getProperty).orElse("createdAt");
         boolean ascending = pageable.getSort().stream().findFirst().map(org.springframework.data.domain.Sort.Order::isAscending).orElse(false);
         java.util.Comparator<User> comparator = switch (property) {
