@@ -35,28 +35,28 @@
 
         <a class="admin-filter-btn all"
            th:classappend="${selectedRole == null} ? ' active'"
-           th:href="@{/admin/users(search=${search})}">
+           th:href="@{/admin/users(search=${search}, size=${size}, sort=${sort})}">
 
             Toți
         </a>
 
         <a class="admin-filter-btn bg-primary text-white"
            th:classappend="${selectedRole?.name() == 'USER'} ? ' active'"
-           th:href="@{/admin/users(role='USER', search=${search})}">
+           th:href="@{/admin/users(role='USER', search=${search}, size=${size}, sort=${sort})}">
 
             USER
         </a>
 
         <a class="admin-filter-btn bg-success text-white"
            th:classappend="${selectedRole?.name() == 'BUSINESS'} ? ' active'"
-           th:href="@{/admin/users(role='BUSINESS', search=${search})}">
+           th:href="@{/admin/users(role='BUSINESS', search=${search}, size=${size}, sort=${sort})}">
 
             BUSINESS
         </a>
 
         <a class="admin-filter-btn bg-admin text-white"
            th:classappend="${selectedRole?.name() == 'ADMIN'} ? ' active'"
-           th:href="@{/admin/users(role='ADMIN', search=${search})}">
+           th:href="@{/admin/users(role='ADMIN', search=${search}, size=${size}, sort=${sort})}">
 
             ADMIN
 
@@ -68,6 +68,7 @@
           method="get"
           th:action="@{/admin/users}">
         <input name="role" th:if="${selectedRole != null}" th:value="${selectedRole}" type="hidden">
+        <input name="page" type="hidden" value="0">
         <div class="col-12 col-md-7 col-lg-5">
             <label class="form-label text-dark" for="userSearch">Caută utilizatori</label>
             <input class="form-control"
@@ -82,19 +83,38 @@
                 <i class="bi bi-search me-1"></i>Caută
             </button>
             <a class="btn btn-outline-secondary"
-               th:href="@{/admin/users(role=${selectedRole})}">
+               th:href="@{/admin/users(role=${selectedRole}, size=${size}, sort=${sort})}">
                 Reset
             </a>
+        </div>
+        <div class="col-6 col-md-2">
+            <label class="form-label text-dark" for="userSort">Sortează</label>
+            <select class="form-select" id="userSort" name="sort" onchange="this.form.submit()">
+                <option value="newest" th:selected="${sort == 'newest'}">Cei mai noi</option>
+                <option value="oldest" th:selected="${sort == 'oldest'}">Cei mai vechi</option>
+                <option value="nameAsc" th:selected="${sort == 'nameAsc'}">Nume A–Z</option>
+                <option value="nameDesc" th:selected="${sort == 'nameDesc'}">Nume Z–A</option>
+                <option value="emailAsc" th:selected="${sort == 'emailAsc'}">Email A–Z</option>
+                <option value="emailDesc" th:selected="${sort == 'emailDesc'}">Email Z–A</option>
+            </select>
+        </div>
+        <div class="col-6 col-md-2">
+            <label class="form-label text-dark" for="userSize">Pe pagină</label>
+            <select class="form-select" id="userSize" name="size" onchange="this.form.submit()">
+                <option value="5" th:selected="${size == 5}">5</option>
+                <option value="10" th:selected="${size == 10}">10</option>
+                <option value="20" th:selected="${size == 20}">20</option>
+            </select>
         </div>
     </form>
 
     <!--    LISTA-->
     <span class="text-muted"
-          th:text="${users.size()}">
+          th:text="${users.totalElements}">
         </span>
 
     <span class="text-muted"
-          th:text="${users.size()} == 1 ? ' utilizator' : ' utilizatori'">
+          th:text="${users.totalElements} == 1 ? ' utilizator' : ' utilizatori'">
         </span>
 
     <div class="admin-entity-list admin-user-list" th:if="${not users.isEmpty()}">
@@ -151,6 +171,14 @@
             <i aria-hidden="true" class="bi bi-chevron-right admin-entity-chevron"></i>
         </a>
     </div>
+
+    <nav aria-label="Paginare utilizatori" class="mt-4" th:if="${users.totalPages > 1}">
+        <ul class="pagination justify-content-center flex-wrap">
+            <li class="page-item" th:classappend="${users.first} ? ' disabled'"><a class="page-link" th:href="@{/admin/users(role=${selectedRole}, search=${search}, size=${size}, sort=${sort}, page=${users.number - 1})}">Anterior</a></li>
+            <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, users.totalPages - 1)}" th:classappend="${pageNumber == users.number} ? ' active'"><a class="page-link" th:text="${pageNumber + 1}" th:href="@{/admin/users(role=${selectedRole}, search=${search}, size=${size}, sort=${sort}, page=${pageNumber})}"></a></li>
+            <li class="page-item" th:classappend="${users.last} ? ' disabled'"><a class="page-link" th:href="@{/admin/users(role=${selectedRole}, search=${search}, size=${size}, sort=${sort}, page=${users.number + 1})}">Următoarea</a></li>
+        </ul>
+    </nav>
 
     <!-- NU EXISTA UTILIZATORI -->
     <div class="text-center py-5"

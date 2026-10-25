@@ -97,11 +97,11 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
                 OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :search, '%'))
                 OR LOWER(CONCAT(CONCAT(u.firstName, ' '), u.lastName)) LIKE LOWER(CONCAT('%', :search, '%'))
             )
-            ORDER BY b.createdAt DESC
             """)
-    List<BusinessProfile> searchForAdmin(
+    org.springframework.data.domain.Page<BusinessProfile> searchForAdmin(
             @Param("status") BusinessProfile.BusinessStatus status,
-            @Param("search") String search
+            @Param("search") String search,
+            org.springframework.data.domain.Pageable pageable
     );
 
     @Query("""

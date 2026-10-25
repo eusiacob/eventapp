@@ -30,28 +30,28 @@
 
         <a class="admin-filter-btn all"
            th:classappend="${selectedStatus == null} ? ' active'"
-           th:href="@{/admin/businesses(search=${search})}">
+           th:href="@{/admin/businesses(search=${search}, size=${size}, sort=${sort})}">
             Toate
         </a>
 
 
         <a class="admin-filter-btn pending"
            th:classappend="${selectedStatus?.name() == 'PENDING'} ? ' active'"
-           th:href="@{/admin/businesses(status='PENDING', search=${search})}">
+           th:href="@{/admin/businesses(status='PENDING', search=${search}, size=${size}, sort=${sort})}">
             În așteptare
         </a>
 
 
         <a class="admin-filter-btn approved"
            th:classappend="${selectedStatus?.name() == 'APPROVED'} ? ' active'"
-           th:href="@{/admin/businesses(status='APPROVED', search=${search})}">
+           th:href="@{/admin/businesses(status='APPROVED', search=${search}, size=${size}, sort=${sort})}">
             Aprobate
         </a>
 
 
         <a class="admin-filter-btn rejected"
            th:classappend="${selectedStatus?.name() == 'REJECTED'} ? ' active'"
-           th:href="@{/admin/businesses(status='REJECTED', search=${search})}">
+           th:href="@{/admin/businesses(status='REJECTED', search=${search}, size=${size}, sort=${sort})}">
             Refuzate
         </a>
 
@@ -61,6 +61,7 @@
           method="get"
           th:action="@{/admin/businesses}">
         <input name="status" th:if="${selectedStatus != null}" th:value="${selectedStatus}" type="hidden">
+        <input name="page" type="hidden" value="0">
         <div class="col-12 col-md-7 col-lg-5">
             <label class="form-label text-dark" for="businessSearch">Caută servicii</label>
             <input class="form-control"
@@ -75,11 +76,31 @@
                 <i class="bi bi-search me-1"></i>Caută
             </button>
             <a class="btn btn-outline-secondary"
-               th:href="@{/admin/businesses(status=${selectedStatus})}">
+               th:href="@{/admin/businesses(status=${selectedStatus}, size=${size}, sort=${sort})}">
                 Reset
             </a>
         </div>
+        <div class="col-6 col-md-2">
+            <label class="form-label text-dark" for="businessSort">Sortează</label>
+            <select class="form-select" id="businessSort" name="sort" onchange="this.form.submit()">
+                <option value="newest" th:selected="${sort == 'newest'}">Cele mai noi</option>
+                <option value="oldest" th:selected="${sort == 'oldest'}">Cele mai vechi</option>
+                <option value="nameAsc" th:selected="${sort == 'nameAsc'}">Nume A–Z</option>
+                <option value="nameDesc" th:selected="${sort == 'nameDesc'}">Nume Z–A</option>
+            </select>
+        </div>
+        <div class="col-6 col-md-2">
+            <label class="form-label text-dark" for="businessSize">Pe pagină</label>
+            <select class="form-select" id="businessSize" name="size" onchange="this.form.submit()">
+                <option value="5" th:selected="${size == 5}">5</option>
+                <option value="10" th:selected="${size == 10}">10</option>
+                <option value="20" th:selected="${size == 20}">20</option>
+            </select>
+        </div>
     </form>
+
+    <p class="small text-muted mb-2" th:if="${businesses.totalElements > 0}"
+       th:text="|Se afișează ${businesses.numberOfElements} din ${businesses.totalElements} servicii|"></p>
 
     <div class="admin-business-list" th:if="${not businesses.isEmpty()}">
         <a class="admin-business-row"
@@ -122,6 +143,14 @@
             <i aria-hidden="true" class="bi bi-chevron-right admin-business-row-chevron"></i>
         </a>
     </div>
+
+    <nav aria-label="Paginare servicii" class="mt-4" th:if="${businesses.totalPages > 1}">
+        <ul class="pagination justify-content-center flex-wrap">
+            <li class="page-item" th:classappend="${businesses.first} ? ' disabled'"><a class="page-link" th:href="@{/admin/businesses(status=${selectedStatus}, search=${search}, size=${size}, sort=${sort}, page=${businesses.number - 1})}">Anterior</a></li>
+            <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, businesses.totalPages - 1)}" th:classappend="${pageNumber == businesses.number} ? ' active'"><a class="page-link" th:text="${pageNumber + 1}" th:href="@{/admin/businesses(status=${selectedStatus}, search=${search}, size=${size}, sort=${sort}, page=${pageNumber})}"></a></li>
+            <li class="page-item" th:classappend="${businesses.last} ? ' disabled'"><a class="page-link" th:href="@{/admin/businesses(status=${selectedStatus}, search=${search}, size=${size}, sort=${sort}, page=${businesses.number + 1})}">Următoarea</a></li>
+        </ul>
+    </nav>
 
     <!-- NU EXISTA SERVICII -->
     <div class="text-center py-5"

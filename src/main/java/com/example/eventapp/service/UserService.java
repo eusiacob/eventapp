@@ -18,6 +18,9 @@ import com.example.eventapp.repository.UserNotificationRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -103,6 +106,26 @@ public class UserService {
                         && user.getEmail().toLowerCase().contains(normalizedSearch)))
                 .toList();
 
+    }
+
+    public Page<User> searchForAdmin(Role role, String search, Pageable pageable) {
+        List<User> users = searchForAdmin(role, search);
+        String property = pageable.getSort().stream().findFirst().map(org.springframework.data.domain.Sort.Order::getProperty).orElse("createdAt");
+        boolean ascending = pageable.getSort().stream().findFirst().map(org.springframework.data.domain.Sort.Order::isAscending).orElse(false);
+        java.util.Comparator<User> comparator = switch (property) {
+            case "name" -> java.util.Comparator.comparing(
+                    user -> (user.getFirstName() + " " + user.getLastName()).toLowerCase(),
+                    java.util.Comparator.nullsLast(String::compareTo));
+            case "email" -> java.util.Comparator.comparing(
+                    User::getEmail, java.util.Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER));
+            default -> java.util.Comparator.comparing(User::getCreatedAt,
+                    java.util.Comparator.nullsLast(java.time.LocalDateTime::compareTo));
+        };
+        if (!ascending) comparator = comparator.reversed();
+        users.sort(comparator.thenComparing(User::getId));
+        int start = (int) Math.min(pageable.getOffset(), users.size());
+        int end = Math.min(start + pageable.getPageSize(), users.size());
+        return new PageImpl<>(users.subList(start, end), pageable, users.size());
     }
 
     @Transactional(readOnly = true)

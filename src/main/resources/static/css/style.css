@@ -3989,10 +3989,6 @@ body .favorite-title,
     margin-bottom: 0 !important;
 }
 
-.business-editor-form .service-area-options {
-    padding: 0.65rem 0.75rem;
-}
-
 .business-cover-layout {
     display: flex;
     align-items: center;
@@ -4023,7 +4019,7 @@ body .favorite-title,
 }
 
 .business-media-panel {
-    padding: 0.85rem;
+    padding: 0.5rem;
     border: 1px solid var(--me-service-card-border, #d5e2e2);
     border-radius: 12px;
 }

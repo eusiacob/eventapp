@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -213,14 +214,31 @@ public class AdminController {
     public String businesses(
             @RequestParam(required = false) BusinessProfile.BusinessStatus status,
             @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "newest") String sort,
             Model model
     ) {
 
-        List<BusinessProfile> businesses = businessProfileRepository.searchForAdmin(status, search);
+        int pageSize = validPageSize(size);
+        Sort sortOrder = switch (sort) {
+            case "oldest" -> Sort.by(Sort.Direction.ASC, "createdAt");
+            case "nameAsc" -> Sort.by(Sort.Direction.ASC, "name");
+            case "nameDesc" -> Sort.by(Sort.Direction.DESC, "name");
+            default -> { sort = "newest"; yield Sort.by(Sort.Direction.DESC, "createdAt"); }
+        };
+        Page<BusinessProfile> businesses = businessProfileRepository.searchForAdmin(
+                status, search, PageRequest.of(Math.max(0, page), pageSize, sortOrder));
+        if (businesses.getTotalPages() > 0 && page >= businesses.getTotalPages()) {
+            businesses = businessProfileRepository.searchForAdmin(status, search,
+                    PageRequest.of(businesses.getTotalPages() - 1, pageSize, sortOrder));
+        }
 
         model.addAttribute("businesses", businesses);
         model.addAttribute("selectedStatus", status);
         model.addAttribute("search", search);
+        model.addAttribute("sort", sort);
+        model.addAttribute("size", pageSize);
         model.addAttribute("breadcrumbs", List.of(
                 new BreadcrumbDTO("Dashboard", "/admin"),
                 new BreadcrumbDTO("Servicii", null)
@@ -297,21 +315,38 @@ public class AdminController {
     public String adminUsers(
             @RequestParam(required = false) Role role,
             @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "newest") String sort,
             Model model
     ) {
 
-        List<User> users = userService.searchForAdmin(role, search);
+        int pageSize = validPageSize(size);
+        Sort sortOrder = switch (sort) {
+            case "oldest" -> Sort.by(Sort.Direction.ASC, "createdAt");
+            case "nameAsc" -> Sort.by(Sort.Direction.ASC, "name");
+            case "nameDesc" -> Sort.by(Sort.Direction.DESC, "name");
+            case "emailAsc" -> Sort.by(Sort.Direction.ASC, "email");
+            case "emailDesc" -> Sort.by(Sort.Direction.DESC, "email");
+            default -> { sort = "newest"; yield Sort.by(Sort.Direction.DESC, "createdAt"); }
+        };
+        Page<User> userPage = userService.searchForAdmin(role, search,
+                PageRequest.of(Math.max(0, page), pageSize, sortOrder));
+        if (userPage.getTotalPages() > 0 && page >= userPage.getTotalPages()) {
+            userPage = userService.searchForAdmin(role, search,
+                    PageRequest.of(userPage.getTotalPages() - 1, pageSize, sortOrder));
+        }
 
-        List<UserAdminDto> userDtos = users.stream()
-                .map(user -> new UserAdminDto(
+        Page<UserAdminDto> userDtos = userPage.map(user -> new UserAdminDto(
                         user,
                         reviewService.countByUser(user)
-                ))
-                .toList();
+                ));
 
         model.addAttribute("users", userDtos);
         model.addAttribute("selectedRole", role);
         model.addAttribute("search", search);
+        model.addAttribute("sort", sort);
+        model.addAttribute("size", pageSize);
         model.addAttribute("breadcrumbs", List.of(
                 new BreadcrumbDTO("Dashboard", "/admin"),
                 new BreadcrumbDTO("Utilizatori", null)
@@ -378,20 +413,44 @@ public class AdminController {
     public String adminReviews(
             @RequestParam(required = false) Review.ReviewStatus status,
             @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "newest") String sort,
             Model model
     ) {
 
-        List<Review> reviews = reviewRepository.searchForAdmin(status, search);
+        int pageSize = validPageSize(size);
+        Sort sortOrder = switch (sort) {
+            case "oldest" -> Sort.by(Sort.Direction.ASC, "createdAt");
+            case "ratingDesc" -> Sort.by(Sort.Direction.DESC, "rating");
+            case "ratingAsc" -> Sort.by(Sort.Direction.ASC, "rating");
+            default -> { sort = "newest"; yield Sort.by(Sort.Direction.DESC, "createdAt"); }
+        };
+        Page<Review> reviews = reviewRepository.searchForAdmin(status, search,
+                PageRequest.of(Math.max(0, page), pageSize, sortOrder));
+        if (reviews.getTotalPages() > 0 && page >= reviews.getTotalPages()) {
+            reviews = reviewRepository.searchForAdmin(status, search,
+                    PageRequest.of(reviews.getTotalPages() - 1, pageSize, sortOrder));
+        }
 
         model.addAttribute("reviews", reviews);
         model.addAttribute("selectedStatus", status);
         model.addAttribute("search", search);
+        model.addAttribute("sort", sort);
+        model.addAttribute("size", pageSize);
         model.addAttribute("breadcrumbs", List.of(
                 new BreadcrumbDTO("Dashboard", "/admin"),
                 new BreadcrumbDTO("Recenzii", null)
         ));
 
         return "admin/reviews";
+    }
+
+    private int validPageSize(int size) {
+        return switch (size) {
+            case 5, 20 -> size;
+            default -> 10;
+        };
     }
 
     @GetMapping("review/{id}")

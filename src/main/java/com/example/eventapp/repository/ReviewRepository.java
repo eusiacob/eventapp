@@ -49,11 +49,11 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
                 OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :search, '%'))
                 OR LOWER(CONCAT(CONCAT(u.firstName, ' '), u.lastName)) LIKE LOWER(CONCAT('%', :search, '%'))
             )
-            ORDER BY r.createdAt DESC
             """)
-    List<Review> searchForAdmin(
+    Page<Review> searchForAdmin(
             @Param("status") Review.ReviewStatus status,
-            @Param("search") String search
+            @Param("search") String search,
+            Pageable pageable
     );
 
     List<Review> findTop5ByUserOrderByCreatedAtDesc(User user);
