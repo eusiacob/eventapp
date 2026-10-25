@@ -113,7 +113,7 @@
             </div>
         </div>
         <th:block th:if="${editing}">
-            <div class="alert mt-3"
+            <div class="alert mt-3 mb-0 p-1"
                  th:classappend="${profile.emailVerified} ? ' alert-success' : ' alert-warning'"
                  th:if="${profile.email != null and !profile.email.isBlank()}">
 
