@@ -3983,6 +3983,23 @@ body .favorite-title,
     font-size: 0.8rem;
 }
 
+.business-phone-input-group {
+    display: grid;
+    grid-template-columns: minmax(0, 55fr) minmax(0, 45fr);
+    width: 100%;
+}
+
+.business-phone-input-group > .form-select,
+.business-phone-input-group > .form-control {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+}
+
+.business-phone-input-group > .form-select {
+    padding-right: 1.75rem;
+}
+
 .business-editor-form .service-area-picker,
 .business-editor-form .business-options-picker > fieldset:last-of-type,
 .business-editor-form .business-options-picker > p:last-child {

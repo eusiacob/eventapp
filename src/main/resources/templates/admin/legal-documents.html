@@ -15,7 +15,7 @@
 <main class="container py-4" style="min-height: 100vh">
     <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
-    <div class="alert alert-success alert-dismissible fade show p-2" role="alert" th:if="${successMessage != null}">
+    <div class="alert alert-success alert-dismissible fade show p-1" role="alert" th:if="${successMessage != null}">
         <span th:text="${successMessage}"></span>
     </div>
 

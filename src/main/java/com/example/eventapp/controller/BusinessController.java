@@ -76,6 +76,7 @@ public class BusinessController {
                 "nationwide",
                 "serviceCounties",
                 "phone",
+                "phoneCountryCode",
                 "email",
                 "website",
                 "facebookUrl",
@@ -565,6 +566,7 @@ public class BusinessController {
         existingProfile.setNationwide(profile.isNationwide());
         existingProfile.setServiceCounties(new java.util.ArrayList<>(profile.getServiceCounties()));
         existingProfile.setPhone(profile.getPhone());
+        existingProfile.setPhoneCountryCode(profile.getPhoneCountryCode());
         existingProfile.setDescription(profile.getDescription());
         existingProfile.setEmail(profile.getEmail());
         existingProfile.setWebsite(profile.getWebsite());

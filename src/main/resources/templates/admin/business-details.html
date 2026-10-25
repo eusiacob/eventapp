@@ -65,7 +65,9 @@
                     <h2 class="h6 text-muted">Contact</h2>
                     <div class="mb-2" th:if="${business.phone != null and !business.phone.isBlank()}">
                         <strong>Telefon</strong>
-                        <div th:text="${business.phone}"></div>
+                        <div><span aria-hidden="true" class="me-1" th:text="${business.phoneCountryFlag}"></span><span
+                                th:text="${business.phoneCountryName}"></span> · <span
+                                th:text="${business.phoneDisplay}"></span></div>
                     </div>
                     <div class="mb-2" th:if="${business.email != null and !business.email.isBlank()}">
                         <strong>Email</strong>

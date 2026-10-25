@@ -103,7 +103,7 @@ public class PersonalDataExportService {
                         business.getOtherServiceDetails(),
                         business.getDescription(),
                         business.isNationwide() ? "Toată țara" : String.join(", ", business.getServiceCounties()),
-                        business.getPhone(),
+                        business.getInternationalPhoneNumber(),
                         business.getEmail(),
                         business.isEmailVerified(),
                         business.getEmailVerifiedAt(),

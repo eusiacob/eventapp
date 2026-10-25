@@ -215,7 +215,7 @@ public class AdminController {
             @RequestParam(required = false) BusinessProfile.BusinessStatus status,
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "newest") String sort,
             Model model
     ) {
@@ -316,7 +316,7 @@ public class AdminController {
             @RequestParam(required = false) Role role,
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "newest") String sort,
             Model model
     ) {
@@ -414,7 +414,7 @@ public class AdminController {
             @RequestParam(required = false) Review.ReviewStatus status,
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "newest") String sort,
             Model model
     ) {
@@ -449,7 +449,7 @@ public class AdminController {
     private int validPageSize(int size) {
         return switch (size) {
             case 5, 20 -> size;
-            default -> 10;
+            default -> 5;
         };
     }
 

@@ -114,7 +114,7 @@
                         <span th:if="${profile.phone != null and !profile.phone.isBlank()}">
                             <a class="btn bi bi-telephone"
                                style="color: green; font-size: 1.5em"
-                               th:href="'tel:' + ${profile.phone}"
+                               th:href="'tel:' + ${profile.internationalPhoneNumber}"
                                title="Sună!">
                             </a>
                         </span>
@@ -123,7 +123,7 @@
                             <a aria-label="Chat on WhatsApp"
                                class="btn bi bi-whatsapp"
                                style="color: green; font-size: 1.5em"
-                               th:href="'https://wa.me/4' + ${profile.phone}"
+                               th:href="'https://wa.me/' + ${profile.whatsappPhoneNumber}"
                                title="Trimite mesaj!">
                             </a>
                         </span>
@@ -503,14 +503,14 @@
                 <div class="d-grid gap-3">
                     <th:block th:if="${profile.phone != null and !profile.phone.isBlank()}">
                         <a class="btn btn-outline-primary d-flex align-items-center gap-3 text-start"
-                           th:href="'tel:' + ${profile.phone}">
+                           th:href="'tel:' + ${profile.internationalPhoneNumber}">
                             <i aria-hidden="true" class="bi bi-telephone fs-4"></i>
-                            <span class="text-break">Sună<br><small th:text="${profile.phone}"></small></span>
+                            <span class="text-break">Sună<br><small th:text="${profile.phoneDisplay}"></small></span>
                         </a>
                         <a class="btn btn-outline-success d-flex align-items-center gap-3 text-start"
                            rel="noopener noreferrer"
                            target="_blank"
-                           th:href="'https://wa.me/4' + ${profile.phone}">
+                           th:href="'https://wa.me/' + ${profile.whatsappPhoneNumber}">
                             <i aria-hidden="true" class="bi bi-whatsapp fs-4"></i>
                             <span>Trimite mesaj pe WhatsApp</span>
                         </a>

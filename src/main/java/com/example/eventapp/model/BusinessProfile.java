@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -122,9 +123,166 @@ public class BusinessProfile {
         return String.join(", ", counties.subList(0, 2)) + " +" + (counties.size() - 2);
     }
 
-    @Pattern(regexp = "^[0-9+\\- ]{10}$", message = "Număr de telefon invalid! Trebuie să fie de forma 07XXXXXXX")
+    @Pattern(regexp = "^[0-9() .\\-]{0,40}$", message = "Numărul poate conține doar cifre, spații și semne uzuale de formatare.")
     @Column(nullable = true)
     private String phone;
+
+    private static final Set<String> SUPPORTED_PHONE_COUNTRY_CODES = Set.of(
+            "+40", "+1", "+44", "+33", "+34", "+36", "+39", "+49", "+30", "+31",
+            "+32", "+351", "+352", "+353", "+354", "+355", "+356", "+357", "+358",
+            "+359", "+370", "+371", "+372", "+373", "+374", "+375", "+376", "+377",
+            "+378", "+380", "+381", "+382", "+385", "+386", "+387", "+389", "+420",
+            "+421", "+423", "+7", "+90", "+971"
+    );
+
+    /** Null means this is an existing record created before country prefixes were supported. */
+    @Column(name = "phone_country_code", length = 4)
+    private String phoneCountryCode;
+
+    public String getPhoneCountryCode() {
+        return phoneCountryCode == null || phoneCountryCode.isBlank() ? "+40" : phoneCountryCode;
+    }
+
+    @Transient
+    public String getPhoneCountryName() {
+        return switch (getPhoneCountryCode()) {
+            case "+40" -> "România";
+            case "+1" -> "Statele Unite / Canada";
+            case "+44" -> "Regatul Unit";
+            case "+33" -> "Franța";
+            case "+34" -> "Spania";
+            case "+36" -> "Ungaria";
+            case "+39" -> "Italia";
+            case "+49" -> "Germania";
+            case "+30" -> "Grecia";
+            case "+31" -> "Țările de Jos";
+            case "+32" -> "Belgia";
+            case "+351" -> "Portugalia";
+            case "+352" -> "Luxemburg";
+            case "+353" -> "Irlanda";
+            case "+354" -> "Islanda";
+            case "+355" -> "Albania";
+            case "+356" -> "Malta";
+            case "+357" -> "Cipru";
+            case "+358" -> "Finlanda";
+            case "+359" -> "Bulgaria";
+            case "+370" -> "Lituania";
+            case "+371" -> "Letonia";
+            case "+372" -> "Estonia";
+            case "+373" -> "Republica Moldova";
+            case "+374" -> "Armenia";
+            case "+375" -> "Belarus";
+            case "+376" -> "Andorra";
+            case "+377" -> "Monaco";
+            case "+378" -> "San Marino";
+            case "+380" -> "Ucraina";
+            case "+381" -> "Serbia";
+            case "+382" -> "Muntenegru";
+            case "+385" -> "Croația";
+            case "+386" -> "Slovenia";
+            case "+387" -> "Bosnia și Herțegovina";
+            case "+389" -> "Macedonia de Nord";
+            case "+420" -> "Cehia";
+            case "+421" -> "Slovacia";
+            case "+423" -> "Liechtenstein";
+            case "+7" -> "Rusia / Kazahstan";
+            case "+90" -> "Turcia";
+            case "+971" -> "Emiratele Arabe Unite";
+            default -> "Altă țară";
+        };
+    }
+
+    @Transient
+    public String getPhoneCountryFlag() {
+        return switch (getPhoneCountryCode()) {
+            case "+40" -> "🇷🇴";
+            case "+1" -> "🇺🇸 🇨🇦";
+            case "+44" -> "🇬🇧";
+            case "+33" -> "🇫🇷";
+            case "+34" -> "🇪🇸";
+            case "+36" -> "🇭🇺";
+            case "+39" -> "🇮🇹";
+            case "+49" -> "🇩🇪";
+            case "+30" -> "🇬🇷";
+            case "+31" -> "🇳🇱";
+            case "+32" -> "🇧🇪";
+            case "+351" -> "🇵🇹";
+            case "+352" -> "🇱🇺";
+            case "+353" -> "🇮🇪";
+            case "+354" -> "🇮🇸";
+            case "+355" -> "🇦🇱";
+            case "+356" -> "🇲🇹";
+            case "+357" -> "🇨🇾";
+            case "+358" -> "🇫🇮";
+            case "+359" -> "🇧🇬";
+            case "+370" -> "🇱🇹";
+            case "+371" -> "🇱🇻";
+            case "+372" -> "🇪🇪";
+            case "+373" -> "🇲🇩";
+            case "+374" -> "🇦🇲";
+            case "+375" -> "🇧🇾";
+            case "+376" -> "🇦🇩";
+            case "+377" -> "🇲🇨";
+            case "+378" -> "🇸🇲";
+            case "+380" -> "🇺🇦";
+            case "+381" -> "🇷🇸";
+            case "+382" -> "🇲🇪";
+            case "+385" -> "🇭🇷";
+            case "+386" -> "🇸🇮";
+            case "+387" -> "🇧🇦";
+            case "+389" -> "🇲🇰";
+            case "+420" -> "🇨🇿";
+            case "+421" -> "🇸🇰";
+            case "+423" -> "🇱🇮";
+            case "+7" -> "🇷🇺 🇰🇿";
+            case "+90" -> "🇹🇷";
+            case "+971" -> "🇦🇪";
+            default -> "🌐";
+        };
+    }
+
+    @Transient
+    @AssertTrue(message = "Alege un prefix de țară valid.")
+    public boolean isPhoneCountryCodeValid() {
+        return phoneCountryCode == null || phoneCountryCode.isBlank()
+                || SUPPORTED_PHONE_COUNTRY_CODES.contains(phoneCountryCode);
+    }
+
+    @Transient
+    @AssertTrue(message = "Numărul internațional trebuie să aibă între 7 și 15 cifre în total, incluzând prefixul țării.")
+    public boolean isPhoneNumberValid() {
+        if (phone == null || phone.isBlank()) return true;
+        String nationalDigits = phone.replaceAll("\\D", "");
+        if (nationalDigits.startsWith("0")) nationalDigits = nationalDigits.substring(1);
+        String countryDigits = getPhoneCountryCode().replaceAll("\\D", "");
+        int internationalLength = countryDigits.length() + nationalDigits.length();
+        return internationalLength >= 7 && internationalLength <= 15;
+    }
+
+    /** E.164 value used by tel: and WhatsApp links; legacy phone values are not rewritten. */
+    @Transient
+    public String getInternationalPhoneNumber() {
+        if (phone == null || phone.isBlank()) return "";
+        String nationalDigits = phone.replaceAll("\\D", "");
+        if (nationalDigits.startsWith("0")) nationalDigits = nationalDigits.substring(1);
+        return getPhoneCountryCode() + nationalDigits;
+    }
+
+    @Transient
+    public String getWhatsappPhoneNumber() {
+        return getInternationalPhoneNumber().replaceAll("\\D", "");
+    }
+
+    @Transient
+    public String getPhoneDisplay() {
+        return phone == null || phone.isBlank() ? "" : getPhoneCountryCode() + " "
+                + internationalNationalPart();
+    }
+
+    private String internationalNationalPart() {
+        String digits = phone == null ? "" : phone.replaceAll("\\D", "");
+        return digits.startsWith("0") ? digits.substring(1) : digits;
+    }
 
     @Email(
             regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,63}",
