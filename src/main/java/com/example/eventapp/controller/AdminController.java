@@ -21,6 +21,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -34,6 +36,8 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class AdminController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
+
     private final BusinessProfileRepository businessProfileRepository;
     private final BusinessProfileService businessProfileService;
     private final UserNotificationService userNotificationService;
@@ -44,6 +48,7 @@ public class AdminController {
     private final SubscriptionService subscriptionService;
     private final SupportTicketRepository supportTicketRepository;
     private final EmailService emailService;
+    private final EmailVerificationService emailVerificationService;
     private final LegalDocumentService legalDocumentService;
 
     @GetMapping
@@ -374,6 +379,26 @@ public class AdminController {
         ));
 
         return "admin/user-details";
+    }
+
+    @PostMapping("/user/{id}/correct-email")
+    public String correctUnverifiedUserEmail(
+            @PathVariable Long id,
+            @RequestParam String newEmail,
+            @AuthenticationPrincipal UserDetails adminDetails,
+            RedirectAttributes redirectAttributes
+    ) {
+        try {
+            User updatedUser = userService.correctUnverifiedEmail(id, newEmail);
+            emailVerificationService.requestUserEmailVerification(updatedUser);
+            User admin = userService.findByEmail(adminDetails.getUsername());
+            LOGGER.info("Admin userId={} corrected unverified email for userId={}", admin.getId(), id);
+            redirectAttributes.addFlashAttribute(
+                    "successMessage", "Adresa a fost actualizată. A fost solicitat un nou link de verificare.");
+        } catch (IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        }
+        return "redirect:/admin/user/" + id;
     }
 
     @PostMapping("/business/{uuid}/reject")

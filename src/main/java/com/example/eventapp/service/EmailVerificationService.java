@@ -47,9 +47,12 @@ public class EmailVerificationService {
     @Transactional
     public void requestUserEmailVerification(User user) {
 
-        if (user == null || user.isEmailVerified()) {
+        if (user == null || user.getId() == null) {
             return;
         }
+
+        user = userRepository.findById(user.getId()).orElse(null);
+        if (user == null || user.isEmailVerified()) return;
 
         String recipient = getUserEmail(user);
 

@@ -324,6 +324,38 @@ public class UserService {
         throw new IllegalStateException("Emailul utilizatorului nu este disponibil.");
     }
 
+    @Transactional
+    public User correctUnverifiedEmail(Long userId, String newEmail) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Utilizatorul nu a fost găsit."));
+
+        if (user.isEmailVerified()) {
+            throw new IllegalArgumentException("Emailul unui cont deja verificat nu poate fi corectat din această acțiune.");
+        }
+        if (newEmail == null || newEmail.length() > 254
+                || !newEmail.trim().matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
+            throw new IllegalArgumentException("Introdu o adresă de email validă (maximum 254 de caractere).");
+        }
+
+        String normalizedEmail = newEmail.trim().toLowerCase(java.util.Locale.ROOT);
+        String newEmailHash = encryptionService.hash(normalizedEmail);
+        if (newEmailHash.equals(user.getEmailHash())) {
+            throw new IllegalArgumentException("Adresa introdusă este aceeași cu cea salvată.");
+        }
+        if (userRepository.findByEmailHash(newEmailHash).isPresent()) {
+            throw new IllegalArgumentException("Această adresă de email este deja folosită de alt cont.");
+        }
+
+        user.setEmail(normalizedEmail);
+        user.setEmailHash(newEmailHash);
+        user.setEmailEncrypted(encryptionService.encrypt(normalizedEmail));
+        user.setEmailVerified(false);
+        user.setEmailVerifiedAt(null);
+        emailVerificationTokenRepository.deleteByUserAndTargetType(
+                user, com.example.eventapp.model.EmailVerificationTargetType.USER_ACCOUNT);
+        return userRepository.save(user);
+    }
+
     public boolean hasCurrentLegalAcceptances(User user) {
         return legalDocumentService.hasCurrentAcceptances(user);
     }

@@ -159,6 +159,26 @@
                        th:text="${user.email}">
                     </span>
 
+                    <div class="mt-2">
+                        <span class="badge rounded-pill"
+                              th:classappend="${user.emailVerified} ? ' bg-success-subtle text-success-emphasis' : ' bg-warning-subtle text-warning-emphasis'"
+                              th:text="${user.emailVerified} ? 'Verificat' : 'Neverificat'"></span>
+                    </div>
+
+                    <form class="mt-3"
+                          method="post"
+                          th:action="@{/admin/user/{id}/correct-email(id=${user.id})}"
+                          th:if="${!user.emailVerified}">
+                        <label class="form-label small fw-semibold" for="correctUserEmail">Corectează adresa de email</label>
+                        <input autocomplete="email" class="form-control form-control-sm mb-2"
+                               id="correctUserEmail" maxlength="254" name="newEmail" required
+                               th:value="${user.email}" type="email">
+                        <button class="btn btn-sm btn-outline-primary" type="submit">
+                            <i class="bi bi-envelope-check me-1"></i>Salvează și retrimite verificarea
+                        </button>
+                        <div class="form-text">Adresa va rămâne neverificată până când utilizatorul accesează linkul primit.</div>
+                    </form>
+
                 </div>
 
                 <div class="col-md-4">
