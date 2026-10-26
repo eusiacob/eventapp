@@ -4,6 +4,7 @@ import com.example.eventapp.dto.BreadcrumbDTO;
 import com.example.eventapp.model.SupportMessage;
 import com.example.eventapp.model.SupportTicket;
 import com.example.eventapp.model.User;
+import com.example.eventapp.service.AdminAuditService;
 import com.example.eventapp.service.SupportService;
 import com.example.eventapp.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,13 +22,16 @@ public class AdminSupportController {
 
     private final SupportService supportService;
     private final UserService userService;
+    private final AdminAuditService adminAuditService;
 
     public AdminSupportController(
             SupportService supportService,
-            UserService userService
+            UserService userService,
+            AdminAuditService adminAuditService
     ) {
         this.supportService = supportService;
         this.userService = userService;
+        this.adminAuditService = adminAuditService;
     }
 
 
@@ -146,11 +150,15 @@ public class AdminSupportController {
 
         try {
 
+            SupportTicket ticket = supportService.getAdminTicket(id);
+
             supportService.addAdminMessage(
                     id,
                     admin,
                     message
             );
+            adminAuditService.record(admin.getId(), ticket.getUser().getId(), "SUPPORT_REPLY_SENT",
+                    "SUPPORT_TICKET", id.toString(), "Răspuns trimis la solicitarea de suport.");
 
         } catch (RuntimeException e) {
 
@@ -175,15 +183,26 @@ public class AdminSupportController {
             @RequestParam("status")
             SupportTicket.SupportStatus status,
 
+            @AuthenticationPrincipal UserDetails userDetails,
+
             RedirectAttributes redirectAttributes
     ) {
 
         try {
 
+            SupportTicket ticket = supportService.getAdminTicket(id);
+            SupportTicket.SupportStatus oldStatus = ticket.getStatus();
+
             supportService.updateTicketStatus(
                     id,
                     status
             );
+
+            if (oldStatus != status) {
+                User admin = userService.findByEmail(userDetails.getUsername());
+                adminAuditService.record(admin.getId(), ticket.getUser().getId(), "SUPPORT_STATUS_CHANGED",
+                        "SUPPORT_TICKET", id.toString(), "Statusul solicitării de suport a fost schimbat.");
+            }
 
             redirectAttributes.addFlashAttribute(
                     "supportSuccess",

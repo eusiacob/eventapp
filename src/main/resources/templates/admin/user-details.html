@@ -419,6 +419,42 @@
 
             </div>
 
+            <hr>
+
+            <section aria-labelledby="adminAuditHistoryTitle">
+                <div class="d-flex flex-wrap justify-content-between align-items-baseline gap-2 mb-2">
+                    <h6 class="fw-bold mb-0" id="adminAuditHistoryTitle">Istoric acțiuni administrative</h6>
+                    <div class="d-flex align-items-center gap-2">
+                        <small class="text-muted">Cele mai recente 20 de acțiuni</small>
+                        <a class="btn btn-sm btn-outline-primary"
+                           th:href="@{/admin/audit-log(targetUserId=${user.id})}">Vezi tot jurnalul</a>
+                    </div>
+                </div>
+
+                <p class="text-muted small" th:if="${auditEntries.isEmpty()}">
+                    Nu există încă acțiuni administrative înregistrate pentru acest cont.
+                </p>
+
+                <div class="list-group" th:if="${!auditEntries.isEmpty()}">
+                    <div class="list-group-item" th:each="entry : ${auditEntries.content}">
+                        <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+                            <strong th:text="${entry.actionLabel}"></strong>
+                            <time class="small text-muted"
+                                  th:datetime="${#temporals.format(entry.createdAt, 'yyyy-MM-dd''T''HH:mm:ss')}"
+                                  th:text="${#temporals.format(entry.createdAt, 'dd.MM.yyyy HH:mm')}"></time>
+                        </div>
+                        <p class="mb-1 mt-1" th:text="${entry.summary}"></p>
+                        <small class="text-muted">
+                            Admin #<span th:text="${entry.adminUserId}"></span>
+                            <span th:if="${entry.targetType != 'USER'}">
+                                · <span th:text="${entry.targetType}"></span>
+                                <span th:if="${entry.targetId != null}" th:text="| #${entry.targetId}|"></span>
+                            </span>
+                        </small>
+                    </div>
+                </div>
+            </section>
+
         </div>
 
     </div>

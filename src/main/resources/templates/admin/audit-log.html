@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Jurnal administrativ</title>
+    <link rel="icon" th:href="@{/images/favicon.png}" type="image/png">
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .audit-filter-toggle {
+            list-style: none;
+            cursor: pointer;
+        }
+
+        .audit-filter-toggle::-webkit-details-marker {
+            display: none;
+        }
+
+        .audit-filter-toggle .audit-filter-chevron {
+            transition: transform .2s ease;
+        }
+
+        details[open] > .audit-filter-toggle .audit-filter-chevron {
+            transform: rotate(180deg);
+        }
+
+        .audit-log-desktop-list {
+            display: grid;
+            gap: .6rem;
+        }
+
+        .audit-log-desktop-row {
+            display: grid;
+            grid-template-columns: minmax(125px, .85fr) minmax(145px, 1fr) minmax(85px, .55fr)
+                minmax(110px, .75fr) minmax(240px, 2fr);
+            align-items: center;
+            gap: .75rem;
+            padding: .7rem .9rem;
+            background: #fff;
+            border: 1px solid rgba(19, 128, 134, .14);
+            border-radius: 12px;
+            box-shadow: 0 .125rem .35rem rgba(20, 35, 40, .05);
+        }
+
+        .audit-log-desktop-cell {
+            min-width: 0;
+        }
+
+        .audit-log-desktop-summary,
+        .audit-log-mobile-summary {
+            overflow-wrap: anywhere;
+        }
+
+        .audit-log-mobile {
+            display: none;
+        }
+
+        @media (max-width: 991.98px) {
+            .audit-log-desktop-list {
+                display: none;
+            }
+
+            .audit-log-mobile {
+                display: grid;
+                gap: .75rem;
+            }
+
+            .audit-log-mobile-card {
+                min-width: 0;
+            }
+
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="container py-4" style="min-height: 100vh">
+    <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <div>
+            <h1 class="h3 fw-bold mb-1">Jurnal administrativ</h1>
+            <p class="text-muted mb-0">Acțiuni administrative păstrate pentru maximum doi ani.</p>
+        </div>
+        <span class="badge rounded-pill bg-light text-dark border"
+              th:text="|${auditPage.totalElements} înregistrări|"></span>
+    </div>
+
+    <div class="alert alert-warning py-2" role="alert" th:if="${filterError}" th:text="${filterError}"></div>
+
+    <details class="card border-0 shadow-sm rounded-4 mb-4" id="auditFilterDetails">
+        <summary
+                class="audit-filter-toggle card-header bg-white border-0 rounded-4 d-flex justify-content-between align-items-center py-2 px-4">
+            <span class="fw-semibold"><i class="bi bi-funnel me-2"></i>Filtrează jurnalul</span>
+            <i aria-hidden="true" class="bi bi-chevron-down audit-filter-chevron"></i>
+        </summary>
+        <form class="card-body pt-0" method="get" th:action="@{/admin/audit-log}">
+            <div class="row g-3 align-items-end">
+                <div class="col-12 col-md-6 col-xl-3">
+                    <label class="form-label" for="auditFrom">De la data</label>
+                    <input class="form-control" id="auditFrom" name="from" th:value="${from}" type="date">
+                </div>
+                <div class="col-12 col-md-6 col-xl-3">
+                    <label class="form-label" for="auditTo">Până la data</label>
+                    <input class="form-control" id="auditTo" name="to" th:value="${to}" type="date">
+                </div>
+                <div class="col-12 col-md-6 col-xl-3">
+                    <label class="form-label" for="auditAdmin">Admin</label>
+                    <select class="form-select" id="auditAdmin" name="adminId">
+                        <option value="">Toți adminii</option>
+                        <option th:each="admin : ${adminOptions}"
+                                th:selected="${adminId != null and admin.id == adminId}"
+                                th:text="|${admin.label} (#${admin.id})|" th:value="${admin.id}"></option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-6 col-xl-3">
+                    <label class="form-label" for="auditTargetUser">ID utilizator vizat</label>
+                    <input class="form-control" id="auditTargetUser" min="1" name="targetUserId"
+                           placeholder="Ex.: 42" th:value="${targetUserId}" type="number">
+                </div>
+                <div class="col-12 col-md-6 col-xl-4">
+                    <label class="form-label" for="auditAction">Acțiune</label>
+                    <select class="form-select" id="auditAction" name="action">
+                        <option value="">Toate acțiunile</option>
+                        <option th:each="actionOption : ${actionOptions}"
+                                th:selected="${action == actionOption.value}"
+                                th:text="${actionOption.label}" th:value="${actionOption.value}"></option>
+                    </select>
+                </div>
+                <div class="col-6 col-md-3 col-xl-2">
+                    <label class="form-label" for="auditSize">Pe pagină</label>
+                    <select class="form-select" id="auditSize" name="size">
+                        <option th:selected="${pageSize == 10}" value="10">10</option>
+                        <option th:selected="${pageSize == 20}" value="20">20</option>
+                        <option th:selected="${pageSize == 50}" value="50">50</option>
+                        <option th:selected="${pageSize == 100}" value="100">100</option>
+                    </select>
+                </div>
+                <div class="col-6 col-md-3 col-xl-2">
+                    <label class="form-label" for="auditSort">Ordine</label>
+                    <select class="form-select" id="auditSort" name="sort">
+                        <option th:selected="${sort == 'newest'}" value="newest">Cele mai noi</option>
+                        <option th:selected="${sort == 'oldest'}" value="oldest">Cele mai vechi</option>
+                    </select>
+                </div>
+                <input name="page" type="hidden" value="0">
+                <div class="col-12 col-xl-4 d-flex gap-2">
+                    <button class="btn btn-primary" type="submit"><i class="bi bi-funnel me-1"></i>Filtrează</button>
+                    <a class="btn btn-outline-secondary" th:href="@{/admin/audit-log}">Resetează</a>
+                </div>
+            </div>
+        </form>
+    </details>
+
+    <div class="alert alert-light border text-center py-5" th:if="${auditPage.isEmpty()}">
+        <i aria-hidden="true" class="bi bi-journal-text fs-1 d-block mb-2"></i>
+        Nu există acțiuni administrative pentru filtrele selectate.
+    </div>
+
+    <div class="audit-log-desktop-list" th:if="${!auditPage.isEmpty()}">
+        <article class="audit-log-desktop-row" th:each="entry : ${auditPage.content}">
+            <div class="audit-log-desktop-cell small text-muted text-nowrap">
+                <time th:datetime="${entry.createdAt}"
+                      th:text="${#temporals.format(entry.createdAt, 'dd.MM.yyyy HH:mm')}"></time>
+            </div>
+            <div class="audit-log-desktop-cell">
+                <span class="badge bg-light text-dark border" th:text="${entry.actionLabel}"></span>
+            </div>
+            <div class="audit-log-desktop-cell small">
+                <span class="d-block text-muted">Admin</span>
+                <span th:text="|#${entry.adminUserId}|"></span>
+            </div>
+            <div class="audit-log-desktop-cell small">
+                <span class="d-block text-muted">Utilizator</span>
+                <a th:href="@{/admin/user/{id}(id=${entry.targetUserId})}"
+                   th:if="${entry.targetUserId != null}"
+                   th:text="|#${entry.targetUserId}|"></a>
+                <span class="text-muted" th:if="${entry.targetUserId == null}">Global</span>
+            </div>
+            <div class="audit-log-desktop-cell audit-log-desktop-summary small">
+                <div class="fw-medium" th:text="${entry.summary}"></div>
+                <div class="text-muted mt-1">
+                    <span th:text="${entry.targetType}"></span>
+                    <span th:if="${entry.targetId != null}" th:text="| #${entry.targetId}|"></span>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <div class="audit-log-mobile" th:if="${!auditPage.isEmpty()}">
+        <article class="card border-0 shadow-sm rounded-4 audit-log-mobile-card"
+                 th:each="entry : ${auditPage.content}">
+            <div class="card-body p-3">
+                <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                    <span class="badge bg-light text-dark border" th:text="${entry.actionLabel}"></span>
+                    <time class="small text-muted text-nowrap" th:datetime="${entry.createdAt}"
+                          th:text="${#temporals.format(entry.createdAt, 'dd.MM.yyyy HH:mm')}"></time>
+                </div>
+                <p class="audit-log-mobile-summary mb-3" th:text="${entry.summary}"></p>
+                <div class="row g-2 small">
+                    <div class="col-6">
+                        <span class="d-block text-muted">Admin</span>
+                        <span th:text="|#${entry.adminUserId}|"></span>
+                    </div>
+                    <div class="col-6">
+                        <span class="d-block text-muted">Utilizator vizat</span>
+                        <a th:href="@{/admin/user/{id}(id=${entry.targetUserId})}"
+                           th:if="${entry.targetUserId != null}"
+                           th:text="|#${entry.targetUserId}|"></a>
+                        <span class="text-muted" th:if="${entry.targetUserId == null}">Global</span>
+                    </div>
+                    <div class="col-12">
+                        <span class="text-muted me-1">Obiect:</span>
+                        <span th:text="${entry.targetType}"></span>
+                        <span th:if="${entry.targetId != null}" th:text="| #${entry.targetId}|"></span>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <nav aria-label="Paginare jurnal administrativ" class="mt-4" th:if="${auditPage.totalPages > 1}">
+        <ul class="pagination justify-content-center flex-wrap">
+            <li class="page-item" th:classappend="${auditPage.first} ? ' disabled'">
+                <a class="page-link"
+                   th:href="@{/admin/audit-log(adminId=${adminId}, targetUserId=${targetUserId}, action=${action}, from=${from}, to=${to}, size=${pageSize}, sort=${sort}, page=${auditPage.number - 1})}">Anterior</a>
+            </li>
+            <li class="page-item" th:classappend="${pageNumber == auditPage.number} ? ' active'"
+                th:each="pageNumber : ${#numbers.sequence(0, auditPage.totalPages - 1)}">
+                <a class="page-link" th:href="@{/admin/audit-log(adminId=${adminId}, targetUserId=${targetUserId}, action=${action}, from=${from}, to=${to}, size=${pageSize}, sort=${sort}, page=${pageNumber})}"
+                   th:text="${pageNumber + 1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${auditPage.last} ? ' disabled'">
+                <a class="page-link"
+                   th:href="@{/admin/audit-log(adminId=${adminId}, targetUserId=${targetUserId}, action=${action}, from=${from}, to=${to}, size=${pageSize}, sort=${sort}, page=${auditPage.number + 1})}">Următoarea</a>
+            </li>
+        </ul>
+    </nav>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    (() => {
+        const filters = document.getElementById('auditFilterDetails');
+        const desktop = window.matchMedia('(min-width: 768px)');
+        const syncWithViewport = event => {
+            filters.open = event.matches;
+        };
+        syncWithViewport(desktop);
+        desktop.addEventListener('change', syncWithViewport);
+    })();
+</script>
+</body>
+</html>
