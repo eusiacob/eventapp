@@ -269,11 +269,111 @@
 
         }
 
+
+        @media (max-width: 600px) {
+            .user-ratings-page .ratings-page {
+                padding-bottom: 24px;
+            }
+
+            .user-ratings-page .ratings-wrapper {
+                padding: 12px 10px !important;
+            }
+
+            .user-ratings-page .ratings-header {
+                margin-bottom: 12px;
+            }
+
+            .user-ratings-page .ratings-title {
+                font-size: 1.3rem;
+            }
+
+            .user-ratings-page .ratings-subtitle {
+                margin-top: 3px;
+                font-size: 0.78rem;
+                line-height: 1.35;
+            }
+
+            .user-ratings-page .ratings-summary {
+                gap: 12px;
+                margin-bottom: 12px;
+                padding: 10px 12px;
+                border-radius: 11px;
+                font-size: 0.82rem;
+            }
+
+            .user-ratings-page .average-rating {
+                font-size: 1rem;
+            }
+
+            .user-ratings-page .average-stars {
+                font-size: 0.85rem;
+                letter-spacing: 1px;
+            }
+
+            .user-ratings-page .average-label {
+                margin-top: 1px;
+                font-size: 0.7rem;
+            }
+
+            .user-ratings-page .reviews-list {
+                gap: 8px;
+            }
+
+            .user-ratings-page .review-card {
+                padding: 11px;
+                border-radius: 11px;
+            }
+
+            .user-ratings-page .review-top {
+                align-items: center;
+                flex-direction: row;
+                gap: 8px;
+            }
+
+            .user-ratings-page .review-stars {
+                font-size: 0.82rem;
+                letter-spacing: 0.5px;
+            }
+
+            .user-ratings-page .review-date {
+                font-size: 0.7rem;
+            }
+
+            .user-ratings-page .review-business {
+                margin-top: 6px;
+                font-size: 0.84rem;
+            }
+
+            .user-ratings-page .review-comment {
+                margin-top: 5px;
+                font-size: 0.78rem;
+                line-height: 1.45;
+            }
+
+            .user-ratings-page .review-status {
+                margin-top: 7px;
+                padding: 3px 7px;
+                font-size: 0.69rem;
+            }
+
+            .user-ratings-page .review-rejection-reason {
+                margin-top: 7px;
+                padding: 0.4rem !important;
+                font-size: 0.75rem;
+                line-height: 1.4;
+            }
+
+            .user-ratings-page .empty-reviews {
+                padding: 24px 12px;
+                font-size: 0.82rem;
+            }
+        }
+
     </style>
 
 </head>
 
-<body class="app-bg">
+<body class="app-bg user-ratings-page">
 
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 

@@ -85,30 +85,30 @@
 
                 </h2>
 
-                <div class="alert alert-success p-1" th:if="${param.businessCreated}">
+                <div class="alert alert-success p-1" role="status" th:if="${param.businessCreated}">
                     Serviciu creat cu succes! Acum poți adăuga detalii, poze și multe altele.
                 </div>
 
-                <div class="alert alert-success p-1" th:if="${param.businessUpdated}">
+                <div class="alert alert-success p-1" role="status" th:if="${param.businessUpdated}">
                     Serviciu actualizat cu succes!
                 </div>
 
-                <div class="alert alert-success p-1"
+                <div class="alert alert-success p-1" role="status"
                      th:if="${success}"
                      th:text="${success}">
                 </div>
 
-                <div class="alert alert-danger p-1"
+                <div class="alert alert-danger p-1" role="alert"
                      th:if="${error}"
                      th:text="${error}">
                 </div>
 
-                <div class="alert alert-danger mb-2"
+                <div class="alert alert-danger mb-2" role="alert"
                      th:if="${imageError}"
                      th:text="${imageError}">
                 </div>
 
-                <div class="alert alert-warning p-1" th:if="${param.businessNotApproved}">
+                <div class="alert alert-warning p-1" role="status" th:if="${param.businessNotApproved}">
                     Serviciul va fi vizibil pe site după aprobare. Vei primi o notificare după ce un administrator va
                     aproba listarea serviciului.
                 </div>
@@ -170,8 +170,7 @@
 
                     </div>
 
-                    <div class="alert alert-success"
-                         style="padding: 0.5em"
+                    <div class="alert alert-info" role="status"
                          th:if="${currentImageCount == maxImageCount}">
 
                         Ai atins limita maximă de 15 fotografii.
@@ -241,8 +240,7 @@
 
                             </div>
 
-                            <div class="alert alert-success"
-                                 style="padding: 0.5em"
+                            <div class="alert alert-info" role="status"
                                  th:if="${currentVideoCount == maxVideoCount}">
 
                                 Ai atins limita maximă de 5 videoclipuri.
@@ -295,7 +293,7 @@
                 <hr class="my-4">
 
                 <!-- CURRENT GALLERY -->
-                <div class="alert alert-info mb-0 p-1"
+                <div class="alert alert-info mb-0 p-1" role="status"
                      th:if="${profile.galleryImages == null or #lists.isEmpty(profile.galleryImages)}">
                     Încă nu ai imagini în galerie. Adaugă acum!
                 </div>

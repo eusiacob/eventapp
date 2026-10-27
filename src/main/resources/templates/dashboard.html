@@ -182,7 +182,7 @@
     </style>
 </head>
 
-<body>
+<body class="provider-dashboard-page">
 
 <!-- NAVBAR -->
 <div th:replace="~{fragments/navbar :: navbar}"></div>
@@ -204,12 +204,12 @@
     </header>
 
     <!--STANDARD SUBSCRIPTION WARNING-->
-    <div
-            class="subscription-notice"
-            th:if="${standardSubscription}">
+    <div class="subscription-notice"
+         role="status"
+         th:if="${standardSubscription}">
 
         <div class="subscription-notice-icon">
-            ◇
+            <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
         </div>
 
         <div class="subscription-notice-content">
@@ -236,16 +236,19 @@
 
     </div>
 
-    <div class="alert alert-success p-2" th:if="${param.businessCreated}">
-        Serviciu adăugat și trimis către aprobare!
+    <div class="alert alert-success dashboard-action-alert" role="status" th:if="${param.businessCreated}">
+        <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+        <span>Serviciu adăugat și trimis către aprobare!</span>
     </div>
 
-    <div class="alert alert-danger p-2" th:if="${param.businessDeleted}">
-        Serviciu șters! Acțiunea este ireversibilă!
+    <div class="alert alert-danger dashboard-action-alert" role="status" th:if="${param.businessDeleted}">
+        <i class="bi bi-trash3-fill" aria-hidden="true"></i>
+        <span>Serviciu șters! Acțiunea este ireversibilă!</span>
     </div>
 
-    <div class="alert alert-success p-2" th:if="${param.businessUpdated}">
-        Serviciu actualizat și trimis către aprobare!
+    <div class="alert alert-success dashboard-action-alert" role="status" th:if="${param.businessUpdated}">
+        <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+        <span>Serviciu actualizat și trimis către aprobare!</span>
     </div>
 
     <div class="d-flex align-items-center justify-content-between gap-2 mb-2">

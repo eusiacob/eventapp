@@ -23,11 +23,11 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
-<body class="app-bg">
+<body class="app-bg category-page service-card-gallery-page">
 
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<div class="container py-3">
+<div class="container py-3 category-content">
 
     <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
@@ -41,12 +41,21 @@
         th:text="|${selectedCategory.displayName} pentru evenimente|">
         Servicii pentru evenimente
     </h1>
-    <p class="text-muted" th:text="${seo.description}"></p>
+    <p class="text-muted category-description" th:text="${seo.description}"></p>
 
-    <!-- SEARCH -->
-    <form class="search-card compact-search card p-3 mt-3 shadow-sm border-0"
-          method="get"
-          th:action="@{/businesses/category/{category}(category=${selectedCategory})}">
+    <!-- SEARCH AND FILTERS -->
+    <details class="category-search-toggle" id="categorySearchToggle" open>
+        <summary class="category-search-summary">
+            <span><i aria-hidden="true" class="bi bi-funnel"></i> Caută și filtrează</span>
+            <span class="category-search-summary-end">
+                <span class="category-search-active"
+                      th:if="${keyword != null or city != null or serviceType != null or eventType != null or eventDate != null}">Filtre active</span>
+                <i aria-hidden="true" class="bi bi-chevron-down category-search-chevron"></i>
+            </span>
+        </summary>
+        <form class="search-card compact-search card p-3 mt-2 shadow-sm border-0"
+              method="get"
+              th:action="@{/businesses/category/{category}(category=${selectedCategory})}">
         <div class="row g-2 align-items-end">
             <div class="col-12 col-md-5">
                 <label class="form-label small mb-1" for="searchKeyword">Nume</label>
@@ -101,7 +110,8 @@
             <a class="small" th:href="@{/businesses/category/{category}(category=${selectedCategory})}">Resetează
                 filtrele</a>
         </div>
-    </form>
+        </form>
+    </details>
 
     <div class="text-center text-dark mt-4"
          th:if="${#lists.isEmpty(profiles)}">
@@ -152,9 +162,21 @@
                         <a class="text-reset text-decoration-none" th:href="@{/business/{slug}(slug=${p.slug})}" th:text="${p.name}"></a>
                     </h2>
 
+                    <div class="business-card-service-types" th:if="${not #sets.isEmpty(p.serviceTypes)}">
+                        <span class="business-card-service-type"
+                              th:each="type, stat : ${p.serviceTypes}"
+                              th:if="${stat.index < 2}"
+                              th:text="${type.isOther() and p.otherServiceDetails != null ? p.otherServiceDetails : type.displayName}"></span>
+                        <span class="business-card-service-type business-card-service-type-more"
+                              th:if="${p.serviceTypes.size() > 2}"
+                              th:text="|+${p.serviceTypes.size() - 2}|"></span>
+                    </div>
+
                     <p class="text-muted mb-2 business-card-location">
                         <i aria-hidden="true" class="bi bi-geo-alt-fill business-card-location-icon"></i>
-                        <span class="business-card-location-text" th:text="${p.city}"></span>
+                        <span class="business-card-location-text" th:if="${p.nationwide}">Toată țara</span>
+                        <span class="business-card-location-text" th:unless="${p.nationwide}"
+                              th:text="${#strings.listJoin(p.serviceCounties, ', ')}"></span>
                     </p>
 
                     <div class="mb-2 business-card-reviews">
@@ -262,6 +284,21 @@
 <!--Imports-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<!-- Keep category filters expanded on desktop and compact on mobile until the user has active filters. -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const filterPanel = document.getElementById("categorySearchToggle");
+        if (!filterPanel) return;
+
+        const mobile = window.matchMedia("(max-width: 767.98px)").matches;
+        const params = new URLSearchParams(window.location.search);
+        const hasActiveFilters = ["keyword", "city", "serviceType", "eventType", "eventDate"]
+            .some(name => (params.get(name) || "").trim() !== "");
+
+        filterPanel.open = !mobile || hasActiveFilters;
+    });
+</script>
 
 <!--ADD/REMOVE FROM FAVORITES-->
 <script>

@@ -13,7 +13,7 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
-<body class="app-bg">
+<body class="app-bg notifications-page">
 
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
@@ -21,14 +21,14 @@
 
     <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
-    <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-4">
+    <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-4 notification-page-header">
         <div>
             <h1 class="h3 fw-bold mb-1 text-dark">Notificări</h1>
             <p class="text-muted mb-0" th:if="${showUnreadOnly}">Afișăm doar notificările necitite.</p>
             <p class="text-muted mb-0" th:unless="${showUnreadOnly}">Vezi toate actualizările contului tău.</p>
         </div>
 
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2 notification-page-actions">
             <a class="btn btn-outline-primary btn-sm"
                th:classappend="${showUnreadOnly ? '' : ' active'}"
                th:href="@{/notifications}">
@@ -39,7 +39,7 @@
                th:href="@{/notifications(unread=true)}">
                 Necitite
             </a>
-            <form method="post" th:action="@{/notifications/mark-all-read}">
+            <form class="notification-mark-all-form" method="post" th:action="@{/notifications/mark-all-read}">
                 <input th:name="${_csrf.parameterName}"
                        th:value="${_csrf.token}"
                        type="hidden">

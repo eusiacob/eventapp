@@ -25,7 +25,7 @@
 
 </head>
 
-<body>
+<body class="business-details-page">
 
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
@@ -102,10 +102,18 @@
                     th:text="${profile.name}">
                 </h1>
 
-                <section class="text-muted mb-1">
-                    <h6>Aria de acoperire</h6>
-                    <div th:replace="~{fragments/service-area :: display(${profile})}"></div>
-                </section>
+                <details class="business-details-disclosure business-details-coverage" open>
+                    <summary>
+                        <span><i aria-hidden="true" class="bi bi-geo-alt-fill me-1"></i>Aria de acoperire</span>
+                        <span class="business-details-disclosure-meta" th:if="${profile.nationwide}">Toată țara</span>
+                        <span class="business-details-disclosure-meta" th:unless="${profile.nationwide}"
+                              th:text="|${#lists.size(profile.serviceCounties)} ${#lists.size(profile.serviceCounties) == 1 ? 'județ' : 'județe'}|"></span>
+                        <i aria-hidden="true" class="bi bi-chevron-down business-details-chevron"></i>
+                    </summary>
+                    <div class="business-details-disclosure-content">
+                        <div th:replace="~{fragments/service-area :: display(${profile})}"></div>
+                    </div>
+                </details>
 
                 <div class="d-none d-lg-block pt-3" sec:authorize="isAuthenticated()">
                     <h6 class="text-muted">Contact</h6>
@@ -146,30 +154,43 @@
 
                 </div>
 
-                <div class="alert alert-info mb-3 mt-3 p-1" sec:authorize="isAnonymous()">
-                    <span>Conectează-te pentru a vedea datele de contact și toate detaliile serviciului.</span>
+                <div class="business-info-notice" role="status" sec:authorize="isAnonymous()">
+                    <i aria-hidden="true" class="bi bi-lock-fill"></i>
+                    <span>Autentifică-te pentru a vedea datele de contact ale furnizorului și informațiile disponibile utilizatorilor conectați.</span>
                 </div>
 
             </div>
         </div>
 
         <div class="p-3 pt-0">
-            <div class="text-muted mb-4 business-details-options" sec:authorize="isAuthenticated()">
-                <div th:replace="~{fragments/business-options :: display(${profile})}"></div>
-            </div>
+            <details class="business-details-disclosure business-details-options mb-3"
+                     sec:authorize="isAuthenticated()" open>
+                <summary>
+                    <span><i aria-hidden="true" class="bi bi-stars me-1"></i>Servicii și tipuri de eveniment</span>
+                    <i aria-hidden="true" class="bi bi-chevron-down business-details-chevron"></i>
+                </summary>
+                <div class="business-details-disclosure-content text-muted">
+                    <div th:replace="~{fragments/business-options :: display(${profile})}"></div>
+                </div>
+            </details>
 
-            <section class="mb-4">
-                <h2 class="h5 fw-bold mb-3">Despre</h2>
-                <p class="text-break mb-0" th:text="${profile.description}"></p>
+            <section class="business-details-about mb-3">
+                <h2 class="h5 fw-bold mb-2">Despre</h2>
+                <p class="text-break mb-0 business-details-description" th:text="${profile.description}"></p>
             </section>
 
-            <section class="mb-4" th:if="${(profile.website != null and !profile.website.isBlank())
-                or (profile.facebookUrl != null and !profile.facebookUrl.isBlank())
-                or (profile.instagramUrl != null and !profile.instagramUrl.isBlank())
-                or (profile.tiktokUrl != null and !profile.tiktokUrl.isBlank())
-                or (profile.youtubeUrl != null and !profile.youtubeUrl.isBlank())}">
-                <h2 class="h5 fw-bold mb-3"><i class="bi bi-share me-1"></i>Social și website</h2>
-                <div class="d-flex flex-wrap gap-2">
+            <details class="business-details-disclosure business-details-social mb-3" open
+                     th:if="${(profile.website != null and !profile.website.isBlank())
+                         or (profile.facebookUrl != null and !profile.facebookUrl.isBlank())
+                         or (profile.instagramUrl != null and !profile.instagramUrl.isBlank())
+                         or (profile.tiktokUrl != null and !profile.tiktokUrl.isBlank())
+                         or (profile.youtubeUrl != null and !profile.youtubeUrl.isBlank())}">
+                <summary>
+                    <span><i aria-hidden="true" class="bi bi-share me-1"></i>Social și website</span>
+                    <i aria-hidden="true" class="bi bi-chevron-down business-details-chevron"></i>
+                </summary>
+                <div class="business-details-disclosure-content">
+                    <div class="d-flex flex-wrap gap-2">
                     <a class="btn btn-outline-secondary" rel="noopener noreferrer" target="_blank"
                        th:href="${profile.website}" th:if="${profile.website != null and !profile.website.isBlank()}">
                         <i class="bi bi-globe me-1"></i>Website
@@ -194,8 +215,9 @@
                        th:if="${profile.youtubeUrl != null and !profile.youtubeUrl.isBlank()}">
                         <i class="bi bi-youtube me-1"></i>YouTube
                     </a>
+                    </div>
                 </div>
-            </section>
+            </details>
 
             <div>
 
@@ -301,82 +323,72 @@
                     </div>
 
 
-                    <div class="alert alert-info p-1"
+                    <div class="business-info-notice business-info-notice-gallery" role="status"
                          sec:authorize="isAnonymous()">
-
-                        <span>
-                            Trebuie să fii conectat pentru a vedea galeria.
-                        </span>
-
+                        <i aria-hidden="true" class="bi bi-images"></i>
+                        <span>Autentifică-te pentru a vedea fotografiile și videoclipurile din galerie.</span>
                     </div>
 
                 </div>
 
-                <!--ADAUGĂ RECENZIE-->
-                <div class="d-flex justify-content-between align-items-center">
+                <!-- REVIEW SUMMARY AND FEEDBACK -->
+                <section class="business-review-panel" aria-labelledby="businessReviewsTitle">
+                    <div class="business-review-header">
+                        <div class="business-review-heading">
+                            <h2 class="business-review-title" id="businessReviewsTitle">Recenzii</h2>
+                            <div class="business-review-rating" aria-label="Evaluarea medie">
+                                <span class="text-warning" aria-hidden="true">★</span>
+                                <strong th:text="${#numbers.formatDecimal(averageRating, 1, 1)}"></strong>
+                                <span class="business-review-count">
+                                    (<span th:text="${reviewCount}"></span>
+                                    <span th:text="${reviewCount == 1 ? 'recenzie' : 'recenzii'}"></span>)
+                                </span>
+                            </div>
+                        </div>
 
-                    <h5 class="fw-bold">
-                        Recenzii
-                    </h5>
-
-                    <div class="text-end"
-                         sec:authorize="isAuthenticated()"
-                         th:if="${!hasReviewed}">
-
-                        <span class="text-muted mb-2" id="reviewMessage">Vrei să ne împărtășești experiența ta?</span>
-
-                        <form method="post"
-                              th:action="@{/business/{businessUuid}/reviews(businessUuid=${profile.getUuid()})}"
-                              th:object="${review}">
-
-                            <input th:name="${_csrf.parameterName}"
-                                   th:value="${_csrf.token}"
-                                   type="hidden">
-
-                            <button class="btn btn-outline-dark navbar-register-btn"
-                                    data-bs-target="#reviewModal"
-                                    data-bs-toggle="modal"
-                                    type="button">
-
-                                Adaugă o recenzie
-
-                            </button>
-
-                        </form>
-
+                        <div class="business-review-action" sec:authorize="isAuthenticated()"
+                             th:if="${!hasReviewed}">
+                            <form method="post"
+                                  th:action="@{/business/{businessUuid}/reviews(businessUuid=${profile.getUuid()})}"
+                                  th:object="${review}">
+                                <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden">
+                                <button class="btn btn-outline-dark navbar-register-btn"
+                                        data-bs-target="#reviewModal" data-bs-toggle="modal" type="button">
+                                    <i aria-hidden="true" class="bi bi-pencil-square me-1"></i>Adaugă o recenzie
+                                </button>
+                            </form>
+                        </div>
                     </div>
 
+                    <div class="business-review-messages">
+                        <div class="business-review-message business-review-message-error" role="alert"
+                             th:if="${param.reviewError}">
+                            <i aria-hidden="true" class="bi bi-exclamation-circle-fill"></i>
+                            <span>Recenzia nu poate fi goală.</span>
+                        </div>
+                        <div class="business-review-message business-review-message-info" role="status"
+                             sec:authorize="isAnonymous()">
+                            <i aria-hidden="true" class="bi bi-info-circle-fill"></i>
+                            <span>Conectează-te pentru a adăuga o recenzie.</span>
+                        </div>
+                        <div class="business-review-message business-review-message-success" role="status"
+                             th:if="${hasReviewed}">
+                            <i aria-hidden="true" class="bi bi-check-circle-fill"></i>
+                            <span>Ai adăugat deja o recenzie.</span>
+                        </div>
+                        <div class="business-review-message business-review-message-pending" role="status"
+                             th:if="${hasPendingReview}">
+                            <i aria-hidden="true" class="bi bi-hourglass-split"></i>
+                            <span>Recenzia ta este în curs de aprobare.</span>
+                        </div>
+                    </div>
+                </section>
 
+                <div class="text-muted business-reviews-empty" th:if="${#lists.isEmpty(reviews)}">
+                    Nici o recenzie.
                 </div>
 
-                <div class="mb-2">
-                    <span class="text-warning">★</span>
-                    <strong th:text="${#numbers.formatDecimal(averageRating, 1, 1)}"></strong>
-
-                    (<span th:text="${reviewCount}"></span>
-                    <span th:text="${reviewCount == 1 ? 'recenzie' : 'recenzii'}"></span>)
-                </div>
-
-                <div class="alert alert-danger" th:if="${param.reviewError}">
-                    Recenzia nu poate fi goală.
-                </div>
-
-                <div class="alert alert-info p-1" sec:authorize="isAnonymous()">
-                    Trebuie să fii conectat pentru a adăuga o recenzie.
-                </div>
-
-                <span class="alert alert-success p-1" th:if="${hasReviewed}">
-                    Ai adăugat deja o recenzie.
-                </span>
-
-                <div class="mb-3"></div>
-
-                <span class="alert alert-warning p-1 mt-3"
-                      th:if="${hasPendingReview}">
-                    Recenzia ta este în curs de aprobare.
-                </span>
-
-                <form class="d-flex align-items-center justify-content-end gap-2 mb-2"
+                <form class="d-flex align-items-center justify-content-end gap-2 mb-2 business-review-size-form"
                       method="get"
                       th:action="@{/business/{uuid}(uuid=${profile.slug})}"
                       th:if="${reviewCount > 0}">
@@ -390,10 +402,6 @@
                         <option th:selected="${reviewSize == 20}" value="20">20</option>
                     </select>
                 </form>
-
-                <div class="text-muted" th:if="${#lists.isEmpty(reviews)}">
-                    Nici o recenzie.
-                </div>
 
                 <div class="review-card" th:each="r : ${reviews}">
 
@@ -881,6 +889,16 @@
                     showFavoriteToast("Could not update favorites");
                 });
         });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (window.matchMedia("(max-width: 767.98px)").matches) {
+            document.querySelectorAll(".business-details-disclosure").forEach(section => {
+                section.open = false;
+            });
+        }
     });
 </script>
 

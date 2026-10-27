@@ -46,7 +46,7 @@
     </style>
 
 </head>
-<body class="app-bg">
+<body class="app-bg favorites-page service-card-gallery-page">
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <div class="container py-3" style="min-height: 100vh">
@@ -109,9 +109,21 @@
                            th:text="${p.name}"></a>
                     </h5>
 
+                    <div class="business-card-service-types" th:if="${not #sets.isEmpty(p.serviceTypes)}">
+                        <span class="business-card-service-type"
+                              th:each="type, stat : ${p.serviceTypes}"
+                              th:if="${stat.index < 2}"
+                              th:text="${type.isOther() and p.otherServiceDetails != null ? p.otherServiceDetails : type.displayName}"></span>
+                        <span class="business-card-service-type business-card-service-type-more"
+                              th:if="${p.serviceTypes.size() > 2}"
+                              th:text="|+${p.serviceTypes.size() - 2}|"></span>
+                    </div>
+
                     <p class="text-muted mb-2 business-card-location">
                         <i aria-hidden="true" class="bi bi-geo-alt-fill business-card-location-icon"></i>
-                        <span class="business-card-location-text" th:text="${p.city}"></span>
+                        <span class="business-card-location-text" th:if="${p.nationwide}">Toată țara</span>
+                        <span class="business-card-location-text" th:unless="${p.nationwide}"
+                              th:text="${#strings.listJoin(p.serviceCounties, ', ')}"></span>
                     </p>
 
                     <div class="mb-2 business-card-reviews">
