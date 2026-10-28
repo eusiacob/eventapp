@@ -18,17 +18,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet">
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+
     <link rel="stylesheet"
           th:href="@{/css/style.css}">
 
 </head>
 
-<body>
+<body class="app-bg contact-page">
 
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 
-<div class="container py-4">
+<main class="container contact-page-shell py-4">
 
     <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
@@ -38,7 +41,9 @@
 
             <!-- Titlu -->
 
-            <div class="text-center mb-4">
+            <header class="contact-page-header text-center mb-4">
+
+                <span class="contact-page-icon"><i class="bi bi-chat-dots-fill" aria-hidden="true"></i></span>
 
                 <h1 class="text-dark fw-bold">
                     Contactează-ne
@@ -49,7 +54,7 @@
                     Trimite-ne un mesaj și îți vom răspunde cât mai curând.
                 </p>
 
-            </div>
+            </header>
 
 
             <!-- Mesaj succes -->
@@ -73,9 +78,9 @@
 
             <!-- Formular -->
 
-            <div class="card shadow-sm border-0">
+            <div class="card contact-form-card shadow-sm border-0">
 
-                <div class="card-body p-4 p-md-5">
+                <div class="card-body contact-form-body p-4 p-md-5">
 
                     <form method="post"
                           th:action="@{/contact}"
@@ -83,7 +88,7 @@
 
                         <!-- Nume -->
 
-                        <div class="mb-4">
+                        <div class="mb-4 contact-field">
 
                             <label class="form-label fw-semibold"
                                    for="name">
@@ -109,7 +114,7 @@
 
                         <!-- Email -->
 
-                        <div class="mb-4">
+                        <div class="mb-4 contact-field">
 
                             <label class="form-label fw-semibold"
                                    for="email">
@@ -133,7 +138,7 @@
 
                         <!-- Subiect -->
 
-                        <div class="mb-4">
+                        <div class="mb-4 contact-field">
 
                             <label class="form-label fw-semibold"
                                    for="subject">
@@ -159,7 +164,7 @@
 
                         <!-- Mesaj -->
 
-                        <div class="mb-4">
+                        <div class="mb-4 contact-field">
 
                             <label class="form-label fw-semibold"
                                    for="message">
@@ -183,7 +188,7 @@
 
                         <!-- GDPR -->
 
-                        <div class="form-check mb-4">
+                        <div class="form-check mb-4 contact-privacy-check">
 
                             <input class="form-check-input"
                                    id="privacyAccepted"
@@ -211,9 +216,9 @@
 
                         <!-- Buton -->
 
-                        <div class="d-grid">
+                        <div class="d-grid contact-submit-wrap">
 
-                            <button class="btn btn-dark btn-lg"
+                            <button class="btn btn-dark btn-lg contact-submit-button"
                                     type="submit">
 
                                 <i class="bi bi-send me-2"></i>
@@ -233,7 +238,7 @@
 
     </div>
 
-</div>
+</main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
 

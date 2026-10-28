@@ -4907,7 +4907,7 @@ body .favorite-title,
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    padding: 0.7rem 0.9rem;
+    padding: 0.5rem 0.5rem;
     color: var(--me-heading, #534666);
     background: var(--me-primary-soft, #e7f3f3);
     border: 1px solid rgba(19, 128, 134, 0.22);
@@ -5672,7 +5672,7 @@ body .favorite-title,
 
     .footer-brand p {
         max-width: 260px;
-        margin: 0;
+        margin: 0.5rem 0 0 0;
         font-size: 0.76rem;
         line-height: 1.35;
     }
@@ -5691,6 +5691,7 @@ body .favorite-title,
     .footer-section a {
         font-size: 0.74rem;
         line-height: 1.3;
+        margin: 0.2rem 0 0 0;
     }
 
     .footer-social-links {
@@ -6379,5 +6380,880 @@ body .favorite-title,
         .mobile-notifications-panel {
             --bs-offcanvas-height: min(84dvh, 680px);
         }
+    }
+}
+
+/* Legal pages and account settings: cohesive, compact surfaces. */
+.legal-page {
+    min-height: 100vh;
+    padding: 0;
+}
+
+.legal-page-shell {
+    max-width: 1080px;
+    padding-top: 1.25rem !important;
+    padding-bottom: 2rem !important;
+}
+
+.legal-document-card {
+    overflow: hidden;
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 12px 34px rgba(54, 39, 42, 0.08) !important;
+}
+
+.legal-document-body {
+    padding: 2rem 2.25rem !important;
+}
+
+.legal-document-header {
+    margin: 0 auto 2rem !important;
+    padding: 1.4rem 1rem 1.25rem;
+    border: 1px solid rgba(220, 134, 101, 0.17);
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(220, 134, 101, 0.11), rgba(238, 180, 98, 0.12));
+}
+
+.legal-document-header > i {
+    display: inline-grid;
+    width: 3rem;
+    height: 3rem;
+    place-items: center;
+    border-radius: 15px;
+    background: rgba(220, 134, 101, 0.16);
+    color: #9c503f !important;
+    font-size: 1.4rem !important;
+}
+
+.legal-document-header h1 {
+    margin-top: 0.8rem !important;
+    color: #352a2c !important;
+    font-size: clamp(1.55rem, 3vw, 2rem);
+    letter-spacing: -0.025em;
+}
+
+.legal-document-header p {
+    font-size: 0.84rem;
+}
+
+.legal-document-content {
+    color: #51484a;
+    font-size: 0.96rem;
+    line-height: 1.75 !important;
+    overflow-wrap: anywhere;
+}
+
+.legal-document-content section {
+    margin: 0 0 1.5rem !important;
+    padding: 0 0 1.15rem;
+    border-bottom: 1px solid rgba(83, 70, 102, 0.1);
+}
+
+.legal-document-content section:last-child {
+    margin-bottom: 0 !important;
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.legal-document-content h2,
+.legal-document-content h4 {
+    margin: 0 0 0.65rem;
+    color: #352a2c;
+    font-size: 1.12rem;
+    line-height: 1.35;
+}
+
+.legal-document-content p,
+.legal-document-content li {
+    color: #5c5355;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.legal-document-content p:last-child {
+    margin-bottom: 0;
+}
+
+.account-settings-card {
+    border-radius: 18px;
+}
+
+.account-settings-header {
+    align-items: center !important;
+    gap: 0.8rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.account-settings-header h5 {
+    color: #352a2c;
+}
+
+.account-settings-header p {
+    font-size: 0.86rem;
+    line-height: 1.45;
+}
+
+.account-setting-action {
+    display: flex;
+    min-height: 52px;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.65rem 0.8rem;
+    border-radius: 12px;
+    font-size: 0.86rem;
+    line-height: 1.25;
+    transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.account-setting-action > i {
+    flex: 0 0 auto;
+    font-size: 1rem;
+}
+
+.account-setting-action:hover {
+    transform: translateY(-1px);
+}
+
+.account-setting-danger {
+    color: #a43e47;
+}
+
+@media (max-width: 767.98px) {
+    .legal-page-shell {
+        padding: 0.55rem 0.75rem 1.2rem !important;
+    }
+
+    .legal-document-card {
+        border-radius: 16px;
+    }
+
+    .legal-document-body {
+        padding: 0.8rem !important;
+    }
+
+    .legal-document-header {
+        margin-bottom: 1rem !important;
+        padding: 0.9rem 0.65rem 0.8rem;
+        border-radius: 14px;
+    }
+
+    .legal-document-header > i {
+        width: 2.35rem;
+        height: 2.35rem;
+        border-radius: 12px;
+        font-size: 1.05rem !important;
+    }
+
+    .legal-document-header h1 {
+        margin-top: 0.55rem !important;
+        font-size: 1.24rem;
+        line-height: 1.25;
+    }
+
+    .legal-document-header p {
+        font-size: 0.72rem;
+    }
+
+    .legal-document-content {
+        font-size: 0.82rem;
+        line-height: 1.58 !important;
+    }
+
+    .legal-document-content section {
+        margin-bottom: 0.95rem !important;
+        padding-bottom: 0.75rem;
+    }
+
+    .legal-document-content h2,
+    .legal-document-content h4 {
+        margin-bottom: 0.4rem;
+        font-size: 0.94rem;
+    }
+
+    .legal-document-content p,
+    .legal-document-content li {
+        font-size: inherit;
+    }
+
+    .legal-document-content ul {
+        padding-left: 1.15rem;
+    }
+
+    .account-settings-card {
+        padding: 0.85rem !important;
+        border-radius: 15px;
+    }
+
+    .account-settings-header {
+        gap: 0.6rem !important;
+        margin-bottom: 0.7rem !important;
+    }
+
+    .account-settings-header .profile-stat-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 11px;
+        font-size: 0.9rem;
+    }
+
+    .account-settings-header h5 {
+        margin-bottom: 0.12rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    .account-settings-header p {
+        font-size: 0.72rem;
+        line-height: 1.35;
+    }
+
+    .account-settings-actions {
+        --bs-gutter-x: 0.45rem;
+        --bs-gutter-y: 0.45rem;
+    }
+
+    .account-settings-actions > div {
+        width: 50%;
+    }
+
+    .account-setting-action {
+        min-height: 45px;
+        gap: 0.32rem;
+        padding: 0.48rem 0.5rem !important;
+        border-radius: 10px;
+        font-size: 0.7rem !important;
+        white-space: normal;
+        text-align: left !important;
+    }
+
+    .account-setting-action > i {
+        font-size: 0.86rem;
+    }
+}
+
+/* Compact refinements for public guides, general presentation, and contact. */
+.guide-list-page,
+.guide-article-page {
+    padding-top: 0.65rem;
+    padding-bottom: 1.5rem;
+}
+
+.guide-list-page > section > h2 {
+    color: var(--me-heading, #534666);
+    font-size: 1.25rem;
+}
+
+.guide-list-page .guide-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1.1rem;
+    border-radius: 16px;
+}
+
+.guide-list-page .guide-card p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.guide-list-page .guide-read-link {
+    margin-top: auto;
+    font-size: 0.88rem;
+}
+
+.guide-article-page .guide-article-body {
+    box-shadow: 0 5px 18px rgba(83, 70, 102, 0.05);
+}
+
+.guide-article-page .guide-article-section + .guide-article-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+}
+
+.presentation-general-page .presentation-page {
+    padding-top: 1.25rem;
+    padding-bottom: 3rem;
+}
+
+.presentation-general-page .presentation-hero {
+    align-items: stretch;
+}
+
+.presentation-general-page .presentation-intro,
+.presentation-general-page .presentation-categories {
+    padding: clamp(1.1rem, 2.5vw, 1.8rem);
+    border: 1px solid rgba(220, 134, 101, 0.18);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.78);
+    box-shadow: 0 8px 24px rgba(83, 70, 102, 0.06);
+}
+
+.presentation-general-page .presentation-intro h1 {
+    line-height: 1.12;
+}
+
+.presentation-general-page .presentation-benefit,
+.presentation-general-page .presentation-example,
+.presentation-general-page .presentation-final {
+    border-radius: 16px;
+}
+
+.contact-page-shell {
+    max-width: 980px;
+    padding-top: 0.85rem !important;
+    padding-bottom: 1.7rem !important;
+}
+
+.contact-page-header {
+    max-width: 760px;
+    margin-inline: auto;
+    padding: 1.2rem 1.4rem;
+    border: 1px solid rgba(220, 134, 101, 0.18);
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(220, 134, 101, 0.11), rgba(238, 180, 98, 0.11));
+}
+
+.contact-page-icon {
+    display: inline-grid;
+    width: 2.7rem;
+    height: 2.7rem;
+    margin-bottom: 0.45rem;
+    place-items: center;
+    border-radius: 13px;
+    background: rgba(220, 134, 101, 0.17);
+    color: #9c503f;
+    font-size: 1.15rem;
+}
+
+.contact-page-header h1 {
+    margin-bottom: 0.35rem;
+    color: #352a2c !important;
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+}
+
+.contact-page-header p {
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.contact-form-card {
+    overflow: hidden;
+    border-radius: 18px;
+    box-shadow: 0 10px 28px rgba(54, 39, 42, 0.07) !important;
+}
+
+.contact-form-body {
+    padding: 1.6rem !important;
+}
+
+.contact-field {
+    margin-bottom: 1rem !important;
+}
+
+.contact-page .form-label {
+    margin-bottom: 0.35rem;
+    color: #352a2c;
+    font-size: 0.88rem;
+}
+
+.contact-page .form-control {
+    min-height: 44px;
+    border-color: #ded8d7;
+    border-radius: 10px;
+    font-size: 0.9rem;
+}
+
+.contact-page textarea.form-control {
+    min-height: 140px;
+}
+
+.contact-page .form-control:focus {
+    border-color: #138086;
+    box-shadow: 0 0 0 0.18rem rgba(19, 128, 134, 0.13);
+}
+
+.contact-privacy-check {
+    padding: 0.7rem 0.75rem 0.7rem 2.1rem;
+    border: 1px solid rgba(83, 70, 102, 0.1);
+    border-radius: 11px;
+    background: rgba(83, 70, 102, 0.025);
+    font-size: 0.84rem;
+}
+
+.contact-submit-button {
+    min-height: 46px;
+    border: 0;
+    border-radius: 11px;
+    background: #534666;
+    font-size: 0.92rem;
+}
+
+.contact-submit-button:hover,
+.contact-submit-button:focus-visible {
+    background: #423752;
+}
+
+.contact-page .alert {
+    max-width: 780px;
+    margin: 0 auto 0.8rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 12px;
+    font-size: 0.84rem;
+}
+
+@media (max-width: 767.98px) {
+    .guide-list-page,
+    .guide-article-page {
+        padding: 0.45rem 0 0.9rem;
+    }
+
+    .guide-page.container {
+        padding-right: 0.75rem;
+        padding-left: 0.75rem;
+    }
+
+    .guide-hero,
+    .guide-article-header {
+        margin-bottom: 0.85rem !important;
+        padding: 0.95rem 0.9rem;
+        border-left-width: 4px;
+        border-radius: 15px;
+    }
+
+    .guide-eyebrow {
+        margin-bottom: 0.35rem;
+        font-size: 0.62rem;
+        letter-spacing: 0.1em;
+    }
+
+    .guide-hero h1,
+    .guide-article-header h1 {
+        margin-bottom: 0.4rem;
+        font-size: 1.25rem;
+        line-height: 1.22;
+    }
+
+    .guide-hero p,
+    .guide-article-intro {
+        font-size: 0.8rem;
+        line-height: 1.45;
+    }
+
+    .guide-list-page > section > h2 {
+        margin-bottom: 0.55rem !important;
+        font-size: 0.98rem;
+    }
+
+    .guide-list-page .row {
+        --bs-gutter-x: 0.55rem;
+        --bs-gutter-y: 0.55rem;
+    }
+
+    .guide-list-page .guide-card {
+        padding: 0.8rem;
+        border-radius: 13px;
+    }
+
+    .guide-card-icon {
+        width: 1.8rem;
+        height: 1.8rem;
+        margin-bottom: 0.45rem;
+        font-size: 0.85rem;
+    }
+
+    .guide-list-page .guide-card h3 {
+        margin-bottom: 0.35rem;
+        font-size: 0.9rem;
+        line-height: 1.3;
+    }
+
+    .guide-list-page .guide-card p {
+        margin-bottom: 0.55rem;
+        font-size: 0.76rem;
+        line-height: 1.4;
+    }
+
+    .guide-list-page .guide-read-link {
+        font-size: 0.75rem;
+    }
+
+    .guide-article-body {
+        padding: 0.9rem;
+        border-radius: 14px;
+    }
+
+    .guide-article-page .guide-article-section + .guide-article-section {
+        margin-top: 0.95rem;
+        padding-top: 0.95rem;
+    }
+
+    .guide-article-section h2,
+    .guide-cta h2 {
+        margin-bottom: 0.35rem;
+        font-size: 0.98rem;
+    }
+
+    .guide-article-section p,
+    .guide-article-section li,
+    .guide-cta p {
+        margin-bottom: 0.5rem;
+        font-size: 0.79rem;
+        line-height: 1.5;
+    }
+
+    .guide-cta {
+        margin-top: 0.9rem;
+        padding: 0.9rem;
+        border-radius: 13px;
+    }
+
+    .guide-cta .btn {
+        padding: 0.4rem 0.65rem;
+        font-size: 0.78rem;
+    }
+
+    .presentation-general-page .presentation-page {
+        padding: 0.65rem 0 1.3rem;
+    }
+
+    .presentation-general-page .presentation-hero {
+        gap: 0.65rem;
+    }
+
+    .presentation-general-page .presentation-intro,
+    .presentation-general-page .presentation-categories {
+        padding: 0.9rem;
+        border-radius: 15px;
+    }
+
+    .presentation-general-page .presentation-eyebrow {
+        margin-bottom: 0.4rem;
+        font-size: 0.65rem;
+    }
+
+    .presentation-general-page .presentation-intro h1 {
+        margin-bottom: 0.5rem;
+        font-size: 1.32rem;
+    }
+
+    .presentation-general-page .presentation-lead,
+    .presentation-general-page .presentation-categories > p {
+        margin-bottom: 0.55rem;
+        font-size: 0.8rem;
+        line-height: 1.48;
+    }
+
+    .presentation-general-page .presentation-actions {
+        gap: 0.5rem 0.75rem;
+        margin-top: 0.75rem;
+    }
+
+    .presentation-general-page .presentation-primary-button {
+        padding: 0.55rem 0.7rem;
+        border-radius: 10px;
+        font-size: 0.78rem;
+    }
+
+    .presentation-general-page .presentation-secondary-link {
+        font-size: 0.78rem;
+    }
+
+    .presentation-general-page .presentation-category-grid {
+        gap: 0.4rem;
+        margin-top: 0.65rem;
+    }
+
+    .presentation-general-page .presentation-category-link {
+        min-height: 64px;
+        gap: 0.25rem;
+        padding: 0.45rem 0.35rem;
+        border-radius: 10px;
+        font-size: 0.7rem;
+    }
+
+    .presentation-general-page .presentation-category-link i {
+        font-size: 1rem;
+    }
+
+    .presentation-general-page .presentation-benefits {
+        padding-top: 1.5rem;
+    }
+
+    .presentation-general-page .presentation-section-heading h2,
+    .presentation-general-page .presentation-final h2 {
+        font-size: 1.25rem;
+    }
+
+    .presentation-general-page .presentation-benefit-grid {
+        gap: 0.55rem;
+        margin-top: 0.75rem;
+    }
+
+    .presentation-general-page .presentation-benefit {
+        padding: 0.85rem;
+        border-radius: 13px;
+    }
+
+    .presentation-general-page .presentation-benefit-icon {
+        width: 34px;
+        height: 34px;
+        margin-bottom: 0.45rem;
+        border-radius: 10px;
+        font-size: 1rem;
+    }
+
+    .presentation-general-page .presentation-benefit h3,
+    .presentation-general-page .presentation-onboarding h3,
+    .presentation-general-page .presentation-example h3 {
+        margin-bottom: 0.3rem;
+        font-size: 0.9rem;
+    }
+
+    .presentation-general-page .presentation-benefit p,
+    .presentation-general-page .presentation-onboarding p,
+    .presentation-general-page .presentation-example p {
+        font-size: 0.77rem;
+        line-height: 1.45;
+    }
+
+    .presentation-general-page .presentation-onboarding {
+        gap: 0.7rem;
+        margin: 0.85rem 0;
+    }
+
+    .presentation-general-page .presentation-step-number {
+        flex-basis: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+    }
+
+    .presentation-general-page .presentation-example {
+        gap: 0.65rem;
+        padding: 0.85rem;
+        border-radius: 13px;
+    }
+
+    .presentation-general-page .presentation-final {
+        margin-top: 1.5rem;
+        padding: 1.1rem 0.85rem;
+        border-radius: 15px;
+    }
+
+    .presentation-general-page .presentation-final > p,
+    .presentation-general-page .presentation-final .presentation-contact {
+        margin: 0.5rem 0 0.75rem;
+        font-size: 0.77rem;
+        line-height: 1.45;
+    }
+
+    .contact-page-shell {
+        padding: 0.5rem 0.75rem 1.1rem !important;
+    }
+
+    .contact-page-header {
+        margin-bottom: 0.7rem !important;
+        padding: 0.8rem 0.7rem;
+        border-radius: 14px;
+    }
+
+    .contact-page-icon {
+        width: 2rem;
+        height: 2rem;
+        margin-bottom: 0.3rem;
+        border-radius: 10px;
+        font-size: 0.9rem;
+    }
+
+    .contact-page-header h1 {
+        margin-bottom: 0.25rem;
+        font-size: 1.2rem;
+    }
+
+    .contact-page-header p {
+        font-size: 0.75rem;
+        line-height: 1.4;
+    }
+
+    .contact-form-card {
+        border-radius: 14px;
+    }
+
+    .contact-form-body {
+        padding: 0.85rem !important;
+    }
+
+    .contact-field {
+        margin-bottom: 0.7rem !important;
+    }
+
+    .contact-page .form-label {
+        margin-bottom: 0.25rem;
+        font-size: 0.76rem;
+    }
+
+    .contact-page .form-control {
+        min-height: 39px;
+        padding: 0.45rem 0.6rem;
+        border-radius: 9px;
+        font-size: 0.8rem;
+    }
+
+    .contact-page textarea.form-control {
+        min-height: 105px;
+    }
+
+    .contact-privacy-check {
+        margin-bottom: 0.75rem !important;
+        padding: 0.55rem 0.55rem 0.55rem 1.8rem;
+        font-size: 0.73rem;
+        line-height: 1.4;
+    }
+
+    .contact-page .form-check-input {
+        margin-top: 0.18rem;
+    }
+
+    .contact-submit-button {
+        min-height: 40px;
+        border-radius: 9px;
+        font-size: 0.82rem;
+    }
+
+    .contact-page .alert {
+        margin-bottom: 0.55rem;
+        padding: 0.5rem 0.65rem;
+        border-radius: 10px;
+        font-size: 0.75rem;
+    }
+}
+
+/* Keep the complete footer in normal document flow on guide and legal pages. */
+body.guide-list-page,
+body.guide-article-page,
+body.legal-page {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+body.guide-list-page > .guide-page,
+body.guide-article-page > .guide-page,
+body.legal-page > .legal-page-shell {
+    flex: 1 0 auto;
+    width: 100%;
+}
+
+body.guide-list-page > .site-footer,
+body.guide-article-page > .site-footer,
+body.legal-page > .site-footer {
+    flex: 0 0 auto;
+    width: 100%;
+    margin-top: 1rem;
+    overflow: visible;
+}
+
+body.guide-list-page .footer-container,
+body.guide-article-page .footer-container,
+body.legal-page .footer-container {
+    min-width: 0;
+}
+
+body.guide-list-page .footer-brand,
+body.guide-list-page .footer-section,
+body.guide-article-page .footer-brand,
+body.guide-article-page .footer-section,
+body.legal-page .footer-brand,
+body.legal-page .footer-section {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 767.98px) {
+    body.guide-list-page .footer-container,
+    body.guide-article-page .footer-container,
+    body.legal-page .footer-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+    }
+}
+
+/* Match the mobile bottom-nav clearance used by the general presentation page. */
+@media (max-width: 991px) {
+    body.guide-list-page,
+    body.guide-article-page,
+    body.legal-page,
+    body.contact-page,
+    body.presentation-general-page {
+        padding-bottom: 92px;
+    }
+}
+
+/* Smaller category tiles on the businesses page for phone screens. */
+@media (max-width: 767.98px) {
+    #categoryCarousel {
+        gap: 0.45rem;
+        align-items: stretch;
+        padding: 0.1rem 0 0.35rem;
+        scroll-padding-inline: 0.35rem;
+    }
+
+    #categoryCarousel .category-chip {
+        width: 86px;
+        min-height: 75px;
+        padding: 0.45rem 0.35rem;
+        border-radius: 10px;
+    }
+
+    #categoryCarousel .category-chip i {
+        margin-bottom: 0.2rem;
+        font-size: 1.45rem;
+        line-height: 1;
+    }
+
+    #categoryCarousel .category-chip span {
+        font-size: 0.73rem;
+        line-height: 1.2;
+        white-space: normal;
+    }
+}
+
+/* Mobile cue that the category row can be swiped horizontally. */
+.category-scroll-hint {
+    display: none;
+}
+
+@media (max-width: 767.98px) {
+    .category-scroll-hint {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.15rem;
+        margin: -0.1rem 0 0.2rem;
+        color: var(--me-muted, #6b7280);
+        font-size: 0.68rem;
+        line-height: 1.2;
+    }
+
+    .category-scroll-hint i {
+        color: var(--me-primary, #138086);
+        font-size: 1rem;
+        line-height: 1;
+    }
+
+    .category-carousel-wrap {
+        position: relative;
+        min-width: 0;
+    }
+
+    .category-carousel-wrap::after {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0.25rem;
+        width: 1.1rem;
+        background: linear-gradient(90deg, rgba(250, 248, 245, 0), var(--me-background, #faf8f5));
+        content: "";
+        pointer-events: none;
     }
 }

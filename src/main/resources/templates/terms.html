@@ -24,12 +24,12 @@
 
 </head>
 
-<body>
+<body class="app-bg legal-page">
 
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 
-<div class="container py-4">
+<main class="container legal-page-shell py-4">
 
     <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
@@ -38,11 +38,11 @@
 
         <div class="col-12 col-lg-9">
 
-            <div class="card border-0 shadow-sm">
+            <article class="card legal-document-card border-0 shadow-sm">
 
-                <div class="card-body p-4 p-md-5">
+                <div class="card-body legal-document-body p-4 p-md-5">
 
-                    <div class="text-center mb-5">
+                    <header class="legal-document-header text-center mb-5">
 
                         <i class="bi bi-file-earmark-text fs-1 text-dark"></i>
 
@@ -55,9 +55,9 @@
                             <span th:text="${#temporals.format(document.lastUpdated, 'dd.MM.yyyy')}"></span>
                         </p>
 
-                    </div>
+                    </header>
 
-                    <div class="lh-lg" style="white-space: pre-line;"
+                    <div class="legal-document-content lh-lg" style="white-space: pre-line;"
                          th:text="${document.content}">
                     </div>
 
@@ -379,13 +379,13 @@
 
                 </div>
 
-            </div>
+            </article>
 
         </div>
 
     </div>
 
-</div>
+</main>
 
 
 <div th:replace="~{fragments/footer :: footer}"></div>
