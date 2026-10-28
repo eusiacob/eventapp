@@ -163,7 +163,7 @@ public class ProfileController {
             emailService.sendEmailChangedEmail(user.getEmail(), user.getFirstName());
 
             new SecurityContextLogoutHandler().logout(request, response, authentication);
-            return "redirect:/login?emailChanged";
+            return "redirect:/?auth=login&emailChanged";
         } catch (IllegalArgumentException exception) {
             redirectAttributes.addFlashAttribute("accountError", exception.getMessage());
             return "redirect:/profile";
@@ -215,7 +215,7 @@ public class ProfileController {
             );
 
             new SecurityContextLogoutHandler().logout(request, response, authentication);
-            return "redirect:/login?accountDeleted";
+            return "redirect:/?auth=login&accountDeleted";
         } catch (IllegalArgumentException exception) {
             redirectAttributes.addFlashAttribute("accountError", exception.getMessage());
             return "redirect:/profile";

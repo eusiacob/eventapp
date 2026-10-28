@@ -1,12 +1,14 @@
 package com.example.eventapp.controller;
 
 import com.example.eventapp.dto.BreadcrumbDTO;
+import com.example.eventapp.dto.RegisterUserDTO;
 import com.example.eventapp.model.BusinessCategory;
 import com.example.eventapp.model.LegalDocumentType;
 import com.example.eventapp.service.LegalDocumentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -20,7 +22,16 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String home() {
+    public String home(
+            @RequestParam(required = false) String auth,
+            @RequestParam(required = false) String token,
+            Model model
+    ) {
+        model.addAttribute("user", new RegisterUserDTO());
+        model.addAttribute("authModalMode", auth == null ? "" : auth);
+        if (token != null) {
+            model.addAttribute("resetToken", token);
+        }
         return "home";
     }
 

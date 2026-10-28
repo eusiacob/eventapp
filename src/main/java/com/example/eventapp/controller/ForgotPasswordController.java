@@ -20,8 +20,7 @@ public class ForgotPasswordController {
 
     @GetMapping("/forgot")
     public String showForgotPasswordPage() {
-
-        return "forgot";
+        return "redirect:/?auth=forgot";
     }
 
     @PostMapping("/forgot")
@@ -31,7 +30,7 @@ public class ForgotPasswordController {
 
         passwordResetService.requestPasswordReset(email);
 
-        return "redirect:/forgot?successForgot";
+        return "redirect:/?auth=forgot&successForgot";
     }
 
     @GetMapping("/reset-password")
@@ -40,9 +39,10 @@ public class ForgotPasswordController {
             Model model
     ) {
 
-        model.addAttribute("token", token);
-
-        return "reset-password";
+        model.addAttribute("resetToken", token);
+        model.addAttribute("authModalMode", "reset");
+        model.addAttribute("user", new com.example.eventapp.dto.RegisterUserDTO());
+        return "home";
     }
 
     @PostMapping("/reset-password")
@@ -53,13 +53,13 @@ public class ForgotPasswordController {
     ) {
 
         if (password.length() < 8) {
-            return "redirect:/reset-password?token="
+            return "redirect:/?auth=reset&token="
                     + token
                     + "&error=passwordTooShort";
         }
 
         if (!password.equals(confirmPassword)) {
-            return "redirect:/reset-password?token="
+            return "redirect:/?auth=reset&token="
                     + token
                     + "&error=passwordMismatch";
         }
@@ -70,9 +70,9 @@ public class ForgotPasswordController {
         );
 
         if (!success) {
-            return "redirect:/reset-password?error=invalidToken";
+            return "redirect:/?auth=reset&error=invalidToken";
         }
 
-        return "redirect:/login?resetSuccess";
+        return "redirect:/?auth=login&resetSuccess";
     }
 }

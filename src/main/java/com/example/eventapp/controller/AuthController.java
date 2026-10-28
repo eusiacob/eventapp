@@ -30,20 +30,20 @@ public class AuthController {
     }
 
     @GetMapping("/register")
-    public String showRegisterPage(Model model) {
-        model.addAttribute("user", new RegisterUserDTO());
-        return "register";
+    public String showRegisterPage() {
+        return "redirect:/?auth=register";
     }
 
     @GetMapping("/login")
     public String login() {
-        return "login";
+        return "redirect:/?auth=login";
     }
 
     @PostMapping("/register")
     public String register(
             @Valid @ModelAttribute("user") RegisterUserDTO userDTO,
-            BindingResult result
+            BindingResult result,
+            Model model
     ) {
 
         if (userService.emailExists(userDTO.getEmail())) {
@@ -66,7 +66,8 @@ public class AuthController {
         }
 
         if (result.hasErrors()) {
-            return "register";
+            model.addAttribute("authModalMode", "register");
+            return "home";
         }
 
         User user = userService.registerUser(userDTO);
@@ -76,7 +77,7 @@ public class AuthController {
         );
         emailVerificationService.requestUserEmailVerification(user);
 
-        return "redirect:/login?registered";
+        return "redirect:/?auth=login&registered";
     }
 
 }
