@@ -7257,3 +7257,496 @@ body.legal-page .footer-section {
         pointer-events: none;
     }
 }
+
+/* Unified feedback styling across Bootstrap alerts and app-specific notices. */
+.alert {
+    --bs-alert-border-radius: 12px;
+    margin-bottom: 0.75rem;
+    padding: 0.7rem 0.85rem;
+    border-width: 1px;
+    border-inline-start-width: 4px;
+    box-shadow: 0 3px 12px rgba(83, 70, 102, 0.045);
+    font-size: 0.88rem;
+    line-height: 1.48;
+}
+
+.alert-success {
+    --bs-alert-color: #155d60;
+    --bs-alert-bg: #e8f3f2;
+    --bs-alert-border-color: #b9d8d6;
+    --bs-alert-link-color: #104b4d;
+    --me-alert-accent: var(--me-primary, #138086);
+}
+
+.alert-warning {
+    --bs-alert-color: #704812;
+    --bs-alert-bg: #fff5e8;
+    --bs-alert-border-color: #f0d4a9;
+    --bs-alert-link-color: #59380d;
+    --me-alert-accent: var(--me-amber, #eeb462);
+}
+
+.alert-danger {
+    --bs-alert-color: #741b32;
+    --bs-alert-bg: #faecee;
+    --bs-alert-border-color: #e8c1c5;
+    --bs-alert-link-color: #611629;
+    --me-alert-accent: var(--me-heart, #800020);
+}
+
+.alert-primary,
+.alert-info {
+    --bs-alert-color: #105e62;
+    --bs-alert-bg: #eaf4f3;
+    --bs-alert-border-color: #bfdcda;
+    --bs-alert-link-color: #0e4e51;
+    --me-alert-accent: var(--me-primary, #138086);
+}
+
+.alert-secondary,
+.alert-dark {
+    --bs-alert-color: #493d59;
+    --bs-alert-bg: #f2eff5;
+    --bs-alert-border-color: #d9d2e1;
+    --bs-alert-link-color: #3b3149;
+    --me-alert-accent: var(--me-heading, #534666);
+}
+
+.alert-light {
+    --bs-alert-color: #694638;
+    --bs-alert-bg: #fbf5f1;
+    --bs-alert-border-color: #ead8cd;
+    --bs-alert-link-color: #503a31;
+    --me-alert-accent: var(--me-terracotta, #dc8665);
+}
+
+.alert .alert-heading {
+    margin-bottom: 0.25rem;
+    color: inherit;
+    font-size: 0.95em;
+    font-weight: 700;
+}
+
+.alert-dismissible .btn-close {
+    padding: 0.95rem 0.85rem;
+}
+
+/* Replace Bootstrap green in success toasts and app notices with M-Event teal. */
+.toast {
+    overflow: hidden;
+    border: 1px solid rgba(19, 128, 134, 0.25);
+    border-radius: 13px;
+    box-shadow: 0 10px 30px rgba(53, 42, 44, 0.18);
+}
+
+.toast.bg-success {
+    color: #fff !important;
+    background-color: var(--me-primary, #138086) !important;
+    border-color: var(--me-primary-hover, #106e73);
+}
+
+.toast .btn-close-white {
+    filter: none;
+    opacity: 0.82;
+}
+
+.business-review-message-success {
+    color: #155d60;
+    background: rgba(19, 128, 134, 0.1);
+    border-color: rgba(19, 128, 134, 0.24);
+}
+
+.provider-dashboard-page .subscription-notice {
+    color: var(--me-heading, #534666);
+    background: rgba(238, 180, 98, 0.13);
+    border-color: rgba(238, 180, 98, 0.38);
+    border-left-color: var(--me-amber, #eeb462);
+}
+
+.business-info-notice {
+    color: var(--me-primary-hover, #106e73);
+    background: rgba(19, 128, 134, 0.075);
+    border-color: rgba(19, 128, 134, 0.2);
+}
+
+.confirmation-notice {
+    padding: 0.7rem 0.85rem;
+    border: 1px solid rgba(220, 134, 101, 0.25);
+    border-left: 4px solid var(--me-terracotta, #dc8665);
+    border-radius: 12px;
+    background: rgba(220, 134, 101, 0.09);
+    color: var(--me-heading, #534666);
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.business-editor-page .action-message-icon.success {
+    background-color: #e8f3f2;
+    color: var(--me-primary-hover, #106e73);
+}
+
+.business-editor-page .action-message-icon.danger {
+    background-color: #faecee;
+    color: var(--me-heart, #800020);
+}
+
+@media (max-width: 767.98px) {
+    .alert {
+        margin-bottom: 0.55rem;
+        padding: 0.55rem 0.65rem;
+        border-radius: 10px;
+        border-inline-start-width: 3px;
+        font-size: 0.78rem;
+        line-height: 1.4;
+    }
+
+    .alert.alert-dismissible {
+        padding-inline-end: 2.55rem !important;
+    }
+
+    .toast {
+        border-radius: 11px;
+        font-size: 0.8rem;
+    }
+
+    .toast .toast-body {
+        padding: 0.65rem 0.75rem;
+    }
+
+    .confirmation-notice {
+        padding: 0.58rem 0.68rem;
+        border-radius: 10px;
+        font-size: 0.76rem;
+        line-height: 1.42;
+    }
+}
+
+/* Keep Bootstrap spacing utilities from making flash messages too cramped. */
+.alert.p-1,
+.alert.p-2,
+.alert.py-2 {
+    padding: 0.65rem 0.8rem !important;
+}
+
+.alert.alert-dismissible.p-1,
+.alert.alert-dismissible.p-2 {
+    padding-inline-end: 3rem !important;
+}
+
+.confirmation-page .confirmation-notice {
+    padding: 0.7rem 0.85rem;
+    border: 1px solid rgba(220, 134, 101, 0.25);
+    border-left: 4px solid var(--me-terracotta, #dc8665);
+    border-radius: 12px;
+    background: rgba(220, 134, 101, 0.09);
+    color: var(--me-heading, #534666);
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 767.98px) {
+    .alert.p-1,
+    .alert.p-2,
+    .alert.py-2 {
+        padding: 0.5rem 0.6rem !important;
+    }
+
+    .alert.alert-dismissible.p-1,
+    .alert.alert-dismissible.p-2 {
+        padding-inline-end: 2.55rem !important;
+    }
+
+    .confirmation-page .confirmation-notice {
+        padding: 0.58rem 0.68rem;
+        border-radius: 10px;
+        font-size: 0.76rem;
+        line-height: 1.42;
+    }
+}
+
+/* Mobile-first refinements for authentication and recovery screens. */
+@media (max-width: 767.98px) {
+    .auth-page {
+        background-position: center top;
+        background-attachment: scroll;
+    }
+
+    .auth-wrapper {
+        min-height: 100vh;
+        min-height: 100svh;
+        align-items: flex-start;
+        padding: max(0.65rem, env(safe-area-inset-top)) 0 0.85rem;
+    }
+
+    .auth-wrapper > .container {
+        flex: 1 0 auto;
+        padding-right: 0.75rem;
+        padding-left: 0.75rem;
+    }
+
+    .auth-wrapper .row {
+        --bs-gutter-x: 0.6rem;
+        --bs-gutter-y: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    .auth-card {
+        margin: 0;
+        padding: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.98);
+        box-shadow: 0 12px 32px rgba(40, 31, 46, 0.2);
+    }
+
+    .auth-card > .text-center:first-child,
+    .auth-card > .mb-4:first-child {
+        margin-bottom: 0.75rem !important;
+    }
+
+    .auth-card h3 {
+        margin-bottom: 0.3rem !important;
+        font-size: 1.15rem;
+        line-height: 1.25;
+    }
+
+    .auth-card p,
+    .auth-card .text-muted {
+        font-size: 0.78rem;
+        line-height: 1.4;
+    }
+
+    .auth-card .form-control,
+    .auth-card .form-select {
+        min-height: 44px;
+        padding: 0.58rem 0.7rem;
+        border-radius: 10px;
+        font-size: 16px;
+    }
+
+    .auth-card .btn {
+        min-height: 44px;
+        padding: 0.6rem 0.8rem;
+        border-radius: 10px;
+        font-size: 0.84rem;
+    }
+
+    .auth-card .alert {
+        margin-bottom: 0.5rem;
+        font-size: 0.74rem;
+        line-height: 1.35;
+    }
+
+    .auth-card form .mb-3 {
+        margin-bottom: 0.65rem !important;
+    }
+
+    .auth-card .row.g-3 {
+        --bs-gutter-x: 0.55rem;
+        --bs-gutter-y: 0.65rem;
+    }
+
+    .auth-card .form-check {
+        margin-bottom: 0.45rem !important;
+        padding-left: 1.55rem;
+        font-size: 0.75rem;
+        line-height: 1.4;
+    }
+
+    .auth-card .form-check-input {
+        margin-left: -1.55rem;
+    }
+
+    .auth-register-page .auth-card fieldset.border.rounded-3 {
+        padding: 0.65rem !important;
+        border-radius: 11px !important;
+    }
+
+    .auth-register-page .auth-card fieldset legend {
+        margin-bottom: 0.35rem;
+        font-size: 0.78rem;
+    }
+
+    .auth-register-page .auth-card fieldset .form-check {
+        margin-bottom: 0.35rem !important;
+        font-size: 0.74rem;
+    }
+
+    .auth-register-page .auth-card fieldset > p {
+        margin-top: 0.45rem !important;
+        font-size: 0.68rem;
+        line-height: 1.35;
+    }
+
+    .auth-register-page .auth-card .text-danger.small {
+        font-size: 0.7rem;
+        line-height: 1.3;
+    }
+
+    .auth-card .text-center.mt-4 {
+        margin-top: 0.85rem !important;
+    }
+
+    .auth-card .text-center.mt-3 {
+        margin-top: 0.6rem !important;
+    }
+
+    .auth-card .text-center p.mb-2 {
+        margin-bottom: 0.25rem !important;
+    }
+
+    .auth-link {
+        font-size: 0.8rem;
+    }
+
+    .auth-login-page #forgotPasswordLink {
+        font-size: 0.78rem;
+    }
+}
+
+@media (max-width: 374.98px) {
+    .auth-wrapper > .container {
+        padding-right: 0.55rem;
+        padding-left: 0.55rem;
+    }
+
+    .auth-card {
+        padding: 0.85rem;
+        border-radius: 15px;
+    }
+
+    .auth-register-page .auth-card .form-check {
+        font-size: 0.71rem;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .auth-login-page .auth-wrapper,
+    .auth-register-page .auth-wrapper,
+    .auth-forgot-page .auth-wrapper {
+        align-items: center;
+    }
+}
+
+/* Keep long forms reachable on short phones and landscape screens. */
+@media (max-width: 767.98px) and (max-height: 760px) {
+    .auth-login-page .auth-wrapper,
+    .auth-register-page .auth-wrapper,
+    .auth-forgot-page .auth-wrapper {
+        align-items: flex-start;
+    }
+}
+
+/* Consistent typography hierarchy throughout the registration form. */
+.auth-register-page .auth-card {
+    color: #352a2c;
+}
+
+.auth-register-page .auth-card h3 {
+    color: var(--me-heading, #534666);
+    font-size: 1.35rem;
+    line-height: 1.25;
+}
+
+.auth-register-page .auth-card input.form-control {
+    color: #352a2c;
+    font-size: 0.95rem;
+}
+
+.auth-register-page .auth-card input.form-control::placeholder {
+    color: #77717a;
+    font-size: 0.86rem;
+    font-weight: 400;
+    opacity: 1;
+}
+
+.auth-register-page .auth-card .form-check-label {
+    color: #51484a;
+    font-size: 0.84rem;
+    line-height: 1.45;
+}
+
+.auth-register-page .auth-card fieldset legend {
+    color: var(--me-heading, #534666);
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.auth-register-page .auth-card fieldset .form-check-label {
+    font-size: 0.82rem;
+}
+
+.auth-register-page .auth-card .auth-password-hint,
+.auth-register-page .auth-card fieldset > p {
+    display: inline-block;
+    color: #756e77 !important;
+    font-size: 0.76rem !important;
+    line-height: 1.4;
+}
+
+.auth-register-page .auth-card .text-danger.small {
+    color: #741b32 !important;
+    font-size: 0.78rem;
+    line-height: 1.35;
+}
+
+.auth-register-page .auth-card a {
+    color: var(--me-primary-hover, #106e73);
+    text-underline-offset: 0.15em;
+}
+
+.auth-register-page .auth-card .auth-link {
+    color: var(--me-heading, #534666);
+    font-size: 0.88rem;
+}
+
+@media (max-width: 767.98px) {
+    .auth-register-page .auth-card h3 {
+        font-size: 1.12rem;
+    }
+
+    .auth-register-page .auth-card input.form-control {
+        font-size: 16px;
+    }
+
+    .auth-register-page .auth-card input.form-control::placeholder {
+        font-size: 0.82rem;
+    }
+
+    .auth-register-page .auth-card .form-check-label,
+    .auth-register-page .auth-card fieldset .form-check-label {
+        font-size: 0.75rem;
+    }
+
+    .auth-register-page .auth-card fieldset legend {
+        font-size: 0.78rem;
+    }
+
+    .auth-register-page .auth-card .auth-password-hint,
+    .auth-register-page .auth-card fieldset > p {
+        font-size: 0.68rem !important;
+    }
+
+    .auth-register-page .auth-card .text-danger.small {
+        font-size: 0.69rem;
+    }
+}
+
+/* Keep placeholder text consistent across sign-in and password recovery forms. */
+.auth-login-page .auth-card .form-control::placeholder,
+.auth-forgot-page .auth-card .form-control::placeholder,
+.auth-reset-page .auth-card .form-control::placeholder {
+    color: #77717a;
+    font-size: 0.86rem;
+    font-weight: 400;
+    opacity: 1;
+}
+
+@media (max-width: 767.98px) {
+    .auth-login-page .auth-card .form-control::placeholder,
+    .auth-forgot-page .auth-card .form-control::placeholder,
+    .auth-reset-page .auth-card .form-control::placeholder {
+        font-size: 0.82rem;
+    }
+}

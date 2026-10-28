@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"
+<html lang="ro"
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -20,7 +20,7 @@
           th:href="@{/css/style.css}">
 </head>
 
-<body class="auth-page" style="padding: 0 !important;">
+<body class="auth-page auth-login-page" style="padding: 0 !important;">
 
 <div class="auth-wrapper">
 
@@ -129,6 +129,7 @@
                             <input autofocus
                                    class="form-control"
                                    name="username"
+                                   autocomplete="username"
                                    placeholder="Email"
                                    required
                                    type="text">
@@ -137,12 +138,13 @@
                         <div class="mb-3">
                             <input class="form-control"
                                    name="password"
+                                   autocomplete="current-password"
                                    placeholder="Parolă"
                                    required
                                    type="password">
                         </div>
 
-                        <a href="/forgot"
+                        <a id="forgotPasswordLink" href="/forgot"
                            style="color: black; text-decoration: underline;">
                             Am uitat parola
                         </a>

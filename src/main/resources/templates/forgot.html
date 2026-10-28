@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en"
+<html lang="ro"
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Forgot</title>
+    <title>Recuperare parolă</title>
 
 <link rel="icon" type="image/png" th:href="@{/images/favicon.png}">
 
@@ -16,7 +16,7 @@
           th:href="@{/css/style.css}">
 </head>
 
-<body class="auth-page" style="padding: 0 !important;">
+<body class="auth-page auth-forgot-page" style="padding: 0 !important;">
 
 <div class="auth-wrapper">
 
@@ -34,11 +34,11 @@
                     </span>
 
                     <h1 class="fw-bold mb-4">
-                        Creează-ți contul și începe să descoperi servicii pentru evenimente.
+                        Recuperează accesul la contul tău.
                     </h1>
 
                     <p>
-                        Înregistrează-te pentru a salva preferințe și a trimite solicitări sau pentru a-ți promova serviciile.
+                        Introdu adresa de email asociată contului și îți trimitem instrucțiunile necesare.
                     </p>
 
                 </div>
@@ -72,6 +72,7 @@
                                 <input class="form-control"
                                        id="email"
                                        name="email"
+                                       autocomplete="email"
                                        placeholder="Introdu adresa de email a contului"
                                        type="email"
                                        required>

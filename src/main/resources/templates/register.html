@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en"
+<html lang="ro"
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Register</title>
+    <title>Înregistrare</title>
 
     <link rel="icon"
           type="image/png"
@@ -18,7 +18,7 @@
           th:href="@{/css/style.css}">
 </head>
 
-<body class="auth-page" style="padding: 0 !important;">
+<body class="auth-page auth-register-page" style="padding: 0 !important;">
 
 <div class="auth-wrapper">
 
@@ -101,7 +101,8 @@
 
                             <div class="col-12">
                                 <input class="form-control"
-                                       placeholder="you@example.com"
+                                       autocomplete="email"
+                                       placeholder="nume@exemplu.ro"
                                        th:field="*{email}"
                                        type="email">
 
@@ -115,9 +116,10 @@
                                 <input class="form-control"
                                        placeholder="Parolă"
                                        th:field="*{password}"
+                                       autocomplete="new-password"
                                        type="password">
 
-                                <span class="text-muted" style="font-size: 0.8rem !important;">
+                                <span class="auth-password-hint text-muted">
                                     *Minim 8 caractere!
                                 </span>
 
@@ -131,6 +133,7 @@
                                 <input class="form-control"
                                        placeholder="Confirmare parolă"
                                        th:field="*{confirmPassword}"
+                                       autocomplete="new-password"
                                        type="password">
 
                                 <div class="text-danger small mt-1"
