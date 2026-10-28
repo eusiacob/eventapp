@@ -20,7 +20,16 @@ public class SeoWebConfig implements WebMvcConfigurer {
             @Override
             public void postHandle(HttpServletRequest request, HttpServletResponse response,
                                    Object handler, ModelAndView view) {
-                if (view == null || view.getViewName() == null || view.getViewName().startsWith("redirect:")) return;
+                if (view == null || view.getViewName() == null) return;
+                if (view.getViewName().startsWith("redirect:")) {
+                    String path = request.getRequestURI();
+                    if ("/login".equals(path) || "/register".equals(path)
+                            || "/forgot".equals(path) || "/reset-password".equals(path)
+                            || request.getParameter("auth") != null) {
+                        response.setHeader("X-Robots-Tag", "noindex, nofollow");
+                    }
+                    return;
+                }
                 SeoMetadata metadata = response.getStatus() < 400
                         ? seo.forView(view.getViewName(), view.getModel()) : null;
                 if (metadata != null) {

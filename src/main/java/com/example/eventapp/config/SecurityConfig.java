@@ -97,7 +97,9 @@ public class SecurityConfig {
                         .successHandler(customAuthenticationSuccessHandler)
                         .permitAll()
                 )
-                .logout(LogoutConfigurer::permitAll);
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/?auth=login&logout")
+                        .permitAll());
 
         return http.build();
     }
