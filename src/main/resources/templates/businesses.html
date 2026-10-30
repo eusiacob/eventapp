@@ -106,7 +106,7 @@
     </section>
 
     <!--Recently added section-->
-    <section class="recent-section mt-4" th:if="${not #lists.isEmpty(recentBusinesses)}">
+    <section class="recent-section mt-2" th:if="${not #lists.isEmpty(recentBusinesses)}">
 
         <div th:replace="~{fragments/carousel-header :: header(
         'Adăugate recent',

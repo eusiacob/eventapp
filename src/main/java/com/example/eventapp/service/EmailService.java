@@ -247,7 +247,7 @@ public class EmailService {
             default -> "Dacă dorești în continuare să îți promovezi activitatea, poți adăuga primul serviciu " +
                     "atunci când ești pregătit. Acesta este ultimul mesaj din seria noastră de reamintiri.";
         };
-        sendEmailOrThrow(recipient, subject + " - M-Event", greeting(firstName) + intro +
+        sendEmailOrThrow(recipient, subject, greeting(firstName) + intro +
                 "\n\nAdaugă primul serviciu:\n" + appBaseUrl + "/business/create\n\n" +
                 "Primești această reamintire deoarece ai ales promovarea serviciilor. " +
                 "Dacă folosești platforma doar pentru a căuta servicii, poți schimba preferința din profil:\n" +
