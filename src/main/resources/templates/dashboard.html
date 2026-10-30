@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -19,167 +19,7 @@
     <link rel="stylesheet"
           th:href="@{/css/style.css}">
 
-    <style>
 
-        .business-header {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-
-        .business-title {
-            margin: 0;
-
-            color: #181818;
-
-            font-weight: 700;
-
-            letter-spacing: -.025em;
-        }
-
-        a.disabled {
-            pointer-events: none;
-            opacity: 0.5;
-        }
-
-        .empty-businesses {
-
-            padding: 45px 20px;
-
-            text-align: center;
-
-            background: #fff;
-
-            border: 1px solid #e3e3e3;
-
-            border-radius: 14px;
-
-            color: #888;
-
-        }
-
-        .subscription-notice {
-
-            display: flex;
-
-            align-items: flex-start;
-
-            gap: 12px;
-
-            margin-bottom: 20px;
-
-            padding: 14px 16px;
-
-            background: #fafafa;
-
-            border: 1px solid #e3e3e3;
-
-            border-radius: 11px;
-
-            color: #666;
-        }
-
-
-        .subscription-notice-icon {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            width: 30px;
-
-            height: 30px;
-
-            flex-shrink: 0;
-
-            border-radius: 8px;
-
-            background: #f0f0f0;
-
-            color: #888;
-
-        }
-
-
-        .subscription-notice-title {
-
-            margin-bottom: 3px;
-
-            color: #333;
-
-
-            font-weight: 700;
-        }
-
-
-        .subscription-notice-text {
-
-            line-height: 1.5;
-
-            color: #777;
-        }
-
-
-        .subscription-notice-link {
-
-            display: inline-block;
-
-            margin-top: 6px;
-
-            color: #555;
-
-            font-weight: 700;
-
-            text-decoration: none;
-        }
-
-
-        .subscription-notice-link:hover {
-
-            color: #9a7d27;
-        }
-
-        .visibility-control {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            padding: 10px 12px;
-            margin-top: 8px;
-            border: 1px solid rgba(19, 128, 134, .22);
-            border-radius: 10px;
-            background: rgba(19, 128, 134, .05);
-        }
-
-        .visibility-control .form-check {
-            min-height: auto;
-            margin: 0;
-        }
-
-        .visibility-control .form-check-input {
-            width: 2.5rem;
-            height: 1.25rem;
-            margin-top: 0;
-            cursor: pointer;
-        }
-
-        .visibility-control .form-check-input:checked {
-            background-color: #138086;
-            border-color: #138086;
-        }
-
-        .visibility-control .form-check-input:disabled {
-            cursor: not-allowed;
-        }
-
-        .visibility-label {
-            font-size: .875rem;
-            font-weight: 700;
-            color: #534666;
-        }
-    </style>
 </head>
 
 <body class="provider-dashboard-page">
@@ -188,7 +28,7 @@
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <!-- PAGE -->
-<div class="container mt-2" style="min-height: 100vh">
+<main class="container provider-dashboard-content">
 
     <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
 
@@ -251,7 +91,7 @@
         <span>Serviciu actualizat și trimis către aprobare!</span>
     </div>
 
-    <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+    <div class="dashboard-note mb-2">
         <div>
             <strong class="text-muted">Notă:</strong>
             <span class="text-muted">Serviciile care nu sunt aprobate nu sunt vizibile public.</span>
@@ -270,12 +110,12 @@
     <!-- CARDS -->
     <div class="row dashboard-row">
 
-        <div class="col-md-4 mb-4 clickable-business-card cursor-pointer"
+        <div class="col-12 col-md-6 col-xl-4 dashboard-business-column clickable-business-card cursor-pointer"
              th:each="p : ${profiles}">
 
-            <div class="card shadow-sm h-100">
+            <div class="card shadow-sm h-100 dashboard-business-card">
 
-                <div class="card-body" style="position: relative; overflow: hidden;">
+                <div class="card-body dashboard-business-card-body">
 
                     <div class="status-ribbon approved"
                          th:if="${p.status.name() == 'APPROVED'}">
@@ -299,11 +139,10 @@
                     </div>
 
                     <img alt="business profile picture"
-                         class="img-fluid rounded mb-2"
+                         class="img-fluid rounded dashboard-business-image"
                          decoding="async"
                          height="480"
                          loading="lazy"
-                         style="height:200px; object-fit:cover; width:100%"
                          th:src="@{${p.coverImagePath}}"
                          width="640">
 
@@ -317,7 +156,7 @@
                     </p>
 
                     <p class="card-text mb-1">
-                        <strong>Județ:</strong>
+                        <strong>Aria de acoperire:</strong>
                         <span th:text="${p.city}"></span>
                     </p>
 
@@ -342,7 +181,7 @@
                         </div>
                     </div>
 
-                    <div class="d-grid gap-2 mt-3">
+                    <div class="d-grid gap-2 mt-2 dashboard-card-actions">
 
                         <a class="btn btn-outline-dark"
                            th:attr="data-id=${p.uuid}, aria-disabled=${p.status.name() != 'APPROVED'},tabindex=${p.status.name() != 'APPROVED'} ? '-1' : '0'"
@@ -372,7 +211,7 @@
 
     </div>
 
-</div>
+</main>
 
 <th:block th:each="p : ${profiles}">
     <div aria-hidden="true"

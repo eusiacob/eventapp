@@ -7,7 +7,6 @@ import com.example.eventapp.service.EmailVerificationService;
 import com.example.eventapp.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,20 +29,19 @@ public class AuthController {
     }
 
     @GetMapping("/register")
-    public String showRegisterPage() {
-        return "redirect:/?auth=register";
+    public String showRegisterPage(@ModelAttribute("user") RegisterUserDTO user) {
+        return "register";
     }
 
     @GetMapping("/login")
     public String login() {
-        return "redirect:/?auth=login";
+        return "login";
     }
 
     @PostMapping("/register")
     public String register(
             @Valid @ModelAttribute("user") RegisterUserDTO userDTO,
-            BindingResult result,
-            Model model
+            BindingResult result
     ) {
 
         if (userService.emailExists(userDTO.getEmail())) {
@@ -66,8 +64,7 @@ public class AuthController {
         }
 
         if (result.hasErrors()) {
-            model.addAttribute("authModalMode", "register");
-            return "home";
+            return "register";
         }
 
         User user = userService.registerUser(userDTO);
@@ -77,7 +74,7 @@ public class AuthController {
         );
         emailVerificationService.requestUserEmailVerification(user);
 
-        return "redirect:/?auth=login&registered";
+        return "redirect:/login?registered";
     }
 
 }

@@ -25,7 +25,7 @@ public class GuideController {
     public String guides(Model model) {
         model.addAttribute("articles", catalog.all());
         model.addAttribute("breadcrumbs", List.of(
-                new BreadcrumbDTO("Acasă", "/"),
+                new BreadcrumbDTO("Servicii", "/businesses"),
                 new BreadcrumbDTO("Ghid", null)));
         return "guides";
     }
@@ -36,7 +36,7 @@ public class GuideController {
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
         model.addAttribute("article", article);
         model.addAttribute("breadcrumbs", List.of(
-                new BreadcrumbDTO("Acasă", "/"),
+                new BreadcrumbDTO("Servicii", "/businesses"),
                 new BreadcrumbDTO("Ghid", "/ghid"),
                 new BreadcrumbDTO(article.title(), null)));
         return "guide-article";

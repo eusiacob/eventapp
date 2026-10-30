@@ -8,6 +8,8 @@ import com.example.eventapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 public class AccountPurposeService {
     private final UserRepository users;
@@ -26,9 +28,7 @@ public class AccountPurposeService {
         }
         user.changeAccountPurpose(purpose);
         if (purpose == AccountPurpose.SEARCH_SERVICES) {
-            var profiles = businesses.findByUser(user);
-            profiles.forEach(profile -> profile.setActive(false));
-            businesses.saveAll(profiles);
+            businesses.deactivateAllForUser(user.getId(), LocalDateTime.now());
         }
     }
 }

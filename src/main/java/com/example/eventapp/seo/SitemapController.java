@@ -45,7 +45,7 @@ public class SitemapController {
 
     @GetMapping(value = "/sitemaps/pages.xml", produces = XML)
     public ResponseEntity<String> pages() {
-        Set<String> uniquePaths = new LinkedHashSet<>(List.of("/", "/businesses", "/ghid", "/prezentare", "/prezentare-generala", "/contact", "/terms", "/privacy"));
+        Set<String> uniquePaths = new LinkedHashSet<>(List.of("/businesses", "/ghid", "/prezentare", "/prezentare-generala", "/contact", "/terms", "/privacy"));
         for (GuideArticle article : guides.all()) {
             uniquePaths.add("/ghid/" + article.slug());
         }

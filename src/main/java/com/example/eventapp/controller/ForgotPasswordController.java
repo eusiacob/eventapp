@@ -6,6 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.util.UriUtils;
+
+import java.nio.charset.StandardCharsets;
 
 @Controller
 public class ForgotPasswordController {
@@ -20,7 +23,7 @@ public class ForgotPasswordController {
 
     @GetMapping("/forgot")
     public String showForgotPasswordPage() {
-        return "redirect:/?auth=forgot";
+        return "forgot";
     }
 
     @PostMapping("/forgot")
@@ -30,7 +33,7 @@ public class ForgotPasswordController {
 
         passwordResetService.requestPasswordReset(email);
 
-        return "redirect:/?auth=forgot&successForgot";
+        return "redirect:/forgot?successForgot";
     }
 
     @GetMapping("/reset-password")
@@ -38,11 +41,8 @@ public class ForgotPasswordController {
             @RequestParam String token,
             Model model
     ) {
-
-        model.addAttribute("resetToken", token);
-        model.addAttribute("authModalMode", "reset");
-        model.addAttribute("user", new com.example.eventapp.dto.RegisterUserDTO());
-        return "home";
+        model.addAttribute("token", token);
+        return "reset-password";
     }
 
     @PostMapping("/reset-password")
@@ -53,14 +53,14 @@ public class ForgotPasswordController {
     ) {
 
         if (password.length() < 8) {
-            return "redirect:/?auth=reset&token="
-                    + token
+            return "redirect:/reset-password?token="
+                    + UriUtils.encodeQueryParam(token, StandardCharsets.UTF_8)
                     + "&error=passwordTooShort";
         }
 
         if (!password.equals(confirmPassword)) {
-            return "redirect:/?auth=reset&token="
-                    + token
+            return "redirect:/reset-password?token="
+                    + UriUtils.encodeQueryParam(token, StandardCharsets.UTF_8)
                     + "&error=passwordMismatch";
         }
 
@@ -70,9 +70,11 @@ public class ForgotPasswordController {
         );
 
         if (!success) {
-            return "redirect:/?auth=reset&error=invalidToken";
+            return "redirect:/reset-password?token="
+                    + UriUtils.encodeQueryParam(token, StandardCharsets.UTF_8)
+                    + "&error=invalidToken";
         }
 
-        return "redirect:/?auth=login&resetSuccess";
+        return "redirect:/login?resetSuccess";
     }
 }

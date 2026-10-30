@@ -61,8 +61,7 @@ public class EmailService {
     public String buildPasswordResetLink(String rawToken) {
         return UriComponentsBuilder
                 .fromUriString(appBaseUrl)
-                .path("/")
-                .queryParam("auth", "reset")
+                .path("/reset-password")
                 .queryParam("token", rawToken)
                 .build()
                 .toUriString();

@@ -7,11 +7,13 @@ import com.example.eventapp.model.BusinessProfile;
 import com.example.eventapp.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,6 +76,25 @@ public interface BusinessProfileRepository extends JpaRepository<BusinessProfile
 
     Optional<BusinessProfile> findByUuid(String uuid);
     Optional<BusinessProfile> findBySlug(String slug);
+
+    @Modifying
+    @Query("UPDATE BusinessProfile b SET b.active = :active, b.updatedAt = :updatedAt WHERE b.uuid = :uuid")
+    int updateVisibilityByUuid(@Param("uuid") String uuid,
+                               @Param("active") boolean active,
+                               @Param("updatedAt") LocalDateTime updatedAt);
+
+    @Modifying
+    @Query("UPDATE BusinessProfile b SET b.active = false, b.updatedAt = :updatedAt " +
+            "WHERE b.user.id = :userId AND b.uuid <> :selectedUuid AND b.active = true")
+    int deactivateOtherActiveForUser(@Param("userId") Long userId,
+                                     @Param("selectedUuid") String selectedUuid,
+                                     @Param("updatedAt") LocalDateTime updatedAt);
+
+    @Modifying
+    @Query("UPDATE BusinessProfile b SET b.active = false, b.updatedAt = :updatedAt " +
+            "WHERE b.user.id = :userId AND b.active = true")
+    int deactivateAllForUser(@Param("userId") Long userId,
+                             @Param("updatedAt") LocalDateTime updatedAt);
 
     @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT b FROM BusinessProfile b WHERE b.uuid = :uuid")

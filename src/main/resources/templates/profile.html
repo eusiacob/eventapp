@@ -110,14 +110,31 @@
             </div>
 
             <!--REVIEWS, FAVS AND SERVICES CARD-->
-            <div class="card border-0 shadow-sm mb-4" th:if="${user.role.name() != 'ADMIN'}">
-                <div class="card-body p-4">
-                    <form method="post" th:action="@{/profile/account-purpose}">
-                        <div th:replace="~{fragments/account-purpose :: choices(${user.accountPurpose})}"></div>
-                        <div class="text-end mt-3">
-                            <button class="btn btn-primary btn-sm" type="submit">Salvează preferința</button>
+            <div class="card border-0 shadow-sm mb-3 profile-purpose-card" th:if="${user.role.name() != 'ADMIN'}">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between gap-2">
+                        <div>
+                            <h2 class="profile-purpose-title">Preferința contului</h2>
+                            <p class="profile-purpose-summary mb-0">Alege dacă folosești M-Event pentru a căuta sau promova servicii.</p>
                         </div>
-                    </form>
+                        <button aria-controls="accountPurposeCollapse"
+                                aria-expanded="false"
+                                class="btn btn-outline-primary btn-sm profile-purpose-toggle collapsed"
+                                data-bs-target="#accountPurposeCollapse"
+                                data-bs-toggle="collapse"
+                                type="button">
+                            <span class="profile-purpose-toggle-label">Modifică</span>
+                            <i class="bi bi-chevron-down" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="collapse" id="accountPurposeCollapse">
+                        <form class="profile-purpose-form" method="post" th:action="@{/profile/account-purpose}">
+                            <div th:replace="~{fragments/account-purpose :: choices(${user.accountPurpose})}"></div>
+                            <div class="text-end mt-2">
+                                <button class="btn btn-primary btn-sm" type="submit">Salvează preferința</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
             <div class="row g-4 mb-4">

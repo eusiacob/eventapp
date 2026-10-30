@@ -23,7 +23,7 @@ public class SeoWebConfig implements WebMvcConfigurer {
                 if (view == null || view.getViewName() == null) return;
                 if (view.getViewName().startsWith("redirect:")) {
                     String path = request.getRequestURI();
-                    if ("/login".equals(path) || "/register".equals(path)
+                    if ("/".equals(path) || "/login".equals(path) || "/register".equals(path)
                             || "/forgot".equals(path) || "/reset-password".equals(path)
                             || request.getParameter("auth") != null) {
                         response.setHeader("X-Robots-Tag", "noindex, nofollow");
@@ -33,6 +33,11 @@ public class SeoWebConfig implements WebMvcConfigurer {
                 SeoMetadata metadata = response.getStatus() < 400
                         ? seo.forView(view.getViewName(), view.getModel()) : null;
                 if (metadata != null) {
+                    if (request.getParameter("auth") != null) {
+                        metadata = new SeoMetadata(
+                                metadata.title(), metadata.description(), metadata.canonical(),
+                                metadata.image(), "noindex, nofollow", metadata.structuredData());
+                    }
                     view.addObject("seo", metadata);
                     response.setHeader("X-Robots-Tag", metadata.robots());
                 } else {

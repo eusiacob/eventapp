@@ -42,14 +42,14 @@ public class CustomAuthenticationFailureHandler
          */
         if (exception instanceof DisabledException) {
 
-            response.sendRedirect("/?auth=login&disabled");
+            response.sendRedirect("/login?disabled");
 
             return;
         }
 
         if (exception instanceof LockedException) {
 
-            response.sendRedirect("/?auth=login&locked");
+            response.sendRedirect("/login?locked");
 
             return;
         }
@@ -61,7 +61,7 @@ public class CustomAuthenticationFailureHandler
 
         if (email == null || email.isBlank()) {
 
-            response.sendRedirect("/?auth=login&error");
+            response.sendRedirect("/login?error");
 
             return;
         }
@@ -80,7 +80,7 @@ public class CustomAuthenticationFailureHandler
          */
         if (user == null) {
 
-            response.sendRedirect("/?auth=login&error");
+            response.sendRedirect("/login?error");
 
             return;
         }
@@ -95,7 +95,7 @@ public class CustomAuthenticationFailureHandler
 
             if (user.getLoginBlockedUntil().isAfter(now)) {
 
-                response.sendRedirect("/?auth=login&locked");
+                response.sendRedirect("/login?locked");
 
                 return;
             }
@@ -128,7 +128,7 @@ public class CustomAuthenticationFailureHandler
 
             userRepository.save(user);
 
-            response.sendRedirect("/?auth=login&locked");
+            response.sendRedirect("/login?locked");
 
             return;
         }
@@ -138,6 +138,6 @@ public class CustomAuthenticationFailureHandler
          */
         userRepository.save(user);
 
-        response.sendRedirect("/?auth=login&error");
+        response.sendRedirect("/login?error");
     }
 }

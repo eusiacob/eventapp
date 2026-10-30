@@ -36,40 +36,7 @@
 
     <!--CATEGORIES-->
     <div>
-        <section aria-labelledby="exploreGuideTitle" class="explore-guide">
-            <h2 class="explore-guide-title" id="exploreGuideTitle">
-                Furnizorul potrivit, în trei pași
-            </h2>
-            <ol class="explore-guide-steps">
-                <li>
-                    <span aria-hidden="true" class="explore-guide-icon"><i class="bi bi-search"></i></span>
-                    <div>
-                        <h3>1. Explorează</h3>
-                        <p>Alege o categorie de mai jos și filtrează serviciile în funcție de nevoile tale.</p>
-                    </div>
-                </li>
-                <li>
-                    <span aria-hidden="true" class="explore-guide-icon explore-guide-icon-heart"><i
-                            class="bi bi-heart"></i></span>
-                    <div>
-                        <h3>2. Alege ce îți place</h3>
-                        <p>Descoperă fotografiile și recenziile. Conectează-te pentru a salva serviciile în
-                            favorite.</p>
-                    </div>
-                </li>
-                <li>
-                    <span aria-hidden="true" class="explore-guide-icon explore-guide-icon-contact"><i
-                            class="bi bi-chat-dots"></i></span>
-                    <div>
-                        <h3>3. Contactează furnizorul</h3>
-                        <p>Folosește datele de contact din pagina serviciului și discută direct disponibilitatea și
-                            oferta.</p>
-                    </div>
-                </li>
-            </ol>
-        </section>
-
-        <div th:replace="~{fragments/carousel-header :: header('Categorii','categoryCarousel')}"></div>
+        <div th:replace="~{fragments/carousel-header :: header('','categoryCarousel')}"></div>
     </div>
 
     <p class="category-scroll-hint">
@@ -94,7 +61,7 @@
     </div>
 
     <!--    Premium section-->
-    <section class="premium-section mt-2" th:if="${not #lists.isEmpty(premiumBusinesses)}">
+    <section class="premium-section mt-4" th:if="${not #lists.isEmpty(premiumBusinesses)}">
 
         <div th:replace="~{fragments/carousel-header :: header(
         'Servicii premium',
@@ -138,10 +105,10 @@
     </section>
 
     <!--Recently added section-->
-    <section class="recent-section mt-2" th:if="${not #lists.isEmpty(recentBusinesses)}">
+    <section class="recent-section mt-4" th:if="${not #lists.isEmpty(recentBusinesses)}">
 
         <div th:replace="~{fragments/carousel-header :: header(
-        'Servicii adăugate recent',
+        'Adăugate recent',
         'recentCarousel')}">
         </div>
 
@@ -174,7 +141,7 @@
     <section class="favorite-section mt-4" th:if="${not #lists.isEmpty(mostFavoriteBusinesses)}">
 
         <div th:replace="~{fragments/carousel-header :: header(
-        'Top servicii favorite',
+        'Top favorite',
         'favoriteCarousel')}">
         </div>
 

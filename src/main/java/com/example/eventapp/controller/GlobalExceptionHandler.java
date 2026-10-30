@@ -2,6 +2,8 @@ package com.example.eventapp.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -16,6 +18,8 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public Object handleUploadSize(MaxUploadSizeExceededException exception, Model model,
@@ -42,6 +46,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public Object handleAccessDenied(AccessDeniedException exception, Model model, HttpServletRequest request, HttpServletResponse response) {
+        if (isVisibilityRequest(request)) {
+            return visibilityError(HttpStatus.FORBIDDEN, exception.getMessage());
+        }
         return renderError(model, request, response, HttpStatus.FORBIDDEN);
     }
 
@@ -64,11 +71,20 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public Object handleBadRequest(IllegalArgumentException exception, Model model, HttpServletRequest request, HttpServletResponse response) {
+        if (isVisibilityRequest(request)) {
+            return visibilityError(HttpStatus.BAD_REQUEST, exception.getMessage());
+        }
         return renderError(model, request, response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RuntimeException.class)
     public Object handleRuntime(RuntimeException exception, Model model, HttpServletRequest request, HttpServletResponse response) {
+        if (isVisibilityRequest(request)) {
+            logger.error("Unexpected error while updating business visibility", exception);
+            return visibilityError(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Nu am putut actualiza vizibilitatea serviciului. Încearcă din nou; dacă problema persistă, contactează suportul.");
+        }
+
         if (looksLikeNotFound(exception)) {
             return renderError(model, request, response, HttpStatus.NOT_FOUND);
         }
@@ -78,7 +94,28 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public Object handleException(Exception exception, Model model, HttpServletRequest request, HttpServletResponse response) {
+        if (isVisibilityRequest(request)) {
+            logger.error("Unexpected error while updating business visibility", exception);
+            return visibilityError(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Nu am putut actualiza vizibilitatea serviciului. Încearcă din nou; dacă problema persistă, contactează suportul.");
+        }
         return renderError(model, request, response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private ResponseEntity<Map<String, Object>> visibilityError(HttpStatus status, String message) {
+        String safeMessage = message == null || message.isBlank()
+                ? "Nu am putut actualiza vizibilitatea serviciului. Încearcă din nou."
+                : message;
+        return ResponseEntity.status(status).body(Map.of(
+                "success", false,
+                "message", safeMessage
+        ));
+    }
+
+    private boolean isVisibilityRequest(HttpServletRequest request) {
+        return "POST".equalsIgnoreCase(request.getMethod())
+                && request.getServletPath() != null
+                && request.getServletPath().matches("^/business/[^/]+/visibility$");
     }
 
     private Object renderError(Model model, HttpServletRequest request, HttpServletResponse response, HttpStatus status) {

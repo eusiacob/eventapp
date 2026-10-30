@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.access.AccessDeniedException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
@@ -206,8 +207,7 @@ public class BusinessProfileService {
         }
 
         if (!active) {
-            selected.setActive(false);
-            businessProfileRepository.save(selected);
+            businessProfileRepository.updateVisibilityByUuid(uuid, false, LocalDateTime.now());
             return new VisibilityUpdate(false, List.of());
         }
 
@@ -229,15 +229,14 @@ public class BusinessProfileService {
             List<BusinessProfile> profiles = businessProfileRepository.findByUser(user);
             for (BusinessProfile profile : profiles) {
                 if (!profile.getId().equals(selected.getId()) && profile.isActive()) {
-                    profile.setActive(false);
                     deactivatedUuids.add(profile.getUuid());
                 }
             }
-            businessProfileRepository.saveAll(profiles);
+            businessProfileRepository.deactivateOtherActiveForUser(
+                    user.getId(), uuid, LocalDateTime.now());
         }
 
-        selected.setActive(true);
-        businessProfileRepository.save(selected);
+        businessProfileRepository.updateVisibilityByUuid(uuid, true, LocalDateTime.now());
         return new VisibilityUpdate(true, List.copyOf(deactivatedUuids));
     }
 

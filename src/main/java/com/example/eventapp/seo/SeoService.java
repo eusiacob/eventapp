@@ -41,26 +41,17 @@ public class SeoService {
         String robots = "index, follow, max-image-preview:large";
         List<Object> graph = new ArrayList<>();
         switch (view) {
-            case "home" -> {
-                path = "/";
-                title = "M-Event – Furnizori și locații pentru evenimente în România";
-                description = "Descoperă fotografi, DJ, formații, locații, catering și decor pentru nunți, botezuri și alte evenimente. Explorează serviciile pe M-Event.";
-                graph.add(Map.of("@type", "WebSite", "@id", absolute("/#website"),
-                        "url", absolute("/"), "name", "M-Event", "inLanguage", "ro-RO"));
-                graph.add(Map.of("@type", "Organization", "@id", absolute("/#organization"),
-                        "name", "M-Event", "url", absolute("/"), "logo", image));
-            }
             case "businesses" -> {
                 path = "/businesses";
                 title = "Servicii pentru nunți, botezuri și alte evenimente speciale | M-Event";
                 description = "Explorează categoriile de servicii pentru evenimente: fotografie, muzică, locații, catering, decor și transport. Găsește furnizorii potriviți pe M-Event.";
-                graph.add(breadcrumbs(List.of("Acasă", "Servicii"), List.of("/", "/businesses")));
+                graph.add(breadcrumbs(List.of("Servicii"), List.of("/businesses")));
             }
             case "guides" -> {
                 path = "/ghid";
                 title = "Ghid pentru organizarea evenimentelor | M-Event";
                 description = "Idei și recomandări practice pentru alegerea furnizorilor și organizarea nunților, botezurilor și altor evenimente.";
-                graph.add(breadcrumbs(List.of("Acasă", "Ghid"), List.of("/", "/ghid")));
+                graph.add(breadcrumbs(List.of("Servicii", "Ghid"), List.of("/businesses", "/ghid")));
             }
             case "guide-article" -> {
                 GuideArticle article = (GuideArticle) model.get("article");
@@ -74,12 +65,12 @@ public class SeoService {
                 articleData.put("description", article.description());
                 articleData.put("url", absolute(path));
                 articleData.put("inLanguage", "ro-RO");
-                articleData.put("author", Map.of("@type", "Organization", "name", "M-Event", "url", absolute("/")));
-                articleData.put("publisher", Map.of("@type", "Organization", "name", "M-Event", "url", absolute("/"), "logo", image));
+                articleData.put("author", Map.of("@type", "Organization", "name", "M-Event", "url", absolute("/businesses")));
+                articleData.put("publisher", Map.of("@type", "Organization", "name", "M-Event", "url", absolute("/businesses"), "logo", image));
                 articleData.put("image", image);
                 graph.add(articleData);
-                graph.add(breadcrumbs(List.of("Acasă", "Ghid", article.title()),
-                        List.of("/", "/ghid", path)));
+                graph.add(breadcrumbs(List.of("Servicii", "Ghid", article.title()),
+                        List.of("/businesses", "/ghid", path)));
             }
             case "business-category" -> {
                 BusinessCategory category = (BusinessCategory) model.get("selectedCategory");
@@ -99,8 +90,8 @@ public class SeoService {
                     } else if (page.isEmpty()) {
                         robots = "noindex, follow";
                     }
-                    graph.add(breadcrumbs(List.of("Acasă", "Servicii", category.getDisplayName(), county),
-                            List.of("/", "/businesses", "/businesses/category/" + category.name(), landingPath)));
+                    graph.add(breadcrumbs(List.of("Servicii", category.getDisplayName(), county),
+                            List.of("/businesses", "/businesses/category/" + category.name(), landingPath)));
                 } else {
                     path = "/businesses/category/" + category.name();
                     title = category.getDisplayName() + " pentru evenimente în România"
@@ -118,8 +109,8 @@ public class SeoService {
                     if (page.getNumber() > 0) canonical.queryParam("page", page.getNumber());
                     path = canonical.build().encode().toUriString();
                     if (filtered || page.isEmpty()) robots = "noindex, follow";
-                    graph.add(breadcrumbs(List.of("Acasă", "Servicii", category.getDisplayName()),
-                            List.of("/", "/businesses", "/businesses/category/" + category.name())));
+                    graph.add(breadcrumbs(List.of("Servicii", category.getDisplayName()),
+                            List.of("/businesses", "/businesses/category/" + category.name())));
                 }
             }
             case "business-details" -> {
@@ -172,8 +163,8 @@ public class SeoService {
                 addSameAs(service, profile);
                 addAggregateRating(service, model);
                 graph.add(service);
-                graph.add(breadcrumbs(List.of("Acasă", "Servicii", profile.getCategory().getDisplayName(), profile.getName()),
-                        List.of("/", "/businesses", "/businesses/category/" + profile.getCategory().name(),
+                graph.add(breadcrumbs(List.of("Servicii", profile.getCategory().getDisplayName(), profile.getName()),
+                        List.of("/businesses", "/businesses/category/" + profile.getCategory().name(),
                                 "/business/" + profile.getSlug())));
             }
             case "prezentare" -> {
@@ -186,6 +177,8 @@ public class SeoService {
                 path = "/prezentare-generala";
                 title = "Prezintă-ți serviciile pentru evenimente | M-Event";
                 description = "Ești fotograf, DJ, decorator sau furnizor de servicii pentru evenimente? Descoperă cum îți poți prezenta oferta și portofoliul pe M-Event.";
+                graph.add(breadcrumbs(List.of("Servicii", "Prezentare generală"),
+                        List.of("/businesses", "/prezentare-generala")));
             }
             case "contact" -> {
                 path = "/contact";

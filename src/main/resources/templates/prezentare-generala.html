@@ -15,6 +15,10 @@
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <main class="presentation-page presentation-general">
+    <div class="container pt-2">
+        <div th:replace="~{fragments/breadcrumb :: breadcrumbs(${breadcrumbs})}"></div>
+    </div>
+
     <section aria-labelledby="generalPresentationTitle" class="presentation-hero container">
         <div class="presentation-intro">
             <span class="presentation-eyebrow">Pentru furnizorii de servicii pentru evenimente</span>
