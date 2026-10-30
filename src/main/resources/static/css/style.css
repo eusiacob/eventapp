@@ -2219,11 +2219,19 @@ body {
     z-index: 2;
 }
 
-.recent-section .favorite-badge {
+.recent-section .favorite-badge,
+.favorite-section .favorite-badge,
+.top-rated-section .favorite-badge {
     background: rgba(255, 255, 255, 0.84);
+    border: 0;
 }
 
-.recent-category-badge {
+.premium-section .premium-badge {
+    background: rgba(238, 180, 98, 0.86);
+    border: 0;
+}
+
+.carousel-category-badge {
     position: absolute;
     top: 38px;
     right: 10px;
@@ -2240,6 +2248,13 @@ body {
     line-height: normal;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.premium-section .carousel-category-badge,
+.recent-section .carousel-category-badge,
+.favorite-section .carousel-category-badge,
+.top-rated-section .carousel-category-badge {
+    background: rgba(255, 255, 255, 0.84);
 }
 
 /* imagine sus */
