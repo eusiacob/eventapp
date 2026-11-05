@@ -2,12 +2,12 @@ package com.example.eventapp.service;
 
 import com.example.eventapp.config.ApplicationMailProperties;
 import com.example.eventapp.model.LegalDocumentType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -15,12 +15,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.nio.charset.StandardCharsets;
+import org.springframework.web.util.HtmlUtils;
 
+@Slf4j
 @Service
 public class EmailService {
-
-    private static final Logger LOGGER =
-            LoggerFactory.getLogger(EmailService.class);
 
     private final JavaMailSender mailSender;
     private final String appBaseUrl;
@@ -279,14 +279,14 @@ public class EmailService {
             String content
     ) {
         if (recipient == null || recipient.isBlank()) {
-            LOGGER.warn("Emailul de notificare nu a fost trimis deoarece lipsește destinatarul.");
+            log.warn("Emailul de notificare nu a fost trimis deoarece lipsește destinatarul.");
             return;
         }
 
         try {
             sendEmailOrThrow(recipient, subject, content);
         } catch (MailException exception) {
-            LOGGER.warn("Emailul de notificare nu a putut fi trimis.", exception);
+            log.warn("Emailul de notificare nu a putut fi trimis.", exception);
         }
     }
 
@@ -294,21 +294,31 @@ public class EmailService {
         if (recipient == null || recipient.isBlank()) {
             throw new IllegalArgumentException("Lipsește destinatarul emailului.");
         }
-        SimpleMailMessage message =
-                new SimpleMailMessage();
-
-        message.setFrom(mailProperties.getFormattedFromAddress());
-        message.setReplyTo(mailProperties.getReplyToAddress());
-        message.setTo(recipient);
-        message.setSubject(subject);
-        message.setText(content + applicationFooter());
-        message.setSentDate(new java.util.Date());
-
-        mailSender.send(message);
+        String plainContent = content + applicationFooter();
         try {
-            sentMailArchiveService.archive(message);
+            var mimeMessage = mailSender.createMimeMessage();
+            var helper = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
+            helper.setFrom(mailProperties.getFormattedFromAddress());
+            helper.setReplyTo(mailProperties.getReplyToAddress());
+            helper.setTo(recipient);
+            helper.setSubject(subject);
+            helper.setSentDate(new java.util.Date());
+            helper.setText(plainContent, htmlEmail(content));
+            mailSender.send(mimeMessage);
+        } catch (jakarta.mail.MessagingException exception) {
+            throw new org.springframework.mail.MailSendException("Emailul HTML nu a putut fi pregătit.", exception);
+        }
+        SimpleMailMessage archivedMessage = new SimpleMailMessage();
+        archivedMessage.setFrom(mailProperties.getFormattedFromAddress());
+        archivedMessage.setReplyTo(mailProperties.getReplyToAddress());
+        archivedMessage.setTo(recipient);
+        archivedMessage.setSubject(subject);
+        archivedMessage.setText(plainContent);
+        archivedMessage.setSentDate(new java.util.Date());
+        try {
+            sentMailArchiveService.archive(archivedMessage);
         } catch (RuntimeException exception) {
-            LOGGER.warn("SMTP a reușit, dar arhivarea copiei email a eșuat ({}).",
+            log.warn("SMTP a reușit, dar arhivarea copiei email a eșuat ({}).",
                     exception.getClass().getSimpleName());
         }
     }
@@ -333,6 +343,35 @@ public class EmailService {
                 "Facebook: https://www.facebook.com/m.eventtt\n" +
                 "Instagram: https://www.instagram.com/m.eventtt\n\n" +
                 "© 2026 M-Event. Toate drepturile rezervate.";
+    }
+
+    private String htmlEmail(String content) {
+        String body = HtmlUtils.htmlEscape(content).replace("\r\n", "\n").replace("\n", "<br>\n");
+        String logo = appBaseUrl + "/images/logo_transparent.png";
+        String facebookIcon = appBaseUrl + "/images/email-social-facebook.png";
+        String instagramIcon = appBaseUrl + "/images/email-social-instagram.png";
+        String tiktokIcon = appBaseUrl + "/images/email-social-tiktok.png";
+        return "<!doctype html><html lang=\"ro\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"></head>" +
+                "<body style=\"margin:0;padding:0;background:#faf8f5;color:#352a2c;font-family:Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;\">" +
+                "<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background:#faf8f5;border-collapse:collapse;width:100%;\"><tr><td align=\"center\" style=\"padding:22px 10px;\">" +
+                "<table role=\"presentation\" width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%;max-width:600px;background:#fff;border:1px solid #e8e1e4;border-radius:14px;border-collapse:separate;\"><tr><td style=\"padding:28px 24px;font-size:16px;line-height:1.65;overflow-wrap:anywhere;\">" +
+                body +
+                "</td></tr><tr><td align=\"center\" style=\"padding:18px 20px 22px;background:#f7f3f5;border-top:1px solid #e8e1e4;border-radius:0 0 14px 14px;\">" +
+                "<a href=\"" + appBaseUrl + "\" style=\"text-decoration:none;\"><img src=\"" + logo + "\" width=\"76\" alt=\"M-Event\" style=\"display:block;width:76px;height:auto;border:0;margin:0 auto 12px;\"></a>" +
+                "<table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" style=\"margin:0 auto 12px;border-collapse:collapse;\"><tr>" +
+                socialIcon(facebookIcon, "Facebook", "https://www.facebook.com/m.eventtt") +
+                socialIcon(instagramIcon, "Instagram", "https://www.instagram.com/m.eventtt") +
+                socialIcon(tiktokIcon, "TikTok", "https://www.tiktok.com/@m.eventtt") +
+                "</tr></table>" +
+                "<p style=\"margin:0 0 8px;color:#534666;font-size:13px;line-height:1.5;font-weight:bold;\">M-Event · servicii și experiențe pentru evenimente</p>" +
+                "<p style=\"margin:0 0 8px;color:#625b63;font-size:12px;line-height:1.5;\">Acest email a fost generat automat. Te rugăm să nu răspunzi. Pentru ajutor: <a href=\"mailto:" + HtmlUtils.htmlEscape(mailProperties.getContactAddress()) + "\" style=\"color:#138086;\">" + HtmlUtils.htmlEscape(mailProperties.getContactAddress()) + "</a></p>" +
+                "<p style=\"margin:0;color:#625b63;font-size:12px;line-height:1.6;\"><a href=\"" + appBaseUrl + "/privacy\" style=\"color:#534666;\">Confidențialitate</a> &nbsp;·&nbsp; <a href=\"" + appBaseUrl + "/terms\" style=\"color:#534666;\">Termeni</a></p>" +
+                "<p style=\"margin:8px 0 0;color:#817a82;font-size:11px;line-height:1.5;\">© 2026 M-Event. Toate drepturile rezervate.</p>" +
+                "</td></tr></table></td></tr></table></body></html>";
+    }
+
+    private String socialIcon(String image, String label, String url) {
+        return "<td align=\"center\" style=\"padding:0 9px;\"><a href=\"" + url + "\" aria-label=\"M-Event pe " + label + "\" style=\"display:inline-block;text-decoration:none;\"><img src=\"" + image + "\" width=\"30\" height=\"30\" alt=\"" + label + "\" style=\"display:block;width:30px;height:30px;border:0;\"></a></td>";
     }
 
 }

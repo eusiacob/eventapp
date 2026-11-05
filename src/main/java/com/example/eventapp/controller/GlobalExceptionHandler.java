@@ -2,8 +2,7 @@ package com.example.eventapp.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -16,10 +15,9 @@ import org.springframework.web.multipart.MultipartException;
 
 import java.util.Map;
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public Object handleUploadSize(MaxUploadSizeExceededException exception, Model model,
@@ -30,7 +28,7 @@ public class GlobalExceptionHandler {
                     "Încarcă mai puține fișiere odată sau redu dimensiunea lor. " +
                     "Un videoclip poate avea maximum 100 MB și 15 secunde."));
         }
-        return renderError(model, request, response, HttpStatus.PAYLOAD_TOO_LARGE);
+        return renderError(model, request, response, HttpStatus.CONTENT_TOO_LARGE);
     }
 
     @ExceptionHandler(MultipartException.class)
@@ -79,8 +77,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public Object handleRuntime(RuntimeException exception, Model model, HttpServletRequest request, HttpServletResponse response) {
+        log.error("Unexpected application error for {} {}", request.getMethod(), request.getRequestURI(), exception);
         if (isVisibilityRequest(request)) {
-            logger.error("Unexpected error while updating business visibility", exception);
             return visibilityError(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Nu am putut actualiza vizibilitatea serviciului. Încearcă din nou; dacă problema persistă, contactează suportul.");
         }
@@ -94,8 +92,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public Object handleException(Exception exception, Model model, HttpServletRequest request, HttpServletResponse response) {
+        log.error("Unexpected application error for {} {}", request.getMethod(), request.getRequestURI(), exception);
         if (isVisibilityRequest(request)) {
-            logger.error("Unexpected error while updating business visibility", exception);
             return visibilityError(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Nu am putut actualiza vizibilitatea serviciului. Încearcă din nou; dacă problema persistă, contactează suportul.");
         }
