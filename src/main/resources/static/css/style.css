@@ -8128,3 +8128,77 @@ body.legal-page .footer-section {
         font-size: 0.82rem;
     }
 }
+
+/* Fluid typography: keep the application readable across phone, tablet and desktop widths. */
+:root {
+    --me-text-size: clamp(0.94rem, 0.18vw + 0.9rem, 1.05rem);
+    --me-text-leading: 1.58;
+    --me-heading-leading: 1.18;
+}
+
+body {
+    font-size: var(--me-text-size);
+    line-height: var(--me-text-leading);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+h1, .h1 {
+    font-size: clamp(1.9rem, 1.15rem + 2.5vw, 3.25rem);
+    line-height: var(--me-heading-leading);
+    text-wrap: balance;
+}
+
+h2, .h2 {
+    font-size: clamp(1.55rem, 1.08rem + 1.55vw, 2.35rem);
+    line-height: 1.22;
+    text-wrap: balance;
+}
+
+h3, .h3 {
+    font-size: clamp(1.25rem, 1.02rem + 0.8vw, 1.75rem);
+    line-height: 1.28;
+}
+
+h4, .h4 {
+    font-size: clamp(1.1rem, 1rem + 0.42vw, 1.35rem);
+    line-height: 1.32;
+}
+
+p, li {
+    line-height: var(--me-text-leading);
+}
+
+button, .btn, input, select, textarea {
+    font: inherit;
+}
+
+.form-control, .form-select {
+    font-size: max(1rem, var(--me-text-size));
+}
+
+@media (max-width: 575.98px) {
+    :root {
+        --me-text-size: 0.95rem;
+        --me-text-leading: 1.52;
+    }
+
+    h1, .h1 {
+        font-size: clamp(1.8rem, 7.2vw, 2.25rem);
+        line-height: 1.16;
+    }
+
+    h2, .h2 {
+        font-size: clamp(1.45rem, 5.8vw, 1.8rem);
+    }
+
+    h3, .h3 {
+        font-size: clamp(1.2rem, 4.8vw, 1.45rem);
+    }
+}
+
+@media (min-width: 1200px) {
+    body {
+        --me-text-leading: 1.62;
+    }
+}
