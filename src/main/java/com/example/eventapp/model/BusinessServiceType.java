@@ -47,8 +47,6 @@ public enum BusinessServiceType {
     CATERING_BUFET_SUEDEZ(BusinessCategory.CATERING, "Bufet suedez"),
     CATERING_FINGER_FOOD(BusinessCategory.CATERING, "Finger food"),
     CATERING_LIVE_COOKING_GRATAR(BusinessCategory.CATERING, "Live cooking / Grătar"),
-    CATERING_COCKTAIL_BAR(BusinessCategory.CATERING, "Cocktail bar"),
-    CATERING_COFFEE_BAR(BusinessCategory.CATERING, "Coffee bar"),
     CATERING_ALT_SERVICIU(BusinessCategory.CATERING, "Alt serviciu"),
     FLORIST_BUCHETE(BusinessCategory.FLORIST, "Buchete"),
     FLORIST_ARANJAMENTE_PENTRU_MESE(BusinessCategory.FLORIST, "Aranjamente pentru mese"),
