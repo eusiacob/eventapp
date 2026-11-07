@@ -46,7 +46,7 @@
                 <li th:each="category : ${categories}">
                     <a class="presentation-category-link"
                        th:href="@{/businesses/category/{category}(category=${category})}">
-                        <i aria-hidden="true" class="bi" th:classappend="${category.icon}"></i>
+                        <th:block th:replace="~{fragments/category-icon :: icon(${category})}"></th:block>
                         <span th:text="${category.displayName}"></span>
                     </a>
                 </li>

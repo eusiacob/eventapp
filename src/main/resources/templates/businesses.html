@@ -16,7 +16,7 @@
           rel="stylesheet">
 
     <link rel="stylesheet"
-          th:href="@{/css/style.css}">
+          th:href="@{/css/style.css(v='20261107-3')}">
     <title>Servicii pentru nunți, botezuri și evenimente</title>
 </head>
 <body>
@@ -50,10 +50,12 @@
            th:each="category : ${categories}"
            th:href="@{/businesses/category/{category}(category=${category})}">
 
-            <i class="bi"
-               th:classappend="'' + ${category.icon}"></i>
-
-            <span th:text="${category.displayName}"></span>
+            <span aria-hidden="true" class="category-chip-icon">
+                <th:block th:replace="~{fragments/category-icon :: icon(${category})}"></th:block>
+            </span>
+            <span class="category-chip-label"
+                  th:text="${category.carouselName}"
+                  th:title="${category.displayName}"></span>
 
         </a>
 

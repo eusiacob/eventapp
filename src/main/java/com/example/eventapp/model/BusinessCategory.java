@@ -9,8 +9,7 @@ public enum BusinessCategory {
     VIDEOGRAF("Videograf", "bi-camera-reels-fill"),
     DJ("DJ", "bi-music-note-beamed"),
     MUZICA_LIVE("Muzică live", "bi-mic-fill"),
-    RESTAURANT("Restaurant", "bi-cup-hot-fill"),
-    CANDY_BAR("Candy Bar", "bi-cake2-fill"),
+    BARURI("Baruri pentru evenimente", "bi-shop-window"),
     CATERING("Catering", "bi-egg-fried"),
     FLORIST("Aranjamente florale", "bi-flower1"),
     DECOR("Decor", "bi-balloon-fill"),
@@ -27,5 +26,9 @@ public enum BusinessCategory {
     BusinessCategory(String displayName, String icon) {
         this.displayName = displayName;
         this.icon = icon;
+    }
+
+    public String getCarouselName() {
+        return this == BARURI ? "Baruri" : displayName;
     }
 }

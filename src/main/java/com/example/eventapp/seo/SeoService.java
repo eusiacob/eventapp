@@ -94,7 +94,7 @@ public class SeoService {
                             List.of("/businesses", "/businesses/category/" + category.name(), landingPath)));
                 } else {
                     path = "/businesses/category/" + category.name();
-                    title = category.getDisplayName() + " pentru evenimente în România"
+                    title = category.getCarouselName() + " pentru evenimente în România"
                             + (page.getNumber() > 0 ? " – pagina " + (page.getNumber() + 1) : "") + " | M-Event";
                     description = categoryDescription(category);
                     UriComponentsBuilder canonical = UriComponentsBuilder.fromPath(path);
@@ -250,8 +250,7 @@ public class SeoService {
             case VIDEOGRAF -> "Caută videografi pentru nunți, botezuri și evenimente speciale. Filtrează serviciile după județ, tipul evenimentului și data dorită.";
             case DJ -> "Descoperă DJ pentru nunți, petreceri și evenimente corporate. Explorează serviciile și filtrează după județ sau data evenimentului.";
             case MUZICA_LIVE -> "Găsește soliști și formații de muzică live pentru evenimentul tău. Explorează furnizorii în funcție de județ și tipul de serviciu.";
-            case RESTAURANT -> "Explorează restaurante pentru nunți, botezuri, aniversări și alte evenimente. Filtrează după județ și tipul evenimentului.";
-            case CANDY_BAR -> "Descoperă servicii de candy bar pentru nunți, botezuri și petreceri. Caută furnizori în județul dorit și explorează profilurile lor.";
+            case BARURI -> "Descoperă furnizori de candy bar, shot bar, fruit bar, cocktail bar, coffee bar și alte stații tematice pentru nunți, botezuri și petreceri. Caută în județul dorit.";
             case CATERING -> "Găsește servicii de catering pentru evenimente private și corporate. Explorează furnizorii și filtrează după județ și tipul evenimentului.";
             case FLORIST -> "Descoperă furnizori de aranjamente florale pentru nunți, botezuri și evenimente. Explorează serviciile disponibile în județul dorit.";
             case DECOR -> "Explorează servicii de decor pentru nunți, botezuri și petreceri. Alege județul, tipul serviciului și evenimentul pe care îl organizezi.";
